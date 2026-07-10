@@ -11,13 +11,19 @@ Fichiers (commites) :
     data/burns_state.json   backfill_done, next_page (curseur pagination),
                             newest_block (pour l'incremental), pages, updated_at
 
+Ecriture Google Sheet (onglet 🔥H-BURNS) EN PLUS du CSV, si les secrets sont
+presents (GOOGLE_SERVICE_ACCOUNT_JSON + SHEET_ID) ; sinon le CSV suffit et le
+module reste 100 % autonome. Le Sheet est reecrit a chaque run avec tout
+l'historique connu a ce stade (progressif pendant le backfill).
+
 Marche :
   - backfill (1ere fois) : pagine du present vers le passe par tranches de
     BURNS_MINUTES, checkpoint tous les 50 pages (sauve CSV + etat), se relance
     jusqu'a epuisement -> backfill_done=true.
   - incremental (backfill fini) : ne recupere que les depots > newest_block.
 
-Dates en PT. Env : BURNS_MINUTES (25), BURNS_PAUSE (0), BURNS_DATA_DIR (data).
+Dates en PT. Env : BURNS_MINUTES (25), BURNS_PAUSE (0), BURNS_DATA_DIR (data),
+GOOGLE_SERVICE_ACCOUNT_JSON, SHEET_ID, BURNS_TAB (🔥H-BURNS).
 """
 
 from __future__ import annotations
@@ -45,6 +51,7 @@ STATE_JSON = os.path.join(DATA_DIR, "burns_state.json")
 DAILY_HEADER = ["date", "source", "transactions", "omi_burned", "cumulative"]
 TRANSFERS_URL = f"{BASE_BS}/api/v2/addresses/{STACKR_ADDR}/token-transfers"
 CHECKPOINT_PAGES = 50
+BURNS_TAB = os.environ.get("BURNS_TAB", "🔥H-BURNS")
 
 
 def _get(url, params=None):
@@ -83,18 +90,62 @@ def _load_daily():
     return rows
 
 
+def _rows_with_cumulative(rows):
+    """[(date, source, tx, omi, cumulative)] trie, cumul par source."""
+    cumul = defaultdict(float)
+    out = []
+    for (d, src) in sorted(rows):
+        tx, omi = rows[(d, src)]
+        cumul[src] += omi
+        out.append([d, src, tx, round(omi, 2), round(cumul[src], 2)])
+    return out
+
+
 def _save_daily(rows):
     os.makedirs(os.path.dirname(DAILY_CSV) or ".", exist_ok=True)
-    cumul = defaultdict(float)
     tmp = DAILY_CSV + ".tmp"
     with open(tmp, "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f, lineterminator="\n")
         w.writerow(DAILY_HEADER)
-        for (d, src) in sorted(rows):
-            tx, omi = rows[(d, src)]
-            cumul[src] += omi
-            w.writerow([d, src, tx, round(omi, 2), round(cumul[src], 2)])
+        w.writerows(_rows_with_cumulative(rows))
     os.replace(tmp, DAILY_CSV)
+
+
+def _write_sheet(rows):
+    """Ecrit l'onglet 🔥H-BURNS si les secrets Google sont presents.
+    Ne casse JAMAIS le run : toute erreur est journalisee, le CSV fait foi."""
+    sa = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")
+    sheet_id = os.environ.get("SHEET_ID")
+    if not sa or not sheet_id:
+        print("Sheet: secrets absents (GOOGLE_SERVICE_ACCOUNT_JSON/SHEET_ID) "
+              "— CSV seul.", flush=True)
+        return
+    try:
+        import gspread
+        from google.oauth2.service_account import Credentials
+
+        info = json.loads(sa)
+        scopes = ["https://www.googleapis.com/auth/spreadsheets"]
+        creds = Credentials.from_service_account_info(info, scopes=scopes)
+        gc = gspread.authorize(creds)
+        sh = gc.open_by_key(sheet_id)
+        try:
+            ws = sh.worksheet(BURNS_TAB)
+        except gspread.WorksheetNotFound:
+            ws = sh.add_worksheet(title=BURNS_TAB, rows=max(1000, len(rows) + 10),
+                                  cols=len(DAILY_HEADER))
+        values = [DAILY_HEADER] + [[d, src, tx, omi, cum]
+                                   for (d, src, tx, omi, cum) in rows]
+        ws.clear()
+        ws.update(range_name="A1", values=values, value_input_option="RAW")
+        try:
+            ws.freeze(rows=1)
+            ws.format("1:1", {"textFormat": {"bold": True}})
+        except Exception:
+            pass
+        print(f"Sheet: {BURNS_TAB} mis a jour ({len(rows)} lignes).", flush=True)
+    except Exception as e:
+        print(f"Sheet warning (CSV OK quand meme): {e}", flush=True)
 
 
 def _load_state():
@@ -234,6 +285,7 @@ def main() -> int:
 
     _save_daily(daily)
     _save_state(state)
+    _write_sheet(_rows_with_cumulative(daily))
 
     stackr = {k[0]: v for k, v in daily.items() if k[1] == "StackR"}
     total = sum(v[1] for v in stackr.values())
