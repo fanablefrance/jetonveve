@@ -5,6 +5,10 @@ name: Burns OMI - StackR (quotidien)
 # se RELANCE tout seul tant que le backfill n'est pas fini (garde-fou 30 runs).
 # Une fois fini -> incremental quotidien.
 # Ecrit AUSSI l'onglet Google Sheet 🔥H-BURNS si les secrets sont presents.
+#
+# Blindage 10/07 : pull de main au demarrage (un run cree/en file d'attente fige
+# main a sa CREATION -> checkout possiblement perime, sans le dernier etat) ;
+# relance auto seulement si le run a reussi.
 
 on:
   schedule:
@@ -35,8 +39,10 @@ jobs:
       BURNS_MINUTES: ${{ github.event.inputs.minutes || '25' }}
     steps:
       - uses: actions/checkout@v4
+
       - name: Etat le plus recent (anti-checkout perime)
         run: git pull --rebase origin main
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -45,11 +51,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
       - name: Collecte burns StackR (tranche) + ecriture Sheet
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           SHEET_ID: ${{ secrets.SHEET_ID }}
         run: python -m scraper.burns
+
       - name: Commit historique burns (data/)
         if: ${{ always() }}
         run: |
@@ -62,8 +70,9 @@ jobs:
             git pull --rebase origin main && git push && break
             sleep $((i * 5))
           done
+
       - name: Relance auto si backfill pas fini
-        if: ${{ always() && github.event.inputs.auto_continue != 'false' }}
+        if: ${{ success() && github.event.inputs.auto_continue != 'false' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
