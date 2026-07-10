@@ -1,21 +1,26 @@
 name: Burns OMI - StackR (quotidien)
 
-# Collecte les burns OMI de StackR (depots sur 0x821c, Base L2, Blockscout ouvert
-# base.blockscout.com — pas de cle). Ecrit data/burns_daily.csv (commite) et
-# affiche un recap dans le log. 1er run = backfill (~74k transferts), suivants
-# = incremental. Autonome (pas de Google Sheet pendant le rodage).
+# Backfill RESUMABLE des burns StackR (Base L2, Blockscout ouvert base.blockscout.com).
+# Chaque run traite BURNS_MINUTES puis checkpoint (data/burns_daily.csv + curseur) ;
+# se RELANCE tout seul tant que le backfill n'est pas fini (garde-fou 30 runs).
+# Une fois fini -> incremental quotidien. Autonome (pas de Google Sheet en rodage).
 
 on:
   schedule:
     - cron: "31 5 * * *"
   workflow_dispatch:
     inputs:
-      max_pages:
-        description: "Cap de pages (0 = illimite / backfill complet)"
-        default: "0"
+      minutes:
+        description: "Budget par run (minutes)"
+        default: "25"
+      auto_continue:
+        description: "Se relance jusqu'a la fin du backfill"
+        type: boolean
+        default: true
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: veve-burns
@@ -24,9 +29,9 @@ concurrency:
 jobs:
   burns:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 32
     env:
-      BURNS_MAX_PAGES: ${{ github.event.inputs.max_pages || '0' }}
+      BURNS_MINUTES: ${{ github.event.inputs.minutes || '25' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -37,7 +42,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - name: Collecte burns StackR
+      - name: Collecte burns StackR (tranche)
         run: python -m scraper.burns
       - name: Commit historique burns (data/)
         if: ${{ always() }}
@@ -46,8 +51,19 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add data/burns_daily.csv data/burns_state.json
           if git diff --cached --quiet; then echo "Rien a committer."; exit 0; fi
-          git commit -m "burns: maj StackR $(date -u +%FT%H:%M)"
+          git commit -m "burns: StackR $(date -u +%FT%H:%M)"
           for i in 1 2 3; do
             git pull --rebase origin main && git push && break
             sleep $((i * 5))
           done
+      - name: Relance auto si backfill pas fini
+        if: ${{ always() && github.event.inputs.auto_continue != 'false' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          DONE=$(python -c "import json; print(json.load(open('data/burns_state.json')).get('backfill_done', False))" 2>/dev/null || echo "")
+          PAGES=$(python -c "import json; print(json.load(open('data/burns_state.json')).get('pages', 0))" 2>/dev/null || echo 0)
+          if [ "$DONE" = "True" ]; then echo "Backfill fini — pas de relance."; exit 0; fi
+          if [ "$PAGES" -ge 6000 ]; then echo "Garde-fou pages atteint."; exit 0; fi
+          echo "Backfill incomplet ($PAGES pages) — relance..."
+          gh workflow run burns.yml --ref main -f minutes="${{ github.event.inputs.minutes || '25' }}" -f auto_continue=true
