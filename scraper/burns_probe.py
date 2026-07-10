@@ -13,7 +13,6 @@ N'ecrit rien. Env : ETHERSCAN_API_KEY (pour la partie ETH L1 de reference).
 
 from __future__ import annotations
 
-import json
 import os
 import sys
 import time
@@ -50,7 +49,6 @@ def blockscout_transfers(base, addr, label):
     print(f"\n=== {label} — Blockscout v2 token-transfers @ {addr}", flush=True)
     j = get(f"{base}/api/v2/addresses/{addr}/token-transfers", {"type": "ERC-20"})
     if not j:
-        # fallback API v1
         print("   (fallback API v1 tokentx)", flush=True)
         j = get(f"{base}/api", {"module": "account", "action": "tokentx",
                                 "address": addr, "page": 1, "offset": 5, "sort": "desc"})
@@ -80,7 +78,6 @@ def main() -> int:
     # --- GOCHAIN (coeur du suivi quotidien NFT/GEM) ---
     blockscout_transfers(GOCHAIN, VEVE_BURN, "GOCHAIN VeVe burn")
     time.sleep(0.3)
-    # les transactions natives de l'adresse (pour voir le rythme quotidien)
     print(f"\n=== GOCHAIN VeVe burn — counters @ {VEVE_BURN}", flush=True)
     get(f"{GOCHAIN}/api/v2/addresses/{VEVE_BURN}/counters")
     time.sleep(0.3)
@@ -92,12 +89,13 @@ def main() -> int:
     # --- ETH L1 reference (Etherscan) : les burns -> 0x0 ---
     if key:
         print("\n=== ETH L1 (reference) — burns OMI -> 0x0 depuis 0xbbda", flush=True)
-        r = requests.get("https://api.etherscan.io/v2/api",
-                         params={"chainid": 1, "module": "account", "action": "tokentx",
-                                 "contractaddress": OMI_ETH, "address": VEVE_BURN,
-                                 "page": 1, "offset": 10, "sort": "desc", "apikey": key},
-                         headers=UA, timeout=30)
         try:
+            r = requests.get("https://api.etherscan.io/v2/api",
+                             params={"chainid": 1, "module": "account",
+                                     "action": "tokentx", "contractaddress": OMI_ETH,
+                                     "address": VEVE_BURN, "page": 1, "offset": 10,
+                                     "sort": "desc", "apikey": key},
+                             headers=UA, timeout=30)
             res = r.json().get("result", [])
             burns = [x for x in res if isinstance(x, dict) and x.get("to") == DEAD]
             print(f"   {len(burns)} burns->0x0 dans les 10 derniers mouvements.", flush=True)
@@ -107,10 +105,12 @@ def main() -> int:
                       flush=True)
         except Exception as e:
             print(f"   ERR {e}", flush=True)
+    else:
+        print("\n(ETHERSCAN_API_KEY absent — partie ETH L1 sautee)", flush=True)
 
     print("\nSonde v2 terminee. Colle le log dans le chat.", flush=True)
     return 0
 
 
 if __name__ == "__main__":
-    sys
+    sys.exit(main())
