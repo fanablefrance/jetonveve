@@ -1,0 +1,14 @@
+Repo jetonveve (fanablefrance) — recherche burns OMI
+=====================================================
+Secret requis (deja enregistre par Preda) : ETHERSCAN_API_KEY
+Contenu :
+  scraper/burns_probe.py   sonde des sources de burn (VeVe + StackR, ETH/Base/Gochain)
+  scraper/__init__.py
+  requirements.txt         (requests)
+  .github/workflows/burns-probe.yml
+
+1. Uploader scraper/ + requirements.txt a la racine.
+2. Add file -> Create new file -> ".github/workflows/burns-probe.yml"
+   -> coller le contenu (ou glisser le fichier fourni).
+3. Actions -> "Burns OMI - sonde" -> Run workflow.
+4. Coller le log dans le chat -> on batit ensuite le tracker.
