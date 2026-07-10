@@ -35,6 +35,8 @@ jobs:
       BURNS_MINUTES: ${{ github.event.inputs.minutes || '25' }}
     steps:
       - uses: actions/checkout@v4
+      - name: Etat le plus recent (anti-checkout perime)
+        run: git pull --rebase origin main
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
