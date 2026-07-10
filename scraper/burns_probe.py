@@ -1,12 +1,14 @@
 """
-Sonde BURNS OMI — diagnostic des sources avant de batir le tracker.
+Sonde BURNS OMI v2 — cible les explorers Blockscout OUVERTS (Gochain + Base),
+puisque Etherscan gratuit ne couvre pas Base et que le suivi quotidien NFT/GEM
+vit sur Gochain (chaine native VeVe). ETH L1 garde juste un role de reference
+(gros burns periodiques de consolidation).
 
-Interroge, avec la cle Etherscan v2 (multichain ETH+Base) et l'explorer Gochain
-(Blockscout, sans cle), les adresses de burn VeVe et StackR, et affiche des
-echantillons de transferts pour comprendre la structure (d'ou viennent les OMI,
-comment separer NFT/GEM, ou vont-ils). N'ecrit RIEN. Coller le log dans le chat.
+Burns = transferts vers 0x0. Les adresses de burn (0xbbda VeVe, 0x821c StackR)
+ont un solde nul (transit). On veut : d'ou viennent les depots (separer NFT/GEM)
+et les burns -> 0x0 datables au jour.
 
-Env : ETHERSCAN_API_KEY.
+N'ecrit rien. Env : ETHERSCAN_API_KEY (pour la partie ETH L1 de reference).
 """
 
 from __future__ import annotations
@@ -18,99 +20,97 @@ import time
 
 import requests
 
-ETHERSCAN = "https://api.etherscan.io/v2/api"
-GOCHAIN = "https://explorer.gochain.io/api"
+DEAD = "0x0000000000000000000000000000000000000000"
+OMI_ETH = "0xed35af169af46a02ee13b9d79eb57d6d68c1749e"
+VEVE_BURN = "0xbbda162f1e3ec2d4d9d99cafd0c14b03ec4e78d3"
+STACKR_ADDR = "0x821c1ed723c3148eb74540b1201ea3369c910c17"
+STACKR_TOKEN_BASE = "0x3792dbdd07e87413247df995e692806aa13d3299"
 
-OMI_ETH = "0xed35af169af46a02ee13b9d79eb57d6d68c1749e"        # OMI ERC-20 sur Ethereum
-STACKR_TOKEN_BASE = "0x3792DBDD07e87413247DF995e692806aa13D3299"  # jeton StackR sur Base
-VEVE_BURN = "0xbbda162f1e3ec2d4d9d99cafd0c14b03ec4e78d3"       # burn VeVe (Gochain + ETH)
-STACKR_ADDR = "0x821c1ed723c3148eb74540b1201ea3369c910c17"     # StackR (Base + ETH)
-
-KEY = os.environ.get("ETHERSCAN_API_KEY", "").strip()
+GOCHAIN = "https://explorer.gochain.io"
+BASE_BS = "https://base.blockscout.com"
+UA = {"User-Agent": "veve-omi-probe/1.0", "Accept": "application/json"}
 
 
-def es(chainid, params):
-    p = {"chainid": chainid, "apikey": KEY, **params}
-    r = requests.get(ETHERSCAN, params=p, timeout=30)
+def get(url, params=None):
     try:
-        return r.json()
-    except Exception:
-        return {"status": "0", "message": "non-JSON", "result": r.text[:200]}
+        r = requests.get(url, params=params or {}, headers=UA, timeout=40)
+        ct = r.headers.get("content-type", "")
+        print(f"   HTTP {r.status_code} ({ct})", flush=True)
+        if "json" in ct:
+            return r.json()
+        print(f"   raw: {r.text[:200]}", flush=True)
+        return None
+    except Exception as e:
+        print(f"   ERR {e}", flush=True)
+        return None
 
 
-def show(title, j, keys=("from", "to", "value", "tokenSymbol", "tokenName",
-                         "timeStamp", "hash")):
-    print(f"\n=== {title}", flush=True)
-    if isinstance(j, dict):
-        print(f"   status={j.get('status')} message={j.get('message')}", flush=True)
-        res = j.get("result")
-        if isinstance(res, list):
-            print(f"   {len(res)} resultats. Echantillon :", flush=True)
-            for row in res[:4]:
-                if isinstance(row, dict):
-                    print("   " + " | ".join(f"{k}={row.get(k)}" for k in keys
-                                             if k in row), flush=True)
-        else:
-            print(f"   result={str(res)[:300]}", flush=True)
+def blockscout_transfers(base, addr, label):
+    """Blockscout v2 : transferts de jetons d'une adresse (entrants + sortants)."""
+    print(f"\n=== {label} — Blockscout v2 token-transfers @ {addr}", flush=True)
+    j = get(f"{base}/api/v2/addresses/{addr}/token-transfers", {"type": "ERC-20"})
+    if not j:
+        # fallback API v1
+        print("   (fallback API v1 tokentx)", flush=True)
+        j = get(f"{base}/api", {"module": "account", "action": "tokentx",
+                                "address": addr, "page": 1, "offset": 5, "sort": "desc"})
+        if isinstance(j, dict) and isinstance(j.get("result"), list):
+            for r in j["result"][:5]:
+                print("   " + " | ".join(f"{k}={r.get(k)}" for k in
+                      ("from", "to", "value", "tokenSymbol", "timeStamp") if k in r),
+                      flush=True)
+        return
+    items = j.get("items") or []
+    print(f"   {len(items)} transferts. Echantillon :", flush=True)
+    froms = {}
+    for it in items[:10]:
+        frm = ((it.get("from") or {}).get("hash") or "")[:12]
+        to = ((it.get("to") or {}).get("hash") or "")[:12]
+        tok = (it.get("token") or {}).get("symbol")
+        val = it.get("total", {}).get("value") if isinstance(it.get("total"), dict) else it.get("value")
+        ts = it.get("timestamp")
+        print(f"   from={frm} to={to} tok={tok} val={val} ts={ts}", flush=True)
+        froms[frm] = froms.get(frm, 0) + 1
+    print(f"   sources distinctes (from) dans l'echantillon : {froms}", flush=True)
 
 
 def main() -> int:
-    if not KEY:
-        print("ERREUR : secret ETHERSCAN_API_KEY absent.", file=sys.stderr)
-        return 2
-    print(f"Cle Etherscan presente ({KEY[:4]}...). Sondage...", flush=True)
+    key = os.environ.get("ETHERSCAN_API_KEY", "").strip()
 
-    # --- Ethereum L1 : OMI vers/depuis les adresses de burn ---
-    show("ETH L1 — OMI transferts @ VeVe burn (0xbbda)",
-         es(1, {"module": "account", "action": "tokentx", "contractaddress": OMI_ETH,
-                "address": VEVE_BURN, "page": 1, "offset": 5, "sort": "desc"}))
-    time.sleep(0.25)
-    show("ETH L1 — solde OMI detenu par VeVe burn (0xbbda)",
-         es(1, {"module": "account", "action": "tokenbalance", "contractaddress": OMI_ETH,
-                "address": VEVE_BURN, "tag": "latest"}))
-    time.sleep(0.25)
-    show("ETH L1 — OMI transferts @ StackR (0x821c)",
-         es(1, {"module": "account", "action": "tokentx", "contractaddress": OMI_ETH,
-                "address": STACKR_ADDR, "page": 1, "offset": 5, "sort": "desc"}))
-    time.sleep(0.25)
-    show("ETH L1 — solde OMI detenu par StackR (0x821c)",
-         es(1, {"module": "account", "action": "tokenbalance", "contractaddress": OMI_ETH,
-                "address": STACKR_ADDR, "tag": "latest"}))
-    time.sleep(0.25)
+    # --- GOCHAIN (coeur du suivi quotidien NFT/GEM) ---
+    blockscout_transfers(GOCHAIN, VEVE_BURN, "GOCHAIN VeVe burn")
+    time.sleep(0.3)
+    # les transactions natives de l'adresse (pour voir le rythme quotidien)
+    print(f"\n=== GOCHAIN VeVe burn — counters @ {VEVE_BURN}", flush=True)
+    get(f"{GOCHAIN}/api/v2/addresses/{VEVE_BURN}/counters")
+    time.sleep(0.3)
 
-    # --- Base L2 : jeton StackR vers/depuis 0x821c ---
-    show("BASE L2 — jeton StackR (0x3792) @ 0x821c",
-         es(8453, {"module": "account", "action": "tokentx",
-                   "contractaddress": STACKR_TOKEN_BASE, "address": STACKR_ADDR,
-                   "page": 1, "offset": 5, "sort": "desc"}))
-    time.sleep(0.25)
-    # tous jetons recus par 0x821c sur Base (pour voir ce qui circule)
-    show("BASE L2 — tous jetons @ 0x821c",
-         es(8453, {"module": "account", "action": "tokentx", "address": STACKR_ADDR,
-                   "page": 1, "offset": 5, "sort": "desc"}))
-    time.sleep(0.25)
+    # --- BASE L2 (StackR) via Blockscout ouvert ---
+    blockscout_transfers(BASE_BS, STACKR_ADDR, "BASE StackR")
+    time.sleep(0.3)
 
-    # --- Gochain (Blockscout, sans cle) : burns VeVe natifs ---
-    print("\n=== GOCHAIN — tokentx @ VeVe burn (0xbbda)", flush=True)
-    try:
-        r = requests.get(GOCHAIN, params={"module": "account", "action": "tokentx",
-                         "address": VEVE_BURN, "page": 1, "offset": 5, "sort": "desc"},
-                         timeout=30)
-        j = r.json()
-        res = j.get("result")
-        print(f"   status={j.get('status')} n={len(res) if isinstance(res,list) else res}",
-              flush=True)
-        if isinstance(res, list):
-            for row in res[:4]:
-                print("   " + " | ".join(f"{k}={row.get(k)}" for k in
-                      ("from", "to", "value", "tokenSymbol", "timeStamp") if k in row),
+    # --- ETH L1 reference (Etherscan) : les burns -> 0x0 ---
+    if key:
+        print("\n=== ETH L1 (reference) — burns OMI -> 0x0 depuis 0xbbda", flush=True)
+        r = requests.get("https://api.etherscan.io/v2/api",
+                         params={"chainid": 1, "module": "account", "action": "tokentx",
+                                 "contractaddress": OMI_ETH, "address": VEVE_BURN,
+                                 "page": 1, "offset": 10, "sort": "desc", "apikey": key},
+                         headers=UA, timeout=30)
+        try:
+            res = r.json().get("result", [])
+            burns = [x for x in res if isinstance(x, dict) and x.get("to") == DEAD]
+            print(f"   {len(burns)} burns->0x0 dans les 10 derniers mouvements.", flush=True)
+            for x in burns[:3]:
+                omi = int(x.get("value", "0")) / 1e18
+                print(f"   {omi:,.0f} OMI  ts={x.get('timeStamp')}  tx={x.get('hash')[:14]}",
                       flush=True)
-    except Exception as e:
-        print(f"   Gochain ERR : {e}", flush=True)
+        except Exception as e:
+            print(f"   ERR {e}", flush=True)
 
-    print("\nSondage termine. Colle ce log dans le chat.", flush=True)
+    print("\nSonde v2 terminee. Colle le log dans le chat.", flush=True)
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys
