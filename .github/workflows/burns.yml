@@ -3,7 +3,8 @@ name: Burns OMI - StackR (quotidien)
 # Backfill RESUMABLE des burns StackR (Base L2, Blockscout ouvert base.blockscout.com).
 # Chaque run traite BURNS_MINUTES puis checkpoint (data/burns_daily.csv + curseur) ;
 # se RELANCE tout seul tant que le backfill n'est pas fini (garde-fou 30 runs).
-# Une fois fini -> incremental quotidien. Autonome (pas de Google Sheet en rodage).
+# Une fois fini -> incremental quotidien.
+# Ecrit AUSSI l'onglet Google Sheet 🔥H-BURNS si les secrets sont presents.
 
 on:
   schedule:
@@ -42,7 +43,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - name: Collecte burns StackR (tranche)
+      - name: Collecte burns StackR (tranche) + ecriture Sheet
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          SHEET_ID: ${{ secrets.SHEET_ID }}
         run: python -m scraper.burns
       - name: Commit historique burns (data/)
         if: ${{ always() }}
