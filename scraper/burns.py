@@ -124,7 +124,12 @@ def _write_sheet(rows):
         import gspread
         from google.oauth2.service_account import Credentials
 
-        info = json.loads(sa)
+        # Nettoyage defensif : BOM UTF-8, espaces, et guillemets parasites
+        # parfois introduits en collant le secret dans l'UI GitHub.
+        cleaned = (sa or "").lstrip("\ufeff").strip()
+        if len(cleaned) >= 2 and cleaned[0] in "\"'" and cleaned[-1] == cleaned[0]:
+            cleaned = cleaned[1:-1].strip()
+        info = json.loads(cleaned)
         scopes = ["https://www.googleapis.com/auth/spreadsheets"]
         creds = Credentials.from_service_account_info(info, scopes=scopes)
         gc = gspread.authorize(creds)
@@ -145,7 +150,13 @@ def _write_sheet(rows):
             pass
         print(f"Sheet: {BURNS_TAB} mis a jour ({len(rows)} lignes).", flush=True)
     except Exception as e:
-        print(f"Sheet warning (CSV OK quand meme): {e}", flush=True)
+        raw = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON") or ""
+        sid = os.environ.get("SHEET_ID") or ""
+        diag = (f" [diag SA: len={len(raw)}, 1er_char={raw[:1]!r}, "
+                f"BOM={raw.startswith(chr(0xFEFF))}, "
+                f"commence_par_accolade={raw.lstrip(chr(0xFEFF)).strip()[:1] == '{'} "
+                f"| SHEET_ID: len={len(sid)}, 1er_char={sid[:1]!r}]")
+        print(f"Sheet warning (CSV OK quand meme): {e}{diag}", flush=True)
 
 
 def _load_state():
