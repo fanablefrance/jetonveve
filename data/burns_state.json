@@ -1,9 +1,7 @@
 {
  "newest_block": 48440981,
- "pages": 1912,
- "next_page": {
-  "index": 241,
-  "block_number": 20624203
- },
- "updated_at": "2026-07-10 13:19:25"
+ "pages": 1964,
+ "next_page": null,
+ "updated_at": "2026-07-10 13:33:14",
+ "backfill_done": true
 }
