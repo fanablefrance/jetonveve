@@ -1,14 +1,12 @@
 name: Burns OMI - StackR (quotidien)
 
-# Backfill RESUMABLE des burns StackR (Base L2, Blockscout ouvert base.blockscout.com).
-# Chaque run traite BURNS_MINUTES puis checkpoint (data/burns_daily.csv + curseur) ;
-# se RELANCE tout seul tant que le backfill n'est pas fini (garde-fou 30 runs).
-# Une fois fini -> incremental quotidien.
-# Ecrit AUSSI l'onglet Google Sheet 🔥H-BURNS si les secrets sont presents.
-#
-# Blindage 10/07 : pull de main au demarrage (un run cree/en file d'attente fige
-# main a sa CREATION -> checkout possiblement perime, sans le dernier etat) ;
-# relance auto seulement si le run a reussi.
+# v6 (11/07) : + DECOMPO NFT/GEM. Chaque run : (1) depots 0x821c (rapide,
+# incremental), (2) decompo = pagination des sorties du Marketplace
+# (0x61e7c72569...) groupees par tx settle -> vente NFT (burn 2 % + volume)
+# ou achat GEM (100 % brule). Backfill decompo RESUMABLE (~4-6000 pages) :
+# se relance tout seul jusqu'a split_done, puis incremental quotidien.
+# Ecrit data/burns_daily.csv + data/burns_split_daily.csv + onglet 🔥H-BURNS
+# etendu (nft_sales, omi_nft, gem_buys, omi_gem, omi_volume_nft).
 
 on:
   schedule:
@@ -19,7 +17,7 @@ on:
         description: "Budget par run (minutes)"
         default: "25"
       auto_continue:
-        description: "Se relance jusqu'a la fin du backfill"
+        description: "Se relance jusqu'a la fin des backfills"
         type: boolean
         default: true
 
@@ -39,10 +37,8 @@ jobs:
       BURNS_MINUTES: ${{ github.event.inputs.minutes || '25' }}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Etat le plus recent (anti-checkout perime)
+      - name: Etat le plus recent (anti-checkout perime, relances en file)
         run: git pull --rebase origin main
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -51,34 +47,31 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Collecte burns StackR (tranche) + ecriture Sheet
+      - name: Collecte burns StackR + decompo NFT/GEM (tranche)
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           SHEET_ID: ${{ secrets.SHEET_ID }}
         run: python -m scraper.burns
-
       - name: Commit historique burns (data/)
-        if: ${{ always() }}
+        if: ${{ success() }}
         run: |
           git config user.name "veve-burns-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/burns_daily.csv data/burns_state.json
+          git add data/burns_daily.csv data/burns_split_daily.csv data/burns_state.json
           if git diff --cached --quiet; then echo "Rien a committer."; exit 0; fi
-          git commit -m "burns: StackR $(date -u +%FT%H:%M)"
+          git commit -m "burns: StackR + decompo $(date -u +%FT%H:%M)"
           for i in 1 2 3; do
             git pull --rebase origin main && git push && break
             sleep $((i * 5))
           done
-
-      - name: Relance auto si backfill pas fini
+      - name: Relance auto si un backfill n'est pas fini
         if: ${{ success() && github.event.inputs.auto_continue != 'false' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          DONE=$(python -c "import json; print(json.load(open('data/burns_state.json')).get('backfill_done', False))" 2>/dev/null || echo "")
-          PAGES=$(python -c "import json; print(json.load(open('data/burns_state.json')).get('pages', 0))" 2>/dev/null || echo 0)
-          if [ "$DONE" = "True" ]; then echo "Backfill fini — pas de relance."; exit 0; fi
-          if [ "$PAGES" -ge 6000 ]; then echo "Garde-fou pages atteint."; exit 0; fi
-          echo "Backfill incomplet ($PAGES pages) — relance..."
+          DONE=$(python -c "import json; s=json.load(open('data/burns_state.json')); print(bool(s.get('backfill_done')) and bool(s.get('split_done')))" 2>/dev/null || echo "")
+          SPAGES=$(python -c "import json; print(json.load(open('data/burns_state.json')).get('split_pages', 0))" 2>/dev/null || echo 0)
+          if [ "$DONE" = "True" ]; then echo "Backfills finis — pas de relance."; exit 0; fi
+          if [ "$SPAGES" -ge 12000 ]; then echo "Garde-fou pages decompo atteint."; exit 0; fi
+          echo "Backfill incomplet (decompo: $SPAGES pages) — relance..."
           gh workflow run burns.yml --ref main -f minutes="${{ github.event.inputs.minutes || '25' }}" -f auto_continue=true
