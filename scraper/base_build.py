@@ -51,9 +51,11 @@ def main() -> int:
 
     db.execute("""
     CREATE TABLE transfers AS
-    SELECT 'cc' AS era, CAST(ts_utc AS TIMESTAMP) AS ts_utc, date_pt, kind,
-           category, lower(veve_uuid) AS veve_uuid, edition,
-           CAST(NULL AS VARCHAR) AS token_id,
+    SELECT 'cc' AS era, CAST(ts_utc AS TIMESTAMP) AS ts_utc,
+           TRY_CAST(date_pt AS DATE) AS date_pt, kind,
+           category, lower(veve_uuid) AS veve_uuid,
+           TRY_CAST(edition AS INTEGER) AS edition,
+           CAST(NULL AS BIGINT) AS token_id,
            lower("from") AS wallet_from, lower("to") AS wallet_to
     FROM (SELECT DISTINCT ON (block, log_index) *
           FROM read_csv_auto(""" + repr(cc) + """, all_varchar=true))
@@ -62,12 +64,14 @@ def main() -> int:
 
     db.execute("""
     INSERT INTO transfers
-    SELECT 'imx', to_timestamp(CAST(txn_time_ms AS BIGINT)/1000), date_pt,
+    SELECT 'imx', to_timestamp(CAST(txn_time_ms AS BIGINT)/1000),
+           TRY_CAST(date_pt AS DATE),
            CASE WHEN txn_type = 'mint' OR lower("from") = '""" + ZERO + """' THEN 'mint'
                 WHEN lower("to") IN ('""" + ZERO + """', '""" + COFFRE + """') THEN 'burn'
                 WHEN lower("to") = '""" + ESCROW + """' THEN 'listing'
                 ELSE 'market' END,
-           NULL, NULL, NULL, token_id, lower("from"), lower("to")
+           NULL, NULL, CAST(NULL AS INTEGER), TRY_CAST(token_id AS BIGINT),
+           lower("from"), lower("to")
     FROM (SELECT DISTINCT ON (txn_id) *
           FROM read_csv_auto(""" + repr(imx) + """, all_varchar=true)
           WHERE lower(token_address) = '""" + IMX_CT + """')
@@ -78,28 +82,30 @@ def main() -> int:
     # la fenetre row_number explosait la memoire sur 12,5M lignes)
     db.execute("""
     CREATE TABLE holders AS
-    SELECT token_id,
+    SELECT TRY_CAST(token_id AS BIGINT)       AS token_id,
            arg_max(category, filename)          AS category,
            arg_max(lower(veve_uuid), filename)  AS veve_uuid,
-           arg_max(edition, filename)           AS edition,
-           arg_max(total_editions, filename)    AS total_editions,
+           arg_max(TRY_CAST(edition AS INTEGER), filename) AS edition,
+           arg_max(TRY_CAST(total_editions AS INTEGER), filename) AS total_editions,
            arg_max(lower(owner), filename)      AS owner,
            arg_max(name, filename)              AS name,
            arg_max(rarity, filename)            AS rarity,
            arg_max(series, filename)            AS series,
-           arg_max(mint_date, filename)         AS mint_date
+           arg_max(TRY_CAST(mint_date AS DATE), filename) AS mint_date
     FROM read_csv_auto(""" + repr(hol) + """, all_varchar=true, filename=true)
     WHERE veve_uuid IS NOT NULL AND edition IS NOT NULL
       AND token_id IS NOT NULL
-    GROUP BY token_id
+    GROUP BY TRY_CAST(token_id AS BIGINT)
     """)
     print("holders : {:,}".format(count("holders")), flush=True)
 
     led = os.environ.get("LEDGER_GZ", "data/ledger.csv.gz")
     pro = os.environ.get("PROFILES_GZ", "data/wallet_profiles.csv.gz")
     if os.path.exists(led):
-        db.execute("CREATE TABLE ledger AS SELECT * FROM read_csv_auto('"
-                   + led + "', all_varchar=true)")
+        db.execute("CREATE TABLE ledger AS SELECT lower(veve_uuid) AS veve_uuid, "
+                   "TRY_CAST(edition AS INTEGER) AS edition, holder, "
+                   "TRY_CAST(listed AS TINYINT) AS listed "
+                   "FROM read_csv_auto('" + led + "', all_varchar=true)")
         print("ledger : {:,}".format(count("ledger")), flush=True)
     if os.path.exists(pro):
         db.execute("CREATE TABLE profiles AS SELECT * FROM read_csv_auto('"
