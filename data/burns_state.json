@@ -1,24 +1,32 @@
 {
- "newest_block": 48506983,
+ "newest_block": 48507580,
  "pages": 1964,
  "next_page": null,
- "updated_at": "2026-07-11 21:23:59",
+ "updated_at": "2026-07-11 21:49:19",
  "backfill_done": true,
  "split_newest_block": 48500172,
- "split_pages": 2344,
+ "split_pages": 2481,
  "split_next_page": {
   "type": "ERC-20",
   "filter": "from",
-  "index": 508,
-  "block_number": 42301413
+  "index": 449,
+  "block_number": 41979961
  },
  "split_pending": {
-  "tx": "0x1abed025a865361aa7fa6924196c2d99a35ae00d11da2c1433dd9beff4ed8b15",
-  "date": "2026-02-17",
+  "tx": "0xcdd9bc3ddb6ec6babe4105f122ddb399879ff775fce2fe1287bafd327ff9518c",
+  "date": "2026-02-10",
   "outs": [
    [
     "0x821c1ed723c3148eb74540b1201ea3369c910c17",
-    299.98
+    400.0
+   ],
+   [
+    "0x0708eee99613f54bdbbf78250a1ed6dd52a8f23e",
+    18000.0
+   ],
+   [
+    "0x00d438245f3d50e2c7daab6b89defaec5184031e",
+    1200.0
    ]
   ]
  }
