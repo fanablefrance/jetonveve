@@ -25,6 +25,19 @@ le point decimal comme separateur de milliers (1 374 227.22 -> 137 422 722,
 x100 dans l'onglet alors que le CSV etait juste). Tolerant : sans secrets ou
 en cas d'echec, le CSV fait foi.
 
+DECOMPO NFT/GEM (v6, 2026-07-11) : chaque depot sur 0x821c vient du contrat
+Marketplace StackR (0x61e7c72569...) via des tx `settle`. Anatomie verifiee
+on-chain : VENTE NFT = acheteur paie P -> vendeur ~88,2 %, frais ~9,8 %
+(0x00d438...), BURN = 2,0 % de P ; ACHAT GEM = 100 % brule (aucun payout).
+On pagine donc les SORTIES du Marketplace (filter=from), on regroupe par tx,
+et on classe : payout present -> NFT (burn 2 % + volume de vente) ; sinon ->
+GEM (tout brule). Resumable comme le backfill principal (split_* dans l'etat,
+groupe partiel de frontiere sauvegarde). Sorties :
+    data/burns_split_daily.csv  date, nft_sales, omi_nft, omi_volume,
+                                gem_buys, omi_gem
+    🔥H-BURNS etendu : + nft_sales, omi_nft, gem_buys, omi_gem, omi_volume_nft
+(les jours pas encore couverts par le backfill decompo restent vides).
+
 Dates en PT. Env : BURNS_MINUTES (25), BURNS_PAUSE (0), BURNS_DATA_DIR (data).
 """
 
@@ -54,6 +67,15 @@ DAILY_HEADER = ["date", "source", "transactions", "omi_burned", "cumulative"]
 TRANSFERS_URL = f"{BASE_BS}/api/v2/addresses/{STACKR_ADDR}/token-transfers"
 CHECKPOINT_PAGES = 50
 BURNS_TAB = "\U0001F525H-BURNS"
+
+# ---- decompo NFT/GEM (v6) ----
+MARKETPLACE_ADDR = "0x61e7c72569b3145e1fbeac3704ddb5e66d24a6f5"
+MP_URL = f"{BASE_BS}/api/v2/addresses/{MARKETPLACE_ADDR}/token-transfers"
+SPLIT_CSV = os.path.join(DATA_DIR, "burns_split_daily.csv")
+SPLIT_HEADER = ["date", "nft_sales", "omi_nft", "omi_volume",
+                "gem_buys", "omi_gem"]
+SHEET_HEADER = DAILY_HEADER + ["nft_sales", "omi_nft", "gem_buys",
+                               "omi_gem", "omi_volume_nft"]
 
 
 def _get(url, params=None):
@@ -163,9 +185,14 @@ def run_backfill(state, daily, budget_s):
     deposits = 0
     while True:
         if time.time() - t0 > budget_s:
+            # v6 : curseur EXACT (la prochaine page a traiter) — avant, on
+            # repartait du dernier checkpoint et on recomptait jusqu'a 49
+            # pages par tranche.
+            state["next_page"] = params
             print(f"Budget temps atteint ({budget_s/60:.0f} min).", flush=True)
             break
         if max_pages and pages >= max_pages:
+            state["next_page"] = params
             print(f"Budget pages atteint ({max_pages}).", flush=True)
             break
         data = _get(TRANSFERS_URL, params)
@@ -228,6 +255,174 @@ def run_incremental(state, daily):
 
 
 # ---------------------------------------------------------------------------
+# DECOMPO NFT/GEM — pagination des sorties du Marketplace, groupees par tx
+# ---------------------------------------------------------------------------
+
+def _load_split():
+    rows = {}
+    if os.path.exists(SPLIT_CSV):
+        with open(SPLIT_CSV, newline="", encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                rows[r["date"]] = [int(r["nft_sales"]), float(r["omi_nft"]),
+                                   float(r["omi_volume"]), int(r["gem_buys"]),
+                                   float(r["omi_gem"])]
+    return rows
+
+
+def _save_split(rows):
+    os.makedirs(os.path.dirname(SPLIT_CSV) or ".", exist_ok=True)
+    tmp = SPLIT_CSV + ".tmp"
+    with open(tmp, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f, lineterminator="\n")
+        w.writerow(SPLIT_HEADER)
+        for d in sorted(rows):
+            n, omi_n, vol, g, omi_g = rows[d]
+            w.writerow([d, n, round(omi_n, 2), round(vol, 2),
+                        g, round(omi_g, 2)])
+    os.replace(tmp, SPLIT_CSV)
+
+
+def _finalize_group(split, group):
+    """Classe une tx settle complete : payout -> NFT, sinon GEM."""
+    if not group or not group.get("outs"):
+        return
+    d = group.get("date") or ""
+    if not d:
+        return
+    burn = sum(v for a, v in group["outs"] if a == STACKR_ADDR)
+    payout = sum(v for a, v in group["outs"] if a != STACKR_ADDR)
+    cur = split.get(d, [0, 0.0, 0.0, 0, 0.0])
+    if payout > 0:                       # vente NFT : burn = ~2 % du prix
+        cur = [cur[0] + 1, cur[1] + burn, cur[2] + burn + payout,
+               cur[3], cur[4]]
+    elif burn > 0:                       # achat GEM : tout part au burn
+        cur = [cur[0], cur[1], cur[2], cur[3] + 1, cur[4] + burn]
+    else:
+        return
+    split[d] = cur
+
+
+def _split_walk(state, split, budget_s, incremental):
+    """Pagine les sorties OMI du Marketplace. Regroupe par tx (transferts
+    contigus), classe NFT/GEM. Resumable : split_next_page + groupe partiel
+    de frontiere dans split_pending (une tx peut chevaucher deux pages)."""
+    t0 = time.time()
+    stop_block = state.get("split_newest_block") or 0 if incremental else 0
+    params = ({"type": "ERC-20", "filter": "from"}
+              if incremental or not state.get("split_next_page")
+              else {"type": "ERC-20", "filter": "from",
+                    **state["split_next_page"]})
+    group = None if incremental else state.get("split_pending")
+    max_pages = int(os.environ.get("BURNS_SPLIT_MAX_PAGES", "0"))
+    pages, txs, run_newest, seen_top = 0, 0, 0, False
+    stopped = False
+    while True:
+        if not incremental and time.time() - t0 > budget_s:
+            state["split_next_page"] = params
+            state["split_pending"] = group
+            print(f"    decompo : budget temps atteint.", flush=True)
+            return pages, txs
+        if max_pages and pages >= max_pages:
+            if not incremental:
+                state["split_next_page"] = params
+                state["split_pending"] = group
+            return pages, txs
+        data = _get(MP_URL, params)
+        items = data.get("items") or []
+        if not items:
+            if not incremental:
+                state["split_done"] = True
+                state["split_next_page"] = None
+                print("    DECOMPO : backfill TERMINE.", flush=True)
+            stopped = True
+            break
+        for it in items:
+            frm = ((it.get("from") or {}).get("hash") or "").lower()
+            sym = (it.get("token") or {}).get("symbol")
+            if frm != MARKETPLACE_ADDR or sym != OMI_SYMBOL:
+                continue
+            try:
+                blk = int(it.get("block_number"))
+            except (TypeError, ValueError):
+                blk = None
+            if blk and not seen_top:
+                run_newest = max(run_newest, blk)
+                seen_top = True
+                if not incremental and not state.get("split_newest_block"):
+                    # fige le point de reprise incremental des le 1er passage
+                    state["split_newest_block"] = blk
+            if incremental and stop_block and blk is not None \
+                    and blk <= stop_block:
+                stopped = True
+                break
+            h = it.get("transaction_hash") or it.get("tx_hash") or ""
+            to = ((it.get("to") or {}).get("hash") or "").lower()
+            tot = it.get("total")
+            raw = tot.get("value") if isinstance(tot, dict) else it.get("value")
+            try:
+                omi = int(raw) / 1e18
+            except (TypeError, ValueError):
+                omi = 0.0
+            if group is not None and group.get("tx") != h:
+                _finalize_group(split, group)
+                txs += 1
+                group = None
+            if group is None:
+                group = {"tx": h, "date": _pt_date(it.get("timestamp")),
+                         "outs": []}
+            group["outs"].append([to, omi])
+        pages += 1
+        if stopped:
+            break
+        nxt = data.get("next_page_params")
+        if not incremental:
+            state["split_pages"] = int(state.get("split_pages", 0)) + 1
+            if pages % CHECKPOINT_PAGES == 0:
+                state["split_next_page"] = nxt
+                state["split_pending"] = group
+                _save_split(split)
+                _save_state(state)
+                print(f"    decompo checkpoint : {state['split_pages']} pages "
+                      f"cumulees, {txs} settles ce run.", flush=True)
+        if not nxt:
+            if not incremental:
+                state["split_done"] = True
+                state["split_next_page"] = None
+                print("    DECOMPO : fin de pagination — backfill TERMINE.",
+                      flush=True)
+            stopped = True
+            break
+        params = {"type": "ERC-20", "filter": "from", **nxt}
+        pause = float(os.environ.get("BURNS_PAUSE", "0"))
+        if pause:
+            time.sleep(pause)
+    # frontiere : en fin de backfill/incremental le dernier groupe est complet
+    # (fin de pagination ou stop_block) ; sinon il repart dans split_pending.
+    if stopped and group is not None:
+        _finalize_group(split, group)
+        txs += 1
+        group = None
+    if not incremental:
+        state["split_pending"] = group
+        if state.get("split_done"):
+            state["split_pending"] = None
+    if incremental and run_newest:
+        state["split_newest_block"] = run_newest
+    return pages, txs
+
+
+def run_split(state, split, budget_s):
+    """Backfill resumable puis incremental de la decompo NFT/GEM."""
+    if not state.get("split_done"):
+        print(f"DECOMPO NFT/GEM (backfill resumable) : pages deja faites="
+              f"{state.get('split_pages', 0)}...", flush=True)
+        return _split_walk(state, split, budget_s, incremental=False)
+    print(f"DECOMPO NFT/GEM incremental depuis bloc "
+          f"{state.get('split_newest_block')}...", flush=True)
+    return _split_walk(state, split, budget_s, incremental=True)
+
+
+# ---------------------------------------------------------------------------
 # Google Sheet (🔥H-BURNS) — optionnel, tolerant, NOMBRES NATIFS + RAW
 # ---------------------------------------------------------------------------
 
@@ -237,20 +432,30 @@ def _clean_env(name: str) -> str:
     return v.strip().lstrip("﻿").strip('"').strip("'").strip()
 
 
-def build_sheet_grid(daily):
-    """Grille 🔥H-BURNS : entete + 1 ligne/(jour,source) avec cumul par source.
+def build_sheet_grid(daily, split=None):
+    """Grille 🔥H-BURNS : entete + 1 ligne/(jour,source) avec cumul par source
+    + decompo NFT/GEM (v6) quand le jour est couvert par le backfill decompo.
     Les montants sont des FLOATS/INTS natifs (jamais des chaines) — ecrits en
     RAW ils ne passent pas par l'interpretation locale FR (fix x100)."""
+    split = split or {}
     cumul = defaultdict(float)
-    grid = [list(DAILY_HEADER)]
+    grid = [list(SHEET_HEADER)]
     for (d, src) in sorted(daily):
         tx, omi = daily[(d, src)]
         cumul[src] += omi
-        grid.append([d, src, int(tx), round(omi, 2), round(cumul[src], 2)])
+        row = [d, src, int(tx), round(omi, 2), round(cumul[src], 2)]
+        sp = split.get(d)
+        if sp:
+            n, omi_n, vol, g, omi_g = sp
+            row += [int(n), round(omi_n, 2), int(g), round(omi_g, 2),
+                    round(vol, 2)]
+        else:
+            row += ["", "", "", "", ""]
+        grid.append(row)
     return grid
 
 
-def write_sheet(daily) -> str:
+def write_sheet(daily, split=None) -> str:
     raw = _clean_env("GOOGLE_SERVICE_ACCOUNT_JSON")
     sheet_id = _clean_env("SHEET_ID")
     if not raw or not sheet_id:
@@ -266,14 +471,16 @@ def write_sheet(daily) -> str:
             ws = sh.worksheet(BURNS_TAB)
         except gspread.WorksheetNotFound:
             ws = sh.add_worksheet(title=BURNS_TAB, rows=1000,
-                                  cols=len(DAILY_HEADER))
-        grid = build_sheet_grid(daily)
+                                  cols=len(SHEET_HEADER))
+        grid = build_sheet_grid(daily, split)
         ws.clear()
         ws.update(range_name="A1", values=grid, value_input_option="RAW")
         try:
             ws.freeze(rows=1)
             ws.format("1:1", {"textFormat": {"bold": True}})
             ws.format(f"D2:E{len(grid)}",
+                      {"numberFormat": {"type": "NUMBER", "pattern": "#,##0"}})
+            ws.format(f"F2:J{len(grid)}",
                       {"numberFormat": {"type": "NUMBER", "pattern": "#,##0"}})
         except Exception:
             pass
@@ -297,9 +504,21 @@ def main() -> int:
         print(f"INCREMENTAL depuis bloc {state.get('newest_block')}...", flush=True)
         pages, deposits = run_incremental(state, daily)
 
+    # decompo NFT/GEM avec le budget restant (les depots d'abord : rapides)
+    split = _load_split()
+    try:
+        sp_pages, sp_txs = run_split(state, split,
+                                     max(60.0, budget_s - (time.time() - t0)))
+        print(f"Decompo : {sp_pages} pages / {sp_txs} settles ce run, "
+              f"{len(split)} jours couverts, split_done="
+              f"{state.get('split_done', False)}.", flush=True)
+    except Exception as e:
+        print(f"decompo warning: {e}", flush=True)
+    _save_split(split)
+
     _save_daily(daily)
     _save_state(state)
-    print("Sheet:", write_sheet(daily), flush=True)
+    print("Sheet:", write_sheet(daily, split), flush=True)
 
     stackr = {k[0]: v for k, v in daily.items() if k[1] == "StackR"}
     total = sum(v[1] for v in stackr.values())
@@ -309,7 +528,10 @@ def main() -> int:
           flush=True)
     for d in sorted(stackr)[-8:]:
         tx, omi = stackr[d]
-        print(f"   {d} | {tx:>4} tx | {omi:>15,.0f} OMI", flush=True)
+        sp = split.get(d)
+        extra = (f" | NFT {sp[1]:>10,.0f} (vol {sp[2]:>12,.0f}) "
+                 f"| GEM {sp[4]:>10,.0f}") if sp else ""
+        print(f"   {d} | {tx:>4} tx | {omi:>15,.0f} OMI{extra}", flush=True)
     return 0
 
 
