@@ -32,7 +32,7 @@ concurrency:
 jobs:
   burns:
     runs-on: ubuntu-latest
-    timeout-minutes: 32
+    timeout-minutes: 350   # permet une tranche geante (minutes=340) pour finir le backfill decompo en 1 run
     env:
       BURNS_MINUTES: ${{ github.event.inputs.minutes || '25' }}
     steps:
