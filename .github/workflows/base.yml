@@ -98,5 +98,7 @@ jobs:
           gh release view base-locale >/dev/null 2>&1 || \
             gh release create base-locale --title "Base locale consolidee (DuckDB)" \
               --notes "veve.duckdb : transfers (CC+IMX unifies, dedup), holders, ledger, profiles. A telecharger dans Archive/base/. Reconstruire via le workflow 'Base locale'."
-          gh release upload base-locale veve.duckdb --clobber
-          ls -lh veve.duckdb
+          # limite Release = 2 Go/asset -> upload ZIPPE (Windows sait extraire)
+          zip -q veve-duckdb.zip veve.duckdb
+          gh release upload base-locale veve-duckdb.zip --clobber
+          ls -lh veve.duckdb veve-duckdb.zip
