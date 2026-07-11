@@ -33,7 +33,7 @@ def main() -> int:
     if os.path.exists(out):
         os.remove(out)
     db = duckdb.connect(out)
-    db.execute("SET memory_limit='%s'" % os.environ.get("DUCK_MEM", "5GB"))
+    db.execute("SET memory_limit='%s'" % os.environ.get("DUCK_MEM", "12GB"))
     db.execute("SET temp_directory='duck_tmp'")
     db.execute("SET preserve_insertion_order=false")
 
@@ -74,17 +74,24 @@ def main() -> int:
     """)
     print("transfers TOTAL : {:,}".format(count("transfers")), flush=True)
 
+    # dedup "dernier run gagne" par arg_max (agregat par hachage = SPILLABLE,
+    # la fenetre row_number explosait la memoire sur 12,5M lignes)
     db.execute("""
     CREATE TABLE holders AS
-    SELECT token_id, category, lower(veve_uuid) AS veve_uuid, edition,
-           total_editions, lower(owner) AS owner, name, rarity, series, mint_date
-    FROM (SELECT *, row_number() OVER (PARTITION BY token_id
-                                       ORDER BY filename DESC) AS rn
-          FROM read_csv_auto(""" + repr(hol) + """, all_varchar=true,
-                             filename=true)
-          WHERE veve_uuid IS NOT NULL AND edition IS NOT NULL
-            AND token_id IS NOT NULL)
-    WHERE rn = 1
+    SELECT token_id,
+           arg_max(category, filename)          AS category,
+           arg_max(lower(veve_uuid), filename)  AS veve_uuid,
+           arg_max(edition, filename)           AS edition,
+           arg_max(total_editions, filename)    AS total_editions,
+           arg_max(lower(owner), filename)      AS owner,
+           arg_max(name, filename)              AS name,
+           arg_max(rarity, filename)            AS rarity,
+           arg_max(series, filename)            AS series,
+           arg_max(mint_date, filename)         AS mint_date
+    FROM read_csv_auto(""" + repr(hol) + """, all_varchar=true, filename=true)
+    WHERE veve_uuid IS NOT NULL AND edition IS NOT NULL
+      AND token_id IS NOT NULL
+    GROUP BY token_id
     """)
     print("holders : {:,}".format(count("holders")), flush=True)
 
