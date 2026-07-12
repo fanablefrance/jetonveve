@@ -1,32 +1,29 @@
 name: Alertes sous-floor
 
-# Surveillance rapprochee du floor (source publique getElements, sans cookie).
-# Un run = FLOOR_SWEEPS balayages espaces de FLOOR_INTERVAL_S : par defaut
-# 5 balayages toutes les 10 min = ~50 min de veille par run, relance chaque
-# heure -> surveillance quasi continue. Un balayage = ~61 requetes (~1 min).
-#
-# A LANCER SUR UN REPO PUBLIC (minutes Actions illimitees).
-# Secret requis : DISCORD_WEBHOOK (sans lui, les alertes s'affichent dans les
-# logs — pratique pour regler le seuil avant de brancher Discord).
+# v3 : on ne balaie plus les 6 011 floors — on ecoute le FLUX DES LISTINGS
+# (publicVeve.getAllLatestListings_v2), ou chaque mise en vente arrive avec son
+# prix ET le floor du moment. ~695 listings/jour -> 1 requete toutes les 2 min
+# suffit (au lieu de 61 par tour) : plus reactif ET bien plus discret.
+# Un run = 25 tours de 2 min = ~50 min de veille, relance chaque heure.
 
 on:
   schedule:
-    - cron: "3 * * * *"          # toutes les heures
+    - cron: "3 * * * *"
   workflow_dispatch:
     inputs:
       drop_pct:
         description: "Decote minimale pour alerter (%)"
         required: false
-        default: "20"
-      sweeps:
-        description: "Nombre de balayages dans ce run"
+        default: "10"
+      polls:
+        description: "Nombre de tours (2 min chacun)"
         required: false
-        default: "5"
+        default: "25"
 
 permissions:
   contents: write
 
-concurrency:                      # jamais deux veilles en parallele
+concurrency:
   group: floor-watch
   cancel-in-progress: false
 
@@ -42,15 +39,15 @@ jobs:
           cache: pip
       - run: pip install -r requirements.txt
 
-      - name: Veille du floor
+      - name: Veille des listings
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          FLOOR_DROP_PCT: ${{ github.event.inputs.drop_pct || '20' }}
-          FLOOR_SWEEPS: ${{ github.event.inputs.sweeps || '5' }}
-          FLOOR_INTERVAL_S: "600"
+          FLOOR_DROP_PCT: ${{ github.event.inputs.drop_pct || '10' }}
+          FLOOR_POLLS: ${{ github.event.inputs.polls || '25' }}
+          FLOOR_INTERVAL_S: "120"
         run: python -m scraper.floor_watch
 
-      - name: Commit de l'etat (floors connus + cooldowns)
+      - name: Commit de l'etat
         if: always()
         run: |
           git config user.name "github-actions"
