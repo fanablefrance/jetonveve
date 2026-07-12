@@ -10,7 +10,7 @@ offre.
 
 SOURCE (sondee le 12/07) : `publicVeve.getElements` — PUBLIC, sans cookie :
     GET https://www.stackr.world/api/trpc/publicVeve.getElements
-        ?input={"json":{"limit":100,"cursor":<page>}}
+        ?input={"json":{"limit":100,"page":<n>}}   <-- `page`, PAS `cursor` !
   -> id (= veve_uuid), name, rarity, edition, quantity, volume,
      **floor_market_price**, market_cap, totalCount (6 011 elements).
   Verifie : le floor de StackR est EXACTEMENT le notre (Sea Queen = 1 100 000
@@ -71,11 +71,17 @@ def _now() -> float:
     return time.time()
 
 
-def fetch_page(cursor: int, session=None, limit: int = LIMIT):
-    """Une page d'elements. None = echec definitif (la page sera SAUTEE)."""
+def fetch_page(page: int, session=None, limit: int = LIMIT):
+    """Une page d'elements. None = echec definitif (la page sera SAUTEE).
+
+    PAGINATION (verifiee le 12/07) : le parametre est **`page`** (1-based).
+    `cursor`, `offset` et `skip` sont IGNORES en silence par cet endpoint —
+    avec `cursor` on relisait 61 fois la meme page sans s'en apercevoir.
+    D'ou l'auto-controle de `sweep()` : si la page 2 renvoie les memes items
+    que la page 1, on ARRETE au lieu de croire qu'on surveille 6 011 items."""
     payload = {"limit": limit}
-    if cursor > 1:
-        payload["cursor"] = cursor
+    if page > 1:
+        payload["page"] = page
     url = TRPC + urllib.parse.quote(
         json.dumps({"json": payload}, separators=(",", ":")))
     s = session or requests
@@ -92,10 +98,10 @@ def fetch_page(cursor: int, session=None, limit: int = LIMIT):
                     .get("json", {}) or {})
         except Exception as e:
             if attempt == RETRIES - 1:
-                print(f"    page {cursor} abandonnee : {e}", flush=True)
+                print(f"    page {page} abandonnee : {e}", flush=True)
                 return None
             wait = min(60, 3 * (2 ** attempt))
-            print(f"    page {cursor} : {e} — nouvel essai dans {wait} s",
+            print(f"    page {page} : {e} — nouvel essai dans {wait} s",
                   flush=True)
             time.sleep(wait)
     return None
@@ -106,14 +112,15 @@ def sweep(session=None) -> Dict[str, Dict]:
     s = session or requests.Session()
     out: Dict[str, Dict] = {}
     total = None
-    cursor = 1
+    page_no = 1
     failed = 0
+    premiere: Optional[str] = None
     while True:
-        page = fetch_page(cursor, s)
+        page = fetch_page(page_no, s)
         if page is None:
             failed += 1
-            cursor += 1
-            if total and (cursor - 1) * LIMIT >= total:
+            page_no += 1
+            if total and (page_no - 1) * LIMIT >= total:
                 break
             continue
         rows = page.get("data") or []
@@ -121,6 +128,19 @@ def sweep(session=None) -> Dict[str, Dict]:
             total = int(page.get("totalCount") or 0)
         if not rows:
             break
+        # AUTO-CONTROLE : la page 2 doit ramener d'AUTRES items que la page 1.
+        # (Si un jour StackR renomme le parametre de pagination, on s'en rend
+        # compte immediatement au lieu de surveiller 100 items en croyant en
+        # surveiller 6 011.)
+        tete = str(rows[0].get("id") or "")
+        if page_no == 1:
+            premiere = tete
+        elif tete == premiere:
+            print("  !! PAGINATION CASSEE : la page 2 renvoie la page 1 "
+                  "(le parametre `page` n'est plus pris en compte ?) — "
+                  "balayage abandonne, aucune alerte ne sera emise.",
+                  flush=True)
+            return {}
         for e in rows:
             uid = str(e.get("id") or "")
             if not uid:
@@ -134,10 +154,10 @@ def sweep(session=None) -> Dict[str, Dict]:
                         "rarity": e.get("rarity") or "",
                         "qty": e.get("quantity") or 0,
                         "volume": e.get("volume") or 0}
-        cursor += 1
+        page_no += 1
         if total and len(out) >= total:
             break
-        if cursor > 200:                    # garde-fou
+        if page_no > 200:                   # garde-fou
             break
         time.sleep(PAUSE)
     if failed:
@@ -259,4 +279,4 @@ def main() -> int:
 if __name__ == "__main__":
     sys.exit(main())
 
-# FIN floor_watch.py v1
+# FIN floor_watch.py v2 (pagination `page` + auto-controle)
