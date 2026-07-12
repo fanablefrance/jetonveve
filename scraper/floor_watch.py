@@ -263,7 +263,7 @@ def detect(state: Dict, listings: List[Dict], omi: float,
     for k, t in list(vus.items()):
         if ts - t > 86400:
             vus.pop(k, None)
-    out.sort(key=lambda a: -max(a["d_stackr"], a["d_veve"]))
+    out.sort(key=lambda a: -a.get("net", 0))   # par BENEFICE, pas par %
     return out
 
 
@@ -290,16 +290,20 @@ def detect_spread(state: Dict, veve: Dict[str, float], omi: float,
         net, marge = _marge(sf_usd, vf)
         if ecart < SPREAD_PCT or marge < MARGIN_PCT or net < MIN_PROFIT:
             continue
-        if ts - alerts.get("spread:" + uid, 0) < COOLDOWN_H * 3600:
+        # MEME verrou que les listings (cle = uuid) : un item deja signale
+        # comme listing ne doit PAS ressortir en "ecart de marches" — c'est la
+        # MEME affaire vue sous deux angles (constate au run du 12/07 :
+        # Fantastic Four et Ryu Battle alertaient deux fois).
+        if ts - alerts.get(uid, 0) < COOLDOWN_H * 3600:
             continue
-        alerts["spread:" + uid] = ts
+        alerts[uid] = ts
         out.append({"net": round(net, 2), "marge": round(marge, 1),
                     "nft": "", "uuid": uid, "name": name, "rarity": rarity,
                     "edition": "", "price": sf, "usd": sf_usd,
                     "stackr_floor": sf, "veve_floor": vf,
                     "d_stackr": 0.0, "d_veve": round(ecart, 1),
                     "seller": "(floor du marche)", "spread": True})
-    out.sort(key=lambda a: -a["d_veve"])
+    out.sort(key=lambda a: -a.get("net", 0))
     return out
 
 
@@ -406,4 +410,4 @@ def main() -> int:
 if __name__ == "__main__":
     sys.exit(main())
 
-# FIN floor_watch.py v6 (marge nette apres frais)
+# FIN floor_watch.py v7 (une seule alerte par item, triee par benefice)
