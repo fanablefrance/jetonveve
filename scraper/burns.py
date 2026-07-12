@@ -92,6 +92,10 @@ SHEET_HEADER = DAILY_HEADER + ["nft_sales", "omi_nft", "gem_buys",
                                "omi_gem", "omi_volume_nft"]
 
 # ---- gems OMI to Gem (v7) ----
+# v7b : le routeur a change en cours de route — V1 0xf9a91d35fd2a3f51face676
+# 87f445536ba69754d (du lancement 18/11/2025 a ~avril 2026) puis OmiToGems
+# 0xe195b898... Le sink etant DEDIE aux burns gems, on compte TOUS les depots
+# OMI (plus de filtre expediteur, robuste aux futurs routeurs V3).
 OMITOGEMS_ADDR = "0xe195b8985a0fac337b368e38fefb9e80e75aa33a"
 GEM_SINK_ADDR = "0x52a6d705ef28aca50b19b90598241a67ace8a772"
 GEM_URL = f"{BASE_BS}/api/v2/addresses/{GEM_SINK_ADDR}/token-transfers"
@@ -457,10 +461,9 @@ def _gem_accumulate(split, items, stop_block):
         if stop_block and blk is not None and blk <= stop_block:
             stop = True
             break
-        frm = ((it.get("from") or {}).get("hash") or "").lower()
         to = ((it.get("to") or {}).get("hash") or "").lower()
         sym = (it.get("token") or {}).get("symbol")
-        if frm == OMITOGEMS_ADDR and to == GEM_SINK_ADDR and sym == OMI_SYMBOL:
+        if to == GEM_SINK_ADDR and sym == OMI_SYMBOL:
             tot = it.get("total")
             raw = tot.get("value") if isinstance(tot, dict) else it.get("value")
             try:
@@ -480,6 +483,18 @@ def run_gems(state, split, budget_s):
     la pagination s'epuise — quelques dizaines de pages) puis incremental
     via gem_newest_block. Meme patron que le walk des depots 0x821c."""
     t0 = time.time()
+    if state.get("gem_done") and not state.get("gem_filter_v2"):
+        # v7b : le filtre "from == OmiToGems" ratait le routeur V1 (18/11/2025
+        # -> ~avril 2026). Purge des colonnes gems + re-backfill complet.
+        for d in list(split):
+            split[d][3] = 0
+            split[d][4] = 0.0
+        for k in ("gem_done", "gem_next_page", "gem_pages",
+                  "gem_newest_block"):
+            state.pop(k, None)
+        print("    gems : migration v7b (routeur V1 inclus) — re-backfill.",
+              flush=True)
+    state["gem_filter_v2"] = True
     incremental = bool(state.get("gem_done"))
     stop_block = state.get("gem_newest_block") or 0 if incremental else 0
     if incremental:
