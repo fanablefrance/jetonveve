@@ -66,6 +66,35 @@ N_LISTINGS = int(os.environ.get("FLOOR_LISTINGS", "50"))
 REFRESH_MIN = float(os.environ.get("FLOOR_REFRESH_MIN", "60"))
 MIN_USD = float(os.environ.get("FLOOR_MIN_USD", "1"))
 SPREAD_PCT = float(os.environ.get("FLOOR_SPREAD_PCT", "40"))
+# TROIS SEUILS DISTINCTS (1er run reel, 12/07 : 15 alertes sur 50 listings avec
+# un seuil unique a 10 % !). La lecture des alertes est sans appel : les offres
+# StackR sont STRUCTURELLEMENT moins cheres que le floor VeVe (marche moins
+# liquide, prix en OMI). Comparer un prix StackR au floor VeVe a 10 % revient
+# donc a alerter en permanence. On exige beaucoup plus pour cette comparaison
+# inter-marches, et on garde un seuil bas pour la seule qui soit vraiment
+# "toutes choses egales par ailleurs" : prix StackR vs floor StackR.
+VEVE_PCT = float(os.environ.get("FLOOR_VEVE_PCT", "35"))
+# ARBITRAGE VERIFIE A LA MAIN PAR PREDA (12/07) : Donatello - IncogNinja, offre
+# StackR a 21,72 $, floor VeVe reellement a 30,00 $ (verifie dans l'app). Le
+# signal est donc REEL. Mais une decote brute ne dit pas si l'affaire est
+# bonne : ce qui compte, c'est ce qui RESTE APRES LES FRAIS. On raisonne donc
+# en MARGE NETTE :
+#     benefice = floor_VeVe x (1 - frais) - prix_d_achat
+# Frais VeVe ~8,5 % (2,5 % VeVe + fee licensor — cf. marketFee du catalogue).
+# NUANCE HONNETE : le floor VeVe est un prix DEMANDE, pas un acheteur qui
+# attend. Revendre suppose de se placer sous ce floor et d'attendre preneur —
+# la marge affichee est un PLAFOND, pas un gain garanti.
+FEE_PCT = float(os.environ.get("FLOOR_FEE_PCT", "8.5"))
+MARGIN_PCT = float(os.environ.get("FLOOR_MARGIN_PCT", "20"))
+MIN_PROFIT = float(os.environ.get("FLOOR_MIN_PROFIT", "5"))
+
+
+def _marge(achat_usd: float, floor_veve_usd: float):
+    """(benefice net en $, marge en % du capital engage)."""
+    if achat_usd <= 0 or floor_veve_usd <= 0:
+        return 0.0, 0.0
+    net = floor_veve_usd * (1.0 - FEE_PCT / 100.0) - achat_usd
+    return net, 100.0 * net / achat_usd
 COOLDOWN_H = float(os.environ.get("FLOOR_COOLDOWN_H", "6"))
 ELEM_LIMIT = int(os.environ.get("FLOOR_ELEM_LIMIT", "100"))
 RETRIES = int(os.environ.get("FLOOR_RETRIES", "6"))
@@ -207,13 +236,20 @@ def detect(state: Dict, listings: List[Dict], omi: float,
         vf = veve.get(uid, 0.0)
         d_stackr = (100.0 * (sf - price) / sf) if sf > 0 else 0.0
         d_veve = (100.0 * (vf - usd) / vf) if (vf > 0 and usd > 0) else 0.0
-        best = max(d_stackr, d_veve)
-        if best < DROP_PCT:
+        net, marge = _marge(usd, vf)
+        # Deux regles :
+        #  * MEME MARCHE : le listing passe sous le floor StackR (sous-cotation
+        #    franche) -> seuil en % suffisant ;
+        #  * AUTRE MARCHE : on ne retient que ce qui RAPPORTE VRAIMENT une fois
+        #    les frais VeVe payes (marge nette ET benefice minimum en $).
+        arbitrage = (marge >= MARGIN_PCT and net >= MIN_PROFIT)
+        if d_stackr < DROP_PCT and not arbitrage:
             continue
         if ts - alerts.get(uid or nft, 0) < COOLDOWN_H * 3600:
             continue
         alerts[uid or nft] = ts
-        out.append({"nft": nft, "uuid": uid,
+        out.append({"net": round(net, 2), "marge": round(marge, 1),
+                    "nft": nft, "uuid": uid,
                     "name": it.get("name") or uid[:8],
                     "rarity": it.get("rarity") or "",
                     "edition": it.get("edition"),
@@ -251,12 +287,14 @@ def detect_spread(state: Dict, veve: Dict[str, float], omi: float,
         if vf <= 0 or sf_usd <= 0 or sf_usd < MIN_USD:
             continue
         ecart = 100.0 * (vf - sf_usd) / vf
-        if ecart < SPREAD_PCT:
+        net, marge = _marge(sf_usd, vf)
+        if ecart < SPREAD_PCT or marge < MARGIN_PCT or net < MIN_PROFIT:
             continue
         if ts - alerts.get("spread:" + uid, 0) < COOLDOWN_H * 3600:
             continue
         alerts["spread:" + uid] = ts
-        out.append({"nft": "", "uuid": uid, "name": name, "rarity": rarity,
+        out.append({"net": round(net, 2), "marge": round(marge, 1),
+                    "nft": "", "uuid": uid, "name": name, "rarity": rarity,
                     "edition": "", "price": sf, "usd": sf_usd,
                     "stackr_floor": sf, "veve_floor": vf,
                     "d_stackr": 0.0, "d_veve": round(ecart, 1),
@@ -272,30 +310,38 @@ def notify(alerts: List[Dict]) -> int:
     for a in alerts[:8]:
         if a.get("spread"):
             lignes.append(
-                (f"↔️ **{a['name']}** ({a['rarity']}) — **ÉCART ENTRE "
-                 f"MARCHÉS**\nfloor StackR **{a['stackr_floor']:,.0f} OMI** "
-                 f"(~{a['usd']:,.2f} $) vs floor VeVe **{a['veve_floor']:,.2f} "
-                 f"$** → **−{a['d_veve']} %**\n<https://www.stackr.world/"
-                 f"element/{a['uuid']}>").replace(",", " "))
+                (f"↔️ **{a['name']}** ({a['rarity']}) — écart entre marchés\n"
+                 f"acheter au floor StackR **{a['usd']:,.2f} $** · floor VeVe "
+                 f"**{a['veve_floor']:,.2f} $** · frais {FEE_PCT} %\n"
+                 f"→ **+{a['net']:,.2f} $ net (+{a['marge']} %)**\n"
+                 f"<https://www.stackr.world/element/{a['uuid']}>")
+                .replace(",", " "))
             continue
         parts = []
         if a["d_stackr"] >= DROP_PCT:
-            parts.append(f"−{a['d_stackr']} % / floor StackR "
+            parts.append(f"**−{a['d_stackr']} % sous le floor StackR** "
                          f"({a['stackr_floor']:,.0f} OMI)")
-        if a["d_veve"] >= DROP_PCT:
+        if a["d_veve"] >= VEVE_PCT:
             parts.append(f"−{a['d_veve']} % / floor VeVe "
                          f"({a['veve_floor']:,.2f} $)")
+        if a.get("net", 0) >= MIN_PROFIT and a.get("marge", 0) >= MARGIN_PCT:
+            parts.append(f"revente au floor VeVe {a['veve_floor']:,.2f} $ → "
+                         f"**+{a['net']:,.2f} $ net (+{a['marge']} %)** "
+                         f"apres {FEE_PCT} % de frais")
         lignes.append(
             (f"**{a['name']}** #{a['edition']} ({a['rarity']})\n"
-             f"prix **{a['price']:,.0f} OMI** (~{a['usd']:,.2f} $) — "
+             f"achat **{a['price']:,.0f} OMI** (~{a['usd']:,.2f} $) — "
              + " · ".join(parts) +
              f"\npar {a['seller']} · <https://www.stackr.world/element/"
              f"{a['uuid']}>").replace(",", " "))
-    corps = ("🚨 **SOUS LE FLOOR** — " +
+    corps = ("🚨 **AFFAIRES** — " +
              _dt.datetime.now(_dt.timezone.utc).strftime("%H:%M UTC") +
              "\n\n" + "\n\n".join(lignes))
     if len(alerts) > 8:
         corps += f"\n\n… et {len(alerts) - 8} autre(s)."
+    corps += ("\n\n*Le floor VeVe est un prix DEMANDÉ : revendre suppose de "
+              "se placer dessous et d'attendre preneur. La marge est un "
+              "plafond, pas un gain garanti.*")
     if not WEBHOOK:
         print("  [SIMULATION — pas de DISCORD_WEBHOOK]\n" + corps, flush=True)
         return len(alerts)
@@ -360,4 +406,4 @@ def main() -> int:
 if __name__ == "__main__":
     sys.exit(main())
 
-# FIN floor_watch.py v4 (listings + ecart entre marches)
+# FIN floor_watch.py v6 (marge nette apres frais)
