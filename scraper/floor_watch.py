@@ -157,6 +157,36 @@ def fetch_listings(session=None, limit: int = N_LISTINGS) -> List[Dict]:
     return d.get("items") or []
 
 
+def fetch_sales(session=None, limit: int = 50) -> List[Dict]:
+    """Les dernieres VENTES REELLES (publicVeve.getAllLatestSales_v2).
+
+    Pourquoi : le floor est un prix DEMANDE. Ce qui prouve qu'un item vaut son
+    prix, c'est que quelqu'un l'a PAYE. Verification de Preda (12/07) sur
+    Fantastic Four #1 SR : ventes reelles a 2 200 $ (07/07), 2 500 $ (02/07) et
+    3 975 $ (13/03) — pendant qu'une offre trainait a 676 $. L'affaire etait
+    donc bien reelle, et c'est la VENTE qui le prouve, pas le floor.
+
+    Deux formes d'input essayees (l'endpoint exige le bloc meta superjson ;
+    la forme exacte varie selon les champs envoyes)."""
+    formes = [
+        ({"limit": str(limit), "elementType": None, "rarity": None,
+          "edition": None, "sortBy": "timestamp", "sortDirection": "desc",
+          "timeframe": "1d", "direction": "forward"},
+         {"values": {"elementType": ["undefined"], "rarity": ["undefined"],
+                     "edition": ["undefined"]}, "v": 1}),
+        ({"limit": str(limit), "timeframe": "1d", "direction": "forward"},
+         {"values": {}, "v": 1}),
+    ]
+    for payload, meta in formes:
+        d = _get("getAllLatestSales_v2", payload, session, meta=meta)
+        items = (d or {}).get("items") if isinstance(d, dict) else None
+        if items:
+            return items
+    print("    (ventes indisponibles ce tour — alertes basees sur le seul "
+          "floor)", flush=True)
+    return []
+
+
 def fetch_omi_price(session=None) -> float:
     d = _get("getTokenPrices", None, session,
              meta={"values": ["undefined"], "v": 1})
@@ -204,6 +234,41 @@ def fetch_veve_floors(session=None) -> Dict[str, float]:
 # Detection
 # ---------------------------------------------------------------------------
 
+def note_sales(state: Dict, sales: List[Dict], omi: float,
+               ts: float = None) -> int:
+    """Memorise la DERNIERE VENTE REELLE de chaque element (prix en $)."""
+    ts = ts if ts is not None else time.time()
+    m: Dict[str, list] = state.setdefault("sales", {})
+    n = 0
+    for s_ in sales or []:
+        uid = str(s_.get("element_id") or "")
+        pr = _f(s_.get("price"))
+        if not uid or pr <= 0:
+            continue
+        usd = pr * omi if omi else 0.0
+        anc = m.get(uid)
+        # on garde la vente la plus RECENTE
+        if not anc or str(s_.get("timestamp") or "") >= str(anc[2] or ""):
+            m[uid] = [round(usd, 2), ts, str(s_.get("timestamp") or "")]
+            n += 1
+    return n
+
+
+def _revente(vf: float, uid: str, state: Dict):
+    """Prix de revente RETENU + derniere vente connue.
+
+    Prudence : si l'item s'est vendu MOINS cher que le floor affiche, c'est ce
+    prix-la qui fait foi (le floor n'est qu'une demande). On retient donc le
+    plus petit des deux — une alerte doit rester vraie meme au pire."""
+    last = (state.get("sales") or {}).get(uid)
+    if not last:
+        return vf, None
+    ls = _f(last[0])
+    if ls <= 0:
+        return vf, None
+    return (min(vf, ls) if vf > 0 else ls), ls
+
+
 def detect(state: Dict, listings: List[Dict], omi: float,
            veve: Dict[str, float], ts: float = None) -> List[Dict]:
     """Un listing sous le floor = une affaire. Deux comparaisons :
@@ -236,7 +301,8 @@ def detect(state: Dict, listings: List[Dict], omi: float,
         vf = veve.get(uid, 0.0)
         d_stackr = (100.0 * (sf - price) / sf) if sf > 0 else 0.0
         d_veve = (100.0 * (vf - usd) / vf) if (vf > 0 and usd > 0) else 0.0
-        net, marge = _marge(usd, vf)
+        ref, last = _revente(vf, uid, state)
+        net, marge = _marge(usd, ref)
         # Deux regles :
         #  * MEME MARCHE : le listing passe sous le floor StackR (sous-cotation
         #    franche) -> seuil en % suffisant ;
@@ -249,6 +315,7 @@ def detect(state: Dict, listings: List[Dict], omi: float,
             continue
         alerts[uid or nft] = ts
         out.append({"net": round(net, 2), "marge": round(marge, 1),
+                    "revente": round(ref, 2), "last": last,
                     "nft": nft, "uuid": uid,
                     "name": it.get("name") or uid[:8],
                     "rarity": it.get("rarity") or "",
@@ -287,7 +354,8 @@ def detect_spread(state: Dict, veve: Dict[str, float], omi: float,
         if vf <= 0 or sf_usd <= 0 or sf_usd < MIN_USD:
             continue
         ecart = 100.0 * (vf - sf_usd) / vf
-        net, marge = _marge(sf_usd, vf)
+        ref, last = _revente(vf, uid, state)
+        net, marge = _marge(sf_usd, ref)
         if ecart < SPREAD_PCT or marge < MARGIN_PCT or net < MIN_PROFIT:
             continue
         # MEME verrou que les listings (cle = uuid) : un item deja signale
@@ -298,6 +366,7 @@ def detect_spread(state: Dict, veve: Dict[str, float], omi: float,
             continue
         alerts[uid] = ts
         out.append({"net": round(net, 2), "marge": round(marge, 1),
+                    "revente": round(ref, 2), "last": last,
                     "nft": "", "uuid": uid, "name": name, "rarity": rarity,
                     "edition": "", "price": sf, "usd": sf_usd,
                     "stackr_floor": sf, "veve_floor": vf,
@@ -313,11 +382,14 @@ def notify(alerts: List[Dict]) -> int:
     lignes = []
     for a in alerts[:8]:
         if a.get("spread"):
+            preuve = (f" · **dernière vente réelle {a['last']:,.2f} $**"
+                      if a.get("last") else " · *aucune vente récente vue*")
             lignes.append(
                 (f"↔️ **{a['name']}** ({a['rarity']}) — écart entre marchés\n"
                  f"acheter au floor StackR **{a['usd']:,.2f} $** · floor VeVe "
-                 f"**{a['veve_floor']:,.2f} $** · frais {FEE_PCT} %\n"
-                 f"→ **+{a['net']:,.2f} $ net (+{a['marge']} %)**\n"
+                 f"**{a['veve_floor']:,.2f} $**{preuve}\n"
+                 f"→ **+{a['net']:,.2f} $ net (+{a['marge']} %)** "
+                 f"(revente retenue {a['revente']:,.2f} $, frais {FEE_PCT} %)\n"
                  f"<https://www.stackr.world/element/{a['uuid']}>")
                 .replace(",", " "))
             continue
@@ -329,9 +401,12 @@ def notify(alerts: List[Dict]) -> int:
             parts.append(f"−{a['d_veve']} % / floor VeVe "
                          f"({a['veve_floor']:,.2f} $)")
         if a.get("net", 0) >= MIN_PROFIT and a.get("marge", 0) >= MARGIN_PCT:
-            parts.append(f"revente au floor VeVe {a['veve_floor']:,.2f} $ → "
+            preuve = (f" · **dernière vente réelle {a['last']:,.2f} $**"
+                      if a.get("last") else " · *aucune vente récente vue*")
+            parts.append(f"floor VeVe {a['veve_floor']:,.2f} ${preuve} → "
                          f"**+{a['net']:,.2f} $ net (+{a['marge']} %)** "
-                         f"apres {FEE_PCT} % de frais")
+                         f"(revente retenue {a['revente']:,.2f} $, frais "
+                         f"{FEE_PCT} %)")
         lignes.append(
             (f"**{a['name']}** #{a['edition']} ({a['rarity']})\n"
              f"achat **{a['price']:,.0f} OMI** (~{a['usd']:,.2f} $) — "
@@ -389,6 +464,7 @@ def main() -> int:
                 print(f"  floors VeVe rafraichis : {len(veve)} elements.",
                       flush=True)
         omi = fetch_omi_price(s)
+        nv = note_sales(state, fetch_sales(s), omi)   # ventes REELLES
         listings = fetch_listings(s)
         if not listings:
             print(f"  [{i}/{POLLS}] aucun listing recu — on reessaiera.",
@@ -396,7 +472,7 @@ def main() -> int:
         else:
             a = detect(state, listings, omi, veve)
             a += detect_spread(state, veve, omi)     # signal 3
-            print(f"  [{i}/{POLLS}] {len(listings)} listings, "
+            print(f"  [{i}/{POLLS}] {len(listings)} listings, {nv} vente(s), "
                   f"{len(a)} alerte(s), OMI={omi:.6f} $", flush=True)
             total += notify(a)
             save_state(state)
@@ -410,4 +486,4 @@ def main() -> int:
 if __name__ == "__main__":
     sys.exit(main())
 
-# FIN floor_watch.py v7 (une seule alerte par item, triee par benefice)
+# FIN floor_watch.py v8 (la derniere VENTE REELLE fait foi)
