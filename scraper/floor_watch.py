@@ -87,6 +87,17 @@ VEVE_PCT = float(os.environ.get("FLOOR_VEVE_PCT", "35"))
 FEE_PCT = float(os.environ.get("FLOOR_FEE_PCT", "8.5"))
 MARGIN_PCT = float(os.environ.get("FLOOR_MARGIN_PCT", "20"))
 MIN_PROFIT = float(os.environ.get("FLOOR_MIN_PROFIT", "5"))
+# HISTORIQUE DES VENTES (1er run reel : TOUTES les alertes disaient « aucune
+# vente recente vue » — getAllLatestSales_v2 ne montre que ~50 ventes du jour).
+# On reconstruit donc la derniere vente de chaque element depuis le flux COMPLET
+# getVeveTransactions (celui du backfill : il pagine loin, 100 tx/page).
+# FLOOR_SALES_PAGES=120 -> ~12 000 tx -> ~7 jours de ventes, 1 fois par run.
+SALES_PAGES = int(os.environ.get("FLOOR_SALES_PAGES", "120"))
+SALES_TYPES = ("MARKET_FIXED", "MARKET_AUCTION", "MARKET_STACKR")
+# Un item SANS AUCUNE VENTE dans cette fenetre est illiquide : « revendre au
+# floor VeVe » y est une FICTION. Par defaut on n'alerte donc pas sur l'ecart
+# entre marches sans preuve de vente (FLOOR_REQUIRE_SALE=false pour desactiver).
+REQUIRE_SALE = os.environ.get("FLOOR_REQUIRE_SALE", "true").lower() != "false"
 
 
 def _marge(achat_usd: float, floor_veve_usd: float):
@@ -185,6 +196,50 @@ def fetch_sales(session=None, limit: int = 50) -> List[Dict]:
     print("    (ventes indisponibles ce tour — alertes basees sur le seul "
           "floor)", flush=True)
     return []
+
+
+def fetch_history(session=None, pages: int = SALES_PAGES,
+                  omi: float = 0.0) -> Dict[str, list]:
+    """{uuid -> [prix $ de la DERNIERE vente, jour]} depuis getVeveTransactions.
+
+    Ce flux porte element_id + price + created_at pour CHAQUE vente
+    (MARKET_FIXED / MARKET_AUCTION / MARKET_STACKR) et pagine loin (`cursor` =
+    numero de page) — contrairement au flux des ventes StackR, limite a ~50
+    lignes du jour, qui laissait les alertes sans preuve."""
+    out: Dict[str, list] = {}
+    s = session or requests.Session()
+    for page in range(1, pages + 1):
+        payload = {"limit": 100}
+        if page > 1:
+            payload["cursor"] = page
+            payload["direction"] = "forward"
+        d = _get("getVeveTransactions", payload, s)
+        if not d:
+            break
+        for it in d:
+            if str(it.get("veve_type")) not in SALES_TYPES:
+                continue
+            if str(it.get("status")) != "COMPLETE":
+                continue
+            uid = str(it.get("element_id") or "")
+            pr = _f(it.get("price"))
+            if not uid or pr <= 0 or uid in out:
+                continue                  # 1re occurrence = la plus RECENTE
+            out[uid] = [round(pr * omi, 2) if omi else 0.0,
+                        str(it.get("created_at") or "")[:10]]
+        time.sleep(PAUSE)
+    return out
+
+
+def merge_history(state: Dict, hist: Dict[str, list]) -> int:
+    """Injecte l'historique dans l'etat (meme format que note_sales)."""
+    m: Dict[str, list] = state.setdefault("sales", {})
+    n = 0
+    for uid, (usd, jour) in hist.items():
+        if usd and uid not in m:
+            m[uid] = [usd, time.time(), jour]
+            n += 1
+    return n
 
 
 def fetch_omi_price(session=None) -> float:
@@ -358,6 +413,11 @@ def detect_spread(state: Dict, veve: Dict[str, float], omi: float,
         net, marge = _marge(sf_usd, ref)
         if ecart < SPREAD_PCT or marge < MARGIN_PCT or net < MIN_PROFIT:
             continue
+        if REQUIRE_SALE and last is None:
+            # aucune vente depuis ~7 jours : l'item NE SE VEND PAS. Revendre au
+            # floor VeVe y est une fiction -> on se tait.
+            state.setdefault("sans_vente", {})[uid] = ts
+            continue
         # MEME verrou que les listings (cle = uuid) : un item deja signale
         # comme listing ne doit PAS ressortir en "ecart de marches" — c'est la
         # MEME affaire vue sous deux angles (constate au run du 12/07 :
@@ -455,7 +515,8 @@ def main() -> int:
     dernier_refresh = 0.0
     total = 0
     for i in range(1, POLLS + 1):
-        # floors VeVe : rafraichis 1x/heure (61 requetes) — pas a chaque tour
+        omi = fetch_omi_price(s)
+        # floors VeVe + historique des ventes : rafraichis 1x/heure
         if time.time() - dernier_refresh > REFRESH_MIN * 60:
             neuf = fetch_veve_floors(s)
             if neuf:
@@ -463,7 +524,11 @@ def main() -> int:
                 dernier_refresh = time.time()
                 print(f"  floors VeVe rafraichis : {len(veve)} elements.",
                       flush=True)
-        omi = fetch_omi_price(s)
+            hist = fetch_history(s, SALES_PAGES, omi)
+            n_h = merge_history(state, hist)
+            print(f"  historique : {len(hist)} elements ont une vente reelle "
+                  f"({n_h} nouveaux) — les autres sont juges illiquides.",
+                  flush=True)
         nv = note_sales(state, fetch_sales(s), omi)   # ventes REELLES
         listings = fetch_listings(s)
         if not listings:
@@ -486,4 +551,4 @@ def main() -> int:
 if __name__ == "__main__":
     sys.exit(main())
 
-# FIN floor_watch.py v8 (la derniere VENTE REELLE fait foi)
+# FIN floor_watch.py v9 (historique reconstruit ; pas d'alerte sans preuve de vente)
