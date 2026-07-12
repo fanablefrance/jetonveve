@@ -1,27 +1,28 @@
 {
- "newest_block": 48531149,
+ "newest_block": 48531943,
  "pages": 1964,
  "next_page": null,
- "updated_at": "2026-07-12 10:48:07",
+ "updated_at": "2026-07-12 11:13:50",
  "backfill_done": true,
  "split_newest_block": 48500172,
- "split_pages": 5568,
+ "split_pages": 5653,
  "split_next_page": {
   "type": "ERC-20",
   "filter": "from",
-  "index": 604,
-  "block_number": 32814524
+  "index": 814,
+  "block_number": 31740137
  },
  "split_pending": {
-  "tx": "0xcd35cbc9a1067ba37fa46628685f5230908b0976d017bc958fca0758e3d132f2",
-  "date": "2025-07-13",
+  "tx": "0x1627a2b11979ff96d09c119914409a1a2a9abfd359ba61d0102bf4dfae5e6310",
+  "date": "2025-06-18",
   "outs": [
    [
     "0x821c1ed723c3148eb74540b1201ea3369c910c17",
-    869.8
+    26599.999999999996
    ]
   ]
  },
+ "gem_filter_v2": true,
  "gem_newest_block": 48526148,
  "gem_pages": 157,
  "gem_next_page": null,
