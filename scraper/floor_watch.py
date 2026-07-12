@@ -1,40 +1,44 @@
-"""🚨 ALERTES SOUS-FLOOR — surveillance rapprochée du floor (12/07/2026).
+"""🚨 ALERTES SOUS-FLOOR v3 — le flux des LISTINGS (12/07/2026).
 
-IDEE CLE (objection de Preda, juste) : un floor rafraichi une fois par jour ne
-sert a rien pour attraper une offre qui part en dix minutes. Mais la chaine ne
-donne PAS les prix (le dépôt escrow dit qui liste quoi, jamais a combien).
+v1/v2 balayaient les 6 011 floors (61 requetes/tour) en esperant voir un floor
+s'effondrer. La capture DevTools de Preda a revele BIEN mieux :
 
-La sortie du probleme : **une offre placee sous le floor DEVIENT le floor**.
-Il suffit donc de surveiller le floor de pres — pas besoin du prix de chaque
-offre.
+  `publicVeve.getAllLatestListings_v2` — PUBLIC, sans cookie : le flux des
+  MISES EN VENTE, et chaque ligne porte deja tout ce qu'il faut :
+      price (OMI) · nft_id · element_id (= veve_uuid) · edition · name ·
+      rarity · timestamp · listed_by (+ username) · **stackr_floor_price**
+  ~695 listings par jour -> 1 requete toutes les 2 minutes SUFFIT (au lieu de
+  61 par tour). C'est plus reactif ET beaucoup plus discret.
 
-SOURCE (sondee le 12/07) : `publicVeve.getElements` — PUBLIC, sans cookie :
-    GET https://www.stackr.world/api/trpc/publicVeve.getElements
-        ?input={"json":{"limit":100,"page":<n>}}   <-- `page`, PAS `cursor` !
-  -> id (= veve_uuid), name, rarity, edition, quantity, volume,
-     **floor_market_price**, market_cap, totalCount (6 011 elements).
-  Verifie : le floor de StackR est EXACTEMENT le notre (Sea Queen = 1 100 000
-  des deux cotes, meme unite que market_lowestOffer dans 🟠H-PRIX).
-  limit > 100 est refuse -> un balayage complet = ~61 requetes (~1 minute).
-  NB : les parametres de tri/filtre n'ont pas ete devines (search/sort ignores)
-  -> on balaye tout. Si une capture DevTools de stackr.world revele les vrais
-  noms de parametres, on pourra ne surveiller que le haut du panier.
+  ATTENTION : l'input DOIT contenir le bloc `meta` (les champs null sont
+  encodes en "undefined" par superjson) — un input allege renvoie du vide.
 
-ALERTE : floor_nouveau <= floor_precedent x (1 - DROP_PCT/100) -> message
-Discord (webhook). Anti-bruit : cooldown par item, floor plancher, et on ignore
-la premiere observation d'un item (pas de reference = pas d'alerte).
+ATTENTION AU SENS DES COLONNES (correction de Preda, capture a l'appui) :
+  `price` = ce que DEMANDE le vendeur de CE listing ;
+  `stackr_floor_price` = l'offre la MOINS CHERE du marche StackR pour cet item
+  (celle de quelqu'un d'autre). Ex. reel : Starlight Orb liste a 295 000 OMI
+  (50,15 $) alors que le floor StackR est a 8 000 OMI (1,36 $).
 
-RESPECTE LA REGLE DES COLLECTEURS LONGS : etat persistant (data/floor_state.json),
-recolte jamais perdue (une page morte est sautee), backoff exponentiel, et un
-balayage trop troue n'ecrase JAMAIS l'etat (sinon les items manquants
-paraitraient s'effondrer au tour suivant).
+TROIS SIGNAUX, DEUX MARCHES (tout verifie le 12/07) :
+  1. LISTING sous le floor StackR : price < stackr_floor_price (les deux en
+     OMI) -> quelqu'un vient de brader.
+  2. LISTING sous le floor VeVe : price converti en $ (via getTokenPrices ->
+     omiPrice) < floor VeVe (getElements, en gems ~ $).
+  3. ECART ENTRE MARCHES (ajoute apres la remarque de Preda) : meme sans
+     nouveau listing, une offre DEJA EN PLACE peut etre bien moins chere sur un
+     marche que sur l'autre. Ex. reel : Starlight Orb, floor StackR 8 000 OMI =
+     1,36 $ contre un floor VeVe de 6,59 $. On compare donc aussi les DEUX
+     FLOORS entre eux (le floor StackR est memorise au fil des listings vus).
+     C'est l'arbitrage : acheter au floor StackR, revendre au floor VeVe.
 
-Env : DISCORD_WEBHOOK (sinon : simulation dans les logs), FLOOR_DROP_PCT (20),
-      FLOOR_MIN (100 = ignore les items a floor derisoire),
-      FLOOR_COOLDOWN_H (6), FLOOR_SWEEPS (5 = nombre de balayages par run),
-      FLOOR_INTERVAL_S (600 = 10 min entre deux balayages),
-      FLOOR_STATE (data/floor_state.json), FLOOR_LIMIT (100),
-      FLOOR_MAX_MISSING_PCT (10 = au-dela, le balayage est juge trop troue).
+Conforme a la regle des collecteurs longs : etat persistant, jamais de perte,
+backoff, et auto-controle de la pagination (`page`, pas `cursor` — verifie).
+
+Env : DISCORD_WEBHOOK (sinon simulation dans les logs), FLOOR_DROP_PCT (10),
+      FLOOR_POLLS (25), FLOOR_INTERVAL_S (120), FLOOR_LISTINGS (50),
+      FLOOR_REFRESH_MIN (60 = rafraichissement des floors VeVe),
+      FLOOR_MIN_USD (1 = ignore les broutilles), FLOOR_COOLDOWN_H (6),
+      FLOOR_STATE (data/floor_state.json).
 """
 
 from __future__ import annotations
@@ -49,41 +53,33 @@ from typing import Dict, List, Optional
 
 import requests
 
-TRPC = "https://www.stackr.world/api/trpc/publicVeve.getElements?input="
+BASE = "https://www.stackr.world/api/trpc/publicVeve."
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
 
 STATE_PATH = os.environ.get("FLOOR_STATE", "data/floor_state.json")
 WEBHOOK = os.environ.get("DISCORD_WEBHOOK", "").strip()
-DROP_PCT = float(os.environ.get("FLOOR_DROP_PCT", "20"))
-FLOOR_MIN = float(os.environ.get("FLOOR_MIN", "100"))
+DROP_PCT = float(os.environ.get("FLOOR_DROP_PCT", "10"))
+POLLS = int(os.environ.get("FLOOR_POLLS", "25"))
+INTERVAL_S = int(os.environ.get("FLOOR_INTERVAL_S", "120"))
+N_LISTINGS = int(os.environ.get("FLOOR_LISTINGS", "50"))
+REFRESH_MIN = float(os.environ.get("FLOOR_REFRESH_MIN", "60"))
+MIN_USD = float(os.environ.get("FLOOR_MIN_USD", "1"))
+SPREAD_PCT = float(os.environ.get("FLOOR_SPREAD_PCT", "40"))
 COOLDOWN_H = float(os.environ.get("FLOOR_COOLDOWN_H", "6"))
-SWEEPS = int(os.environ.get("FLOOR_SWEEPS", "5"))
-INTERVAL_S = int(os.environ.get("FLOOR_INTERVAL_S", "600"))
-LIMIT = int(os.environ.get("FLOOR_LIMIT", "100"))
-MAX_MISSING_PCT = float(os.environ.get("FLOOR_MAX_MISSING_PCT", "10"))
+ELEM_LIMIT = int(os.environ.get("FLOOR_ELEM_LIMIT", "100"))
 RETRIES = int(os.environ.get("FLOOR_RETRIES", "6"))
 TIMEOUT = int(os.environ.get("FLOOR_TIMEOUT", "45"))
 PAUSE = float(os.environ.get("FLOOR_PAUSE", "0.2"))
 
 
-def _now() -> float:
-    return time.time()
-
-
-def fetch_page(page: int, session=None, limit: int = LIMIT):
-    """Une page d'elements. None = echec definitif (la page sera SAUTEE).
-
-    PAGINATION (verifiee le 12/07) : le parametre est **`page`** (1-based).
-    `cursor`, `offset` et `skip` sont IGNORES en silence par cet endpoint —
-    avec `cursor` on relisait 61 fois la meme page sans s'en apercevoir.
-    D'ou l'auto-controle de `sweep()` : si la page 2 renvoie les memes items
-    que la page 1, on ARRETE au lieu de croire qu'on surveille 6 011 items."""
-    payload = {"limit": limit}
-    if page > 1:
-        payload["page"] = page
-    url = TRPC + urllib.parse.quote(
-        json.dumps({"json": payload}, separators=(",", ":")))
+def _get(proc: str, payload: Optional[Dict], session=None, meta=None):
+    """Appel trpc. None = echec definitif (jamais d'exception qui tue le run)."""
+    inp: Dict = {"json": payload}
+    if meta:
+        inp["meta"] = meta
+    url = BASE + proc + "?input=" + urllib.parse.quote(
+        json.dumps(inp, separators=(",", ":")))
     s = session or requests
     for attempt in range(RETRIES):
         try:
@@ -93,76 +89,223 @@ def fetch_page(page: int, session=None, limit: int = LIMIT):
             if r.status_code >= 500:
                 raise RuntimeError(f"HTTP {r.status_code}")
             r.raise_for_status()
-            d = r.json()
-            return (d.get("result", {}).get("data", {})
-                    .get("json", {}) or {})
+            return (r.json().get("result", {}).get("data", {})
+                    .get("json"))
         except Exception as e:
             if attempt == RETRIES - 1:
-                print(f"    page {page} abandonnee : {e}", flush=True)
+                print(f"    {proc} abandonne : {e}", flush=True)
                 return None
             wait = min(60, 3 * (2 ** attempt))
-            print(f"    page {page} : {e} — nouvel essai dans {wait} s",
-                  flush=True)
+            print(f"    {proc} : {e} — nouvel essai dans {wait} s", flush=True)
             time.sleep(wait)
     return None
 
 
-def sweep(session=None) -> Dict[str, Dict]:
-    """Un balayage complet : {uuid -> {name, floor, rarity, qty, volume}}."""
-    s = session or requests.Session()
-    out: Dict[str, Dict] = {}
-    total = None
-    page_no = 1
-    failed = 0
-    premiere: Optional[str] = None
-    while True:
-        page = fetch_page(page_no, s)
-        if page is None:
-            failed += 1
-            page_no += 1
-            if total and (page_no - 1) * LIMIT >= total:
-                break
+def _f(x) -> float:
+    try:
+        return float(str(x).replace(",", ".") or 0)
+    except (TypeError, ValueError):
+        return 0.0
+
+
+# ---------------------------------------------------------------------------
+# Sources
+# ---------------------------------------------------------------------------
+
+def fetch_listings(session=None, limit: int = N_LISTINGS) -> List[Dict]:
+    """Les derniers listings (le bloc `meta` est OBLIGATOIRE)."""
+    d = _get("getAllLatestListings_v2",
+             {"limit": str(limit), "elementType": None, "rarity": None,
+              "edition": None, "sortBy": "timestamp",
+              "sortDirection": "desc", "timeframe": "1d",
+              "direction": "forward"},
+             session,
+             meta={"values": {"elementType": ["undefined"],
+                              "rarity": ["undefined"],
+                              "edition": ["undefined"]}, "v": 1})
+    if not d:
+        return []
+    return d.get("items") or []
+
+
+def fetch_omi_price(session=None) -> float:
+    d = _get("getTokenPrices", None, session,
+             meta={"values": ["undefined"], "v": 1})
+    return _f((d or {}).get("omiPrice"))
+
+
+def fetch_veve_floors(session=None) -> Dict[str, float]:
+    """{uuid -> floor VeVe (gems ~ $)} via getElements.
+
+    PAGINATION : le parametre est `page` (1-based). `cursor`/`offset`/`skip`
+    sont IGNORES EN SILENCE (verifie le 12/07) -> auto-controle : si la page 2
+    renvoie la page 1, on abandonne au lieu de croire qu'on a tout."""
+    out: Dict[str, float] = {}
+    page, total, tete = 1, None, None
+    while page <= 200:
+        d = _get("getElements", {"limit": ELEM_LIMIT, "page": page}
+                 if page > 1 else {"limit": ELEM_LIMIT}, session)
+        if d is None:
+            page += 1
             continue
-        rows = page.get("data") or []
-        if total is None:
-            total = int(page.get("totalCount") or 0)
+        rows = d.get("data") or []
         if not rows:
             break
-        # AUTO-CONTROLE : la page 2 doit ramener d'AUTRES items que la page 1.
-        # (Si un jour StackR renomme le parametre de pagination, on s'en rend
-        # compte immediatement au lieu de surveiller 100 items en croyant en
-        # surveiller 6 011.)
-        tete = str(rows[0].get("id") or "")
-        if page_no == 1:
-            premiere = tete
-        elif tete == premiere:
-            print("  !! PAGINATION CASSEE : la page 2 renvoie la page 1 "
-                  "(le parametre `page` n'est plus pris en compte ?) — "
-                  "balayage abandonne, aucune alerte ne sera emise.",
-                  flush=True)
+        if total is None:
+            total = int(d.get("totalCount") or 0)
+        prem = str(rows[0].get("id") or "")
+        if page == 1:
+            tete = prem
+        elif prem == tete:
+            print("  !! PAGINATION getElements CASSEE (page 2 == page 1) — "
+                  "floors VeVe ignores ce tour.", flush=True)
             return {}
         for e in rows:
             uid = str(e.get("id") or "")
-            if not uid:
-                continue
-            try:
-                floor = float(e.get("floor_market_price") or 0)
-            except (TypeError, ValueError):
-                floor = 0.0
-            out[uid] = {"name": e.get("name") or uid[:8],
-                        "floor": floor,
-                        "rarity": e.get("rarity") or "",
-                        "qty": e.get("quantity") or 0,
-                        "volume": e.get("volume") or 0}
-        page_no += 1
+            if uid:
+                out[uid] = _f(e.get("floor_market_price"))
         if total and len(out) >= total:
             break
-        if page_no > 200:                   # garde-fou
-            break
+        page += 1
         time.sleep(PAUSE)
-    if failed:
-        print(f"  {failed} page(s) sautee(s) — balayage partiel.", flush=True)
     return out
+
+
+# ---------------------------------------------------------------------------
+# Detection
+# ---------------------------------------------------------------------------
+
+def detect(state: Dict, listings: List[Dict], omi: float,
+           veve: Dict[str, float], ts: float = None) -> List[Dict]:
+    """Un listing sous le floor = une affaire. Deux comparaisons :
+      * marche StackR : price vs stackr_floor_price (tous deux en OMI) ;
+      * marche VeVe   : price converti en $ vs floor VeVe (gems ~ $).
+    Anti-bruit : listing deja vu, montant derisoire, cooldown par item."""
+    ts = ts if ts is not None else time.time()
+    vus: Dict[str, float] = state.setdefault("vus", {})
+    alerts: Dict[str, float] = state.setdefault("alerts", {})
+    out: List[Dict] = []
+    for it in listings:
+        nft = str(it.get("nft_id") or "")
+        stamp = str(it.get("timestamp") or "")
+        cle = nft + "|" + stamp
+        if not nft or cle in vus:
+            continue
+        vus[cle] = ts
+        price = _f(it.get("price"))
+        if price <= 0:
+            continue
+        usd = price * omi if omi else 0.0
+        if usd and usd < MIN_USD:
+            continue                       # broutille : on ignore
+        sf = _f(it.get("stackr_floor_price"))
+        uid = str(it.get("element_id") or "")
+        if uid and sf > 0:
+            # on memorise le floor StackR de l'item (pour le signal 3)
+            state.setdefault("sfloors", {})[uid] = [
+                sf, it.get("name") or uid[:8], it.get("rarity") or ""]
+        vf = veve.get(uid, 0.0)
+        d_stackr = (100.0 * (sf - price) / sf) if sf > 0 else 0.0
+        d_veve = (100.0 * (vf - usd) / vf) if (vf > 0 and usd > 0) else 0.0
+        best = max(d_stackr, d_veve)
+        if best < DROP_PCT:
+            continue
+        if ts - alerts.get(uid or nft, 0) < COOLDOWN_H * 3600:
+            continue
+        alerts[uid or nft] = ts
+        out.append({"nft": nft, "uuid": uid,
+                    "name": it.get("name") or uid[:8],
+                    "rarity": it.get("rarity") or "",
+                    "edition": it.get("edition"),
+                    "price": price, "usd": usd,
+                    "stackr_floor": sf, "veve_floor": vf,
+                    "d_stackr": round(d_stackr, 1),
+                    "d_veve": round(d_veve, 1),
+                    "seller": it.get("listed_by_username")
+                    or (it.get("listed_by") or "")[:10]})
+    # menage de l'etat (on ne garde que 24 h de listings vus)
+    for k, t in list(vus.items()):
+        if ts - t > 86400:
+            vus.pop(k, None)
+    out.sort(key=lambda a: -max(a["d_stackr"], a["d_veve"]))
+    return out
+
+
+def detect_spread(state: Dict, veve: Dict[str, float], omi: float,
+                  ts: float = None) -> List[Dict]:
+    """SIGNAL 3 — ecart entre marches, sur les offres DEJA EN PLACE.
+
+    Le floor StackR de chaque item est memorise au fil des listings vus
+    (`sfloors` dans l'etat). Si le floor StackR converti en $ est nettement
+    sous le floor VeVe, il y a une offre achetable tout de suite ici et
+    revendable la-bas."""
+    ts = ts if ts is not None else time.time()
+    sfloors: Dict[str, list] = state.setdefault("sfloors", {})
+    alerts: Dict[str, float] = state.setdefault("alerts", {})
+    out: List[Dict] = []
+    if not omi:
+        return out
+    for uid, (sf, name, rarity) in list(sfloors.items()):
+        vf = veve.get(uid, 0.0)
+        sf_usd = sf * omi
+        if vf <= 0 or sf_usd <= 0 or sf_usd < MIN_USD:
+            continue
+        ecart = 100.0 * (vf - sf_usd) / vf
+        if ecart < SPREAD_PCT:
+            continue
+        if ts - alerts.get("spread:" + uid, 0) < COOLDOWN_H * 3600:
+            continue
+        alerts["spread:" + uid] = ts
+        out.append({"nft": "", "uuid": uid, "name": name, "rarity": rarity,
+                    "edition": "", "price": sf, "usd": sf_usd,
+                    "stackr_floor": sf, "veve_floor": vf,
+                    "d_stackr": 0.0, "d_veve": round(ecart, 1),
+                    "seller": "(floor du marche)", "spread": True})
+    out.sort(key=lambda a: -a["d_veve"])
+    return out
+
+
+def notify(alerts: List[Dict]) -> int:
+    if not alerts:
+        return 0
+    lignes = []
+    for a in alerts[:8]:
+        if a.get("spread"):
+            lignes.append(
+                (f"↔️ **{a['name']}** ({a['rarity']}) — **ÉCART ENTRE "
+                 f"MARCHÉS**\nfloor StackR **{a['stackr_floor']:,.0f} OMI** "
+                 f"(~{a['usd']:,.2f} $) vs floor VeVe **{a['veve_floor']:,.2f} "
+                 f"$** → **−{a['d_veve']} %**\n<https://www.stackr.world/"
+                 f"element/{a['uuid']}>").replace(",", " "))
+            continue
+        parts = []
+        if a["d_stackr"] >= DROP_PCT:
+            parts.append(f"−{a['d_stackr']} % / floor StackR "
+                         f"({a['stackr_floor']:,.0f} OMI)")
+        if a["d_veve"] >= DROP_PCT:
+            parts.append(f"−{a['d_veve']} % / floor VeVe "
+                         f"({a['veve_floor']:,.2f} $)")
+        lignes.append(
+            (f"**{a['name']}** #{a['edition']} ({a['rarity']})\n"
+             f"prix **{a['price']:,.0f} OMI** (~{a['usd']:,.2f} $) — "
+             + " · ".join(parts) +
+             f"\npar {a['seller']} · <https://www.stackr.world/element/"
+             f"{a['uuid']}>").replace(",", " "))
+    corps = ("🚨 **SOUS LE FLOOR** — " +
+             _dt.datetime.now(_dt.timezone.utc).strftime("%H:%M UTC") +
+             "\n\n" + "\n\n".join(lignes))
+    if len(alerts) > 8:
+        corps += f"\n\n… et {len(alerts) - 8} autre(s)."
+    if not WEBHOOK:
+        print("  [SIMULATION — pas de DISCORD_WEBHOOK]\n" + corps, flush=True)
+        return len(alerts)
+    try:
+        requests.post(WEBHOOK, json={"content": corps[:1900]},
+                      timeout=20).raise_for_status()
+        print(f"  Discord : {len(alerts)} alerte(s).", flush=True)
+    except Exception as e:
+        print(f"  Discord KO ({e}) :\n{corps}", flush=True)
+    return len(alerts)
 
 
 def load_state() -> Dict:
@@ -170,7 +313,7 @@ def load_state() -> Dict:
         with open(STATE_PATH, encoding="utf-8") as f:
             return json.load(f)
     except Exception:
-        return {"floors": {}, "alerts": {}}
+        return {"vus": {}, "alerts": {}}
 
 
 def save_state(st: Dict) -> None:
@@ -179,104 +322,42 @@ def save_state(st: Dict) -> None:
         json.dump(st, f)
 
 
-def detect(state: Dict, now_map: Dict[str, Dict],
-           ts: float = None) -> List[Dict]:
-    """Compare le balayage a l'etat -> alertes. Met l'etat a jour.
-
-    Une baisse >= DROP_PCT % du floor = quelqu'un vient de lister SOUS le floor.
-    Regles anti-bruit : on ignore un item vu pour la premiere fois (aucune
-    reference), les floors derisoires (< FLOOR_MIN) et les items deja alertes
-    depuis moins de COOLDOWN_H heures."""
-    ts = ts if ts is not None else _now()
-    floors: Dict[str, float] = state.setdefault("floors", {})
-    alerts: Dict[str, float] = state.setdefault("alerts", {})
-    out: List[Dict] = []
-    for uid, e in now_map.items():
-        new = e["floor"]
-        old = floors.get(uid)
-        if new > 0:
-            floors[uid] = new
-        if old is None or old <= 0 or new <= 0:
-            continue                        # pas de reference / plus d'offre
-        if old < FLOOR_MIN:
-            continue
-        if new > old * (1.0 - DROP_PCT / 100.0):
-            continue                        # pas assez decote
-        last = alerts.get(uid, 0)
-        if ts - last < COOLDOWN_H * 3600:
-            continue                        # deja signale recemment
-        alerts[uid] = ts
-        out.append({"uuid": uid, "name": e["name"], "rarity": e["rarity"],
-                    "old": old, "new": new,
-                    "drop": round(100.0 * (old - new) / old, 1),
-                    "qty": e["qty"], "volume": e["volume"]})
-    out.sort(key=lambda a: -a["drop"])
-    return out
-
-
-def notify(alerts: List[Dict]) -> int:
-    """Pousse les alertes sur Discord (ou les simule dans les logs)."""
-    if not alerts:
-        return 0
-    lignes = []
-    for a in alerts[:10]:
-        url = f"https://www.stackr.world/element/{a['uuid']}"
-        lignes.append(
-            f"**{a['name']}** ({a['rarity']}) — floor **−{a['drop']} %** : "
-            f"{a['old']:,.0f} → **{a['new']:,.0f}** gems\n<{url}>"
-            .replace(",", " "))
-    corps = ("🚨 **SOUS LE FLOOR** — " + _dt.datetime.now(
-        _dt.timezone.utc).strftime("%H:%M UTC") + "\n\n" + "\n\n".join(lignes))
-    if len(alerts) > 10:
-        corps += f"\n\n… et {len(alerts) - 10} autre(s)."
-    if not WEBHOOK:
-        print("  [SIMULATION — pas de DISCORD_WEBHOOK]\n" + corps, flush=True)
-        return len(alerts)
-    try:
-        r = requests.post(WEBHOOK, json={"content": corps[:1900]}, timeout=20)
-        r.raise_for_status()
-        print(f"  Discord : {len(alerts)} alerte(s) poussee(s).", flush=True)
-    except Exception as e:
-        print(f"  Discord KO ({e}) — alertes affichees ici :\n{corps}",
-              flush=True)
-    return len(alerts)
-
-
 def main() -> int:
-    t0 = _now()
+    t0 = time.time()
     state = load_state()
-    n_alertes = 0
     s = requests.Session()
-    for i in range(1, SWEEPS + 1):
-        print(f"Balayage {i}/{SWEEPS}...", flush=True)
-        now_map = sweep(s)
-        connus = len(state.get("floors") or {})
-        if not now_map:
-            print("  balayage vide — on garde l'etat et on reessaie.",
+    veve: Dict[str, float] = {}
+    dernier_refresh = 0.0
+    total = 0
+    for i in range(1, POLLS + 1):
+        # floors VeVe : rafraichis 1x/heure (61 requetes) — pas a chaque tour
+        if time.time() - dernier_refresh > REFRESH_MIN * 60:
+            neuf = fetch_veve_floors(s)
+            if neuf:
+                veve = neuf
+                dernier_refresh = time.time()
+                print(f"  floors VeVe rafraichis : {len(veve)} elements.",
+                      flush=True)
+        omi = fetch_omi_price(s)
+        listings = fetch_listings(s)
+        if not listings:
+            print(f"  [{i}/{POLLS}] aucun listing recu — on reessaiera.",
                   flush=True)
         else:
-            # Un balayage trop troue n'ecrase PAS l'etat : sinon les items
-            # manquants ressortiraient comme des effondrements au tour suivant.
-            manquants = (100.0 * max(0, connus - len(now_map)) / connus
-                         if connus else 0)
-            if manquants > MAX_MISSING_PCT:
-                print(f"  balayage trop incomplet ({manquants:.0f} % des items "
-                      f"connus absents) — IGNORE (etat preserve).", flush=True)
-            else:
-                alertes = detect(state, now_map)
-                print(f"  {len(now_map)} elements, {len(alertes)} alerte(s).",
-                      flush=True)
-                n_alertes += notify(alertes)
-                save_state(state)
-        if i < SWEEPS:
+            a = detect(state, listings, omi, veve)
+            a += detect_spread(state, veve, omi)     # signal 3
+            print(f"  [{i}/{POLLS}] {len(listings)} listings, "
+                  f"{len(a)} alerte(s), OMI={omi:.6f} $", flush=True)
+            total += notify(a)
+            save_state(state)
+        if i < POLLS:
             time.sleep(INTERVAL_S)
-    print(f"Termine : {SWEEPS} balayage(s), {n_alertes} alerte(s), "
-          f"{len(state.get('floors') or {})} floors suivis, "
-          f"{_now() - t0:.0f}s.", flush=True)
+    print(f"Termine : {POLLS} tours, {total} alerte(s), "
+          f"{time.time() - t0:.0f}s.", flush=True)
     return 0
 
 
 if __name__ == "__main__":
     sys.exit(main())
 
-# FIN floor_watch.py v2 (pagination `page` + auto-controle)
+# FIN floor_watch.py v4 (listings + ecart entre marches)
