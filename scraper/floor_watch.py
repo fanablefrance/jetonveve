@@ -448,60 +448,76 @@ def detect_spread(state: Dict, veve: Dict[str, float], omi: float,
     return out
 
 
-COULEURS = {"stackr": 0x5865F2,      # bleu  : sous le floor StackR
-            "veve": 0x2ECC71,        # vert  : revendable au-dessus sur VeVe
-            "spread": 0xF1C40F}      # jaune : ecart entre marches
+COULEURS = {"stackr": 0x3498DB,      # bleu   : sous le floor StackR
+            "veve": 0x2ECC71,        # vert   : revendable plus cher sur VeVe
+            "spread": 0xF1C40F}      # jaune  : ecart entre marches
+
+AVERTISSEMENT = ("⚠️ À titre indicatif — pas un conseil financier. Le floor "
+                 "VeVe est un prix DEMANDÉ : la marge est un plafond, pas un "
+                 "gain garanti. Les valeurs peuvent être inexactes.")
+
+
+def _omi(x) -> str:
+    return f"{x:,.0f} OMI".replace(",", " ")
+
+
+def _usd(x) -> str:
+    return f"~{x:,.2f} $".replace(",", " ")
 
 
 def _embed(a: Dict) -> Dict:
-    """Une carte Discord par affaire (titre, champs, vignette, lien)."""
+    """Une carte par affaire, dans la forme demandee par Preda :
+
+        📉 Sous le Floor
+        BB-8 #1559
+        −5.4 % sous le floor
+        45 400 OMI (~11 $)
+        Floor : 48 000 OMI (~11 $)
+        Voir sur StackR →
+    """
+    nom = f"{a['name']}" + (f" #{a['edition']}" if a.get("edition") else "")
+    lien = f"https://www.stackr.world/element/{a['uuid']}"
+    lignes = []
     if a.get("spread"):
-        titre = f"↔️ Écart entre marchés · {a['name']}"
-        kind = "spread"
-        achat = f"floor StackR **{a['usd']:,.2f} $**"
+        kind, titre = "spread", "↔️ Écart entre marchés"
+        lignes.append(f"**{nom}**")
+        lignes.append(f"Acheter au floor StackR **{_omi(a['stackr_floor'])}** "
+                      f"({_usd(a['usd'])})")
+        lignes.append(f"Floor VeVe : **{a['veve_floor']:,.2f} $**"
+                      .replace(",", " "))
+    elif a.get("d_stackr", 0) >= DROP_PCT:
+        kind, titre = "stackr", "📉 Sous le Floor"
+        lignes.append(f"**{nom}**")
+        lignes.append(f"**−{a['d_stackr']} % sous le floor**")
+        lignes.append(f"{_omi(a['price'])} ({_usd(a['usd'])})")
+        lignes.append(f"Floor : {_omi(a['stackr_floor'])} "
+                      f"({_usd(a['stackr_floor'] * (a['usd'] / a['price']) if a['price'] else 0)})")
     else:
-        sous_stackr = a.get("d_stackr", 0) >= DROP_PCT
-        titre = ("📉 Sous le floor StackR · " if sous_stackr
-                 else "💰 Revendable sur VeVe · ") + str(a["name"])
-        kind = "stackr" if sous_stackr else "veve"
-        achat = (f"**{a['price']:,.0f} OMI** (~{a['usd']:,.2f} $)")
-    fields = [
-        {"name": "Achat", "value": achat.replace(",", " "), "inline": True},
-        {"name": "Rareté", "value": str(a["rarity"] or "—"), "inline": True},
-    ]
-    if a.get("edition"):
-        fields.append({"name": "Édition", "value": f"#{a['edition']}",
-                       "inline": True})
-    if a.get("d_stackr", 0) >= DROP_PCT:
-        fields.append({"name": "Floor StackR",
-                       "value": f"{a['stackr_floor']:,.0f} OMI "
-                                f"(−{a['d_stackr']} %)".replace(",", " "),
-                       "inline": True})
-    if a.get("veve_floor"):
-        fields.append({"name": "Floor VeVe",
-                       "value": f"{a['veve_floor']:,.2f} $".replace(",", " "),
-                       "inline": True})
-    fields.append({
-        "name": "Dernière vente réelle",
-        "value": (f"**{a['last']:,.2f} $**".replace(",", " ") if a.get("last")
-                  else "aucune vue"), "inline": True})
+        kind, titre = "veve", "💰 Revendable plus cher sur VeVe"
+        lignes.append(f"**{nom}**")
+        lignes.append(f"Achat : **{_omi(a['price'])}** ({_usd(a['usd'])})")
+        lignes.append(f"Floor VeVe : **{a['veve_floor']:,.2f} $**"
+                      .replace(",", " "))
+    if a.get("last"):
+        lignes.append(f"Dernière vente réelle : **{a['last']:,.2f} $**"
+                      .replace(",", " "))
+    else:
+        lignes.append("*Aucune vente récente vue*")
     if a.get("net", 0) > 0:
-        fields.append({"name": "Bénéfice net (frais %.1f %%)" % FEE_PCT,
-                       "value": f"**+{a['net']:,.2f} $** (+{a['marge']} %)"
-                                .replace(",", " "), "inline": False})
-    e = {"title": titre[:250], "color": COULEURS[kind], "fields": fields,
-         "url": f"https://www.stackr.world/element/{a['uuid']}",
-         "footer": {"text": "Le floor VeVe est un prix DEMANDÉ : la marge est "
-                            "un plafond, pas un gain garanti."}}
+        lignes.append(f"→ **+{a['net']:,.2f} $ net (+{a['marge']} %)** "
+                      f"après {FEE_PCT} % de frais".replace(",", " "))
+    lignes.append(f"[Voir sur StackR →]({lien})")
+    e = {"title": titre, "color": COULEURS[kind],
+         "description": "\n".join(lignes)[:4000], "url": lien,
+         "footer": {"text": AVERTISSEMENT}}
     if a.get("img"):
         e["thumbnail"] = {"url": a["img"]}
     return e
 
 
 def notify(alerts: List[Dict]) -> int:
-    """Pousse les alertes sur Discord en EMBEDS (une carte par affaire, avec
-    la vignette de l'item) — demande de Preda, capture a l'appui. Discord
-    accepte 10 embeds par message."""
+    """UN message par tour, 10 cartes maximum, et on RESPECTE le 429 de Discord
+    (s'obstiner sur un rate limit, c'est ce qui fait bannir un webhook)."""
     if not alerts:
         return 0
     embeds = [_embed(a) for a in alerts[:10]]
@@ -516,16 +532,32 @@ def notify(alerts: List[Dict]) -> int:
                       else "aucune vente vue")
             print(f"    {a['name']} #{a.get('edition') or '-'} — "
                   f"achat {a['usd']:,.2f} $ · {preuve} · "
-                  f"+{a['net']:,.2f} $ net (+{a['marge']} %)", flush=True)
+                  f"+{a['net']:,.2f} $ net", flush=True)
         return len(alerts)
-    try:
-        r = requests.post(WEBHOOK, json={"content": contenu, "embeds": embeds},
-                          timeout=20)
-        r.raise_for_status()
-        print(f"  Discord : {len(alerts)} alerte(s) poussee(s).", flush=True)
-    except Exception as e:
-        print(f"  Discord KO ({e}) — {len(alerts)} alerte(s) perdues.",
-              flush=True)
+    for essai in range(3):
+        try:
+            r = requests.post(WEBHOOK,
+                              json={"content": contenu, "embeds": embeds},
+                              timeout=20)
+            if r.status_code == 429:
+                attente = 5.0
+                try:
+                    attente = float(r.json().get("retry_after", 5)) + 1
+                except Exception:
+                    pass
+                print(f"  Discord : rate limit — pause de {attente:.0f} s.",
+                      flush=True)
+                time.sleep(min(attente, 60))
+                continue
+            r.raise_for_status()
+            print(f"  Discord : {len(alerts)} alerte(s) poussee(s).",
+                  flush=True)
+            return len(alerts)
+        except Exception as e:
+            print(f"  Discord KO ({e})", flush=True)
+            if essai == 2:
+                break
+            time.sleep(5)
     return len(alerts)
 
 
@@ -587,4 +619,4 @@ def main() -> int:
 if __name__ == "__main__":
     sys.exit(main())
 
-# FIN floor_watch.py v11 (embeds Discord)
+# FIN floor_watch.py v12 (cartes lisibles + respect du rate limit)
