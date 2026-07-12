@@ -1,21 +1,22 @@
 name: Sonde editions (tracker vs GraphQL)
 
-# Un seul run manuel. Ne MODIFIE rien : lit le tracker + VeVe GraphQL et
-# compare, item par item, les champs que le daily rafraichit chaque nuit.
-# Si le tracker dit la meme chose -> on supprime ~2 600 appels GraphQL/nuit.
+# Sonde en LECTURE SEULE : aucun secret, aucun acces au Sheet, aucune ecriture.
+# Elle appelle le tracker et VeVe GraphQL une derniere fois et compare, item
+# par item, les champs que le daily de preda rafraichit chaque nuit.
+# Objectif : prouver qu'on peut supprimer ~2 600 appels GraphQL par nuit.
 
 on:
   workflow_dispatch:
     inputs:
       max:
-        description: "Nombre de collectibles a sonder (0 = tous, ~2 600)"
+        description: "Collectibles a sonder (0 = tous, ~2 600)"
         required: false
         default: "300"
 
 jobs:
   sonde:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -26,8 +27,5 @@ jobs:
 
       - name: Comparer tracker et GraphQL
         env:
-          SHEET_ID: ${{ secrets.SHEET_ID }}
-          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
-          APIFY_PROXY_PASSWORD: ${{ secrets.APIFY_PROXY_PASSWORD }}
           PROBE_MAX: ${{ github.event.inputs.max || '300' }}
         run: python -m scraper.editions_probe
