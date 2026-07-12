@@ -364,6 +364,15 @@ def detect(state: Dict, listings: List[Dict], omi: float,
         #  * AUTRE MARCHE : on ne retient que ce qui RAPPORTE VRAIMENT une fois
         #    les frais VeVe payes (marge nette ET benefice minimum en $).
         arbitrage = (marge >= MARGIN_PCT and net >= MIN_PROFIT)
+        # Un arbitrage suppose de REVENDRE au floor VeVe. Si l'item n'a AUCUNE
+        # vente reelle connue, cette revente est une fiction — exactement comme
+        # pour l'ecart entre marches (trou de la v9 : le garde-fou ne couvrait
+        # que le signal 3, et « Her Majesty » est passe sans preuve de vente).
+        # La sous-cotation sur le MEME marche (floor StackR), elle, n'a pas
+        # besoin de preuve : c'est une comparaison a offre egale.
+        if arbitrage and REQUIRE_SALE and last is None:
+            arbitrage = False
+            state.setdefault("sans_vente", {})[uid] = ts
         if d_stackr < DROP_PCT and not arbitrage:
             continue
         if ts - alerts.get(uid or nft, 0) < COOLDOWN_H * 3600:
@@ -551,4 +560,4 @@ def main() -> int:
 if __name__ == "__main__":
     sys.exit(main())
 
-# FIN floor_watch.py v9 (historique reconstruit ; pas d'alerte sans preuve de vente)
+# FIN floor_watch.py v10 (aucune revente supposee sans preuve de vente)
