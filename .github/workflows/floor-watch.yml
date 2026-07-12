@@ -1,0 +1,60 @@
+name: Alertes sous-floor
+
+# Surveillance rapprochee du floor (source publique getElements, sans cookie).
+# Un run = FLOOR_SWEEPS balayages espaces de FLOOR_INTERVAL_S : par defaut
+# 5 balayages toutes les 10 min = ~50 min de veille par run, relance chaque
+# heure -> surveillance quasi continue. Un balayage = ~61 requetes (~1 min).
+#
+# A LANCER SUR UN REPO PUBLIC (minutes Actions illimitees).
+# Secret requis : DISCORD_WEBHOOK (sans lui, les alertes s'affichent dans les
+# logs — pratique pour regler le seuil avant de brancher Discord).
+
+on:
+  schedule:
+    - cron: "3 * * * *"          # toutes les heures
+  workflow_dispatch:
+    inputs:
+      drop_pct:
+        description: "Decote minimale pour alerter (%)"
+        required: false
+        default: "20"
+      sweeps:
+        description: "Nombre de balayages dans ce run"
+        required: false
+        default: "5"
+
+permissions:
+  contents: write
+
+concurrency:                      # jamais deux veilles en parallele
+  group: floor-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+
+      - name: Veille du floor
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          FLOOR_DROP_PCT: ${{ github.event.inputs.drop_pct || '20' }}
+          FLOOR_SWEEPS: ${{ github.event.inputs.sweeps || '5' }}
+          FLOOR_INTERVAL_S: "600"
+        run: python -m scraper.floor_watch
+
+      - name: Commit de l'etat (floors connus + cooldowns)
+        if: always()
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/floor_state.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "floor_watch: etat"
+          git push || true
