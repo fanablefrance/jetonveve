@@ -349,10 +349,11 @@ def detect(state: Dict, listings: List[Dict], omi: float,
             continue                       # broutille : on ignore
         sf = _f(it.get("stackr_floor_price"))
         uid = str(it.get("element_id") or "")
+        img = it.get("image_url") or ""
         if uid and sf > 0:
             # on memorise le floor StackR de l'item (pour le signal 3)
             state.setdefault("sfloors", {})[uid] = [
-                sf, it.get("name") or uid[:8], it.get("rarity") or ""]
+                sf, it.get("name") or uid[:8], it.get("rarity") or "", img]
         vf = veve.get(uid, 0.0)
         d_stackr = (100.0 * (sf - price) / sf) if sf > 0 else 0.0
         d_veve = (100.0 * (vf - usd) / vf) if (vf > 0 and usd > 0) else 0.0
@@ -379,7 +380,7 @@ def detect(state: Dict, listings: List[Dict], omi: float,
             continue
         alerts[uid or nft] = ts
         out.append({"net": round(net, 2), "marge": round(marge, 1),
-                    "revente": round(ref, 2), "last": last,
+                    "revente": round(ref, 2), "last": last, "img": img,
                     "nft": nft, "uuid": uid,
                     "name": it.get("name") or uid[:8],
                     "rarity": it.get("rarity") or "",
@@ -412,7 +413,9 @@ def detect_spread(state: Dict, veve: Dict[str, float], omi: float,
     out: List[Dict] = []
     if not omi:
         return out
-    for uid, (sf, name, rarity) in list(sfloors.items()):
+    for uid, infos in list(sfloors.items()):
+        sf, name, rarity = infos[0], infos[1], infos[2]
+        img = infos[3] if len(infos) > 3 else ""
         vf = veve.get(uid, 0.0)
         sf_usd = sf * omi
         if vf <= 0 or sf_usd <= 0 or sf_usd < MIN_USD:
@@ -435,7 +438,7 @@ def detect_spread(state: Dict, veve: Dict[str, float], omi: float,
             continue
         alerts[uid] = ts
         out.append({"net": round(net, 2), "marge": round(marge, 1),
-                    "revente": round(ref, 2), "last": last,
+                    "revente": round(ref, 2), "last": last, "img": img,
                     "nft": "", "uuid": uid, "name": name, "rarity": rarity,
                     "edition": "", "price": sf, "usd": sf_usd,
                     "stackr_floor": sf, "veve_floor": vf,
@@ -445,60 +448,84 @@ def detect_spread(state: Dict, veve: Dict[str, float], omi: float,
     return out
 
 
+COULEURS = {"stackr": 0x5865F2,      # bleu  : sous le floor StackR
+            "veve": 0x2ECC71,        # vert  : revendable au-dessus sur VeVe
+            "spread": 0xF1C40F}      # jaune : ecart entre marches
+
+
+def _embed(a: Dict) -> Dict:
+    """Une carte Discord par affaire (titre, champs, vignette, lien)."""
+    if a.get("spread"):
+        titre = f"↔️ Écart entre marchés · {a['name']}"
+        kind = "spread"
+        achat = f"floor StackR **{a['usd']:,.2f} $**"
+    else:
+        sous_stackr = a.get("d_stackr", 0) >= DROP_PCT
+        titre = ("📉 Sous le floor StackR · " if sous_stackr
+                 else "💰 Revendable sur VeVe · ") + str(a["name"])
+        kind = "stackr" if sous_stackr else "veve"
+        achat = (f"**{a['price']:,.0f} OMI** (~{a['usd']:,.2f} $)")
+    fields = [
+        {"name": "Achat", "value": achat.replace(",", " "), "inline": True},
+        {"name": "Rareté", "value": str(a["rarity"] or "—"), "inline": True},
+    ]
+    if a.get("edition"):
+        fields.append({"name": "Édition", "value": f"#{a['edition']}",
+                       "inline": True})
+    if a.get("d_stackr", 0) >= DROP_PCT:
+        fields.append({"name": "Floor StackR",
+                       "value": f"{a['stackr_floor']:,.0f} OMI "
+                                f"(−{a['d_stackr']} %)".replace(",", " "),
+                       "inline": True})
+    if a.get("veve_floor"):
+        fields.append({"name": "Floor VeVe",
+                       "value": f"{a['veve_floor']:,.2f} $".replace(",", " "),
+                       "inline": True})
+    fields.append({
+        "name": "Dernière vente réelle",
+        "value": (f"**{a['last']:,.2f} $**".replace(",", " ") if a.get("last")
+                  else "aucune vue"), "inline": True})
+    if a.get("net", 0) > 0:
+        fields.append({"name": "Bénéfice net (frais %.1f %%)" % FEE_PCT,
+                       "value": f"**+{a['net']:,.2f} $** (+{a['marge']} %)"
+                                .replace(",", " "), "inline": False})
+    e = {"title": titre[:250], "color": COULEURS[kind], "fields": fields,
+         "url": f"https://www.stackr.world/element/{a['uuid']}",
+         "footer": {"text": "Le floor VeVe est un prix DEMANDÉ : la marge est "
+                            "un plafond, pas un gain garanti."}}
+    if a.get("img"):
+        e["thumbnail"] = {"url": a["img"]}
+    return e
+
+
 def notify(alerts: List[Dict]) -> int:
+    """Pousse les alertes sur Discord en EMBEDS (une carte par affaire, avec
+    la vignette de l'item) — demande de Preda, capture a l'appui. Discord
+    accepte 10 embeds par message."""
     if not alerts:
         return 0
-    lignes = []
-    for a in alerts[:8]:
-        if a.get("spread"):
-            preuve = (f" · **dernière vente réelle {a['last']:,.2f} $**"
-                      if a.get("last") else " · *aucune vente récente vue*")
-            lignes.append(
-                (f"↔️ **{a['name']}** ({a['rarity']}) — écart entre marchés\n"
-                 f"acheter au floor StackR **{a['usd']:,.2f} $** · floor VeVe "
-                 f"**{a['veve_floor']:,.2f} $**{preuve}\n"
-                 f"→ **+{a['net']:,.2f} $ net (+{a['marge']} %)** "
-                 f"(revente retenue {a['revente']:,.2f} $, frais {FEE_PCT} %)\n"
-                 f"<https://www.stackr.world/element/{a['uuid']}>")
-                .replace(",", " "))
-            continue
-        parts = []
-        if a["d_stackr"] >= DROP_PCT:
-            parts.append(f"**−{a['d_stackr']} % sous le floor StackR** "
-                         f"({a['stackr_floor']:,.0f} OMI)")
-        if a["d_veve"] >= VEVE_PCT:
-            parts.append(f"−{a['d_veve']} % / floor VeVe "
-                         f"({a['veve_floor']:,.2f} $)")
-        if a.get("net", 0) >= MIN_PROFIT and a.get("marge", 0) >= MARGIN_PCT:
-            preuve = (f" · **dernière vente réelle {a['last']:,.2f} $**"
-                      if a.get("last") else " · *aucune vente récente vue*")
-            parts.append(f"floor VeVe {a['veve_floor']:,.2f} ${preuve} → "
-                         f"**+{a['net']:,.2f} $ net (+{a['marge']} %)** "
-                         f"(revente retenue {a['revente']:,.2f} $, frais "
-                         f"{FEE_PCT} %)")
-        lignes.append(
-            (f"**{a['name']}** #{a['edition']} ({a['rarity']})\n"
-             f"achat **{a['price']:,.0f} OMI** (~{a['usd']:,.2f} $) — "
-             + " · ".join(parts) +
-             f"\npar {a['seller']} · <https://www.stackr.world/element/"
-             f"{a['uuid']}>").replace(",", " "))
-    corps = ("🚨 **AFFAIRES** — " +
-             _dt.datetime.now(_dt.timezone.utc).strftime("%H:%M UTC") +
-             "\n\n" + "\n\n".join(lignes))
-    if len(alerts) > 8:
-        corps += f"\n\n… et {len(alerts) - 8} autre(s)."
-    corps += ("\n\n*Le floor VeVe est un prix DEMANDÉ : revendre suppose de "
-              "se placer dessous et d'attendre preneur. La marge est un "
-              "plafond, pas un gain garanti.*")
+    embeds = [_embed(a) for a in alerts[:10]]
+    contenu = (f"🚨 **{len(alerts)} affaire(s)** — "
+               + _dt.datetime.now(_dt.timezone.utc).strftime("%H:%M UTC"))
+    if len(alerts) > 10:
+        contenu += f" (10 affichées sur {len(alerts)})"
     if not WEBHOOK:
-        print("  [SIMULATION — pas de DISCORD_WEBHOOK]\n" + corps, flush=True)
+        print("  [SIMULATION — pas de DISCORD_WEBHOOK]", flush=True)
+        for a in alerts[:10]:
+            preuve = (f"derniere vente {a['last']:,.2f} $" if a.get("last")
+                      else "aucune vente vue")
+            print(f"    {a['name']} #{a.get('edition') or '-'} — "
+                  f"achat {a['usd']:,.2f} $ · {preuve} · "
+                  f"+{a['net']:,.2f} $ net (+{a['marge']} %)", flush=True)
         return len(alerts)
     try:
-        requests.post(WEBHOOK, json={"content": corps[:1900]},
-                      timeout=20).raise_for_status()
-        print(f"  Discord : {len(alerts)} alerte(s).", flush=True)
+        r = requests.post(WEBHOOK, json={"content": contenu, "embeds": embeds},
+                          timeout=20)
+        r.raise_for_status()
+        print(f"  Discord : {len(alerts)} alerte(s) poussee(s).", flush=True)
     except Exception as e:
-        print(f"  Discord KO ({e}) :\n{corps}", flush=True)
+        print(f"  Discord KO ({e}) — {len(alerts)} alerte(s) perdues.",
+              flush=True)
     return len(alerts)
 
 
@@ -560,4 +587,4 @@ def main() -> int:
 if __name__ == "__main__":
     sys.exit(main())
 
-# FIN floor_watch.py v10 (aucune revente supposee sans preuve de vente)
+# FIN floor_watch.py v11 (embeds Discord)
