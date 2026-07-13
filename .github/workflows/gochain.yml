@@ -1,0 +1,88 @@
+name: GoChain - ere d'avant IMX (2020 -> migration)
+
+# Balaie les Transfer du jeton OMI sur GoChain (contrat 0x5347FDe...) et en
+# tire DEUX choses que rien d'autre ne peut donner :
+#   1. le VRAI first_seen des wallets (2020/2021) — aujourd'hui tous ecrases au
+#      14/12/2021, date de la genese IMX -> la colonne OG devient exacte ;
+#   2. le REVENUE de l'ere GoChain : les OMI payes a la caisse de VeVe
+#      (0x17656848..., 817 574 token-transactions, 0 tx normale).
+#
+# Les adresses sont les MEMES sur GoChain / IMX / CollectChain (verifie) : tout
+# se raccorde au registre existant.
+# Il n'y a PAS de NFT a recuperer : la sonde n'a trouve AUCUN contrat ERC-721 —
+# les collectibles de 2021 etaient custodial.
+#
+# ~123 tranches de 100 000 blocs suffisent (le noeud les accepte). Le run est
+# RESUMABLE : budget, checkpoints, degradation de fenetre, jour partiel garde
+# dans l'etat. Il se relance tout seul jusqu'a done=true.
+
+on:
+  workflow_dispatch:
+    inputs:
+      steps:
+        description: "Etapes (all — reserve pour la suite)"
+        required: false
+        default: "all"
+      minutes:
+        description: "Budget par run (minutes)"
+        required: false
+        default: "45"
+      tranche:
+        description: "Blocs par eth_getLogs (100000 accepte par le noeud)"
+        required: false
+        default: "100000"
+      auto_continue:
+        description: "Se relance jusqu'a la fin"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: gochain
+  cancel-in-progress: false
+
+jobs:
+  collecte:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Etat le plus recent
+        run: git pull --rebase origin main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Collecte (tranche)
+        env:
+          GO_MINUTES: ${{ github.event.inputs.minutes || '45' }}
+          GO_TRANCHE: ${{ github.event.inputs.tranche || '100000' }}
+        run: python -m scraper.gochain
+
+      - name: Commit (data/)
+        if: ${{ always() }}
+        run: |
+          git config user.name "veve-gochain-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/gochain_wallets.csv data/gochain_daily.csv data/gochain_state.json
+          if git diff --cached --quiet; then echo "Rien a committer."; exit 0; fi
+          git commit -m "gochain: $(date -u +%FT%H:%M)"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push && break
+            sleep $((i * 5))
+          done
+
+      - name: Relance auto si pas fini
+        if: ${{ always() && github.event.inputs.auto_continue != 'false' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          DONE=$(python -c "import json;print(json.load(open('data/gochain_state.json')).get('done',False))" 2>/dev/null || echo "")
+          if [ "$DONE" = "True" ]; then echo "Collecte terminee — pas de relance."; exit 0; fi
+          echo "Pas fini — relance..."
+          gh workflow run gochain.yml --ref main \
+            -f minutes="${{ github.event.inputs.minutes || '45' }}" \
+            -f tranche="${{ github.event.inputs.tranche || '100000' }}" \
+            -f auto_continue=true
