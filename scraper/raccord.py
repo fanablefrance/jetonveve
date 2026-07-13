@@ -61,25 +61,34 @@ RACCORD_HEADER = [
     "veve_url", "alternatives", "valide",
 ]
 
-# Titres que Preda ecrit en abrege / en francais. Le rapprochement se fait sur le
-# titre NORMALISE : on remet les formes VeVe avant de comparer.
-ALIASES = {
-    "into mystery": "journey into mystery",
-    "fear": "adventure into fear",
-    "spider-man": "amazing spider-man",
-    "spiderman": "amazing spider-man",
-    "amazing spiderman": "amazing spider-man",
-    "the x-men": "x-men",
-    "uncanny x-men": "x-men",
-    "the uncanny x-men": "x-men",
-    "hero for hire": "luke cage, hero for hire",
-    "tales to astonish": "tales to astonish",
-    "tales of suspense": "tales of suspense",
-}
+# Titres que Preda ecrit en abrege. Appliques par SUBSTITUTION dans le titre
+# normalise, pas par egalite stricte : "Into Mystery Annual #1" se normalise en
+# "into mystery annual" — un dictionnaire a cle exacte ne le voyait pas et le
+# comic partait en AMBIGU contre "Thanos Annual #1". L'ordre compte (le plus
+# long d'abord).
+ALIASES = [
+    ("journey into mystery", "journey into mystery"),
+    ("into mystery", "journey into mystery"),
+    ("adventure into fear", "adventure into fear"),
+    ("amazing spiderman", "amazing spider-man"),
+    ("amazing spider-man", "amazing spider-man"),
+    ("spectacular spider-man", "spectacular spider-man"),
+    ("ultimate spider-man", "ultimate spider-man"),
+    ("miles morales spider-man", "miles morales spider-man"),
+    ("spiderman", "amazing spider-man"),
+    ("spider-man", "amazing spider-man"),
+    ("uncanny x-men", "x-men"),
+    ("x-men", "x-men"),
+    ("hero for hire", "luke cage hero for hire"),
+]
 
 _NUM_RE = re.compile(r"#\s*(\d+)")
 _YEAR_RE = re.compile(r"\((\d{4})\)\s*$")
 _ANNUAL_RE = re.compile(r"\bannual\b", re.IGNORECASE)
+_VOL_RE = re.compile(r"\bvol\.?\s*\d+\b", re.IGNORECASE)   # "Vol. 8" cote VeVe
+# En dessous de ce score de TITRE, le supply identique n'est plus une preuve mais
+# une coincidence : des milliers de comics partagent le meme supply.
+MIN_TITRE_POUR_PREUVE = 0.60
 
 
 def _strip_accents(s: str) -> str:
@@ -88,15 +97,20 @@ def _strip_accents(s: str) -> str:
 
 
 def _norm(s: Any) -> str:
-    """Titre comparable : sans accents, sans annee, sans #numero, sans ponctuation."""
+    """Titre comparable : sans accents, sans annee, sans #numero, sans volume."""
     s = _strip_accents(str(s or "")).lower()
     s = _YEAR_RE.sub("", s)
     s = _NUM_RE.sub("", s)
-    s = re.sub(r"[^a-z0-9 ]+", " ", s)
+    s = _VOL_RE.sub("", s)
+    s = re.sub(r"[^a-z0-9- ]+", " ", s)
     s = re.sub(r"\s+", " ", s).strip()
     if s.startswith("the "):
         s = s[4:]
-    return ALIASES.get(s, s)
+    for motif, remplacement in ALIASES:
+        if motif in s:
+            s = s.replace(motif, remplacement)
+            break
+    return re.sub(r"\s+", " ", s).strip()
 
 
 def _issue(s: Any) -> Optional[int]:
@@ -145,11 +159,13 @@ def match_one(nom: str, supply: Optional[float], era: str,
         # le titre court de Preda est souvent INCLUS dans celui de VeVe
         if base and (base in cand["base"] or cand["base"] in base):
             r = max(r, 0.90)
-        score = r
         same_supply = (supply is not None and cand["supply"] is not None
                        and abs(supply - cand["supply"]) < 0.5)
-        if same_supply:
-            score += 0.35                  # LA preuve : le supply VeVe ne s'invente pas
+        # Le supply n'est une PREUVE que si le titre tient deja debout. Sans ce
+        # garde-fou, "New Mutants #2" partait sur "Spider-Man #2" et "Life Stone #1"
+        # sur "Vision #1" : meme numero, meme supply, aucun rapport. Des milliers de
+        # comics partagent un supply de 3 000.
+        score = r + (0.35 if (same_supply and r >= MIN_TITRE_POUR_PREUVE) else 0.0)
         scored.append({**cand, "score": round(min(score, 1.35), 3),
                        "titre_score": round(r, 3), "same_supply": same_supply})
 
@@ -161,7 +177,7 @@ def match_one(nom: str, supply: Optional[float], era: str,
     # ORDRE DES TESTS : on ecarte D'ABORD les titres qui n'ont rien a voir. Sinon
     # "Zorglub #14" ressortait AMBIGU entre deux Spider-Man — deux mauvais
     # candidats qui se valent, ce n'est pas une ambiguite, c'est une absence.
-    if best["same_supply"]:
+    if best["same_supply"] and best["titre_score"] >= MIN_TITRE_POUR_PREUVE:
         statut = "CERTAIN" if best["titre_score"] >= 0.75 else "A_VERIFIER"
     elif best["titre_score"] < 0.60:
         statut = "INTROUVABLE"
@@ -213,8 +229,15 @@ def _client() -> gspread.Client:
 
 
 def load_veve_series(sh) -> Dict[int, List[Dict[str, Any]]]:
-    """Le catalogue comics, regroupe par SERIE puis indexe par numero d'issue."""
-    rows = sh.worksheet(COMICS_TAB).get_all_records()
+    """Le catalogue comics, regroupe par SERIE puis indexe par numero d'issue.
+
+    ⚠️ UNFORMATTED_VALUE OBLIGATOIRE : le Sheet est en locale FR, et la lecture
+    par defaut de gspread "numerise" les decimales — "6,99" devient **699**. Le
+    1er run a ecrit des prix en gems 100 fois trop grands (699 au lieu de 6,99).
+    C'est exactement le bug qui avait gonfle le revenue ×100 le 10/07.
+    """
+    rows = sh.worksheet(COMICS_TAB).get_all_records(
+        value_render_option="UNFORMATTED_VALUE")
     series: Dict[str, Dict[str, Any]] = {}
     for r in rows:
         uid = str(r.get("series_uuid", "") or "").strip()
@@ -259,6 +282,20 @@ def main() -> int:
 
     by_issue = load_veve_series(sh)
 
+    # --- ce que Preda a deja valide a la main (survit aux relances) ---
+    # Cle = le NOM de sa ligne, pas son numero de ligne : s'il insere une ligne
+    # dans son classement, ses validations ne doivent pas glisser d'un cran.
+    deja: Dict[str, str] = {}
+    try:
+        for r in sh.worksheet(RACCORD_TAB).get_all_records():
+            v = str(r.get("valide", "") or "").strip()
+            if v:
+                deja[str(r.get("nom_preda", "")).strip().lower()] = v
+        if deja:
+            print(f"Validations manuelles reprises : {len(deja)}", flush=True)
+    except gspread.WorksheetNotFound:
+        pass
+
     out: List[List[Any]] = []
     stats = {"CERTAIN": 0, "A_VERIFIER": 0, "AMBIGU": 0, "INTROUVABLE": 0}
     for i, r in enumerate(prows):
@@ -283,7 +320,7 @@ def main() -> int:
             best.get("supply", "") if best.get("supply") is not None else "",
             best.get("gems", "") if best.get("gems") is not None else "",
             best.get("start_year", ""), best.get("exclusive", ""),
-            best.get("url", ""), alts, "",
+            best.get("url", ""), alts, deja.get(nom.lower(), ""),
         ])
 
     try:
