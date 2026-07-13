@@ -201,10 +201,32 @@ def _a1_col(n: int) -> str:
     return s
 
 
+def _header(ws) -> List[str]:
+    """En-tete de l'onglet, lu de facon FIABLE.
+
+    `row_values(1)` a renvoye une liste vide au 1er run (le daily reecrivait le
+    catalogue au meme moment : sync_catalogue efface puis reecrit A1, et une
+    lecture tombee dans cette fenetre voit une ligne 1 vide). On relit donc
+    jusqu'a 3 fois, et on echoue en AFFICHANT ce qu'on a vu — pas sur un
+    `ValueError: 'series_uuid' is not in list` qui n'apprend rien.
+    """
+    for attempt in range(1, 4):
+        rows = ws.get("A1:BZ1")
+        header = [str(c).strip() for c in (rows[0] if rows else [])]
+        if "veve_uuid" in header:
+            return header
+        print(f"  en-tete {ws.title} illisible (essai {attempt}/3) : {header[:6]}",
+              flush=True)
+        time.sleep(5)
+    raise RuntimeError(
+        f"En-tete de {ws.title} introuvable. Le daily etait peut-etre en train de "
+        f"reecrire le catalogue — relancer le workflow dans une minute.")
+
+
 def _ensure_headers(ws) -> List[str]:
-    """Garantit la presence des 4 colonnes dans l'en-tete (ajoutees a la fin si
+    """Garantit la presence des colonnes dans l'en-tete (ajoutees a la fin si
     sheets.py n'a pas encore tourne). Renvoie l'en-tete a jour."""
-    header = ws.row_values(1)
+    header = _header(ws)
     missing = [c for c in NEW_COLS if c not in header]
     if not missing:
         return header
@@ -247,11 +269,12 @@ def _write_column(ws, header: List[str], col_name: str, values: Dict[int, Any]) 
 
 
 def backfill_tab(sh, tab: str, root: str, id_col: str, mcp_field: str,
-                 workers: int, max_items: int, write_every: int) -> Dict[str, int]:
+                 workers: int, max_items: int, write_every: int,
+                 force: bool = False) -> Dict[str, int]:
     ws = sh.worksheet(tab)
     header = _ensure_headers(ws)
     rows = ws.get_all_records()
-    print(f"\n{tab} : {len(rows)} lignes", flush=True)
+    print(f"\n{tab} : {len(rows)} lignes{' [FORCE]' if force else ''}", flush=True)
 
     # Lignes a remplir, groupees par id VeVe (pour les comics : 1 appel par SERIE,
     # applique aux ~5 lignes de rarete de cette serie).
@@ -261,13 +284,18 @@ def backfill_tab(sh, tab: str, root: str, id_col: str, mcp_field: str,
         line = i + 2                                   # +1 en-tete, +1 base 1
         item_id = str(row.get(id_col, "") or "").strip()
         # la cover exclusive se lit dans la description DEJA presente : gratuit
-        if tab == COMICS_TAB and str(row.get("veve_exclusive", "")).strip() == "":
+        if tab == COMICS_TAB and (force
+                                  or str(row.get("veve_exclusive", "")).strip() == ""):
             desc = row.get("description")
             if desc not in (None, ""):
                 excl_now[line] = bool(_EXCLUSIVE_RE.search(str(desc)))
         if not item_id:
             continue
-        if str(row.get("supply", "")).strip() != "":   # deja fait -> on ne redemande pas
+        # deja fait -> on ne redemande pas (c'est la reprise). FORCE=true rouvre
+        # tout : indispensable au 1er passage, car le daily du 13/07 a ecrit dans
+        # `supply` des comics de la fenetre le releaseAmount du tracker, qui est le
+        # supply de la RARETE et non celui de la SERIE (Cheetara #2 COMMON = 400).
+        if not force and str(row.get("supply", "")).strip() != "":
             continue
         todo.setdefault(item_id, []).append(line)
 
@@ -325,14 +353,15 @@ def main() -> int:
     write_every = int(os.environ.get("WRITE_EVERY", "400"))
     only = os.environ.get("ONLY", "").strip().lower()
     probe_only = os.environ.get("PROBE_ONLY", "").strip().lower() == "true"
+    force = os.environ.get("FORCE", "").strip().lower() == "true"
 
     sh = _client().open_by_key(sheet_id)
 
     # --- echantillons pour la sonde : la 1re ligne de chaque catalogue ---
     comics_ws = sh.worksheet(COMICS_TAB)
     collect_ws = sh.worksheet(COLLECT_TAB)
-    c_header = comics_ws.row_values(1)
-    k_header = collect_ws.row_values(1)
+    c_header = _header(comics_ws)
+    k_header = _header(collect_ws)
     sample_comic = comics_ws.cell(2, c_header.index("series_uuid") + 1).value
     sample_collectible = collect_ws.cell(2, k_header.index("veve_uuid") + 1).value
 
@@ -347,11 +376,12 @@ def main() -> int:
     total = {"ids": 0, "rows": 0}
     if only in ("", "comics"):
         r = backfill_tab(sh, COMICS_TAB, "publicComicType", "series_uuid",
-                         mcp.get("comic", ""), workers, max_items, write_every)
+                         mcp.get("comic", ""), workers, max_items, write_every, force)
         total = {k: total[k] + r[k] for k in total}
     if only in ("", "collectibles"):
         r = backfill_tab(sh, COLLECT_TAB, "publicCollectibleType", "veve_uuid",
-                         mcp.get("collectible", ""), workers, max_items, write_every)
+                         mcp.get("collectible", ""), workers, max_items, write_every,
+                         force)
         total = {k: total[k] + r[k] for k in total}
 
     print(f"\nTermine : {total['ids']} fiches VeVe interrogees, "
