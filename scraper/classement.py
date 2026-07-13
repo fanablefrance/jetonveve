@@ -77,6 +77,14 @@ FLOOR_MAX = 1_000_000           # au-dela c'est une offre delirante (cf. le Gold
 NIVEAU_SANS_FLOOR = 3           # le niveau du collectible MOYEN qui a un floor fiable
                                 # (floor moyen 52 gems -> niveau 3). Sans marche, on
                                 # part de la mediane, pas de zero.
+OFFSET_COLLECT = -3             # LE RECENTRAGE.
+# Sans lui, la 1re version notait AAA une piece quelconque : le collectible MEDIAN a
+# deja un petit supply (250-1 000 -> +2 crans) ET une FE (+2 crans), donc il partait
+# a 3+2+2 = AA avant meme d'avoir merite quoi que ce soit. Les bonus s'empilaient
+# jusqu'au plafond (MOUSE, supply 12, FE -> AAA ; JOEY, 124 -> AAA).
+# Quand TOUT LE MONDE a un bonus, ce n'est plus un bonus : c'est le niveau de la mer.
+# -3 ramene la piece mediane vers B/BB et rend AAA a nouveau rare (FA + supply minuscule
+# + vrai floor). Ce chiffre est le premier a bouger si les notes sortent trop hautes.
 
 CRANS_EDITION = {"FA": 3, "FE": 2, "CE": 2}      # AP = jamais note (voir ci-dessous)
 LICENCES_BONUS = {"Marvel": 1, "Star Wars": 1, "DC Direct": 1, "DC": 1,
@@ -173,7 +181,7 @@ def note_collectible(floor, offres, supply, edition, licencier, bonus=0) -> str:
         return ""
     niv = (_niveau(floor, BASE_COLLECT) if floor_fiable(floor, offres)
            else NIVEAU_SANS_FLOOR)
-    k = (niv + _crans(supply, PALIERS_COLLECT)
+    k = (niv + OFFSET_COLLECT + _crans(supply, PALIERS_COLLECT)
          + CRANS_EDITION.get(str(edition).strip().upper(), 0)
          + LICENCES_BONUS.get(str(licencier).strip(), 0) + int(bonus or 0))
     return ECHELLE[max(0, min(8, k))]
@@ -233,9 +241,15 @@ def formules(r: int) -> List[str]:
     b = f'IF({bon}="";0;{bon})'
 
     k_comic = (f"1+{_f_niveau(val, BASE_COMIC)}+{_f_crans(sup, PALIERS_COMIC)}+{b}")
-    ancre = (f'IF(AND({off}>={OFFRES_MINI};{flo}>0;{flo}<{FLOOR_MAX});'
-             f'{_f_niveau(flo, BASE_COLLECT)};{NIVEAU_SANS_FLOOR})')
-    k_coll = (f"1+{ancre}+{_f_crans(sup, PALIERS_COLLECT)}"
+    # ⚠️ PIEGE GOOGLE SHEETS : une cellule VIDE comparee a un nombre est jugee PLUS
+    # GRANDE — `""&gt;=7` renvoie VRAI. Le filtre des 7 offres ne filtrait donc rien
+    # quand la donnee manquait (Spring : floor 15, offres vide -> note et score
+    # calcules quand meme). Il faut tester le vide EXPLICITEMENT. En Python
+    # `floor_fiable` etait juste : les deux grilles divergeaient en silence.
+    fiable = (f'AND({off}<>"";{flo}<>"";{off}>={OFFRES_MINI};{flo}>0;'
+              f'{flo}<{FLOOR_MAX})')
+    ancre = (f'IF({fiable};{_f_niveau(flo, BASE_COLLECT)};{NIVEAU_SANS_FLOOR})')
+    k_coll = (f"1+{ancre}{OFFSET_COLLECT:+d}+{_f_crans(sup, PALIERS_COLLECT)}"
               f"+{_f_edition(ed)}+{_f_licence(lic)}+{b}")
     borne = "MIN({n};MAX(1;{k}))".format(n=len(ECHELLE), k="{k}")
 
@@ -250,11 +264,11 @@ def formules(r: int) -> List[str]:
     # le multiple = ce que ça vaut / ce que tu l'as paye. Pour un comic : la valeur
     # adossee a chaque edition. Pour un collectible : le floor lui-meme.
     multiple = (f'=IF({gem}="";"";IF({typ}="comic";IF({par_ed}="";"";{par_ed}/{gem});'
-                f'IF(OR({flo}="";{off}<{OFFRES_MINI});"";{flo}/{gem})))')
+                f'IF({fiable};{flo}/{gem};"")))')
     score = (
         f'=IF({typ}="comic";'
         f'  IF(OR({val}="";{sup}="");"";{val}*POWER(3;{_f_crans(sup, PALIERS_COMIC)}));'
-        f'  IF(OR({sup}="";{flo}="";{off}<{OFFRES_MINI};{flo}>={FLOOR_MAX});"";'
+        f'  IF(OR({sup}="";NOT({fiable}));"";'
         f'     {flo}*POWER(3;{_f_crans(sup, PALIERS_COLLECT)}'
         f'+{_f_edition(ed)}+{_f_licence(lic)})))'
     )
@@ -742,6 +756,19 @@ def main() -> int:
     compte = {e: sum(1 for l in body if l[I["etat"]] == e)
               for e in (ALERTE, VVBD, ARTWORK)}
     backlog = len(body) - notes - sum(compte.values())
+    # La distribution des notes SUGGEREES aux collectibles : c'est le seul moyen de
+    # voir si la grille est bien centree. Si AAA/AA dominent, OFFSET_COLLECT est trop
+    # haut ; si tout s'ecrase sur C, il est trop bas.
+    dist = {n: 0 for n in ECHELLE}
+    for l in list(body) + module_k:
+        if l[I["type"]] == "collectible" and l[I["note_suggeree"]]:
+            dist[l[I["note_suggeree"]]] += 1
+    total = sum(dist.values()) or 1
+    print("\nNotes suggerees aux collectibles (OFFSET_COLLECT="
+          f"{OFFSET_COLLECT}) :", flush=True)
+    print("  " + " · ".join(f"{n} {dist[n]} ({dist[n] * 100 // total}%)"
+                            for n in reversed(ECHELLE)), flush=True)
+
     ecarts = [l[I["ecart"]] for l in body if isinstance(l[I["ecart"]], int)]
     print(f"\n🏆A-CLASSEMENT en {time.time() - t0:.0f}s")
     print(f"  a noter : {len(module_c)} comics + {len(module_k)} collectibles")
