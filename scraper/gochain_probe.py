@@ -53,6 +53,16 @@ EXPLORER = os.environ.get("GO_EXPLORER", "https://explorer.gochain.io")
 OMI = "0x5347fdea6aa4d7770b31734408da6d34a8a07bdf"        # OMIToken (Go20)
 CAISSE = "0x17656848e63cb846d93e629c710f6b0cc30a89dc"     # encaissements VeVe
 TRANSFER = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+# v3 : mon 1er verdict "aucun NFT" etait FAUX de methode — je n'ai teste QU'UNE
+# fenetre de 20 000 blocs, et QUE la signature Transfer. Un ERC-1155 a des
+# signatures DIFFERENTES : je serais passe a cote sans jamais le voir.
+TRANSFER_SINGLE = ("0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7"
+                   "aacaa2d0f62")
+TRANSFER_BATCH = ("0x4a39dc06d4c0dbc64b70af90fd698a233a518aa5d07e595d983b8c05"
+                  "26c8f7fb")
+# NFT VeVe GoChain identifie par Preda (l'explorer le dit : Go721) :
+VEVE_721 = "0xb5510dc488858772cac1529924652c2d9cf275fe"    # "Veve Token" VEVE
+COFFRE = "0x348786e29d0a96882abef39c00b3af7a9581adef"      # detenteur unique
 # ancre connue : bloc 18 850 837 = 2021-05-11T14:29:11Z (vu dans une tx reelle)
 ANCRE_BLOC = int(os.environ.get("GO_ANCRE_BLOC", "18850837"))
 STEPS = os.environ.get("GO_STEPS", "all").lower()
@@ -298,6 +308,96 @@ def etape_diag():
         print("          il n'a besoin que de python + requests).")
 
 
+def etape_nft_ere():
+    """RECENSEMENT NFT DE TOUTE L'ERE (v3) — la seule facon de trancher.
+
+    Ce que la v2 a rate : (1) une seule fenetre de 20 000 blocs, en mai 2021,
+    alors que les mints se sont faits en 2020 ; (2) la seule signature
+    Transfer (ERC-721), en ignorant TransferSingle/TransferBatch (ERC-1155),
+    qui ont des topics COMPLETEMENT differents.
+
+    Ici : on balaie l'ERE ENTIERE (~145 tranches de 100 000 blocs, le noeud
+    les accepte) en demandant les TROIS signatures d'un coup, et on compte,
+    par contrat : les transferts, les mints, et surtout le nombre de
+    DESTINATAIRES DISTINCTS. C'est ce dernier chiffre qui repond a la vraie
+    question : les NFT etaient-ils dans les wallets des JOUEURS, ou dans un
+    coffre ?"""
+    print("\n═══ 6. RECENSEMENT NFT DE TOUTE L'ERE ═══", flush=True)
+    debut = int(os.environ.get("GO_NFT_DEBUT", "9000000"))    # ~2019
+    fin = int(os.environ.get("GO_NFT_FIN", "24500000"))       # ~2022-03
+    pas = int(os.environ.get("GO_NFT_PAS", "100000"))
+    contrats = {}
+    n = 0
+    b = debut
+    while b <= fin:
+        f = min(fin, b + pas - 1)
+        r = _post({"jsonrpc": "2.0", "id": 1, "method": "eth_getLogs",
+                   "params": [{"fromBlock": hex(b), "toBlock": hex(f),
+                               "topics": [[TRANSFER, TRANSFER_SINGLE,
+                                           TRANSFER_BATCH]]}]})
+        if not isinstance(r, list):
+            print(f"  tranche {b}-{f} : refus -> {r}", flush=True)
+            b = f + 1
+            continue
+        for lg in r:
+            tp = lg.get("topics") or []
+            if not tp:
+                continue
+            sig = tp[0].lower()
+            a = (lg.get("address") or "").lower()
+            if sig == TRANSFER and len(tp) < 4:
+                continue                     # ERC-20 : hors sujet
+            c = contrats.setdefault(a, {"norme": "", "n": 0, "mints": 0,
+                                        "vers": set(), "premier": None,
+                                        "dernier": None})
+            c["norme"] = ("ERC-1155" if sig != TRANSFER else "ERC-721")
+            c["n"] += 1
+            nb = int(lg["blockNumber"], 16)
+            c["premier"] = nb if c["premier"] is None else min(c["premier"], nb)
+            c["dernier"] = nb if c["dernier"] is None else max(c["dernier"], nb)
+            # ERC-721 : topics = [sig, from, to, id] ; ERC-1155 : [sig, op, from, to]
+            i_from, i_to = (1, 2) if sig == TRANSFER else (2, 3)
+            if len(tp) > i_to:
+                src, dst = _adr(tp[i_from]), _adr(tp[i_to])
+                if src == "0x" + "0" * 40:
+                    c["mints"] += 1
+                c["vers"].add(dst)
+        n += 1
+        if n % 25 == 0:
+            print(f"  ... bloc {f} ({len(contrats)} contrat(s) NFT vus)",
+                  flush=True)
+        b = f + 1
+        time.sleep(PAUSE)
+
+    print(f"\n  {len(contrats)} contrat(s) NFT sur toute l'ere :", flush=True)
+    for a, c in sorted(contrats.items(), key=lambda x: -x[1]["n"]):
+        marque = "  <-- 'Veve Token'" if a == VEVE_721 else ""
+        print(f"    {a}  {c['norme']}{marque}")
+        print(f"        {c['n']} transferts · {c['mints']} mints · "
+              f"{len(c['vers'])} DESTINATAIRES DISTINCTS")
+        print(f"        blocs {c['premier']} -> {c['dernier']} "
+              f"({iso(bloc_ts(c['premier']))} -> {iso(bloc_ts(c['dernier']))})")
+        if len(c["vers"]) <= 3:
+            for d in sorted(c["vers"]):
+                tag = "  (le coffre)" if d == COFFRE else ""
+                print(f"          destinataire : {d}{tag}")
+        time.sleep(PAUSE)
+    print()
+    gros = [c for c in contrats.values() if len(c["vers"]) > 100]
+    if gros:
+        print("  ✅ Des NFT circulaient DANS LES WALLETS des joueurs "
+              "(destinataires nombreux)")
+        print("     -> la propriete de 2021 est RECONSTRUCTIBLE. Preda avait "
+              "raison.")
+    elif contrats:
+        print("  ⚠️ Des NFT existent bien, mais leurs destinataires se comptent")
+        print("     sur les doigts : ils n'ont JAMAIS quitte les coffres VeVe.")
+        print("     -> c'etait du CUSTODIAL. La propriete de l'epoque vivait")
+        print("        dans la base de donnees de VeVe, pas sur la chaine.")
+    else:
+        print("  Aucun NFT trouve sur toute l'ere (a re-verifier).")
+
+
 def main() -> int:
     print(f"SONDE GOCHAIN — steps={STEPS}", flush=True)
     print(f"  OMI    : {OMI}")
@@ -313,6 +413,8 @@ def main() -> int:
         etape_nft()
     if do("caisse"):
         etape_caisse()
+    if do("nft_ere"):
+        etape_nft_ere()
     print("\n═══ FIN ═══", flush=True)
     return 0
 
