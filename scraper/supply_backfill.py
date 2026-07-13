@@ -145,6 +145,26 @@ def _query(root: str, mcp_field: str) -> str:
             f"{root}(id:$id){{ id totalIssued storePrice description{extra} }} }}")
 
 
+def _prix(x: Any, is_comic: bool) -> Any:
+    """Le prix boutique ramene en GEMS (1 gem ~ 1 $).
+
+    VeVe melange DEUX echelles dans `storePrice` cote COMICS :
+      - vieux comics vendus en GEMS           -> 10, 15, 20
+      - comics recents vendus en FIAT, CENTIMES -> 699, 798, 1499
+    Preuves : Captain America Comics #7 = 699 et la carte Discord de Preda dit
+    « 7 gems » ; sur Cheetara #2, my-nft-tracker dit 7.98 quand GraphQL dit 798.
+    Au-dela de 100 = centimes (un comic n'a jamais coute 100 gems). IDEMPOTENT.
+    ⚠️ Pas pour les collectibles : un collectible a 1 500 gems, ça existe.
+    """
+    if x in (None, ""):
+        return x
+    try:
+        v = float(x)
+    except (TypeError, ValueError):
+        return x
+    return round(v / 100, 2) if (is_comic and v >= 100) else v
+
+
 def fetch_one(root: str, item_id: str, mcp_field: str) -> Dict[str, Any]:
     data, err = _post(_query(root, mcp_field), item_id)
     if data is None:
@@ -154,7 +174,8 @@ def fetch_one(root: str, item_id: str, mcp_field: str) -> Dict[str, Any]:
         return {"_error": "entity not found"}
     out: Dict[str, Any] = {
         "supply": node.get("totalIssued"),
-        "store_price_gems": node.get("storePrice"),
+        "store_price_gems": _prix(node.get("storePrice"),
+                                  root == "publicComicType"),
         "description": node.get("description") or "",
     }
     if mcp_field:
