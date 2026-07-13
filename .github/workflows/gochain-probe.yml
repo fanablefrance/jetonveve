@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
     inputs:
       steps:
-        description: "Etapes (all, ou liste : diag,rpc,dates,logs,nft,caisse)"
+        description: "Etapes (ex: nft_ere — recensement NFT de toute l'ere. all = tout)"
         required: false
         default: "all"
       rpc:
@@ -30,7 +30,7 @@ on:
 jobs:
   sonde:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
