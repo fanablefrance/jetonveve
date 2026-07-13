@@ -33,6 +33,8 @@ Env : GOOGLE_SERVICE_ACCOUNT_JSON, SHEET_ID, CLASSEMENT_SHEET_ID
 
 from __future__ import annotations
 
+import csv
+import io
 import json
 import os
 import re
@@ -43,6 +45,7 @@ from difflib import SequenceMatcher
 from typing import Any, Dict, List, Optional, Tuple
 
 import gspread
+import requests
 from google.oauth2.service_account import Credentials
 
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets",
@@ -173,6 +176,34 @@ def match_one(nom: str, supply: Optional[float], era: str,
 
 # ---------------------------------------------------------------------------
 
+def _sheet_id(raw: str) -> str:
+    """Accepte l'ID nu OU l'URL complete du sheet."""
+    raw = str(raw or "").strip()
+    m = re.search(r"/d/([a-zA-Z0-9_-]{20,})", raw)
+    return m.group(1) if m else raw
+
+
+def read_classement(classement_id: str, tab: str = "") -> List[Dict[str, Any]]:
+    """Lit le classement de Preda en CSV PUBLIC (gviz), sans authentification.
+
+    POURQUOI PAS gspread : le compte de service du pipeline n'est pas partage sur
+    ce sheet-la, et l'API repond alors une page d'erreur HTML que gspread essaie
+    de parser en JSON (le `JSONDecodeError` du 1er run). Le sheet etant deja
+    accessible par lien, gviz suffit — et il n'y a aucun partage a gerer.
+    """
+    url = (f"https://docs.google.com/spreadsheets/d/{classement_id}"
+           f"/gviz/tq?tqx=out:csv")
+    if tab:
+        url += f"&sheet={requests.utils.quote(tab)}"
+    r = requests.get(url, timeout=30)
+    if r.status_code != 200 or r.text.lstrip().startswith("<"):
+        raise RuntimeError(
+            f"Classement illisible (HTTP {r.status_code}). Verifier l'ID et que le "
+            f"sheet est bien partage « tous ceux qui ont le lien ».")
+    rows = list(csv.DictReader(io.StringIO(r.text)))
+    return [r for r in rows if str(r.get("Nom", "") or "").strip()]
+
+
 def _client() -> gspread.Client:
     raw = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")
     if not raw:
@@ -213,21 +244,18 @@ def load_veve_series(sh) -> Dict[int, List[Dict[str, Any]]]:
 def main() -> int:
     t0 = time.time()
     sheet_id = os.environ.get("SHEET_ID")
-    classement_id = os.environ.get("CLASSEMENT_SHEET_ID")
+    classement_id = _sheet_id(os.environ.get("CLASSEMENT_SHEET_ID", ""))
     if not sheet_id or not classement_id:
         print("ERROR: SHEET_ID et CLASSEMENT_SHEET_ID sont requis.", file=sys.stderr)
         return 2
     gc = _client()
     sh = gc.open_by_key(sheet_id)
 
-    # --- le classement manuel de Preda (lecture seule) ---
-    csh = gc.open_by_key(classement_id)
+    # --- le classement manuel de Preda (lecture seule, CSV public) ---
     tab = os.environ.get("CLASSEMENT_TAB", "").strip()
-    cws = csh.worksheet(tab) if tab else csh.get_worksheet(0)
-    prows = cws.get_all_records()
-    prows = [r for r in prows if str(r.get("Nom", "") or "").strip()]
-    print(f"Classement de Preda : {len(prows)} lignes (onglet « {cws.title} »).",
-          flush=True)
+    prows = read_classement(classement_id, tab)
+    print(f"Classement de Preda : {len(prows)} lignes"
+          f"{f' (onglet « {tab} »)' if tab else ''}.", flush=True)
 
     by_issue = load_veve_series(sh)
 
