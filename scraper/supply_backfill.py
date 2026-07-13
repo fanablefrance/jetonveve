@@ -70,7 +70,10 @@ HEADERS = {
 COMICS_TAB = "🟢C-COMICS"
 COLLECT_TAB = "🔵C-COLLECTIBLE"
 
-NEW_COLS = ["supply", "store_price_gems", "mcp_priority", "veve_exclusive"]
+# PAS de mcp_priority : le cout en points de l'acces prioritaire est CONSTANT
+# (5 000) et VeVe ne l'expose nulle part (30 champs sondes). La sonde tourne quand
+# meme — si VeVe l'exposait un jour, le log le dirait.
+NEW_COLS = ["supply", "store_price_gems", "veve_exclusive"]
 
 # Noms candidats pour les points MCP a depenser (acces prioritaire au drop).
 MCP_CANDIDATES = [
