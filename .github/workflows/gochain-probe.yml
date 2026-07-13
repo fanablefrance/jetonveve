@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
     inputs:
       steps:
-        description: "Etapes (all, ou liste : rpc,dates,logs,nft,caisse)"
+        description: "Etapes (all, ou liste : diag,rpc,dates,logs,nft,caisse)"
         required: false
         default: "all"
       rpc:
