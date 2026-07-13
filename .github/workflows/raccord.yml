@@ -1,0 +1,51 @@
+name: Raccord classement -> series_uuid
+
+# CHANTIER B : rapproche les 449 lignes du classement manuel de Preda (sheet
+# separe) des series_uuid du catalogue VeVe, et ecrit l'onglet 🔗A-RACCORD du
+# Sheet principal.
+#
+# Le classement de Preda est lu en LECTURE SEULE : aucune de ses lignes ne bouge.
+#
+# L'ID du classement n'est PAS ecrit en dur (ce repo est public) : le coller au
+# lancement. C'est l'identifiant dans l'URL du sheet, entre /d/ et /edit.
+#
+# A relancer autant de fois qu'on veut : l'onglet est reecrit a chaque run. La
+# colonne `valide` que Preda remplit a la main est donc a recopier ailleurs AVANT
+# de relancer — ou, plus simple : ne relancer que tant qu'on n'a rien valide.
+
+on:
+  workflow_dispatch:
+    inputs:
+      classement_id:
+        description: "ID du Google Sheet du classement (entre /d/ et /edit)"
+        required: true
+      classement_tab:
+        description: "Onglet du classement (vide = le premier)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: raccord
+  cancel-in-progress: false
+
+jobs:
+  raccord:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install gspread==6.1.2 google-auth==2.32.0
+
+      - name: Raccord
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          SHEET_ID: ${{ secrets.SHEET_ID }}
+          CLASSEMENT_SHEET_ID: ${{ github.event.inputs.classement_id }}
+          CLASSEMENT_TAB: ${{ github.event.inputs.classement_tab }}
+        run: python -m scraper.raccord
