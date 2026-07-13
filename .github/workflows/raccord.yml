@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
     inputs:
       classement_id:
-        description: "ID du Google Sheet du classement (entre /d/ et /edit)"
+        description: "ID du sheet du classement (l'URL complete marche aussi)"
         required: true
       classement_tab:
         description: "Onglet du classement (vide = le premier)"
@@ -40,7 +40,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install gspread==6.1.2 google-auth==2.32.0
+      # requests : le classement de Preda est lu en CSV public (gviz), pas via
+      # l'API Sheets — le compte de service n'est pas partage sur ce sheet-la.
+      - run: pip install gspread==6.1.2 google-auth==2.32.0 requests==2.32.3
 
       - name: Raccord
         env:
