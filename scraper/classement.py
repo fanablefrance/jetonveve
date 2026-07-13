@@ -1,39 +1,34 @@
 """
-🏆A-CLASSEMENT — une ligne par SERIE comic VeVe. TOUT le catalogue (4 195 series).
+🏆A-CLASSEMENT — COMICS (1 ligne par serie) + COLLECTIBLES (1 ligne par piece).
 
-LA PAGE EST EN BLOCS
-    1. 🆕 A NOTER — les comics des 7 derniers jours + les drops a venir, PAS ENCORE
-       notes et PAS du mercredi. C'est le module de travail : tout ce qu'il faut pour
-       noter est sur la ligne. La note se calcule EN DIRECT (formules). Un comic sort
-       du module des que sa valeur ou sa note est remplie.
-    2. 🏆 CLASSEMENT — tout le reste : les notes en haut (tries par score), puis les
-       ⚠️ non notes (fond rouge pale, qui s'efface des que tu remplis), puis les 📅
-       du mercredi tout en bas.
-    (3. un module COLLECTIBLES viendra ici — l'assemblage est deja fait par blocs.)
+LA PAGE
+    1. 🆕 A NOTER — COMICS       les 7 derniers jours + les drops a venir, non notes,
+                                 hors mercredi (VVBD : Preda ne les note pas).
+    2. 🎨 A NOTER — COLLECTIBLES les 7 derniers jours + a venir, non notes, hors AP.
+    3. 🏆 CLASSEMENT             tout le reste, trie par score. Les ⚠️ non notes en
+                                 fond rouge (qui s'efface des qu'on remplit), les 📅
+                                 du mercredi et les 🎨 AP en bas, silencieux.
 
-LE MERCREDI
-    Preda ne note pas les comics du VeVe Comic Book Day (le mercredi) : ni dans le
-    module, ni en alerte. Ils restent presents (etat 📅) mais ne reclament rien.
-    C'est aussi ce qui rend le catalogue complet tenable : sans ca, 3 611 comics
-    jamais notes auraient tous vire au rouge — et une alerte qui s'allume 3 611 fois
-    n'est plus une alerte.
+DEUX GRILLES, UNE SEULE PAGE
+    Un comic s'ancre sur la VALEUR IRL du 9.8 physique. Un collectible n'a pas
+    d'equivalent : il s'ancre sur le FLOOR du marche — mais seulement si ce floor
+    est adosse a assez d'offres.
+
+    COMIC        note = bande(valeur IRL, x3) + crans(supply) + bonus_perso
+    COLLECTIBLE  note = bande(floor, x3) + crans(supply) + FA/FE + licence + bonus
+                 floor retenu seulement si >= 7 offres (1 085 collectibles sur 2 656).
+                 Sans floor fiable : on part d'un niveau NEUTRE et seuls le supply,
+                 la FA/FE et la licence decident. On n'invente pas une valeur.
+
+    LE FLOOR DES COMICS EST ECARTE. Mesure faite le 13/07 sur 80 014 relevés : le
+    nombre d'offres moyen est de 0,04 (maximum 4). Un prix affiche adosse a zero
+    offre n'est pas un prix. Chez les collectibles : 9,5 offres en moyenne, jusqu'a
+    147 — la, ça veut dire quelque chose.
 
 CE QUI EST A TOI (jamais ecrase)
     valeur_irl_98 · fa_key · bonus_perso · note · commentaire
-    Relus par NOM DE COLONNE (jamais par position — leçon du 13/07) et revalides :
-    une saisie qui ne ressemble pas a ce qu'elle devrait etre est rejetee et reprise
-    depuis 🔗A-RACCORD. Une page abimee se repare donc toute seule.
-
-LA GRILLE (arretee avec Preda le 13/07)
-    note = bande de VALEUR IRL 9.8 (un cran par x3) DECALEE par le supply :
-        < 1 000 -> +2 · 1 000-2 000 -> +1 · 2 000-5 000 -> 0 (normal)
-        5 000-10 000 -> -1 · 10 000-15 000 -> -2 · > 15 000 -> -3
-    + bonus_perso (± crans, a la main : le personnage vaut parfois plus que son comic)
-    L'echelle de valeur n'est PAS plafonnee : le niveau peut depasser AAA avant que le
-    supply ne le fasse redescendre. Sans ca, Amazing Fantasy #15 (5 M$, supply 10 000)
-    ne pouvait mecaniquement plus etre AAA.
-    Ancrages verifies : CA Comics #7 -> AA · ASM #14 Bouffon Vert -> BBB ·
-    Fallen Son -> C · Amazing Fantasy #15 -> AAA.
+    Relus par NOM DE COLONNE (jamais par position) et revalides : une saisie qui ne
+    ressemble pas a ce qu'elle devrait etre est rejetee et reprise depuis 🔗A-RACCORD.
 
 Env : GOOGLE_SERVICE_ACCOUNT_JSON, SHEET_ID, JOURS_RECENTS (7)
 """
@@ -46,7 +41,7 @@ import math
 import os
 import sys
 import time
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import gspread
 from google.oauth2.service_account import Credentials
@@ -54,139 +49,241 @@ from google.oauth2.service_account import Credentials
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
 COMICS_TAB = "🟢C-COMICS"
+COLLECT_TAB = "🔵C-COLLECTIBLE"
+DYN_STATE_TAB = "_DynState"          # dernier floor connu par uuid (ecrit par floors.py)
 RACCORD_TAB = "🔗A-RACCORD"
 CLASSEMENT_TAB = "🏆A-CLASSEMENT"
 
 # ---------------------------------------------------------------------------
-# LA GRILLE — les 3 constantes a bouger pour durcir / adoucir
+# LES GRILLES — tout se regle ici
 # ---------------------------------------------------------------------------
 ECHELLE = ["C", "CC", "CCC", "B", "BB", "BBB", "A", "AA", "AAA"]
-BASE_VALEUR = 35.0        # frontiere C / CC a supply neutre
-RATIO = 3.0               # un cran de note = x3 sur la valeur IRL
-PALIERS_SUPPLY = [        # (supply STRICTEMENT INFERIEUR A, crans)
-    (1000, +2),           # tres avantage
-    (2001, +1),           # avantage
-    (5001, 0),            # normal
-    (10001, -1),          # penalisant (7 500 est ici)
-    (15001, -2),
-    (float("inf"), -3),   # tres penalisant
+RATIO = 3.0                     # un cran = x3 sur l'ancre de valeur
+
+BASE_COMIC = 35.0               # frontiere C/CC d'un comic, en $ (valeur du 9.8)
+PALIERS_COMIC = [               # (supply STRICTEMENT INFERIEUR A, crans)
+    (1000, +2), (2001, +1), (5001, 0), (10001, -1), (15001, -2), (float("inf"), -3),
 ]
 
-JOUR_VVBD = 2             # mercredi (lundi = 0) : le VeVe Comic Book Day
+BASE_COLLECT = 5.0              # frontiere C/CC d'un collectible, en gems (floor)
+PALIERS_COLLECT = [             # l'echelle des collectibles n'a rien a voir : les
+    (100, +4),                  # supplys vont de 1 (les 1/1) a ~30 000
+    (251, +3), (1001, +2), (2501, +1), (5001, 0), (10001, -1), (30001, -2),
+    (float("inf"), -3),
+]
+OFFRES_MINI = 7                 # en dessous, le floor n'est pas une donnee
+FLOOR_MAX = 1_000_000           # au-dela c'est une offre delirante (cf. le Golden MYO
+                                # a 111 Md$) : un floor est un prix DEMANDE.
+NIVEAU_SANS_FLOOR = 3           # le niveau du collectible MOYEN qui a un floor fiable
+                                # (floor moyen 52 gems -> niveau 3). Sans marche, on
+                                # part de la mediane, pas de zero.
+
+CRANS_EDITION = {"FA": 3, "FE": 2, "CE": 2}      # AP = jamais note (voir ci-dessous)
+LICENCES_BONUS = {"Marvel": 1, "Star Wars": 1, "DC Direct": 1, "DC": 1,
+                  "Disney": 1, "Pixar": 1}
+EDITION_NON_NOTEE = "AP"        # Artist Proof : des 1/1 que VeVe range en collectibles
+                                # alors que ce sont des ARTWORKS. Preda ne les note pas.
+
+JOUR_VVBD = 2                   # mercredi : le VeVe Comic Book Day, jamais note
 
 MANUELLES = ["valeur_irl_98", "fa_key", "bonus_perso", "note", "commentaire"]
 
 HEADER = [
-    "etat", "veve_series_name", "date_drop", "era", "supply", "prix_gems",
-    "cover_exclusive", "valeur_irl_98", "fa_key", "bonus_perso", "note",
+    "etat", "type", "nom", "date_drop", "era", "supply", "prix_gems",
+    "edition_type", "cover_exclusive", "floor", "offres",
+    "valeur_irl_98", "fa_key", "bonus_perso", "note",
     "note_suggeree", "ecart", "valeur_par_edition", "multiple_entree", "score",
-    "commentaire", "nb_raretes", "veve_brand", "veve_licensor", "start_year",
-    "veve_url", "series_uuid",
+    "commentaire", "rarity", "nb_raretes", "veve_brand", "veve_licensor",
+    "start_year", "veve_url", "uuid",
 ]
 I = {c: i for i, c in enumerate(HEADER)}
-NB_COL = len(HEADER)
-DERNIERE = chr(ord("A") + NB_COL - 1)          # W
+NB_COL = len(HEADER)                             # 28 -> derniere colonne = AB
+CALC = ["note_suggeree", "ecart", "valeur_par_edition", "multiple_entree", "score"]
 
-A_VENIR, RECENT, ALERTE, VVBD = "🔴", "🆕", "⚠️", "📅"
+A_VENIR, RECENT, ALERTE, VVBD, ARTWORK = "🔴", "🆕", "⚠️", "📅", "🎨"
 
 VIOLET = {"red": 0.42, "green": 0.35, "blue": 0.66}
 BLANC = {"red": 1.0, "green": 1.0, "blue": 1.0}
-FOND_MODULE = {"red": 1.0, "green": 0.94, "blue": 0.85}
+FOND_COMICS = {"red": 1.0, "green": 0.94, "blue": 0.85}    # orange clair
+FOND_COLLECT = {"red": 0.86, "green": 0.93, "blue": 1.0}   # bleu clair
 FOND_ENTETE = {"red": 0.91, "green": 0.88, "blue": 0.96}
 FOND_METHODE = {"red": 0.96, "green": 0.96, "blue": 0.96}
 FOND_ALERTE = {"red": 0.99, "green": 0.89, "blue": 0.89}
 GRIS = {"red": 0.40, "green": 0.40, "blue": 0.40}
 
 URL_COMIC = "https://www.veve.me/collectibles/en/comics/{uuid}"
-_EPOCH = _dt.datetime(1899, 12, 30)             # jour 0 des dates Google Sheets
+URL_COLLECT = "https://www.veve.me/collectibles/en/collectibles/{uuid}"
+_EPOCH = _dt.datetime(1899, 12, 30)
 
 
-def _methode() -> str:
-    b = [BASE_VALEUR * (RATIO ** i) for i in range(8)]
-    bandes = " · ".join(f"{n} {v:,.0f}$".replace(",", " ")
-                        for n, v in zip(ECHELLE[1:], b))
-    return (
-        "MÉTHODE — la note part de la VALEUR IRL du comic physique en 9.8 "
-        f"(un cran par ×{RATIO:.0f}), puis le SUPPLY la décale : "
-        "moins de 1 000 → +2 crans · 1 000-2 000 → +1 · 2 000-5 000 → 0 (normal) · "
-        "5 000-10 000 → −1 · 10 000-15 000 → −2 · plus de 15 000 → −3.    "
-        f"Bandes à supply neutre : C sous {BASE_VALEUR:,.0f}$ · {bandes}.    "
-        "À REMPLIR : valeur_irl_98 (prix du 9.8 physique), fa_key (la première "
-        "apparition / le fait marquant), bonus_perso (± crans quand le personnage "
-        "vaut plus que son comic : Venom +2, Miles Morales +2), puis note. "
-        "La note suggérée se recalcule pendant que tu tapes. Le comic quitte ce "
-        "module dès que sa valeur ou sa note est remplie. "
-        "Les comics du mercredi (VeVe Comic Book Day) n'entrent jamais ici."
-    ).replace(",", " ")
+def _col(i: int) -> str:
+    """0 -> A, 25 -> Z, 26 -> AA."""
+    s, i = "", i + 1
+    while i:
+        i, r = divmod(i - 1, 26)
+        s = chr(65 + r) + s
+    return s
+
+
+DERNIERE = _col(NB_COL - 1)
 
 
 # ---------------------------------------------------------------------------
-# Grille
+# Les grilles, en Python
 # ---------------------------------------------------------------------------
 
-def crans_supply(supply: Optional[float]) -> int:
+def _crans(supply: Optional[float], paliers) -> int:
     if not supply or supply <= 0:
         return 0
-    for borne, crans in PALIERS_SUPPLY:
+    for borne, crans in paliers:
         if supply < borne:
             return crans
-    return PALIERS_SUPPLY[-1][1]
+    return paliers[-1][1]
 
 
-def niveau_valeur(valeur: float) -> int:
-    """NON PLAFONNE : le niveau peut depasser AAA, c'est le supply qui redescend."""
-    if valeur < BASE_VALEUR:
+def _niveau(valeur: float, base: float) -> int:
+    """NON PLAFONNE : le niveau peut depasser AAA, c'est le supply qui redescend.
+    Sans ca, Amazing Fantasy #15 (5 M$, supply 10 000) ne pouvait plus etre AAA."""
+    if valeur < base:
         return 0
-    return int(math.floor(math.log(valeur / BASE_VALEUR) / math.log(RATIO))) + 1
+    return int(math.floor(math.log(valeur / base) / math.log(RATIO))) + 1
 
 
-def note_calculee(valeur: Optional[float], supply: Optional[float],
-                  bonus: Optional[float]) -> str:
-    if not valeur or not supply or supply <= 0:
+def floor_fiable(floor: Optional[float], offres: Optional[float]) -> bool:
+    return bool(floor and offres and offres >= OFFRES_MINI and 0 < floor < FLOOR_MAX)
+
+
+def note_comic(valeur, supply, bonus=0) -> str:
+    if not valeur or not supply:
         return ""
-    k = niveau_valeur(valeur) + crans_supply(supply) + int(bonus or 0)
-    return ECHELLE[max(0, min(len(ECHELLE) - 1, k))]
+    k = _niveau(valeur, BASE_COMIC) + _crans(supply, PALIERS_COMIC) + int(bonus or 0)
+    return ECHELLE[max(0, min(8, k))]
 
 
-def score_brut(valeur: Optional[float], supply: Optional[float]) -> Any:
-    if not valeur or not supply or supply <= 0:
+def note_collectible(floor, offres, supply, edition, licencier, bonus=0) -> str:
+    if str(edition).strip().upper() == EDITION_NON_NOTEE or not supply:
         return ""
-    return round(valeur * (RATIO ** crans_supply(supply)), 1)
+    niv = (_niveau(floor, BASE_COLLECT) if floor_fiable(floor, offres)
+           else NIVEAU_SANS_FLOOR)
+    k = (niv + _crans(supply, PALIERS_COLLECT)
+         + CRANS_EDITION.get(str(edition).strip().upper(), 0)
+         + LICENCES_BONUS.get(str(licencier).strip(), 0) + int(bonus or 0))
+    return ECHELLE[max(0, min(8, k))]
 
 
-# --- les memes formules, mais VIVANTES dans le Sheet -----------------------
-# La note se recalcule pendant que Preda tape. Elles sont GENEREES depuis les
-# constantes ci-dessus : la grille du Sheet ne peut pas diverger de celle du Python.
+def score_comic(valeur, supply) -> Any:
+    if not valeur or not supply:
+        return ""
+    return round(valeur * (RATIO ** _crans(supply, PALIERS_COMIC)), 1)
+
+
+def score_collectible(floor, offres, supply, edition, licencier) -> Any:
+    if not supply or not floor_fiable(floor, offres):
+        return ""
+    crans = (_crans(supply, PALIERS_COLLECT)
+             + CRANS_EDITION.get(str(edition).strip().upper(), 0)
+             + LICENCES_BONUS.get(str(licencier).strip(), 0))
+    return round(floor * (RATIO ** crans), 1)
+
+
+# --- les memes grilles, VIVANTES dans le Sheet -----------------------------
+# La note se recalcule pendant que Preda tape. Les formules sont GENEREES depuis les
+# constantes ci-dessus : le Sheet ne peut pas diverger du Python.
 # ⚠️ Locale FR : separateur « ; » (une virgule donne #ERROR!).
 
-def _cascade_supply(col: str) -> str:
-    bornes = [(b, c) for b, c in PALIERS_SUPPLY if b != float("inf")]
-    f = str(PALIERS_SUPPLY[-1][1])
+def _f_crans(col: str, paliers) -> str:
+    bornes = [(b, c) for b, c in paliers if b != float("inf")]
+    f = str(paliers[-1][1])
     for borne, crans in reversed(bornes):
         f = f"IF({col}<{borne:.0f};{crans};{f})"
     return f
 
 
-def _niveau_formule(col: str) -> str:
-    return (f"IF({col}<{BASE_VALEUR:.0f};0;"
-            f"FLOOR(LN({col}/{BASE_VALEUR:.0f})/LN({RATIO:.0f}))+1)")
+def _f_niveau(col: str, base: float) -> str:
+    return f"IF({col}<{base:.0f};0;FLOOR(LN({col}/{base:.0f})/LN(3))+1)"
+
+
+def _f_edition(col: str) -> str:
+    f = "0"
+    for ed, crans in CRANS_EDITION.items():
+        f = f'IF({col}="{ed}";{crans};{f})'
+    return f
+
+
+def _f_licence(col: str) -> str:
+    noms = ";".join(f'{col}="{n}"' for n in LICENCES_BONUS)
+    return f"IF(OR({noms});1;0)"
 
 
 def formules(r: int) -> List[str]:
-    """Les 5 colonnes calculees de la ligne r (L a P)."""
-    h, e, j, k, n, f, l = (f"$H{r}", f"$E{r}", f"$J{r}", f"$K{r}",
-                           f"$N{r}", f"$F{r}", f"$L{r}")
+    """Les 5 colonnes calculees de la ligne r. Elles BRANCHENT sur le type."""
+    typ, sup, gem = f"$B{r}", f"$F{r}", f"$G{r}"
+    ed, flo, off = f"$H{r}", f"$J{r}", f"$K{r}"
+    val, bon, note = f"$L{r}", f"$N{r}", f"$O{r}"
+    sug, par_ed, lic = f"$P{r}", f"$R{r}", f"$Y{r}"
     ech = "{" + ";".join(f'"{x}"' for x in ECHELLE) + "}"
-    vide = f'OR({h}="";{e}="")'
-    cran = (f"MIN({len(ECHELLE)};MAX(1;1+{_niveau_formule(h)}"
-            f"+{_cascade_supply(e)}+IF({j}=\"\";0;{j})))")
-    return [
-        f'=IF({vide};"";INDEX({ech};{cran}))',
-        f'=IF(OR({k}="";{l}="");"";MATCH({k};{ech};0)-MATCH({l};{ech};0))',
-        f'=IF({vide};"";{h}/{e})',
-        f'=IF(OR({n}="";{f}="");"";{n}/{f})',
-        f'=IF({vide};"";{h}*POWER({RATIO:.0f};{_cascade_supply(e)}))',
-    ]
+    b = f'IF({bon}="";0;{bon})'
+
+    k_comic = (f"1+{_f_niveau(val, BASE_COMIC)}+{_f_crans(sup, PALIERS_COMIC)}+{b}")
+    ancre = (f'IF(AND({off}>={OFFRES_MINI};{flo}>0;{flo}<{FLOOR_MAX});'
+             f'{_f_niveau(flo, BASE_COLLECT)};{NIVEAU_SANS_FLOOR})')
+    k_coll = (f"1+{ancre}+{_f_crans(sup, PALIERS_COLLECT)}"
+              f"+{_f_edition(ed)}+{_f_licence(lic)}+{b}")
+    borne = "MIN({n};MAX(1;{k}))".format(n=len(ECHELLE), k="{k}")
+
+    note_sug = (
+        f'=IF({typ}="comic";'
+        f'  IF(OR({val}="";{sup}="");"";INDEX({ech};{borne.format(k=k_comic)}));'
+        f'  IF(OR({sup}="";{ed}="{EDITION_NON_NOTEE}");"";'
+        f'     INDEX({ech};{borne.format(k=k_coll)})))'
+    )
+    ecart = f'=IF(OR({note}="";{sug}="");"";MATCH({note};{ech};0)-MATCH({sug};{ech};0))'
+    par_edition = f'=IF(OR({typ}<>"comic";{val}="";{sup}="");"";{val}/{sup})'
+    # le multiple = ce que ça vaut / ce que tu l'as paye. Pour un comic : la valeur
+    # adossee a chaque edition. Pour un collectible : le floor lui-meme.
+    multiple = (f'=IF({gem}="";"";IF({typ}="comic";IF({par_ed}="";"";{par_ed}/{gem});'
+                f'IF(OR({flo}="";{off}<{OFFRES_MINI});"";{flo}/{gem})))')
+    score = (
+        f'=IF({typ}="comic";'
+        f'  IF(OR({val}="";{sup}="");"";{val}*POWER(3;{_f_crans(sup, PALIERS_COMIC)}));'
+        f'  IF(OR({sup}="";{flo}="";{off}<{OFFRES_MINI};{flo}>={FLOOR_MAX});"";'
+        f'     {flo}*POWER(3;{_f_crans(sup, PALIERS_COLLECT)}'
+        f'+{_f_edition(ed)}+{_f_licence(lic)})))'
+    )
+    return [note_sug, ecart, par_edition, multiple, score]
+
+
+def _methode_comics() -> str:
+    b = [BASE_COMIC * (RATIO ** i) for i in range(8)]
+    bandes = " · ".join(f"{n} {v:,.0f}$" for n, v in zip(ECHELLE[1:], b))
+    return (
+        "MÉTHODE COMICS — la note part de la VALEUR IRL du comic physique en 9.8 "
+        "(un cran par ×3), puis le SUPPLY la décale : moins de 1 000 → +2 crans · "
+        "1 000-2 000 → +1 · 2 000-5 000 → 0 · 5 000-10 000 → −1 · 10 000-15 000 → −2 · "
+        f"plus de 15 000 → −3.   Bandes à supply neutre : C sous {BASE_COMIC:,.0f}$ · "
+        f"{bandes}.   À REMPLIR : valeur_irl_98, fa_key, bonus_perso (± crans quand le "
+        "personnage vaut plus que son comic : Venom +2, Miles Morales +2), note. "
+        "Le comic quitte ce module dès que sa valeur ou sa note est remplie. "
+        "Les comics du mercredi (VeVe Comic Book Day) n'y entrent jamais. "
+        "Le FLOOR n'est pas utilisé pour les comics : 0,04 offre en moyenne — un prix "
+        "adossé à zéro offre n'est pas un prix."
+    ).replace(",", " ")
+
+
+def _methode_collectibles() -> str:
+    b = [BASE_COLLECT * (RATIO ** i) for i in range(8)]
+    bandes = " · ".join(f"{n} {v:,.0f}" for n, v in zip(ECHELLE[1:], b))
+    return (
+        "MÉTHODE COLLECTIBLES — pas de valeur IRL : l'ancre est le FLOOR du marché, "
+        f"retenu seulement s'il est adossé à au moins {OFFRES_MINI} offres. "
+        f"Bandes de floor (en gems) : C sous {BASE_COLLECT:,.0f} · {bandes}.   "
+        "Puis les décalages : SUPPLY (moins de 100 → +4 · 100-250 → +3 · 250-1 000 → "
+        "+2 · 1 000-2 500 → +1 · 2 500-5 000 → 0 · 5-10k → −1 · 10-30k → −2 · plus de "
+        "30k → −3) · ÉDITION (FA +3 · FE +2 · CE +2) · LICENCE (Marvel, Star Wars, DC, "
+        "Disney/Pixar : +1) · bonus_perso.   Sans floor fiable, on part d'un niveau "
+        "neutre et seuls le supply, la FA/FE et la licence décident — on n'invente pas "
+        "une valeur.   Les AP (Artist Proofs) sont des artworks 1/1 : jamais notés."
+    ).replace(",", " ")
 
 
 # ---------------------------------------------------------------------------
@@ -202,25 +299,22 @@ def _num(x: Any) -> Optional[float]:
         return None
 
 
-def prix_en_gems(x: Any) -> Optional[float]:
-    """Prix boutique d'un COMIC ramene en gems (1 gem ~ 1 $).
-
-    VeVe melange DEUX echelles dans `storePrice` : vieux comics en GEMS (10, 15, 20),
-    comics recents en FIAT et en CENTIMES (699, 798, 1499). Preuve : Captain America
-    Comics #7 = 699 au catalogue et la carte Discord de Preda dit « 7 gems ».
-    Au-dela de 100 = centimes. IDEMPOTENT. ⚠️ Comics seulement (un collectible a
-    1 500 gems, ça existe).
-    """
+def prix_en_gems(x: Any, is_comic: bool) -> Optional[float]:
+    """VeVe melange DEUX echelles dans `storePrice` cote COMICS : vieux comics en GEMS
+    (10, 15, 20), comics recents en FIAT et en CENTIMES (699, 798, 1499). Preuve :
+    Captain America Comics #7 = 699 au catalogue, et la carte Discord de Preda dit
+    « 7 gems ». Au-dela de 100 = centimes. IDEMPOTENT.
+    ⚠️ Comics seulement : un collectible a 1 500 gems, ça existe."""
     v = _num(x)
     if v is None:
         return None
-    return round(v / 100, 2) if v >= 100 else v
+    return round(v / 100, 2) if (is_comic and v >= 100) else v
 
 
 def _date(x: Any) -> Optional[_dt.datetime]:
-    """⚠️ Le catalogue est lu en UNFORMATTED (obligatoire : locale FR, "6,99" serait
-    numerise en 699). Dans ce mode une cellule DATE revient en NUMERO DE SERIE
-    Google (46 212,625), pas en texte."""
+    """⚠️ Les catalogues sont lus en UNFORMATTED (obligatoire : locale FR, "6,99"
+    serait numerise en 699). Dans ce mode une DATE revient en numero de serie Google
+    (46 212,625), pas en texte."""
     if x in (None, ""):
         return None
     if isinstance(x, (int, float)):
@@ -240,14 +334,10 @@ def _date(x: Any) -> Optional[_dt.datetime]:
 def _era(annee: Optional[int]) -> str:
     if not annee:
         return ""
-    if annee < 1956:
-        return "Golden"
-    if annee < 1970:
-        return "Silver"
-    if annee < 1985:
-        return "Bronze"
-    if annee < 1992:
-        return "Copper"
+    for limite, nom in ((1956, "Golden"), (1970, "Silver"), (1985, "Bronze"),
+                        (1992, "Copper")):
+        if annee < limite:
+            return nom
     return "Modern"
 
 
@@ -259,7 +349,27 @@ def _client() -> gspread.Client:
         Credentials.from_service_account_info(json.loads(raw), scopes=SCOPES))
 
 
-def load_series(sh) -> Dict[str, Dict[str, Any]]:
+def load_floors(sh) -> Dict[str, Tuple[Optional[float], Optional[float]]]:
+    """{veve_uuid: (floor, offres)} depuis _DynState (dernier etat connu)."""
+    try:
+        rows = sh.worksheet(DYN_STATE_TAB).get_all_records(
+            value_render_option="UNFORMATTED_VALUE")
+    except gspread.WorksheetNotFound:
+        print("_DynState absent : aucun floor.", flush=True)
+        return {}
+    out = {}
+    for r in rows:
+        uid = str(r.get("veve_uuid", "") or "").strip()
+        if uid:
+            out[uid] = (_num(r.get("market_lowestOffer")),
+                        _num(r.get("market_totalListings")))
+    fiables = sum(1 for f, o in out.values() if floor_fiable(f, o))
+    print(f"Floors : {len(out)} items, {fiables} adosses a >= {OFFRES_MINI} offres.",
+          flush=True)
+    return out
+
+
+def load_comics(sh) -> Dict[str, Dict[str, Any]]:
     rows = sh.worksheet(COMICS_TAB).get_all_records(
         value_render_option="UNFORMATTED_VALUE")
     out: Dict[str, Dict[str, Any]] = {}
@@ -271,53 +381,72 @@ def load_series(sh) -> Dict[str, Dict[str, Any]]:
         if s is None:
             annee = _num(r.get("start_year"))
             s = out[uid] = {
-                "series_uuid": uid,
-                "veve_series_name": r.get("veve_series_name", ""),
+                "uuid": uid, "type": "comic",
+                "nom": r.get("veve_series_name", ""),
                 "date_drop": _date(r.get("releaseDate")),
+                "era": _era(int(annee) if annee else None),
                 "supply": _num(r.get("supply")),
-                "prix_gems": prix_en_gems(r.get("store_price_gems")),
-                "cover_exclusive": r.get("veve_exclusive", ""),
+                "prix_gems": prix_en_gems(r.get("store_price_gems"), True),
+                "edition_type": "", "cover_exclusive": r.get("veve_exclusive", ""),
+                "floor": None, "offres": None, "rarity": "",
                 "veve_brand": r.get("veve_brand", ""),
                 "veve_licensor": r.get("veve_licensor", ""),
                 "start_year": int(annee) if annee else "",
-                "veve_url": URL_COMIC.format(uuid=uid),
-                "nb_raretes": 0,
+                "veve_url": URL_COMIC.format(uuid=uid), "nb_raretes": 0,
             }
         s["nb_raretes"] += 1
-
     mercredi = sum(1 for s in out.values()
                    if s["date_drop"] and s["date_drop"].weekday() == JOUR_VVBD)
-    dernier = max((s["date_drop"] for s in out.values() if s["date_drop"]), default=None)
-    print(f"Catalogue : {len(out)} series comics.", flush=True)
-    print(f"  sans supply : {sum(1 for s in out.values() if not s['supply'])} "
-          f"(fiches delistees chez VeVe)", flush=True)
-    print(f"  du mercredi (VVBD, jamais a noter) : {mercredi}", flush=True)
-    print(f"  drop le plus recent connu : "
-          f"{dernier.strftime('%d/%m/%Y %H:%M') if dernier else '-'}", flush=True)
+    print(f"Comics : {len(out)} series ({mercredi} du mercredi, jamais notees).",
+          flush=True)
     return out
 
 
-def load_manuel(sh, series: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
-    """Les saisies : la PAGE d'abord (c'est la que Preda tape), 🔗A-RACCORD ensuite
-    pour amorcer ce qui manque."""
-    manuel: Dict[str, Dict[str, Any]] = {}
+def load_collectibles(sh, floors) -> Dict[str, Dict[str, Any]]:
+    rows = sh.worksheet(COLLECT_TAB).get_all_records(
+        value_render_option="UNFORMATTED_VALUE")
+    out: Dict[str, Dict[str, Any]] = {}
+    for r in rows:
+        uid = str(r.get("veve_uuid", "") or "").strip()
+        if not uid:
+            continue
+        f, o = floors.get(uid, (None, None))
+        out[uid] = {
+            "uuid": uid, "type": "collectible", "nom": r.get("name", ""),
+            "date_drop": _date(r.get("releaseDate")),
+            "era": "", "supply": _num(r.get("supply")),
+            "prix_gems": prix_en_gems(r.get("store_price_gems"), False),
+            "edition_type": str(r.get("edition_type", "") or "").strip().upper(),
+            "cover_exclusive": "", "floor": f, "offres": o,
+            "rarity": r.get("rarity", ""),
+            "veve_brand": r.get("veve_brand", ""),
+            "veve_licensor": r.get("veve_licensor", ""),
+            "start_year": "", "veve_url": URL_COLLECT.format(uuid=uid),
+            "nb_raretes": 1,
+        }
+    ap = sum(1 for s in out.values() if s["edition_type"] == EDITION_NON_NOTEE)
+    fa = sum(1 for s in out.values() if s["edition_type"] == "FA")
+    print(f"Collectibles : {len(out)} pieces ({fa} FA, {ap} AP jamais notees).",
+          flush=True)
+    return out
 
+
+def load_manuel(sh, connus: set) -> Dict[str, Dict[str, Any]]:
+    manuel: Dict[str, Dict[str, Any]] = {}
     try:
         for r in sh.worksheet(RACCORD_TAB).get_all_records(
                 value_render_option="UNFORMATTED_VALUE"):
             valide = str(r.get("valide", "") or "").strip()
             uid = (valide if len(valide) > 10
                    else str(r.get("series_uuid", "") or "").strip())
-            if not uid or uid not in series:
+            if not uid or uid not in connus:
                 continue
             if str(r.get("statut", "")).strip() != "CERTAIN" and not valide:
                 continue
             manuel.setdefault(uid, {
                 "valeur_irl_98": r.get("valeur_irl", ""),
-                "fa_key": r.get("fa_preda", ""),
-                "bonus_perso": "",
-                "note": r.get("note", ""),
-                "commentaire": "",
+                "fa_key": r.get("fa_preda", ""), "bonus_perso": "",
+                "note": r.get("note", ""), "commentaire": "",
             })
         print(f"Amorce depuis le classement : {len(manuel)} series.", flush=True)
     except gspread.WorksheetNotFound:
@@ -328,16 +457,15 @@ def load_manuel(sh, series: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, An
         repris, rejetes = 0, 0
         # ⚠️ LECTURE PAR NOM DE COLONNE, JAMAIS PAR POSITION. Leçon payee le 13/07 :
         # j'ai reordonne le HEADER et la relecture par index a decale toutes les
-        # saisies d'un cran (valeur_irl_98 a herite de `note`, `note` de
-        # `valeur_par_edition`...). Le NOM est la source de verite, pas la place.
+        # saisies d'un cran. Le NOM est la source de verite, pas la place.
         idx: Dict[str, int] = {}
         for row in ws.get_all_values(value_render_option="UNFORMATTED_VALUE"):
-            if "series_uuid" in row:               # ligne d'en-tete (il y en a 2)
+            if "uuid" in row:                       # une ligne d'en-tete
                 idx = {c: i for i, c in enumerate(row) if c}
                 continue
             if not idx:
                 continue
-            uid = str(_case(row, idx, "series_uuid") or "").strip()
+            uid = str(_case(row, idx, "uuid") or "").strip()
             if len(uid) < 30:
                 continue
             saisi = {c: _case(row, idx, c) for c in MANUELLES}
@@ -345,7 +473,7 @@ def load_manuel(sh, series: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, An
             if not any(str(v).strip() for v in saisi.values()):
                 continue
             if not _saisie_coherente(saisi):
-                rejetes += 1                       # abimee -> on repart de l'amorce
+                rejetes += 1
                 continue
             manuel[uid] = saisi
             repris += 1
@@ -355,7 +483,6 @@ def load_manuel(sh, series: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, An
                   f"🔗A-RACCORD.", flush=True)
     except gspread.WorksheetNotFound:
         print("🏆A-CLASSEMENT : creation.", flush=True)
-
     return manuel
 
 
@@ -365,17 +492,14 @@ def _case(row: List[Any], idx: Dict[str, int], col: str) -> Any:
 
 
 def _nettoyer(saisi: Dict[str, Any]) -> None:
-    """`commentaire` avait herite d'un TRUE/FALSE lors du decalage de colonnes du
-    13/07. Un booleen n'est pas un commentaire."""
     c = str(saisi.get("commentaire", "") or "").strip().upper()
-    if c in ("TRUE", "FALSE", "VRAI", "FAUX"):
+    if c in ("TRUE", "FALSE", "VRAI", "FAUX"):      # residu d'un decalage de colonnes
         saisi["commentaire"] = ""
 
 
 def _saisie_coherente(saisi: Dict[str, Any]) -> bool:
-    """Garde-fou : une saisie qui ne ressemble pas a ce qu'elle devrait etre (valeur
-    en dollars, note de l'echelle, bonus entier) n'est pas reprise — on la reconstruit
-    depuis l'amorce. C'est ce qui repare tout seul une page abimee."""
+    """Une saisie qui ne ressemble pas a ce qu'elle devrait etre n'est pas reprise :
+    on la reconstruit depuis l'amorce. C'est ce qui repare tout seul une page abimee."""
     v = str(saisi.get("valeur_irl_98", "") or "").strip()
     if v and _num(v) is None:
         return False
@@ -394,17 +518,20 @@ def _saisie_coherente(saisi: Dict[str, Any]) -> bool:
 
 def etat_de(s: Dict[str, Any], m: Dict[str, Any], now: _dt.datetime,
             jours: int) -> str:
-    """L'etat d'une serie. L'ordre des tests EST la regle metier :
-       1. notee               -> plus rien a faire
-       2. mercredi (VVBD)     -> Preda ne les note pas : ni module, ni alerte
-       3. drop a venir        -> 🔴 module (a noter AVANT la carte Discord)
-       4. drop des 7 derniers jours -> 🆕 module
-       5. le reste, non note  -> ⚠️ alerte
+    """L'ordre des tests EST la regle metier :
+       1. deja note                       -> plus rien a faire
+       2. mercredi (comic) / AP (collect) -> Preda ne les note pas : ni module, ni alerte
+       3. drop a venir                    -> 🔴 module
+       4. drop des `jours` derniers jours -> 🆕 module
+       5. le reste, non note              -> ⚠️ alerte
     """
-    if str(m.get("note", "") or "").strip() or str(m.get("valeur_irl_98", "") or "").strip():
+    if (str(m.get("note", "") or "").strip()
+            or str(m.get("valeur_irl_98", "") or "").strip()):
         return ""
+    if s["type"] == "collectible" and s["edition_type"] == EDITION_NON_NOTEE:
+        return ARTWORK
     d = s["date_drop"]
-    if d and d.weekday() == JOUR_VVBD:
+    if s["type"] == "comic" and d and d.weekday() == JOUR_VVBD:
         return VVBD
     if not d:
         return ALERTE
@@ -416,25 +543,38 @@ def etat_de(s: Dict[str, Any], m: Dict[str, Any], now: _dt.datetime,
 
 
 def ligne(s: Dict[str, Any], m: Dict[str, Any], etat: str) -> List[Any]:
+    est_comic = s["type"] == "comic"
+    supply, gems = s["supply"], s["prix_gems"]
+    floor, offres = s["floor"], s["offres"]
     valeur = _num(m.get("valeur_irl_98"))
-    supply, gems, d = s["supply"], s["prix_gems"], s["date_drop"]
     bonus = _num(m.get("bonus_perso")) or 0
 
-    par_edition = round(valeur / supply, 4) if (valeur and supply) else ""
-    multiple = round(par_edition / gems, 2) if (par_edition != "" and gems) else ""
-    suggeree = note_calculee(valeur, supply, bonus)
+    if est_comic:
+        suggeree = note_comic(valeur, supply, bonus)
+        score = score_comic(valeur, supply)
+        par_edition = round(valeur / supply, 4) if (valeur and supply) else ""
+        multiple = round(par_edition / gems, 2) if (par_edition != "" and gems) else ""
+    else:
+        suggeree = note_collectible(floor, offres, supply, s["edition_type"],
+                                    s["veve_licensor"], bonus)
+        score = score_collectible(floor, offres, supply, s["edition_type"],
+                                  s["veve_licensor"])
+        par_edition = ""
+        multiple = (round(floor / gems, 2)
+                    if (gems and floor_fiable(floor, offres)) else "")
+
     note = str(m.get("note", "") or "").strip()
     ecart = (ECHELLE.index(note) - ECHELLE.index(suggeree)
              if (note in ECHELLE and suggeree) else "")
-
+    d = s["date_drop"]
     return [
-        etat, s["veve_series_name"], d.strftime("%d/%m/%Y %H:%M") if d else "",
-        _era(s["start_year"] or None), supply or "", gems or "",
-        s["cover_exclusive"],
+        etat, s["type"], s["nom"], d.strftime("%d/%m/%Y %H:%M") if d else "",
+        s["era"], supply or "", gems or "", s["edition_type"], s["cover_exclusive"],
+        floor if floor and floor < FLOOR_MAX else "", offres if offres else "",
         m.get("valeur_irl_98", ""), m.get("fa_key", ""), m.get("bonus_perso", ""),
-        note, suggeree, ecart, par_edition, multiple, score_brut(valeur, supply),
-        m.get("commentaire", ""), s["nb_raretes"], s["veve_brand"],
-        s["veve_licensor"], s["start_year"], s["veve_url"], s["series_uuid"],
+        note, suggeree, ecart, par_edition, multiple, score,
+        m.get("commentaire", ""), s["rarity"], s["nb_raretes"], s["veve_brand"],
+        s["veve_licensor"], s["start_year"], s["veve_url"], s["uuid"],
     ]
 
 
@@ -448,55 +588,63 @@ def main() -> int:
     now = _dt.datetime.utcnow()
 
     sh = _client().open_by_key(sheet_id)
-    series = load_series(sh)
-    manuel = load_manuel(sh, series)
+    floors = load_floors(sh)
+    items = load_comics(sh)
+    items.update(load_collectibles(sh, floors))
+    manuel = load_manuel(sh, set(items))
 
-    # PERIMETRE : TOUT le catalogue. Star Wars, Tarzan, Disney, VIZ, 247 Comics
-    # etaient bien collectes — c'est la page qui ne les laissait pas entrer.
-    # ⚠️ on garde la VRAIE date a cote de la ligne pour trier. La colonne date_drop
-    # est du TEXTE ("09/07/2026 15:00") : trier dessus, c'est trier "31/12/2025"
-    # apres "01/01/2026". Une date formatee n'est pas une date.
-    mod: List[Tuple[_dt.datetime, List[Any]]] = []
-    cor: List[Tuple[Any, List[Any]]] = []
     vieille = _dt.datetime(1900, 1, 1)
-    for uid, s in series.items():
+    mod_c: List[Tuple[_dt.datetime, List[Any]]] = []
+    mod_k: List[Tuple[_dt.datetime, List[Any]]] = []
+    corps: List[Tuple[_dt.datetime, List[Any]]] = []
+    for uid, s in items.items():
         m = manuel.get(uid, {})
         etat = etat_de(s, m, now, jours)
         l = ligne(s, m, etat)
-        (mod if etat in (A_VENIR, RECENT) else cor).append((s["date_drop"] or vieille, l))
+        d = s["date_drop"] or vieille
+        if etat in (A_VENIR, RECENT):
+            (mod_c if s["type"] == "comic" else mod_k).append((d, l))
+        else:
+            corps.append((d, l))
 
-    # le module : le plus imminent / le plus recent en tete
-    mod.sort(key=lambda x: x[0], reverse=True)
-    module = [l for _, l in mod]
-
-    # le classement : les notes d'abord (par score), puis les ⚠️ a traiter, puis les
-    # 📅 du mercredi. Trier par etat garde aussi les blocs de couleur CONTIGUS —
-    # une seule requete de format au lieu de centaines.
-    rang = {"": 0, ALERTE: 1, VVBD: 2}
-    cor.sort(key=lambda x: (
-        rang.get(x[1][I["etat"]], 3),
+    # ⚠️ on trie sur la VRAIE date : la colonne date_drop est du TEXTE, et trier
+    # "31/12/2025" contre "01/01/2026" en texte donne le mauvais ordre.
+    mod_c.sort(key=lambda x: x[0], reverse=True)
+    mod_k.sort(key=lambda x: x[0], reverse=True)
+    # le classement : les notes (par score), puis les ⚠️ a traiter, puis les 📅 et 🎨.
+    # Trier par etat garde les blocs de couleur CONTIGUS -> une requete de format.
+    rang = {"": 0, ALERTE: 1, VVBD: 2, ARTWORK: 3}
+    corps.sort(key=lambda x: (
+        rang.get(x[1][I["etat"]], 4),
         -(x[1][I["score"]] if isinstance(x[1][I["score"]], (int, float)) else -1),
         -x[0].timestamp(),
     ))
-    corps = [l for _, l in cor]
+    module_c = [l for _, l in mod_c]
+    module_k = [l for _, l in mod_k]
+    body = [l for _, l in corps]
 
-    # ----- assemblage par BLOCS (le module COLLECTIBLES se branchera ici) -----
-    titre_mod = (f"🆕 À NOTER — {len(module)} comic(s) : les {jours} derniers jours "
-                 f"+ les drops à venir (hors mercredi)")
-    grille: List[List[Any]] = [[titre_mod] + [""] * (NB_COL - 1), list(HEADER)]
-    grille += module or [["(rien à noter aujourd'hui)"] + [""] * (NB_COL - 1)]
-    grille.append([_methode()] + [""] * (NB_COL - 1))
-    grille.append([""] * NB_COL)
-    grille.append([f"🏆 CLASSEMENT — {len(corps)} séries"] + [""] * (NB_COL - 1))
-    grille.append(list(HEADER))
-    grille += corps
+    # ----- assemblage -----
+    grille: List[List[Any]] = []
+    zones: List[Tuple[str, int, int]] = []       # (nature, 1re ligne, derniere)
 
-    n_mod = max(len(module), 1)
-    L_TITRE_MOD, L_ENTETE_MOD, L_MODULE = 1, 2, 3
-    L_METHODE = L_MODULE + n_mod
-    L_TITRE_CLASS = L_METHODE + 2
-    L_ENTETE_CLASS = L_TITRE_CLASS + 1
-    L_CORPS = L_ENTETE_CLASS + 1
+    def bloc(titre: str, lignes: List[List[Any]], methode: str, nature: str) -> None:
+        grille.append([titre] + [""] * (NB_COL - 1))
+        zones.append(("titre", len(grille), len(grille)))
+        grille.append(list(HEADER))
+        zones.append(("entete", len(grille), len(grille)))
+        debut = len(grille) + 1
+        grille.extend(lignes or [["(rien à noter aujourd'hui)"] + [""] * (NB_COL - 1)])
+        zones.append((nature, debut, len(grille)))
+        if methode:
+            grille.append([methode] + [""] * (NB_COL - 1))
+            zones.append(("methode", len(grille), len(grille)))
+            grille.append([""] * NB_COL)
+
+    bloc(f"🆕 À NOTER — COMICS : {len(module_c)} (7 derniers jours + à venir, "
+         f"hors mercredi)", module_c, _methode_comics(), "comics")
+    bloc(f"🎨 À NOTER — COLLECTIBLES : {len(module_k)} (7 derniers jours + à venir, "
+         f"hors Artist Proofs)", module_k, _methode_collectibles(), "collect")
+    bloc(f"🏆 CLASSEMENT — {len(body)} lignes", body, "", "corps")
 
     try:
         ws = sh.worksheet(CLASSEMENT_TAB)
@@ -510,18 +658,20 @@ def main() -> int:
                               cols=NB_COL)
     if ws.row_count < len(grille) + 10:
         ws.add_rows(len(grille) + 10 - ws.row_count)
+    if ws.col_count < NB_COL:
+        ws.add_cols(NB_COL - ws.col_count)
     ws.update(range_name="A1", values=grille, value_input_option="RAW")
 
-    # les 5 colonnes calculees en FORMULES : la note bouge pendant que Preda tape.
-    for debut, nb in ((L_MODULE, len(module)), (L_CORPS, len(corps))):
-        if nb:
-            ws.update(range_name=f"L{debut}:P{debut + nb - 1}",
-                      values=[formules(debut + i) for i in range(nb)],
+    # les 5 colonnes calculees en FORMULES : la note bouge pendant que Preda tape
+    p, t = _col(I["note_suggeree"]), _col(I["score"])
+    for nature, debut, fin in zones:
+        if nature in ("comics", "collect", "corps") and (
+                debut <= fin and grille[debut - 1][I["uuid"]]):
+            ws.update(range_name=f"{p}{debut}:{t}{fin}",
+                      values=[formules(r) for r in range(debut, fin + 1)],
                       value_input_option="USER_ENTERED")
 
-    # --- habillage : UN SEUL batch (Google plafonne a 60 ecritures/minute, le 1er
-    # run est tombe en 429 avec un appel par bloc de couleur). Un batch est ATOMIQUE
-    # -> paquets de 60, un accident reste local.
+    # --- habillage : UN SEUL batch (Google plafonne a 60 ecritures/minute) ---
     try:
         bandeau = {"backgroundColor": VIOLET, "horizontalAlignment": "LEFT",
                    "textFormat": {"bold": True, "fontSize": 12,
@@ -532,31 +682,34 @@ def main() -> int:
                    "verticalAlignment": "TOP",
                    "textFormat": {"italic": True, "fontSize": 9,
                                   "foregroundColor": GRIS}}
+        fonds = {"comics": FOND_COMICS, "collect": FOND_COLLECT, "corps": BLANC}
         reqs: List[Dict[str, Any]] = []
-        for l in (L_TITRE_MOD, L_METHODE, L_TITRE_CLASS):
-            reqs.append({"mergeCells": {"range": _plage(ws, l, l),
-                                        "mergeType": "MERGE_ROWS"}})
-        for l, fmt in ((L_TITRE_MOD, bandeau), (L_TITRE_CLASS, bandeau),
-                       (L_ENTETE_MOD, entete), (L_ENTETE_CLASS, entete),
-                       (L_METHODE, methode)):
-            reqs.append(_peindre(ws, l, l, fmt))
-        reqs.append(_peindre(ws, L_MODULE, L_MODULE + n_mod - 1,
-                             {"backgroundColor": FOND_MODULE}))
-        if corps:
-            reqs.append(_peindre(ws, L_CORPS, L_CORPS + len(corps) - 1,
-                                 {"backgroundColor": BLANC}))
-            alertes = [L_CORPS + i for i, l in enumerate(corps)
-                       if l[I["etat"]] == ALERTE]
-            for debut, fin in _blocs(alertes):
+        for nature, debut, fin in zones:
+            if nature == "titre":
+                reqs.append({"mergeCells": {"range": _plage(ws, debut, fin),
+                                            "mergeType": "MERGE_ROWS"}})
+                reqs.append(_peindre(ws, debut, fin, bandeau))
+            elif nature == "entete":
+                reqs.append(_peindre(ws, debut, fin, entete))
+            elif nature == "methode":
+                reqs.append({"mergeCells": {"range": _plage(ws, debut, fin),
+                                            "mergeType": "MERGE_ROWS"}})
+                reqs.append(_peindre(ws, debut, fin, methode))
+                reqs.append({"updateDimensionProperties": {
+                    "range": {"sheetId": ws.id, "dimension": "ROWS",
+                              "startIndex": debut - 1, "endIndex": fin},
+                    "properties": {"pixelSize": 95}, "fields": "pixelSize"}})
+            else:
                 reqs.append(_peindre(ws, debut, fin,
-                                     {"backgroundColor": FOND_ALERTE}))
-        reqs.append({"updateDimensionProperties": {
-            "range": {"sheetId": ws.id, "dimension": "ROWS",
-                      "startIndex": L_METHODE - 1, "endIndex": L_METHODE},
-            "properties": {"pixelSize": 90}, "fields": "pixelSize"}})
+                                     {"backgroundColor": fonds[nature]}))
+                if nature == "corps":
+                    alertes = [debut + i for i, l in enumerate(body)
+                               if l[I["etat"]] == ALERTE]
+                    for a, b in _blocs(alertes):
+                        reqs.append(_peindre(ws, a, b,
+                                             {"backgroundColor": FOND_ALERTE}))
         reqs.append({"updateSheetProperties": {
-            "properties": {"sheetId": ws.id,
-                           "gridProperties": {"frozenRowCount": L_ENTETE_MOD}},
+            "properties": {"sheetId": ws.id, "gridProperties": {"frozenRowCount": 2}},
             "fields": "gridProperties.frozenRowCount"}})
         for i in range(0, len(reqs), 60):
             sh.batch_update({"requests": reqs[i:i + 60]})
@@ -564,14 +717,13 @@ def main() -> int:
     except Exception as e:
         print(f"habillage : {e}", flush=True)
 
-    ecarts = [l[I["ecart"]] for l in corps if isinstance(l[I["ecart"]], int)]
-    compte = {e: sum(1 for l in corps if l[I["etat"]] == e) for e in ("", ALERTE, VVBD)}
-    print(f"\n🏆A-CLASSEMENT : {len(module)} a noter + {len(corps)} au classement "
-          f"en {time.time() - t0:.0f}s")
-    print(f"  module : {sum(1 for l in module if l[I['etat']] == A_VENIR)} a venir + "
-          f"{sum(1 for l in module if l[I['etat']] == RECENT)} recents")
-    print(f"  classement : {compte['']} notees · {compte[ALERTE]} ⚠️ a noter · "
-          f"{compte[VVBD]} 📅 mercredi (ignores)")
+    compte = {e: sum(1 for l in body if l[I["etat"]] == e)
+              for e in ("", ALERTE, VVBD, ARTWORK)}
+    ecarts = [l[I["ecart"]] for l in body if isinstance(l[I["ecart"]], int)]
+    print(f"\n🏆A-CLASSEMENT en {time.time() - t0:.0f}s")
+    print(f"  a noter : {len(module_c)} comics + {len(module_k)} collectibles")
+    print(f"  classement : {compte['']} notes · {compte[ALERTE]} ⚠️ a noter · "
+          f"{compte[VVBD]} 📅 mercredi · {compte[ARTWORK]} 🎨 artist proofs")
     print(f"  ecart avec la note suggeree : {sum(1 for e in ecarts if e)} "
           f"(dont {sum(1 for e in ecarts if abs(e) >= 2)} de 2 crans ou +)")
     return 0
@@ -589,7 +741,6 @@ def _peindre(ws, debut: int, fin: int, fmt: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _blocs(lignes: List[int]):
-    """Numeros de ligne consecutifs -> (debut, fin). Une requete de format par bloc."""
     if not lignes:
         return
     lignes = sorted(lignes)
