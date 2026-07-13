@@ -345,22 +345,60 @@ def load_manuel(sh, series: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, An
 
     try:
         ws = sh.worksheet(CLASSEMENT_TAB)
-        repris = 0
+        repris, rejetes = 0, 0
+        # ⚠️ ON LIT PAR NOM DE COLONNE, JAMAIS PAR POSITION. Leçon payee le 13/07 :
+        # j'ai reordonne le HEADER, la relecture par index a decale toutes les
+        # saisies d'une colonne (valeur_irl_98 a herite de `note`, `note` de
+        # `valeur_par_edition`...). C'est la regle que le Sheet de Preda avait deja
+        # apprise avec stats_format : le NOM est la source de verite, pas la place.
+        idx: Dict[str, int] = {}
         for row in ws.get_all_values(value_render_option="UNFORMATTED_VALUE"):
-            if len(row) < NB_COL:
+            if "series_uuid" in row:               # une ligne d'en-tete (il y en a 2)
+                idx = {c: i for i, c in enumerate(row) if c}
                 continue
-            uid = str(row[I["series_uuid"]] or "").strip()
+            if not idx:
+                continue
+            uid = str(_case(row, idx, "series_uuid") or "").strip()
             if len(uid) < 30:                      # pas une ligne de donnees
                 continue
-            saisi = {c: row[I[c]] for c in MANUELLES}
-            if any(str(v).strip() for v in saisi.values()):
-                manuel[uid] = saisi
-                repris += 1
+            saisi = {c: _case(row, idx, c) for c in MANUELLES}
+            if not any(str(v).strip() for v in saisi.values()):
+                continue
+            if not _saisie_coherente(saisi):
+                rejetes += 1                       # ligne abimee -> on repart de l'amorce
+                continue
+            manuel[uid] = saisi
+            repris += 1
         print(f"Saisies reprises de la page : {repris} series.", flush=True)
+        if rejetes:
+            print(f"  ⚠️ {rejetes} lignes incoherentes ignorees (valeur non numerique "
+                  f"ou note hors echelle) -> reprises depuis 🔗A-RACCORD.", flush=True)
     except gspread.WorksheetNotFound:
         print("🏆A-CLASSEMENT : creation.", flush=True)
 
     return manuel
+
+
+def _case(row: List[Any], idx: Dict[str, int], col: str) -> Any:
+    i = idx.get(col)
+    return row[i] if (i is not None and i < len(row)) else ""
+
+
+def _saisie_coherente(saisi: Dict[str, Any]) -> bool:
+    """Un garde-fou, pas un caprice : si une saisie ne ressemble pas a ce qu'elle
+    devrait etre (une valeur en dollars, une note de l'echelle, un bonus entier),
+    on ne la reprend PAS — on la reconstruit depuis l'amorce. C'est ce qui repare
+    tout seul une page abimee par un changement de colonnes."""
+    v = str(saisi.get("valeur_irl_98", "") or "").strip()
+    if v and _num(v) is None:
+        return False
+    n = str(saisi.get("note", "") or "").strip()
+    if n and n not in ECHELLE:
+        return False
+    b = str(saisi.get("bonus_perso", "") or "").strip()
+    if b and _num(b) is None:
+        return False
+    return True
 
 
 # ---------------------------------------------------------------------------
@@ -475,39 +513,53 @@ def main() -> int:
                       values=[formules(debut + i) for i in range(nb)],
                       value_input_option="USER_ENTERED")
 
-    # --- habillage ---
+    # --- habillage : UNE SEULE requete ---
+    # Le 1er run est tombe en « APIError [429] Write requests per minute » : je posais
+    # un appel de format PAR bloc de couleur (153 alertes = des dizaines d'appels).
+    # Google plafonne a 60 ecritures/minute. Tout part maintenant dans un seul
+    # batch_update. Rappel du 13/07 : un batch est ATOMIQUE — une requete invalide
+    # annule les autres — donc on l'envoie par paquets de 60 et un accident reste local.
     try:
-        for ligne_no in (L_TITRE_MOD, L_METHODE, L_TITRE_CLASS):
-            ws.merge_cells(f"A{ligne_no}:{DERNIERE}{ligne_no}")
-
         bandeau = {"backgroundColor": VIOLET, "horizontalAlignment": "LEFT",
                    "textFormat": {"bold": True, "fontSize": 12,
                                   "foregroundColor": BLANC}}
-        entete = {"backgroundColor": FOND_ENTETE,
-                  "textFormat": {"bold": True}, "wrapStrategy": "WRAP"}
-        ws.format(f"A{L_TITRE_MOD}:{DERNIERE}{L_TITRE_MOD}", bandeau)
-        ws.format(f"A{L_TITRE_CLASS}:{DERNIERE}{L_TITRE_CLASS}", bandeau)
-        ws.format(f"A{L_ENTETE_MOD}:{DERNIERE}{L_ENTETE_MOD}", entete)
-        ws.format(f"A{L_ENTETE_CLASS}:{DERNIERE}{L_ENTETE_CLASS}", entete)
-        ws.format(f"A{L_MODULE}:{DERNIERE}{L_MODULE + n_mod - 1}",
-                  {"backgroundColor": FOND_MODULE})
-        ws.format(f"A{L_METHODE}:{DERNIERE}{L_METHODE}", {
-            "backgroundColor": FOND_METHODE, "wrapStrategy": "WRAP",
-            "verticalAlignment": "TOP",
-            "textFormat": {"italic": True, "fontSize": 9, "foregroundColor": GRIS}})
-        ws.rows_auto_resize(L_METHODE - 1, L_METHODE)
-
-        # le corps : blanc partout, puis fond d'ALERTE sur les non notes. Le fond
-        # disparait tout seul des que la valeur ou la note est remplie.
+        entete = {"backgroundColor": FOND_ENTETE, "textFormat": {"bold": True},
+                  "wrapStrategy": "WRAP"}
+        methode = {"backgroundColor": FOND_METHODE, "wrapStrategy": "WRAP",
+                   "verticalAlignment": "TOP",
+                   "textFormat": {"italic": True, "fontSize": 9,
+                                  "foregroundColor": GRIS}}
+        reqs: List[Dict[str, Any]] = []
+        for l in (L_TITRE_MOD, L_METHODE, L_TITRE_CLASS):
+            reqs.append({"mergeCells": {"range": _plage(ws, l, l),
+                                        "mergeType": "MERGE_ROWS"}})
+        for l, fmt in ((L_TITRE_MOD, bandeau), (L_TITRE_CLASS, bandeau),
+                       (L_ENTETE_MOD, entete), (L_ENTETE_CLASS, entete),
+                       (L_METHODE, methode)):
+            reqs.append(_peindre(ws, l, l, fmt))
+        reqs.append(_peindre(ws, L_MODULE, L_MODULE + n_mod - 1,
+                             {"backgroundColor": FOND_MODULE}))
         if corps:
-            ws.format(f"A{L_CORPS}:{DERNIERE}{L_CORPS + len(corps) - 1}",
-                      {"backgroundColor": BLANC})
+            reqs.append(_peindre(ws, L_CORPS, L_CORPS + len(corps) - 1,
+                                 {"backgroundColor": BLANC}))
             alertes = [L_CORPS + i for i, l in enumerate(corps)
                        if l[I["etat"]] == ALERTE]
             for debut, fin in _blocs(alertes):
-                ws.format(f"A{debut}:{DERNIERE}{fin}",
-                          {"backgroundColor": FOND_ALERTE})
-        ws.freeze(rows=L_ENTETE_MOD)
+                reqs.append(_peindre(ws, debut, fin,
+                                     {"backgroundColor": FOND_ALERTE}))
+        # la ligne de methode est longue : on lui donne de la hauteur
+        reqs.append({"updateDimensionProperties": {
+            "range": {"sheetId": ws.id, "dimension": "ROWS",
+                      "startIndex": L_METHODE - 1, "endIndex": L_METHODE},
+            "properties": {"pixelSize": 90}, "fields": "pixelSize"}})
+        reqs.append({"updateSheetProperties": {
+            "properties": {"sheetId": ws.id, "gridProperties":
+                           {"frozenRowCount": L_ENTETE_MOD}},
+            "fields": "gridProperties.frozenRowCount"}})
+
+        for i in range(0, len(reqs), 60):
+            sh.batch_update({"requests": reqs[i:i + 60]})
+        print(f"Habillage : {len(reqs)} requetes.", flush=True)
     except Exception as e:
         print(f"habillage : {e}", flush=True)
 
@@ -520,6 +572,19 @@ def main() -> int:
     print(f"  ecart avec la note suggeree : {sum(1 for e in ecarts if e)} "
           f"(dont {sum(1 for e in ecarts if abs(e) >= 2)} de 2 crans ou +)")
     return 0
+
+
+def _plage(ws, debut: int, fin: int) -> Dict[str, Any]:
+    """La plage A{debut}:{DERNIERE}{fin} en indices 0-based, pour l'API brute."""
+    return {"sheetId": ws.id, "startRowIndex": debut - 1, "endRowIndex": fin,
+            "startColumnIndex": 0, "endColumnIndex": NB_COL}
+
+
+def _peindre(ws, debut: int, fin: int, fmt: Dict[str, Any]) -> Dict[str, Any]:
+    champs = ",".join(f"userEnteredFormat.{k}" for k in fmt)
+    return {"repeatCell": {"range": _plage(ws, debut, fin),
+                           "cell": {"userEnteredFormat": fmt},
+                           "fields": champs}}
 
 
 def _blocs(lignes: List[int]):
