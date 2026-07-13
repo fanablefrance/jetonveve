@@ -474,13 +474,20 @@ def classer() -> int:
     for j, p, v in lignes:
         d = jours.setdefault(j, {"pu": 0, "ou": 0.0, "payeurs": set(),
                                  "pa": 0, "oa": 0.0, "pb": 0, "ob": 0.0})
-        if v >= SEUIL_ABERRANT:
+        # ⚠️ L'ORDRE COMPTE (bug du 1er classement, 13/07) : l'automate d'abord.
+        # Un versement d'automate est un AGREGAT par nature — il empile les
+        # achats de milliers de joueurs. Lui appliquer le seuil "aucun joueur
+        # n'achete pour 20 M OMI" n'a aucun sens : le payeur n'est pas un
+        # joueur. Teste dans l'autre sens, il jetait ~10 Md d'OMI de vrai
+        # revenue a la tresorerie.
+        # Le seuil aberrant ne vaut donc QUE pour les paiements individuels.
+        if p in automates:
+            d["pa"] += 1
+            d["oa"] += v
+        elif v >= SEUIL_ABERRANT:
             d["pb"] += 1
             d["ob"] += v
             aberrants.append((j, p, v))
-        elif p in automates:
-            d["pa"] += 1
-            d["oa"] += v
         else:
             d["pu"] += 1
             d["ou"] += v
