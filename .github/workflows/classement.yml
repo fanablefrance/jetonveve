@@ -1,0 +1,45 @@
+name: Page Classement des series comics
+
+# CHANTIER C : construit / rafraichit l'onglet 🏆A-CLASSEMENT (1 ligne par serie).
+#
+# Les colonnes MANUELLES de Preda (valeur_irl_98, fa_key, bonus_perso, note,
+# commentaire) sont RELUES puis REECRITES telles quelles : un run ne peut pas
+# effacer sa saisie. Le 1er run les amorce depuis 🔗A-RACCORD.
+#
+# Cron quotidien a 05:21 UTC : avant le "tout pret a 6h Paris", et apres le daily
+# (04:11) qui a deja pose les nouveaux drops dans le catalogue.
+
+on:
+  schedule:
+    - cron: "21 5 * * *"
+  workflow_dispatch:
+    inputs:
+      nouveaux_jours:
+        description: "Fenetre des nouveaux drops a faire entrer dans la page (jours)"
+        required: false
+        default: "45"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: classement
+  cancel-in-progress: false
+
+jobs:
+  classement:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install gspread==6.1.2 google-auth==2.32.0
+
+      - name: Page Classement
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          SHEET_ID: ${{ secrets.SHEET_ID }}
+          NOUVEAUX_JOURS: ${{ github.event.inputs.nouveaux_jours || '45' }}
+        run: python -m scraper.classement
