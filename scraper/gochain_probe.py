@@ -70,7 +70,11 @@ PAUSE = float(os.environ.get("GO_PAUSE", "0.3"))
 
 
 def do(step: str) -> bool:
-    return "all" in STEPS or step in STEPS
+    """Correspondance EXACTE, pas par sous-chaine : avec `step in STEPS`,
+    demander "nft_ere" declenchait aussi "nft" ("nft" est dedans). Constate au
+    run du 13/07."""
+    voulus = {x.strip() for x in STEPS.split(",") if x.strip()}
+    return "all" in voulus or step in voulus
 
 
 def _post(payload: dict, essais: int = 4):
@@ -107,6 +111,12 @@ def _get(chemin: str, essais: int = 3):
                 return {"_erreur": str(e)}
             time.sleep(2 * (i + 1))
     return None
+
+
+def _adr(topic: str) -> str:
+    """Les 20 derniers octets d'un topic = une adresse. (Oubliee dans la v3 :
+    elle vivait dans le collecteur, pas dans la sonde.)"""
+    return ("0x" + topic[-40:]).lower()
 
 
 def rpc_hex(v) -> int:
