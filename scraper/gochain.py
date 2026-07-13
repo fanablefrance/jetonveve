@@ -55,6 +55,30 @@ FLUSH_TRANCHES = int(os.environ.get("GO_FLUSH", "10"))
 # cap optionnel (tests, ou run court volontaire) : 0 = pas de limite
 MAX_TRANCHES = int(os.environ.get("GO_MAX_TRANCHES", "0"))
 
+# ── v2 (13/07) : LE REVENUE BRUT EST FAUX, ET IL FALLAIT LE VOIR ─────────────
+# Le 1er run a rendu "85 732 915 346 OMI encaisses". Deux poisons dedans :
+#   1. des MOUVEMENTS DE TRESORERIE deguises en paiements : 29 999 999 980 OMI
+#      le 30/11/2020, 10 009 697 038 le 21/10/2020 — a eux deux, la MOITIE du
+#      total. Aucun joueur n'achete pour 30 milliards d'OMI. (Meme piege que le
+#      Golden MYO a 111 milliards de $ du flux VeVe : un garde-fou, jamais un
+#      silence.)
+#   2. a partir du 24/05/2021, les paiements des joueurs DISPARAISSENT de la
+#      chaine : un wallet unique verse a la caisse ~24 fois par jour. VeVe est
+#      passe a un encaissement CUSTODIAL. Ce flux EST du revenue (agrege), mais
+#      "payeurs uniques = 1" n'a plus aucun sens.
+# On ne peut pas trancher ca avec des totaux : il faut le DETAIL de chaque
+# paiement. La v1 ne le gardait pas.
+# → v2 : la marche ECRIT chaque paiement (data/gochain_paiements.csv), et le
+#   CLASSEMENT devient une etape SEPAREE, rejouable a volonte sans re-marcher.
+STEPS = os.environ.get("GO_STEPS", "all").lower()
+OUT_P = os.environ.get("GO_OUT_PAIEMENTS", "data/gochain_paiements.csv")
+# un paiement au-dela de ce seuil n'est pas un achat : c'est de la tresorerie.
+# (au cours de 2021, 20 M OMI ~ 100 000 $ — deja hors de portee d'un joueur)
+SEUIL_ABERRANT = float(os.environ.get("GO_SEUIL_ABERRANT", "20000000"))
+# un payeur qui verse des centaines de fois n'est pas un client : c'est un
+# automate. Detecte par les DONNEES, pas par une liste ecrite a la main.
+SEUIL_INTERNE = int(os.environ.get("GO_SEUIL_INTERNE", "300"))
+
 ETAT = os.environ.get("GO_STATE", "data/gochain_state.json")
 OUT_W = os.environ.get("GO_OUT_WALLETS", "data/gochain_wallets.csv")
 OUT_D = os.environ.get("GO_OUT_DAILY", "data/gochain_daily.csv")
@@ -112,6 +136,12 @@ def _adr(topic: str) -> str:
 # ---------------------------------------------------------------------------
 # Etat / sorties
 # ---------------------------------------------------------------------------
+
+def etape(step: str) -> bool:
+    """Correspondance EXACTE (pas par sous-chaine : "nft" est dans "nft_ere")."""
+    voulus = {x.strip() for x in STEPS.split(",") if x.strip()}
+    return "all" in voulus or step in voulus
+
 
 def charger_etat() -> dict:
     try:
@@ -181,6 +211,21 @@ def charger_daily(etat: dict) -> dict:
 
 def _n_uniques(d: dict, cle: str, fige: str) -> int:
     return d.get(fige, 0) if d.get(fige) else len(d[cle])
+
+
+def ajouter_paiements(lignes) -> None:
+    """Append-only : la recolte BRUTE, jamais perdue, jamais reecrite.
+    C'est elle qui permet de RE-CLASSER sans re-marcher sur la chaine."""
+    if not lignes:
+        return
+    neuf = not os.path.exists(OUT_P)
+    os.makedirs(os.path.dirname(OUT_P) or ".", exist_ok=True)
+    with open(OUT_P, "a", encoding="utf-8", newline="") as f:
+        w = csv.writer(f, lineterminator="\n")
+        if neuf:
+            w.writerow(["date_pt", "bloc", "payeur", "omi"])
+        for l in lignes:
+            w.writerow(l)
 
 
 def ecrire(wallets: dict, daily: dict, partiel: str = "") -> None:
@@ -262,6 +307,7 @@ def collecter() -> int:
           flush=True)
 
     n_logs = n_tranches = 0
+    paiements: list = []
     ts_a = ts_bloc(bloc)
     while bloc <= FIN:
         if (time.time() - t0) / 60 >= MINUTES:
@@ -319,18 +365,21 @@ def collecter() -> int:
                     p["tx"] += 1
                     p[sens] += val
                     d["actifs"].add(a)
-                if dst == CAISSE and src != ZERO:      # ACHAT chez VeVe
+                if dst == CAISSE and src != ZERO:      # versement a la caisse
                     d["paiements"] += 1
                     d["payeurs"].add(src)
                     d["omi_paye"] += val
                     wallets[src]["paiements_veve"] += 1
                     wallets[src]["omi_paye"] += val
+                    paiements.append([jour, nb, src, round(val, 2)])
 
         n_tranches += 1
         bloc = fin + 1
         ts_a = ts_b
         if n_tranches % FLUSH_TRANCHES == 0:
             jp = max(daily) if daily else ""
+            ajouter_paiements(paiements)
+            paiements = []
             ecrire(wallets, daily, partiel=jp)
             sauver_etat({"bloc": bloc, "sautees": sautees, "done": False,
                          "logs": int(etat.get("logs", 0)) + n_logs,
@@ -342,6 +391,7 @@ def collecter() -> int:
 
     fini = bloc > FIN
     jp = "" if fini else (max(daily) if daily else "")
+    ajouter_paiements(paiements)
     ecrire(wallets, daily, partiel=jp)
     sauver_etat({"bloc": bloc, "sautees": sautees, "done": fini,
                  "logs": int(etat.get("logs", 0)) + n_logs,
@@ -362,5 +412,142 @@ def collecter() -> int:
     return 0
 
 
+# ═══════════════════════════════════════════════════════════════════════════
+# CLASSEMENT — etape SEPAREE, rejouable sans re-marcher sur la chaine
+# ═══════════════════════════════════════════════════════════════════════════
+
+def classer() -> int:
+    """Relit les paiements BRUTS et en tire un revenue defendable.
+
+    TROIS natures, jamais melangees, jamais jetees :
+      user      un joueur paie VeVe directement (l'ere ou c'etait on-chain)
+      agrege    le wallet automate de VeVe verse a la caisse (custodial, a
+                partir du 24/05/2021). C'EST du revenue — mais agrege : le
+                nombre de payeurs n'y veut plus rien dire.
+      aberrant  au-dela de SEUIL_ABERRANT : de la tresorerie, pas une vente.
+                Comptee A PART, affichee, jamais silencieusement supprimee.
+
+    revenue = user + agrege        (les aberrants restent visibles a cote)
+    """
+    if not os.path.exists(OUT_P):
+        print(f"Pas de {OUT_P} — lance d'abord la collecte (elle ecrit les "
+              f"paiements bruts).", flush=True)
+        return 1
+    lignes = []
+    with open(OUT_P, encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            try:
+                lignes.append((r["date_pt"], r["payeur"], float(r["omi"])))
+            except (KeyError, ValueError):
+                continue
+    print(f"Paiements bruts : {len(lignes)}", flush=True)
+    if not lignes:
+        return 1
+
+    # 1) qui est un AUTOMATE ? On le demande aux donnees, pas a une liste.
+    par_payeur: dict = defaultdict(lambda: [0, 0.0, "", ""])
+    for j, p, v in lignes:
+        e = par_payeur[p]
+        e[0] += 1
+        e[1] += v
+        e[2] = j if not e[2] else min(e[2], j)
+        e[3] = max(e[3], j)
+    automates = {p for p, e in par_payeur.items() if e[0] >= SEUIL_INTERNE}
+    print(f"\n  AUTOMATES (>= {SEUIL_INTERNE} versements) : {len(automates)}",
+          flush=True)
+    for p in sorted(automates, key=lambda x: -par_payeur[x][1]):
+        n, omi, d1, d2 = par_payeur[p]
+        print(f"    {p}  {n} versements · {omi:,.0f} OMI · {d1} -> {d2}"
+              .replace(",", " "), flush=True)
+
+    # 2) les gros clients LEGITIMES, pour verifier qu'on ne coupe pas trop haut
+    print(f"\n  TOP 10 des payeurs NON automates :", flush=True)
+    for p in sorted((x for x in par_payeur if x not in automates),
+                    key=lambda x: -par_payeur[x][1])[:10]:
+        n, omi, d1, d2 = par_payeur[p]
+        print(f"    {p}  {n} versements · {omi:,.0f} OMI · {d1} -> {d2}"
+              .replace(",", " "), flush=True)
+
+    # 3) classement
+    jours: dict = {}
+    aberrants = []
+    for j, p, v in lignes:
+        d = jours.setdefault(j, {"pu": 0, "ou": 0.0, "payeurs": set(),
+                                 "pa": 0, "oa": 0.0, "pb": 0, "ob": 0.0})
+        if v >= SEUIL_ABERRANT:
+            d["pb"] += 1
+            d["ob"] += v
+            aberrants.append((j, p, v))
+        elif p in automates:
+            d["pa"] += 1
+            d["oa"] += v
+        else:
+            d["pu"] += 1
+            d["ou"] += v
+            d["payeurs"].add(p)
+
+    tot_u = sum(d["ou"] for d in jours.values())
+    tot_a = sum(d["oa"] for d in jours.values())
+    tot_b = sum(d["ob"] for d in jours.values())
+    print(f"\n  ABERRANTS (>= {SEUIL_ABERRANT:,.0f} OMI) : {len(aberrants)}"
+          .replace(",", " "), flush=True)
+    for j, p, v in sorted(aberrants, key=lambda x: -x[2])[:12]:
+        print(f"    {j}  {v:,.0f} OMI  de {p}".replace(",", " "), flush=True)
+
+    print(f"\n  ═══ REVENUE GOCHAIN ═══", flush=True)
+    print(f"    joueurs (on-chain)  : {tot_u:,.0f} OMI".replace(",", " "))
+    print(f"    agrege (custodial)  : {tot_a:,.0f} OMI".replace(",", " "))
+    print(f"    ─────────────────────────────────")
+    print(f"    REVENUE             : {tot_u + tot_a:,.0f} OMI"
+          .replace(",", " "))
+    print(f"    tresorerie (exclue) : {tot_b:,.0f} OMI".replace(",", " "))
+    brut = tot_u + tot_a + tot_b
+    if brut:
+        print(f"    -> le brut annoncait {brut:,.0f} OMI : "
+              f"{100 * tot_b / brut:.0f} % n'etaient PAS des ventes."
+              .replace(",", " "), flush=True)
+
+    # 4) le CSV propre
+    os.makedirs(os.path.dirname(OUT_D) or ".", exist_ok=True)
+    anciens = {}
+    try:
+        with open(OUT_D, encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                anciens[r["date_pt"]] = r
+    except (OSError, KeyError):
+        pass
+    with open(OUT_D, "w", encoding="utf-8", newline="") as f:
+        w = csv.writer(f, lineterminator="\n")
+        w.writerow(["date_pt", "transferts", "wallets_actifs",
+                    "paiements_user", "payeurs_uniques", "omi_user",
+                    "paiements_agrege", "omi_agrege", "omi_revenue",
+                    "paiements_tresorerie", "omi_tresorerie"])
+        for j in sorted(set(jours) | set(anciens)):
+            d = jours.get(j) or {"pu": 0, "ou": 0.0, "payeurs": set(),
+                                 "pa": 0, "oa": 0.0, "pb": 0, "ob": 0.0}
+            a = anciens.get(j, {})
+            w.writerow([j, a.get("transferts", ""), a.get("wallets_actifs", ""),
+                        d["pu"], len(d["payeurs"]), round(d["ou"], 2),
+                        d["pa"], round(d["oa"], 2),
+                        round(d["ou"] + d["oa"], 2),
+                        d["pb"], round(d["ob"], 2)])
+    print(f"\n  {OUT_D} reecrit : {len(jours)} jour(s) classes.", flush=True)
+    print("\n  ⚠️ A RETENIR : `payeurs_uniques` ne veut RIEN dire apres le "
+          "24/05/2021", flush=True)
+    print("     (encaissement custodial : un seul automate verse pour tous).",
+          flush=True)
+    return 0
+
+
+def main() -> int:
+    if etape("collecte"):
+        r = collecter()
+        if r:
+            return r
+    if etape("classer"):
+        return classer()
+    return 0
+
+
 if __name__ == "__main__":
-    sys.exit(collecter())
+    sys.exit(main())
