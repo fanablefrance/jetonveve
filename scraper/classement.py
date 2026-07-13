@@ -57,13 +57,30 @@ SEUILS = [1.0, 16.2, 34.2, 77.0, 220.4, 974.6, 7446.4, 33437.0]   # 8 coupures =
 MANUELLES = ["valeur_irl_98", "fa_key", "bonus_perso", "note", "commentaire"]
 
 HEADER = [
-    "veve_series_name", "date_drop", "era", "supply", "prix_gems",
+    "etat", "veve_series_name", "date_drop", "era", "supply", "prix_gems",
     "valeur_irl_98", "note", "note_suggeree", "ecart",
     "valeur_par_edition", "multiple_entree", "score",
     "fa_key", "bonus_perso", "commentaire",
     "cover_exclusive", "nb_raretes", "veve_brand", "veve_licensor",
     "start_year", "veve_url", "series_uuid",
 ]
+COL_ETAT, COL_VALEUR, COL_NOTE, COL_ECART, COL_SCORE = 0, 6, 7, 9, 12
+
+A_VENIR = "🔴 A VENIR"
+NOUVEAU = "🆕 NOUVEAU"
+
+# Fonds de ligne (pastel, comme le reste du Sheet)
+FOND_A_VENIR = {"red": 1.0, "green": 0.90, "blue": 0.80}    # orange clair
+FOND_NOUVEAU = {"red": 1.0, "green": 0.98, "blue": 0.83}    # jaune clair
+
+# L'URL VeVe d'un comic. /collection/comic/<id> renvoyait un 404 (bug corrige le
+# 13/07 aussi dans veve_scraper.py). On la reconstruit ICI plutot que de recopier
+# la colonne du catalogue : la page est juste des le 1er run, sans attendre que le
+# daily ait reecrit les 16 000 lignes.
+URL_COMIC = "https://www.veve.me/collectibles/en/comics/{uuid}"
+
+# Origine des numeros de serie Google Sheets (jour 0 = 30/12/1899).
+_EPOCH = _dt.datetime(1899, 12, 30)
 
 
 def _era(annee: Optional[int]) -> str:
@@ -87,6 +104,30 @@ def _num(x: Any) -> Optional[float]:
         return float(str(x).replace(" ", "").replace(" ", "").replace(",", "."))
     except ValueError:
         return None
+
+
+def _date(x: Any) -> Optional[_dt.datetime]:
+    """La date de drop, quel que soit ce que le Sheet nous renvoie.
+
+    ⚠️ On lit le catalogue en UNFORMATTED (obligatoire pour les decimales en locale
+    FR), et dans ce mode une cellule DATE revient en NUMERO DE SERIE Google
+    (46 200,625) — pas en texte. La colonne date_drop affichait donc des nombres.
+    On reconvertit ; les formats texte restent tolerees.
+    """
+    if x in (None, ""):
+        return None
+    if isinstance(x, (int, float)):
+        try:
+            return _EPOCH + _dt.timedelta(days=float(x))
+        except (ValueError, OverflowError):
+            return None
+    s = str(x).strip()
+    for fmt in ("%d/%m/%Y %H:%M:%S", "%d/%m/%Y", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
+        try:
+            return _dt.datetime.strptime(s, fmt)
+        except ValueError:
+            continue
+    return None
 
 
 def note_calculee(valeur: Optional[float], supply: Optional[float],
@@ -136,18 +177,30 @@ def load_series(sh) -> Dict[str, Dict[str, Any]]:
             s = out[uid] = {
                 "series_uuid": uid,
                 "veve_series_name": r.get("veve_series_name", ""),
-                "date_drop": r.get("releaseDate", ""),
+                "date_drop": _date(r.get("releaseDate")),
                 "supply": _num(r.get("supply")),
                 "prix_gems": _num(r.get("store_price_gems")),
                 "cover_exclusive": r.get("veve_exclusive", ""),
                 "veve_brand": r.get("veve_brand", ""),
                 "veve_licensor": r.get("veve_licensor", ""),
                 "start_year": int(annee) if annee else "",
-                "veve_url": r.get("veve_url", ""),
+                "veve_url": URL_COMIC.format(uuid=uid),
                 "nb_raretes": 0,
             }
         s["nb_raretes"] += 1
+
+    # --- controles (repondent a "manque-t-il des series ?") ---
+    sans_supply = [s for s in out.values() if not s["supply"]]
+    sans_prix = [s for s in out.values() if not s["prix_gems"]]
+    sans_date = [s for s in out.values() if not s["date_drop"]]
+    dernier = max((s["date_drop"] for s in out.values() if s["date_drop"]),
+                  default=None)
     print(f"Catalogue : {len(out)} series comics.", flush=True)
+    print(f"  sans supply : {len(sans_supply)} (fiches delistees chez VeVe)", flush=True)
+    print(f"  sans prix   : {len(sans_prix)}", flush=True)
+    print(f"  sans date   : {len(sans_date)}", flush=True)
+    print(f"  drop le plus recent connu : "
+          f"{dernier.strftime('%d/%m/%Y %H:%M') if dernier else '-'}", flush=True)
     return out
 
 
@@ -201,17 +254,17 @@ def load_manuel(sh, series: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, An
     return manuel
 
 
-def _recent(date_drop: Any, jours: int) -> bool:
-    s = str(date_drop or "").strip()
-    for fmt in ("%d/%m/%Y %H:%M:%S", "%d/%m/%Y", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
-        try:
-            d = _dt.datetime.strptime(s, fmt)
-            break
-        except ValueError:
-            d = None
+def _etat(d: Optional[_dt.datetime], jours: int) -> str:
+    """A VENIR = le drop n'a pas encore eu lieu (c'est la que Preda doit noter AVANT
+    de poster sa carte Discord). NOUVEAU = sorti dans la fenetre recente."""
     if d is None:
-        return False
-    return d >= _dt.datetime.utcnow() - _dt.timedelta(days=jours)   # futur inclus
+        return ""
+    now = _dt.datetime.utcnow()
+    if d > now:
+        return A_VENIR
+    if d >= now - _dt.timedelta(days=jours):
+        return NOUVEAU
+    return ""
 
 
 def main() -> int:
@@ -230,7 +283,7 @@ def main() -> int:
     # que les nouveautes arrivent quelque part pour etre notees).
     garde = set(manuel)
     nouveaux = {uid for uid, s in series.items()
-                if uid not in garde and _recent(s["date_drop"], jours)}
+                if uid not in garde and _etat(s["date_drop"], jours)}
     garde |= nouveaux
     print(f"Perimetre : {len(garde)} series ({len(nouveaux)} nouveaux drops).",
           flush=True)
@@ -243,6 +296,7 @@ def main() -> int:
         supply = s["supply"]
         gems = s["prix_gems"]
         bonus = _num(m.get("bonus_perso")) or 0
+        d = s["date_drop"]
 
         par_edition = round(valeur / supply, 4) if (valeur and supply) else ""
         multiple = (round(par_edition / gems, 2)
@@ -250,12 +304,13 @@ def main() -> int:
         suggeree = note_calculee(valeur, supply, bonus)
         note = str(m.get("note", "") or "").strip()
         ecart = ""
-        if note and suggeree:
-            ecart = ECHELLE.index(note) - ECHELLE.index(suggeree) \
-                if note in ECHELLE else ""
+        if note and suggeree and note in ECHELLE:
+            ecart = ECHELLE.index(note) - ECHELLE.index(suggeree)
 
         lignes.append([
-            s["veve_series_name"], s["date_drop"], _era(s["start_year"] or None),
+            _etat(d, jours), s["veve_series_name"],
+            d.strftime("%d/%m/%Y %H:%M") if d else "",
+            _era(s["start_year"] or None),
             supply if supply else "", gems if gems else "",
             m.get("valeur_irl_98", ""), note, suggeree, ecart,
             par_edition, multiple, _score(valeur, supply),
@@ -264,11 +319,18 @@ def main() -> int:
             s["veve_licensor"], s["start_year"], s["veve_url"], uid,
         ])
 
-    # tri : d'abord ce qui n'est pas encore note (a traiter), puis par score
+    # TRI : ce qui demande une action d'abord.
+    #   1. les drops A VENIR (a noter AVANT la carte Discord), le plus proche en tete
+    #   2. les NOUVEAUX pas encore notes
+    #   3. le reste, par score decroissant (le classement proprement dit)
     def cle(l):
-        a_noter = 0 if l[5] in (None, "") else 1
-        sc = l[11] if isinstance(l[11], (int, float)) else -1
-        return (a_noter, -sc)
+        etat, note = l[COL_ETAT], l[COL_VALEUR]
+        sc = l[COL_SCORE] if isinstance(l[COL_SCORE], (int, float)) else -1
+        if etat == A_VENIR:
+            return (0, l[2], 0)          # le drop le plus imminent en premier
+        if etat == NOUVEAU and not note:
+            return (1, "", 0)
+        return (2, "", -sc)
     lignes.sort(key=cle)
 
     try:
@@ -278,19 +340,39 @@ def main() -> int:
         ws = sh.add_worksheet(title=CLASSEMENT_TAB, rows=len(lignes) + 50,
                               cols=len(HEADER))
     ws.update(range_name="A1", values=[HEADER] + lignes, value_input_option="RAW")
+
+    # --- habillage : les drops a venir doivent SAUTER AUX YEUX ---
     try:
         ws.format("1:1", {"textFormat": {"bold": True}})
         ws.freeze(rows=1)
+        derniere = chr(ord("A") + len(HEADER) - 1)
+        # les lignes sont triees : les blocs sont contigus, une requete par bloc
+        for etat, fond in ((A_VENIR, FOND_A_VENIR), (NOUVEAU, FOND_NOUVEAU)):
+            idx = [i + 2 for i, l in enumerate(lignes) if l[COL_ETAT] == etat]
+            if not idx:
+                continue
+            ws.format(f"A{min(idx)}:{derniere}{max(idx)}",
+                      {"backgroundColor": fond})
+        # remise a blanc du reste (sinon les couleurs d'hier restent sur des lignes
+        # qui ne sont plus des nouveautes)
+        reste = [i + 2 for i, l in enumerate(lignes) if not l[COL_ETAT]]
+        if reste:
+            ws.format(f"A{min(reste)}:{derniere}{len(lignes) + 1}",
+                      {"backgroundColor": {"red": 1, "green": 1, "blue": 1}})
     except Exception as e:
         print(f"format warning: {e}", flush=True)
 
-    notees = sum(1 for l in lignes if l[6])
-    desaccords = sum(1 for l in lignes if isinstance(l[8], int) and abs(l[8]) >= 1)
-    gros = sum(1 for l in lignes if isinstance(l[8], int) and abs(l[8]) >= 2)
+    a_venir = sum(1 for l in lignes if l[COL_ETAT] == A_VENIR)
+    notees = sum(1 for l in lignes if l[COL_NOTE])
+    desaccords = sum(1 for l in lignes
+                     if isinstance(l[COL_ECART], int) and abs(l[COL_ECART]) >= 1)
+    gros = sum(1 for l in lignes
+               if isinstance(l[COL_ECART], int) and abs(l[COL_ECART]) >= 2)
     print(f"\n🏆A-CLASSEMENT : {len(lignes)} series en {time.time() - t0:.0f}s")
+    print(f"  🔴 A VENIR (en haut, fond orange) : {a_venir}")
     print(f"  notees a la main : {notees}")
     print(f"  ecart avec la note suggeree : {desaccords} (dont {gros} de 2 crans ou +)")
-    print(f"  a noter (valeur IRL vide) : {sum(1 for l in lignes if not l[5])}")
+    print(f"  a noter (valeur IRL vide) : {sum(1 for l in lignes if not l[COL_VALEUR])}")
     return 0
 
 
