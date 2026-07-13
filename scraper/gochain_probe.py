@@ -33,6 +33,22 @@ import urllib.error
 import urllib.request
 
 RPC = os.environ.get("GO_RPC", "https://rpc.gochain.io")
+# v2 (13/07) : le 1er run a pris un 403 sur TOUT (RPC et API REST) depuis le
+# runner, alors que la MEME API repond depuis un poste normal. Deux causes
+# possibles, et on ne devine pas : (a) l'User-Agent par defaut de Python
+# ("Python-urllib/3.11"), que beaucoup de WAF refusent ; (b) le blocage des IP
+# de datacenter GitHub. L'etape `diag` les DISTINGUE : si des en-tetes de
+# navigateur suffisent, c'est (a) ; si le 403 persiste, c'est (b) et il faudra
+# un proxy (Apify) ou une autre machine.
+UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+      "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
+ENTETES = {
+    "User-Agent": UA,
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Origin": "https://explorer.gochain.io",
+    "Referer": "https://explorer.gochain.io/",
+}
 EXPLORER = os.environ.get("GO_EXPLORER", "https://explorer.gochain.io")
 OMI = "0x5347fdea6aa4d7770b31734408da6d34a8a07bdf"        # OMIToken (Go20)
 CAISSE = "0x17656848e63cb846d93e629c710f6b0cc30a89dc"     # encaissements VeVe
@@ -52,9 +68,9 @@ def _post(payload: dict, essais: int = 4):
     data = json.dumps(payload).encode()
     for i in range(essais):
         try:
-            req = urllib.request.Request(
-                RPC, data=data,
-                headers={"Content-Type": "application/json"})
+            h = dict(ENTETES)
+            h["Content-Type"] = "application/json"
+            req = urllib.request.Request(RPC, data=data, headers=h)
             with urllib.request.urlopen(req, timeout=45) as r:
                 out = json.loads(r.read())
             if "error" in out:
@@ -71,7 +87,8 @@ def _get(chemin: str, essais: int = 3):
     url = EXPLORER + chemin
     for i in range(essais):
         try:
-            with urllib.request.urlopen(url, timeout=45) as r:
+            req = urllib.request.Request(url, headers=dict(ENTETES))
+            with urllib.request.urlopen(req, timeout=45) as r:
                 return json.loads(r.read())
         except urllib.error.HTTPError as e:
             return {"_http": e.code}
@@ -233,10 +250,60 @@ def etape_caisse():
         print(f"  getLogs caisse : {r}")
 
 
+def etape_diag():
+    """403 : en-tetes ou adresse IP ? On teste, on ne suppose pas."""
+    print("\n═══ 0. LE 403 : EN-TETES OU IP ? ═══", flush=True)
+    jeux = [
+        ("aucun en-tete (defaut Python)", {}),
+        ("User-Agent seul", {"User-Agent": UA}),
+        ("en-tetes navigateur complets", dict(ENTETES)),
+    ]
+    cibles = [("explorer REST", EXPLORER + "/api/stats", None),
+              ("noeud RPC", RPC,
+               json.dumps({"jsonrpc": "2.0", "id": 1,
+                           "method": "eth_chainId", "params": []}).encode())]
+    ok_partout = True
+    for nom, url, data in cibles:
+        print(f"  --- {nom} : {url}")
+        for libelle, h in jeux:
+            head = dict(h)
+            if data is not None:
+                head["Content-Type"] = "application/json"
+            try:
+                req = urllib.request.Request(url, data=data, headers=head)
+                with urllib.request.urlopen(req, timeout=30) as r:
+                    corps = r.read(160).decode("utf-8", "replace")
+                print(f"      {libelle:32} {r.status}  {corps[:90]}")
+            except urllib.error.HTTPError as e:
+                corps = e.read(160).decode("utf-8", "replace").replace("\n", " ")
+                print(f"      {libelle:32} {e.code}  {corps[:90]}")
+                if libelle.startswith("en-tetes"):
+                    ok_partout = False
+            except Exception as e:
+                print(f"      {libelle:32} KO   {e}")
+                if libelle.startswith("en-tetes"):
+                    ok_partout = False
+            time.sleep(PAUSE)
+    print()
+    if ok_partout:
+        print("  ✅ Les en-tetes suffisent : c'etait l'User-Agent de Python.")
+    else:
+        print("  ⛔ 403 MEME avec des en-tetes de navigateur -> ce sont les IP")
+        print("     des runners GitHub qui sont bloquees (Azure/datacenter).")
+        print("     Sorties possibles, dans l'ordre :")
+        print("       1. relancer la sonde depuis un runner d'un AUTRE compte ;")
+        print("       2. passer par un proxy (l'actor Apify sert deja de relais")
+        print("          fetch dans ce projet) ;")
+        print("       3. collecter depuis le PC de Preda (le script est le meme,")
+        print("          il n'a besoin que de python + requests).")
+
+
 def main() -> int:
     print(f"SONDE GOCHAIN — steps={STEPS}", flush=True)
     print(f"  OMI    : {OMI}")
     print(f"  caisse : {CAISSE}")
+    if do("diag"):
+        etape_diag()
     tete = etape_rpc() if do("rpc") or do("dates") or do("logs") else None
     if do("dates"):
         etape_dates(tete)
