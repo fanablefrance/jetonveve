@@ -86,6 +86,14 @@ EDITION_NON_NOTEE = "AP"        # Artist Proof : des 1/1 que VeVe range en colle
 
 JOUR_VVBD = 2                   # mercredi : le VeVe Comic Book Day, jamais note
 
+# L'ALERTE ⚠️ ne couvre QUE les drops recents non notes — ceux que Preda a laisses
+# passer. Au 1er run avec le catalogue complet elle s'allumait sur 3 288 lignes : une
+# alerte qui s'allume 3 288 fois n'est pas une alerte, c'est un fond d'ecran. Le
+# backlog (les milliers d'anciens jamais notes) reste present, en fond blanc, sans
+# etat — il se filtre en une seconde sur la colonne `note` vide quand on veut s'y
+# mettre. Une alerte doit designer une ACTION, pas un etat du monde.
+JOURS_ALERTE = 90
+
 MANUELLES = ["valeur_irl_98", "fa_key", "bonus_perso", "note", "commentaire"]
 
 HEADER = [
@@ -523,7 +531,8 @@ def etat_de(s: Dict[str, Any], m: Dict[str, Any], now: _dt.datetime,
        2. mercredi (comic) / AP (collect) -> Preda ne les note pas : ni module, ni alerte
        3. drop a venir                    -> 🔴 module
        4. drop des `jours` derniers jours -> 🆕 module
-       5. le reste, non note              -> ⚠️ alerte
+       5. non note et sorti il y a < JOURS_ALERTE -> ⚠️ (tu l'as laisse passer)
+       6. le reste (le backlog)           -> rien : present, blanc, silencieux
     """
     if (str(m.get("note", "") or "").strip()
             or str(m.get("valeur_irl_98", "") or "").strip()):
@@ -534,12 +543,14 @@ def etat_de(s: Dict[str, Any], m: Dict[str, Any], now: _dt.datetime,
     if s["type"] == "comic" and d and d.weekday() == JOUR_VVBD:
         return VVBD
     if not d:
-        return ALERTE
+        return ""
     if d > now:
         return A_VENIR
     if d >= now - _dt.timedelta(days=jours):
         return RECENT
-    return ALERTE
+    if d >= now - _dt.timedelta(days=JOURS_ALERTE):
+        return ALERTE
+    return ""
 
 
 def ligne(s: Dict[str, Any], m: Dict[str, Any], etat: str) -> List[Any]:
@@ -611,11 +622,21 @@ def main() -> int:
     # "31/12/2025" contre "01/01/2026" en texte donne le mauvais ordre.
     mod_c.sort(key=lambda x: x[0], reverse=True)
     mod_k.sort(key=lambda x: x[0], reverse=True)
-    # le classement : les notes (par score), puis les ⚠️ a traiter, puis les 📅 et 🎨.
-    # Trier par etat garde les blocs de couleur CONTIGUS -> une requete de format.
-    rang = {"": 0, ALERTE: 1, VVBD: 2, ARTWORK: 3}
+    # le classement : les NOTES d'abord (par score), puis les ⚠️ a traiter, puis le
+    # backlog, puis les 📅 et 🎨. Trier par rang garde les blocs de couleur CONTIGUS
+    # -> une seule requete de format au lieu de centaines.
+    def rang(l: List[Any]) -> int:
+        if str(l[I["note"]] or "").strip():
+            return 0                     # note : le classement proprement dit
+        e = l[I["etat"]]
+        if e == ALERTE:
+            return 1                     # rate recemment : a traiter
+        if e in (VVBD, ARTWORK):
+            return 3                     # jamais notes : tout en bas
+        return 2                         # le backlog, silencieux
+
     corps.sort(key=lambda x: (
-        rang.get(x[1][I["etat"]], 4),
+        rang(x[1]),
         -(x[1][I["score"]] if isinstance(x[1][I["score"]], (int, float)) else -1),
         -x[0].timestamp(),
     ))
@@ -717,12 +738,15 @@ def main() -> int:
     except Exception as e:
         print(f"habillage : {e}", flush=True)
 
+    notes = sum(1 for l in body if str(l[I["note"]] or "").strip())
     compte = {e: sum(1 for l in body if l[I["etat"]] == e)
-              for e in ("", ALERTE, VVBD, ARTWORK)}
+              for e in (ALERTE, VVBD, ARTWORK)}
+    backlog = len(body) - notes - sum(compte.values())
     ecarts = [l[I["ecart"]] for l in body if isinstance(l[I["ecart"]], int)]
     print(f"\n🏆A-CLASSEMENT en {time.time() - t0:.0f}s")
     print(f"  a noter : {len(module_c)} comics + {len(module_k)} collectibles")
-    print(f"  classement : {compte['']} notes · {compte[ALERTE]} ⚠️ a noter · "
+    print(f"  classement : {notes} notes · {compte[ALERTE]} ⚠️ rates depuis "
+          f"{JOURS_ALERTE} j · {backlog} en backlog (silencieux) · "
           f"{compte[VVBD]} 📅 mercredi · {compte[ARTWORK]} 🎨 artist proofs")
     print(f"  ecart avec la note suggeree : {sum(1 for e in ecarts if e)} "
           f"(dont {sum(1 for e in ecarts if abs(e) >= 2)} de 2 crans ou +)")
