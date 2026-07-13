@@ -1,0 +1,44 @@
+name: Sonde GoChain (ere d'avant IMX)
+
+# Lecture seule, aucun secret. Repond a 4 questions et RIEN d'autre :
+#   rpc    : le noeud public repond-il ?
+#   dates  : quel bloc pour quelle date (ancre reelle + cadence) ?
+#   logs   : jusqu'ou porte un eth_getLogs (taille de tranche du futur collecteur) ?
+#   nft    : y avait-il des NFT DANS les wallets users ? (3 topics = ERC-20,
+#            4 topics = ERC-721 — on classe, on ne devine pas)
+#   caisse : combien de paiements OMI vers la caisse VeVe, a quel rythme ?
+#
+# Le bac a sable ne pouvait pas faire ce travail : web_fetch tronque les grosses
+# reponses et ne fait pas de POST. Un runner, si.
+
+on:
+  workflow_dispatch:
+    inputs:
+      steps:
+        description: "Etapes (all, ou liste : rpc,dates,logs,nft,caisse)"
+        required: false
+        default: "all"
+      rpc:
+        description: "Noeud JSON-RPC GoChain"
+        required: false
+        default: "https://rpc.gochain.io"
+      ancre:
+        description: "Bloc d'ancrage (18850837 = 2021-05-11, vu dans une vraie tx)"
+        required: false
+        default: "18850837"
+
+jobs:
+  sonde:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Sonde
+        env:
+          GO_STEPS: ${{ github.event.inputs.steps || 'all' }}
+          GO_RPC: ${{ github.event.inputs.rpc || 'https://rpc.gochain.io' }}
+          GO_ANCRE_BLOC: ${{ github.event.inputs.ancre || '18850837' }}
+        run: python -m scraper.gochain_probe
