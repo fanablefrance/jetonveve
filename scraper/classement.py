@@ -1,43 +1,41 @@
 """
-🏆A-CLASSEMENT — une ligne par SERIE comic VeVe.
+🏆A-CLASSEMENT — une ligne par SERIE comic VeVe. TOUT le catalogue (4 195 series).
 
-LA PAGE EST EN DEUX BLOCS
-    1. 🆕 A NOTER — les comics des 7 derniers jours (+ ceux a venir) qui n'ont pas
-       encore de note. C'est le module de travail : tout ce qu'il faut pour noter
-       est sur la ligne, et rien d'autre a chercher. Une note de methode dessous.
-    2. 🏆 CLASSEMENT — tout le reste, trie par score. Les anciens non notes gardent
-       un fond d'alerte qui DISPARAIT des que tu remplis (certains ne seront jamais
-       notables : ils resteront en alerte, c'est sans gravite).
+LA PAGE EST EN BLOCS
+    1. 🆕 A NOTER — les comics des 7 derniers jours + les drops a venir, PAS ENCORE
+       notes et PAS du mercredi. C'est le module de travail : tout ce qu'il faut pour
+       noter est sur la ligne. La note se calcule EN DIRECT (formules). Un comic sort
+       du module des que sa valeur ou sa note est remplie.
+    2. 🏆 CLASSEMENT — tout le reste : les notes en haut (tries par score), puis les
+       ⚠️ non notes (fond rouge pale, qui s'efface des que tu remplis), puis les 📅
+       du mercredi tout en bas.
+    (3. un module COLLECTIBLES viendra ici — l'assemblage est deja fait par blocs.)
+
+LE MERCREDI
+    Preda ne note pas les comics du VeVe Comic Book Day (le mercredi) : ni dans le
+    module, ni en alerte. Ils restent presents (etat 📅) mais ne reclament rien.
+    C'est aussi ce qui rend le catalogue complet tenable : sans ca, 3 611 comics
+    jamais notes auraient tous vire au rouge — et une alerte qui s'allume 3 611 fois
+    n'est plus une alerte.
 
 CE QUI EST A TOI (jamais ecrase)
     valeur_irl_98 · fa_key · bonus_perso · note · commentaire
-    Relus dans les DEUX blocs a chaque run (la cle est le series_uuid en derniere
-    colonne) et reecrits tels quels.
+    Relus par NOM DE COLONNE (jamais par position — leçon du 13/07) et revalides :
+    une saisie qui ne ressemble pas a ce qu'elle devrait etre est rejetee et reprise
+    depuis 🔗A-RACCORD. Une page abimee se repare donc toute seule.
 
 LA GRILLE (arretee avec Preda le 13/07)
     note = bande de VALEUR IRL 9.8 (un cran par x3) DECALEE par le supply :
+        < 1 000 -> +2 · 1 000-2 000 -> +1 · 2 000-5 000 -> 0 (normal)
+        5 000-10 000 -> -1 · 10 000-15 000 -> -2 · > 15 000 -> -3
+    + bonus_perso (± crans, a la main : le personnage vaut parfois plus que son comic)
+    L'echelle de valeur n'est PAS plafonnee : le niveau peut depasser AAA avant que le
+    supply ne le fasse redescendre. Sans ca, Amazing Fantasy #15 (5 M$, supply 10 000)
+    ne pouvait mecaniquement plus etre AAA.
+    Ancrages verifies : CA Comics #7 -> AA · ASM #14 Bouffon Vert -> BBB ·
+    Fallen Son -> C · Amazing Fantasy #15 -> AAA.
 
-        supply  < 1 000   -> +2 crans   (tres avantage)
-        supply 1 000-2 000 -> +1
-        supply 2 000-5 000 ->  0        (le supply "normal")
-        supply 5 000-10 000 -> -1       (penalisant)
-        supply 10 000-15 000 -> -2
-        supply > 15 000    -> -3        (tres penalisant)
-
-    L'echelle de valeur n'est PAS plafonnee : le niveau peut depasser AAA avant que
-    le supply ne le fasse redescendre. Sans ca, Amazing Fantasy #15 (5 M$, supply
-    10 000) ne pouvait mecaniquement PLUS etre AAA — le malus l'aurait bloque a AA.
-
-    Verifie sur les ancrages de Preda : ASM #14 Bouffon Vert (210 k$/70 000) -> BBB ·
-    Fallen Son (~200 $/30 000) -> C · Captain America Comics #7 (25 k$/1 000) -> AA ·
-    Amazing Fantasy #15 -> AAA.
-
-    ⚠️ Cette grille contredit 89 des 405 notes historiques de 2 crans ou plus (dont
-    Sgt. Fury #1, 76 k$ / supply 30 000 : A -> BBB). C'est VOULU : elle traduit la
-    regle que Preda veut appliquer, pas ses notes passees. La colonne `ecart` montre
-    ou les deux divergent, et `note` reste souveraine.
-
-Env : GOOGLE_SERVICE_ACCOUNT_JSON, SHEET_ID, JOURS_RECENTS (defaut 7)
+Env : GOOGLE_SERVICE_ACCOUNT_JSON, SHEET_ID, JOURS_RECENTS (7)
 """
 
 from __future__ import annotations
@@ -48,7 +46,7 @@ import math
 import os
 import sys
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 import gspread
 from google.oauth2.service_account import Credentials
@@ -60,24 +58,24 @@ RACCORD_TAB = "🔗A-RACCORD"
 CLASSEMENT_TAB = "🏆A-CLASSEMENT"
 
 # ---------------------------------------------------------------------------
-# LA GRILLE — les 3 constantes a bouger si Preda veut durcir / adoucir
+# LA GRILLE — les 3 constantes a bouger pour durcir / adoucir
 # ---------------------------------------------------------------------------
 ECHELLE = ["C", "CC", "CCC", "B", "BB", "BBB", "A", "AA", "AAA"]
 BASE_VALEUR = 35.0        # frontiere C / CC a supply neutre
 RATIO = 3.0               # un cran de note = x3 sur la valeur IRL
-PALIERS_SUPPLY = [        # (supply STRICTEMENT INFERIEUR A, crans) — 1er palier gagnant
-    (1000, +2),           # moins de 1 000 : tres avantage
-    (2001, +1),           # 1 000 a 2 000  : avantage
-    (5001, 0),            # 2 000 a 5 000  : le supply "normal"
-    (10001, -1),          # 5 000 a 10 000 : penalisant (7 500 est ici)
-    (15001, -2),          # 10 000 a 15 000
-    (float("inf"), -3),   # plus de 15 000 : tres penalisant
+PALIERS_SUPPLY = [        # (supply STRICTEMENT INFERIEUR A, crans)
+    (1000, +2),           # tres avantage
+    (2001, +1),           # avantage
+    (5001, 0),            # normal
+    (10001, -1),          # penalisant (7 500 est ici)
+    (15001, -2),
+    (float("inf"), -3),   # tres penalisant
 ]
+
+JOUR_VVBD = 2             # mercredi (lundi = 0) : le VeVe Comic Book Day
 
 MANUELLES = ["valeur_irl_98", "fa_key", "bonus_perso", "note", "commentaire"]
 
-# Les colonnes de SAISIE viennent tot : le module "a noter" doit se lire sans
-# scroller. Le reste (diagnostic, references) suit.
 HEADER = [
     "etat", "veve_series_name", "date_drop", "era", "supply", "prix_gems",
     "cover_exclusive", "valeur_irl_98", "fa_key", "bonus_perso", "note",
@@ -89,15 +87,14 @@ I = {c: i for i, c in enumerate(HEADER)}
 NB_COL = len(HEADER)
 DERNIERE = chr(ord("A") + NB_COL - 1)          # W
 
-A_VENIR, RECENT, ALERTE = "🔴", "🆕", "⚠️"
+A_VENIR, RECENT, ALERTE, VVBD = "🔴", "🆕", "⚠️", "📅"
 
-# --- habillage -------------------------------------------------------------
-VIOLET = {"red": 0.42, "green": 0.35, "blue": 0.66}     # bandeaux (texte blanc)
+VIOLET = {"red": 0.42, "green": 0.35, "blue": 0.66}
 BLANC = {"red": 1.0, "green": 1.0, "blue": 1.0}
-FOND_MODULE = {"red": 1.0, "green": 0.94, "blue": 0.85}  # orange tres clair
+FOND_MODULE = {"red": 1.0, "green": 0.94, "blue": 0.85}
 FOND_ENTETE = {"red": 0.91, "green": 0.88, "blue": 0.96}
 FOND_METHODE = {"red": 0.96, "green": 0.96, "blue": 0.96}
-FOND_ALERTE = {"red": 0.99, "green": 0.89, "blue": 0.89}  # rouge tres clair
+FOND_ALERTE = {"red": 0.99, "green": 0.89, "blue": 0.89}
 GRIS = {"red": 0.40, "green": 0.40, "blue": 0.40}
 
 URL_COMIC = "https://www.veve.me/collectibles/en/comics/{uuid}"
@@ -117,8 +114,9 @@ def _methode() -> str:
         "À REMPLIR : valeur_irl_98 (prix du 9.8 physique), fa_key (la première "
         "apparition / le fait marquant), bonus_perso (± crans quand le personnage "
         "vaut plus que son comic : Venom +2, Miles Morales +2), puis note. "
-        "La note suggérée s'affiche à côté — elle ne remplace jamais la tienne, "
-        "la colonne `ecart` montre juste où vous divergez."
+        "La note suggérée se recalcule pendant que tu tapes. Le comic quitte ce "
+        "module dès que sa valeur ou sa note est remplie. "
+        "Les comics du mercredi (VeVe Comic Book Day) n'entrent jamais ici."
     ).replace(",", " ")
 
 
@@ -127,9 +125,6 @@ def _methode() -> str:
 # ---------------------------------------------------------------------------
 
 def crans_supply(supply: Optional[float]) -> int:
-    """Le decalage en crans du au tirage. Bornes STRICTES : un supply de 1 000 pile
-    est « avantage » (+1), pas « tres avantage » — c'est ce qui met Captain America
-    Comics #7 (25 k$, supply 1 000) sur AA, la note que Preda lui a donnee."""
     if not supply or supply <= 0:
         return 0
     for borne, crans in PALIERS_SUPPLY:
@@ -139,8 +134,7 @@ def crans_supply(supply: Optional[float]) -> int:
 
 
 def niveau_valeur(valeur: float) -> int:
-    """Le cran de valeur, NON PLAFONNE (il peut depasser AAA — c'est le supply qui
-    redescend ensuite). Sans ca, un 5 M$ a supply 10 000 ne pouvait plus etre AAA."""
+    """NON PLAFONNE : le niveau peut depasser AAA, c'est le supply qui redescend."""
     if valeur < BASE_VALEUR:
         return 0
     return int(math.floor(math.log(valeur / BASE_VALEUR) / math.log(RATIO))) + 1
@@ -154,55 +148,45 @@ def note_calculee(valeur: Optional[float], supply: Optional[float],
     return ECHELLE[max(0, min(len(ECHELLE) - 1, k))]
 
 
-# ---------------------------------------------------------------------------
-# LES MEMES FORMULES, EN VIVANT DANS LE SHEET
-# ---------------------------------------------------------------------------
-# note_suggeree / ecart / valeur_par_edition / multiple / score sont poses en
-# FORMULES, pas en valeurs : la note se recalcule pendant que Preda tape sa valeur
-# IRL ou son bonus, sans attendre le run du lendemain. C'est tout l'interet du
-# module « a noter ».
-# Les formules sont GENEREES a partir des constantes ci-dessus — impossible que la
-# grille du Sheet et celle du Python divergent.
-# ⚠️ Locale FR : le separateur d'arguments est « ; » (une virgule donne #ERROR!).
+def score_brut(valeur: Optional[float], supply: Optional[float]) -> Any:
+    if not valeur or not supply or supply <= 0:
+        return ""
+    return round(valeur * (RATIO ** crans_supply(supply)), 1)
+
+
+# --- les memes formules, mais VIVANTES dans le Sheet -----------------------
+# La note se recalcule pendant que Preda tape. Elles sont GENEREES depuis les
+# constantes ci-dessus : la grille du Sheet ne peut pas diverger de celle du Python.
+# ⚠️ Locale FR : separateur « ; » (une virgule donne #ERROR!).
 
 def _cascade_supply(col: str) -> str:
-    """IF(E<1000;2;IF(E<2001;1;...)) construit depuis PALIERS_SUPPLY."""
     bornes = [(b, c) for b, c in PALIERS_SUPPLY if b != float("inf")]
-    defaut = PALIERS_SUPPLY[-1][1]
-    f = str(defaut)
+    f = str(PALIERS_SUPPLY[-1][1])
     for borne, crans in reversed(bornes):
         f = f"IF({col}<{borne:.0f};{crans};{f})"
     return f
 
 
-def _niveau_valeur(col: str) -> str:
+def _niveau_formule(col: str) -> str:
     return (f"IF({col}<{BASE_VALEUR:.0f};0;"
             f"FLOOR(LN({col}/{BASE_VALEUR:.0f})/LN({RATIO:.0f}))+1)")
 
 
 def formules(r: int) -> List[str]:
-    """Les 5 colonnes calculees de la ligne r (L a P), dans l'ordre du HEADER."""
+    """Les 5 colonnes calculees de la ligne r (L a P)."""
     h, e, j, k, n, f, l = (f"$H{r}", f"$E{r}", f"$J{r}", f"$K{r}",
                            f"$N{r}", f"$F{r}", f"$L{r}")
     ech = "{" + ";".join(f'"{x}"' for x in ECHELLE) + "}"
     vide = f'OR({h}="";{e}="")'
-    cran = (f"MIN({len(ECHELLE)};MAX(1;1+{_niveau_valeur(h)}"
+    cran = (f"MIN({len(ECHELLE)};MAX(1;1+{_niveau_formule(h)}"
             f"+{_cascade_supply(e)}+IF({j}=\"\";0;{j})))")
     return [
-        f'=IF({vide};"";INDEX({ech};{cran}))',                       # note_suggeree
-        f'=IF(OR({k}="";{l}="");"";MATCH({k};{ech};0)-MATCH({l};{ech};0))',  # ecart
-        f'=IF({vide};"";{h}/{e})',                                   # valeur_par_edition
-        f'=IF(OR({n}="";{f}="");"";{n}/{f})',                        # multiple_entree
-        f'=IF({vide};"";{h}*POWER({RATIO:.0f};{_cascade_supply(e)}))',       # score
+        f'=IF({vide};"";INDEX({ech};{cran}))',
+        f'=IF(OR({k}="";{l}="");"";MATCH({k};{ech};0)-MATCH({l};{ech};0))',
+        f'=IF({vide};"";{h}/{e})',
+        f'=IF(OR({n}="";{f}="");"";{n}/{f})',
+        f'=IF({vide};"";{h}*POWER({RATIO:.0f};{_cascade_supply(e)}))',
     ]
-
-
-def score_brut(valeur: Optional[float], supply: Optional[float]) -> Any:
-    """Un reel pour trier / departager, dans la MEME logique que la grille :
-    la valeur, corrigee des crans de supply (1 cran = x3)."""
-    if not valeur or not supply or supply <= 0:
-        return ""
-    return round(valeur * (RATIO ** crans_supply(supply)), 1)
 
 
 # ---------------------------------------------------------------------------
@@ -219,14 +203,13 @@ def _num(x: Any) -> Optional[float]:
 
 
 def prix_en_gems(x: Any) -> Optional[float]:
-    """Le prix boutique d'un COMIC ramene en gems (1 gem ~ 1 $).
+    """Prix boutique d'un COMIC ramene en gems (1 gem ~ 1 $).
 
-    VeVe melange DEUX echelles dans `storePrice` : les vieux comics etaient vendus
-    en GEMS (10, 15, 20), les recents en FIAT et en CENTIMES (699, 798, 1499).
-    Preuve : Captain America Comics #7 = 699 au catalogue, et la carte Discord de
-    Preda dit « 7 gems » ; sur Cheetara #2 le tracker dit 7.98 quand GraphQL dit 798.
-    Au-dela de 100 = centimes. IDEMPOTENT (7,98 < 100 : pas de 2e division).
-    ⚠️ Comics seulement — un collectible a 1 500 gems, ça existe.
+    VeVe melange DEUX echelles dans `storePrice` : vieux comics en GEMS (10, 15, 20),
+    comics recents en FIAT et en CENTIMES (699, 798, 1499). Preuve : Captain America
+    Comics #7 = 699 au catalogue et la carte Discord de Preda dit « 7 gems ».
+    Au-dela de 100 = centimes. IDEMPOTENT. ⚠️ Comics seulement (un collectible a
+    1 500 gems, ça existe).
     """
     v = _num(x)
     if v is None:
@@ -235,9 +218,9 @@ def prix_en_gems(x: Any) -> Optional[float]:
 
 
 def _date(x: Any) -> Optional[_dt.datetime]:
-    """⚠️ On lit le catalogue en UNFORMATTED (obligatoire : locale FR, "6,99" serait
+    """⚠️ Le catalogue est lu en UNFORMATTED (obligatoire : locale FR, "6,99" serait
     numerise en 699). Dans ce mode une cellule DATE revient en NUMERO DE SERIE
-    Google (46 212,625), pas en texte. On reconvertit."""
+    Google (46 212,625), pas en texte."""
     if x in (None, ""):
         return None
     if isinstance(x, (int, float)):
@@ -302,32 +285,29 @@ def load_series(sh) -> Dict[str, Dict[str, Any]]:
             }
         s["nb_raretes"] += 1
 
-    sans_supply = sum(1 for s in out.values() if not s["supply"])
-    sans_prix = sum(1 for s in out.values() if not s["prix_gems"])
+    mercredi = sum(1 for s in out.values()
+                   if s["date_drop"] and s["date_drop"].weekday() == JOUR_VVBD)
     dernier = max((s["date_drop"] for s in out.values() if s["date_drop"]), default=None)
     print(f"Catalogue : {len(out)} series comics.", flush=True)
-    print(f"  sans supply : {sans_supply} (fiches delistees chez VeVe)", flush=True)
-    print(f"  sans prix   : {sans_prix}", flush=True)
+    print(f"  sans supply : {sum(1 for s in out.values() if not s['supply'])} "
+          f"(fiches delistees chez VeVe)", flush=True)
+    print(f"  du mercredi (VVBD, jamais a noter) : {mercredi}", flush=True)
     print(f"  drop le plus recent connu : "
           f"{dernier.strftime('%d/%m/%Y %H:%M') if dernier else '-'}", flush=True)
     return out
 
 
 def load_manuel(sh, series: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
-    """Les colonnes manuelles. La PAGE d'abord (c'est la que Preda saisit), le
-    classement historique ensuite pour amorcer ce qui manque.
-
-    La page a deux blocs mais UNE SEULE grille de colonnes : on repere les lignes de
-    donnees a leur derniere cellule (le series_uuid). Pas de dependance a un numero
-    de ligne — le module du haut change de taille tous les jours.
-    """
+    """Les saisies : la PAGE d'abord (c'est la que Preda tape), 🔗A-RACCORD ensuite
+    pour amorcer ce qui manque."""
     manuel: Dict[str, Dict[str, Any]] = {}
 
     try:
         for r in sh.worksheet(RACCORD_TAB).get_all_records(
                 value_render_option="UNFORMATTED_VALUE"):
             valide = str(r.get("valide", "") or "").strip()
-            uid = valide if len(valide) > 10 else str(r.get("series_uuid", "") or "").strip()
+            uid = (valide if len(valide) > 10
+                   else str(r.get("series_uuid", "") or "").strip())
             if not uid or uid not in series:
                 continue
             if str(r.get("statut", "")).strip() != "CERTAIN" and not valide:
@@ -346,33 +326,33 @@ def load_manuel(sh, series: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, An
     try:
         ws = sh.worksheet(CLASSEMENT_TAB)
         repris, rejetes = 0, 0
-        # ⚠️ ON LIT PAR NOM DE COLONNE, JAMAIS PAR POSITION. Leçon payee le 13/07 :
-        # j'ai reordonne le HEADER, la relecture par index a decale toutes les
-        # saisies d'une colonne (valeur_irl_98 a herite de `note`, `note` de
-        # `valeur_par_edition`...). C'est la regle que le Sheet de Preda avait deja
-        # apprise avec stats_format : le NOM est la source de verite, pas la place.
+        # ⚠️ LECTURE PAR NOM DE COLONNE, JAMAIS PAR POSITION. Leçon payee le 13/07 :
+        # j'ai reordonne le HEADER et la relecture par index a decale toutes les
+        # saisies d'un cran (valeur_irl_98 a herite de `note`, `note` de
+        # `valeur_par_edition`...). Le NOM est la source de verite, pas la place.
         idx: Dict[str, int] = {}
         for row in ws.get_all_values(value_render_option="UNFORMATTED_VALUE"):
-            if "series_uuid" in row:               # une ligne d'en-tete (il y en a 2)
+            if "series_uuid" in row:               # ligne d'en-tete (il y en a 2)
                 idx = {c: i for i, c in enumerate(row) if c}
                 continue
             if not idx:
                 continue
             uid = str(_case(row, idx, "series_uuid") or "").strip()
-            if len(uid) < 30:                      # pas une ligne de donnees
+            if len(uid) < 30:
                 continue
             saisi = {c: _case(row, idx, c) for c in MANUELLES}
+            _nettoyer(saisi)
             if not any(str(v).strip() for v in saisi.values()):
                 continue
             if not _saisie_coherente(saisi):
-                rejetes += 1                       # ligne abimee -> on repart de l'amorce
+                rejetes += 1                       # abimee -> on repart de l'amorce
                 continue
             manuel[uid] = saisi
             repris += 1
-        print(f"Saisies reprises de la page : {repris} series.", flush=True)
+        print(f"Saisies reprises de la page : {repris}.", flush=True)
         if rejetes:
-            print(f"  ⚠️ {rejetes} lignes incoherentes ignorees (valeur non numerique "
-                  f"ou note hors echelle) -> reprises depuis 🔗A-RACCORD.", flush=True)
+            print(f"  ⚠️ {rejetes} lignes incoherentes ignorees -> reprises depuis "
+                  f"🔗A-RACCORD.", flush=True)
     except gspread.WorksheetNotFound:
         print("🏆A-CLASSEMENT : creation.", flush=True)
 
@@ -384,11 +364,18 @@ def _case(row: List[Any], idx: Dict[str, int], col: str) -> Any:
     return row[i] if (i is not None and i < len(row)) else ""
 
 
+def _nettoyer(saisi: Dict[str, Any]) -> None:
+    """`commentaire` avait herite d'un TRUE/FALSE lors du decalage de colonnes du
+    13/07. Un booleen n'est pas un commentaire."""
+    c = str(saisi.get("commentaire", "") or "").strip().upper()
+    if c in ("TRUE", "FALSE", "VRAI", "FAUX"):
+        saisi["commentaire"] = ""
+
+
 def _saisie_coherente(saisi: Dict[str, Any]) -> bool:
-    """Un garde-fou, pas un caprice : si une saisie ne ressemble pas a ce qu'elle
-    devrait etre (une valeur en dollars, une note de l'echelle, un bonus entier),
-    on ne la reprend PAS — on la reconstruit depuis l'amorce. C'est ce qui repare
-    tout seul une page abimee par un changement de colonnes."""
+    """Garde-fou : une saisie qui ne ressemble pas a ce qu'elle devrait etre (valeur
+    en dollars, note de l'echelle, bonus entier) n'est pas reprise — on la reconstruit
+    depuis l'amorce. C'est ce qui repare tout seul une page abimee."""
     v = str(saisi.get("valeur_irl_98", "") or "").strip()
     if v and _num(v) is None:
         return False
@@ -404,6 +391,29 @@ def _saisie_coherente(saisi: Dict[str, Any]) -> bool:
 # ---------------------------------------------------------------------------
 # Construction
 # ---------------------------------------------------------------------------
+
+def etat_de(s: Dict[str, Any], m: Dict[str, Any], now: _dt.datetime,
+            jours: int) -> str:
+    """L'etat d'une serie. L'ordre des tests EST la regle metier :
+       1. notee               -> plus rien a faire
+       2. mercredi (VVBD)     -> Preda ne les note pas : ni module, ni alerte
+       3. drop a venir        -> 🔴 module (a noter AVANT la carte Discord)
+       4. drop des 7 derniers jours -> 🆕 module
+       5. le reste, non note  -> ⚠️ alerte
+    """
+    if str(m.get("note", "") or "").strip() or str(m.get("valeur_irl_98", "") or "").strip():
+        return ""
+    d = s["date_drop"]
+    if d and d.weekday() == JOUR_VVBD:
+        return VVBD
+    if not d:
+        return ALERTE
+    if d > now:
+        return A_VENIR
+    if d >= now - _dt.timedelta(days=jours):
+        return RECENT
+    return ALERTE
+
 
 def ligne(s: Dict[str, Any], m: Dict[str, Any], etat: str) -> List[Any]:
     valeur = _num(m.get("valeur_irl_98"))
@@ -441,38 +451,39 @@ def main() -> int:
     series = load_series(sh)
     manuel = load_manuel(sh, series)
 
-    def est_note(uid: str) -> bool:
-        m = manuel.get(uid) or {}
-        return bool(str(m.get("note", "") or "").strip()
-                    or str(m.get("valeur_irl_98", "") or "").strip())
-
-    # --- BLOC 1 : a noter (a venir + 7 derniers jours, sans note) ---
-    a_noter: List[List[Any]] = []
+    # PERIMETRE : TOUT le catalogue. Star Wars, Tarzan, Disney, VIZ, 247 Comics
+    # etaient bien collectes — c'est la page qui ne les laissait pas entrer.
+    # ⚠️ on garde la VRAIE date a cote de la ligne pour trier. La colonne date_drop
+    # est du TEXTE ("09/07/2026 15:00") : trier dessus, c'est trier "31/12/2025"
+    # apres "01/01/2026". Une date formatee n'est pas une date.
+    mod: List[Tuple[_dt.datetime, List[Any]]] = []
+    cor: List[Tuple[Any, List[Any]]] = []
+    vieille = _dt.datetime(1900, 1, 1)
     for uid, s in series.items():
-        d = s["date_drop"]
-        if not d or est_note(uid):
-            continue
-        if d > now:
-            a_noter.append((d, ligne(s, manuel.get(uid, {}), A_VENIR)))
-        elif d >= now - _dt.timedelta(days=jours):
-            a_noter.append((d, ligne(s, manuel.get(uid, {}), RECENT)))
-    a_noter.sort(key=lambda x: x[0], reverse=True)   # le plus recent / imminent en tete
-    module = [l for _, l in a_noter]
-    dans_module = {l[I["series_uuid"]] for l in module}
+        m = manuel.get(uid, {})
+        etat = etat_de(s, m, now, jours)
+        l = ligne(s, m, etat)
+        (mod if etat in (A_VENIR, RECENT) else cor).append((s["date_drop"] or vieille, l))
 
-    # --- BLOC 2 : le classement (tout ce qui a une saisie + le reste des notees) ---
-    corps: List[List[Any]] = []
-    for uid in set(manuel):
-        if uid in series and uid not in dans_module:
-            etat = "" if est_note(uid) else ALERTE
-            corps.append(ligne(series[uid], manuel[uid], etat))
-    corps.sort(key=lambda l: -(l[I["score"]] if isinstance(l[I["score"]], (int, float))
-                               else -1))
+    # le module : le plus imminent / le plus recent en tete
+    mod.sort(key=lambda x: x[0], reverse=True)
+    module = [l for _, l in mod]
 
-    # --- ecriture ---
-    titre_module = (f"🆕 À NOTER — {len(module)} comic(s) : les {jours} derniers jours "
-                    f"+ les drops à venir")
-    grille: List[List[Any]] = [[titre_module] + [""] * (NB_COL - 1), list(HEADER)]
+    # le classement : les notes d'abord (par score), puis les ⚠️ a traiter, puis les
+    # 📅 du mercredi. Trier par etat garde aussi les blocs de couleur CONTIGUS —
+    # une seule requete de format au lieu de centaines.
+    rang = {"": 0, ALERTE: 1, VVBD: 2}
+    cor.sort(key=lambda x: (
+        rang.get(x[1][I["etat"]], 3),
+        -(x[1][I["score"]] if isinstance(x[1][I["score"]], (int, float)) else -1),
+        -x[0].timestamp(),
+    ))
+    corps = [l for _, l in cor]
+
+    # ----- assemblage par BLOCS (le module COLLECTIBLES se branchera ici) -----
+    titre_mod = (f"🆕 À NOTER — {len(module)} comic(s) : les {jours} derniers jours "
+                 f"+ les drops à venir (hors mercredi)")
+    grille: List[List[Any]] = [[titre_mod] + [""] * (NB_COL - 1), list(HEADER)]
     grille += module or [["(rien à noter aujourd'hui)"] + [""] * (NB_COL - 1)]
     grille.append([_methode()] + [""] * (NB_COL - 1))
     grille.append([""] * NB_COL)
@@ -481,8 +492,7 @@ def main() -> int:
     grille += corps
 
     n_mod = max(len(module), 1)
-    L_TITRE_MOD, L_ENTETE_MOD = 1, 2
-    L_MODULE = 3                                  # 1re ligne de donnees du module
+    L_TITRE_MOD, L_ENTETE_MOD, L_MODULE = 1, 2, 3
     L_METHODE = L_MODULE + n_mod
     L_TITRE_CLASS = L_METHODE + 2
     L_ENTETE_CLASS = L_TITRE_CLASS + 1
@@ -502,23 +512,16 @@ def main() -> int:
         ws.add_rows(len(grille) + 10 - ws.row_count)
     ws.update(range_name="A1", values=grille, value_input_option="RAW")
 
-    # Les 5 colonnes calculees (L a P) sont posees en FORMULES : la note suggeree
-    # se met a jour PENDANT que Preda tape, sans attendre le run du lendemain.
-    # USER_ENTERED (sinon la formule serait ecrite comme du texte) et un seul appel
-    # par bloc — les bandeaux fusionnes entre les deux blocs ne doivent pas etre
-    # touches.
+    # les 5 colonnes calculees en FORMULES : la note bouge pendant que Preda tape.
     for debut, nb in ((L_MODULE, len(module)), (L_CORPS, len(corps))):
         if nb:
             ws.update(range_name=f"L{debut}:P{debut + nb - 1}",
                       values=[formules(debut + i) for i in range(nb)],
                       value_input_option="USER_ENTERED")
 
-    # --- habillage : UNE SEULE requete ---
-    # Le 1er run est tombe en « APIError [429] Write requests per minute » : je posais
-    # un appel de format PAR bloc de couleur (153 alertes = des dizaines d'appels).
-    # Google plafonne a 60 ecritures/minute. Tout part maintenant dans un seul
-    # batch_update. Rappel du 13/07 : un batch est ATOMIQUE — une requete invalide
-    # annule les autres — donc on l'envoie par paquets de 60 et un accident reste local.
+    # --- habillage : UN SEUL batch (Google plafonne a 60 ecritures/minute, le 1er
+    # run est tombe en 429 avec un appel par bloc de couleur). Un batch est ATOMIQUE
+    # -> paquets de 60, un accident reste local.
     try:
         bandeau = {"backgroundColor": VIOLET, "horizontalAlignment": "LEFT",
                    "textFormat": {"bold": True, "fontSize": 12,
@@ -547,16 +550,14 @@ def main() -> int:
             for debut, fin in _blocs(alertes):
                 reqs.append(_peindre(ws, debut, fin,
                                      {"backgroundColor": FOND_ALERTE}))
-        # la ligne de methode est longue : on lui donne de la hauteur
         reqs.append({"updateDimensionProperties": {
             "range": {"sheetId": ws.id, "dimension": "ROWS",
                       "startIndex": L_METHODE - 1, "endIndex": L_METHODE},
             "properties": {"pixelSize": 90}, "fields": "pixelSize"}})
         reqs.append({"updateSheetProperties": {
-            "properties": {"sheetId": ws.id, "gridProperties":
-                           {"frozenRowCount": L_ENTETE_MOD}},
+            "properties": {"sheetId": ws.id,
+                           "gridProperties": {"frozenRowCount": L_ENTETE_MOD}},
             "fields": "gridProperties.frozenRowCount"}})
-
         for i in range(0, len(reqs), 60):
             sh.batch_update({"requests": reqs[i:i + 60]})
         print(f"Habillage : {len(reqs)} requetes.", flush=True)
@@ -564,18 +565,19 @@ def main() -> int:
         print(f"habillage : {e}", flush=True)
 
     ecarts = [l[I["ecart"]] for l in corps if isinstance(l[I["ecart"]], int)]
+    compte = {e: sum(1 for l in corps if l[I["etat"]] == e) for e in ("", ALERTE, VVBD)}
     print(f"\n🏆A-CLASSEMENT : {len(module)} a noter + {len(corps)} au classement "
           f"en {time.time() - t0:.0f}s")
-    print(f"  dont a venir : {sum(1 for l in module if l[I['etat']] == A_VENIR)}")
-    print(f"  anciens en alerte (non notes) : "
-          f"{sum(1 for l in corps if l[I['etat']] == ALERTE)}")
+    print(f"  module : {sum(1 for l in module if l[I['etat']] == A_VENIR)} a venir + "
+          f"{sum(1 for l in module if l[I['etat']] == RECENT)} recents")
+    print(f"  classement : {compte['']} notees · {compte[ALERTE]} ⚠️ a noter · "
+          f"{compte[VVBD]} 📅 mercredi (ignores)")
     print(f"  ecart avec la note suggeree : {sum(1 for e in ecarts if e)} "
           f"(dont {sum(1 for e in ecarts if abs(e) >= 2)} de 2 crans ou +)")
     return 0
 
 
 def _plage(ws, debut: int, fin: int) -> Dict[str, Any]:
-    """La plage A{debut}:{DERNIERE}{fin} en indices 0-based, pour l'API brute."""
     return {"sheetId": ws.id, "startRowIndex": debut - 1, "endRowIndex": fin,
             "startColumnIndex": 0, "endColumnIndex": NB_COL}
 
@@ -583,23 +585,21 @@ def _plage(ws, debut: int, fin: int) -> Dict[str, Any]:
 def _peindre(ws, debut: int, fin: int, fmt: Dict[str, Any]) -> Dict[str, Any]:
     champs = ",".join(f"userEnteredFormat.{k}" for k in fmt)
     return {"repeatCell": {"range": _plage(ws, debut, fin),
-                           "cell": {"userEnteredFormat": fmt},
-                           "fields": champs}}
+                           "cell": {"userEnteredFormat": fmt}, "fields": champs}}
 
 
 def _blocs(lignes: List[int]):
-    """Regroupe des numeros de ligne consecutifs en (debut, fin) — une requete de
-    format par bloc au lieu d'une par ligne."""
-    for i, n in enumerate(sorted(lignes)):
-        if i == 0:
-            debut = prec = n
-            continue
+    """Numeros de ligne consecutifs -> (debut, fin). Une requete de format par bloc."""
+    if not lignes:
+        return
+    lignes = sorted(lignes)
+    debut = prec = lignes[0]
+    for n in lignes[1:]:
         if n != prec + 1:
             yield debut, prec
             debut = n
         prec = n
-    if lignes:
-        yield debut, prec
+    yield debut, prec
 
 
 if __name__ == "__main__":
