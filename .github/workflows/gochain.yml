@@ -20,9 +20,13 @@ on:
   workflow_dispatch:
     inputs:
       steps:
-        description: "Etapes (all — reserve pour la suite)"
+        description: "Etapes (all, ou : collecte / classer)"
         required: false
         default: "all"
+      reset:
+        description: "Repartir de zero (la v1 n'avait pas garde les paiements bruts)"
+        type: boolean
+        default: false
       minutes:
         description: "Budget par run (minutes)"
         required: false
@@ -55,8 +59,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Collecte (tranche)
+      - name: Remise a zero (si demandee)
+        if: ${{ github.event.inputs.reset == 'true' }}
+        run: |
+          rm -f data/gochain_state.json data/gochain_wallets.csv \
+                data/gochain_daily.csv data/gochain_paiements.csv
+          echo "Etat et sorties effaces — la collecte repart du bloc 0."
+
+      - name: Collecte + classement
         env:
+          GO_STEPS: ${{ github.event.inputs.steps || 'all' }}
           GO_MINUTES: ${{ github.event.inputs.minutes || '45' }}
           GO_TRANCHE: ${{ github.event.inputs.tranche || '100000' }}
         run: python -m scraper.gochain
@@ -66,7 +78,8 @@ jobs:
         run: |
           git config user.name "veve-gochain-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/gochain_wallets.csv data/gochain_daily.csv data/gochain_state.json
+          git add data/gochain_wallets.csv data/gochain_daily.csv \
+                  data/gochain_state.json data/gochain_paiements.csv
           if git diff --cached --quiet; then echo "Rien a committer."; exit 0; fi
           git commit -m "gochain: $(date -u +%FT%H:%M)"
           for i in 1 2 3 4 5; do
