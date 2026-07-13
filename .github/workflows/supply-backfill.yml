@@ -1,0 +1,63 @@
+name: Backfill supply / gems / MCP / cover exclusive
+
+# Remplit les 4 colonnes froides ajoutees le 13/07 (supply, store_price_gems,
+# mcp_priority, veve_exclusive) sur les ~18 700 lignes DEJA en place des deux
+# catalogues. Ne touche PAS my-nft-tracker : il ne fait que redemander a VeVe
+# GraphQL les fiches dont le supply manque (~2 900 series comics + ~2 630
+# collectibles, quelques minutes).
+#
+# TOURNE SUR JETONVEVE (public = minutes illimitees, et les secrets Sheet y sont
+# deja : GOOGLE_SERVICE_ACCOUNT_JSON + SHEET_ID).
+#
+# PREALABLE : poster d'abord scraper/sheets.py (patch) sur le repo preda et
+# lancer daily.yml (steps=catalogue), sinon la prochaine reecriture du catalogue
+# supprimerait des colonnes qu'elle ne connait pas. Le script sait quand meme
+# creer les en-tetes lui-meme si besoin.
+#
+# Reprise : relancer le workflow reprend la ou il s'est arrete (les lignes deja
+# remplies ne sont jamais redemandees).
+
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "comics | collectibles | (vide = les deux)"
+        required: false
+        default: ""
+      max_items:
+        description: "Nb max de fiches VeVe a interroger (0 = tout)"
+        required: false
+        default: "0"
+      probe_only:
+        description: "true = ne faire QUE la sonde du champ MCP puis s'arreter"
+        required: false
+        default: "false"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supply-backfill
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install requests==2.32.3 gspread==6.1.2 google-auth==2.32.0
+
+      - name: Backfill
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          SHEET_ID: ${{ secrets.SHEET_ID }}
+          ONLY: ${{ github.event.inputs.only }}
+          MAX_ITEMS: ${{ github.event.inputs.max_items || '0' }}
+          PROBE_ONLY: ${{ github.event.inputs.probe_only || 'false' }}
+          WORKERS: "6"
+          WRITE_EVERY: "400"
+        run: python -m scraper.supply_backfill
