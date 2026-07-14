@@ -133,14 +133,30 @@ jobs:
           FLOOR_PAUSE_MSG_S: "3"
         run: python -m scraper.floor_watch
 
-      - name: Commit de l'etat
+      # ⚠️ LA RECOLTE EST SACREE — y compris contre git.
+      # Le 14/07, un `git pull --rebase` a bute sur data/floor_state.json
+      # (« CONFLICT ») et l'etat du run n'a JAMAIS ete pousse : ventes
+      # decouvertes, floors memorises, budget de messages — tout perdu.
+      # On ne rebase donc plus cet etat : on le FUSIONNE. Les deux versions sont
+      # vraies (chaque run a vu ce que l'autre n'a pas vu) ; ecraser reviendrait
+      # a jeter la moitie de la recolte.
+      - name: Commit de l'etat (fusion, jamais d'ecrasement)
         if: always()
         run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add data/floor_state.json 2>/dev/null || true
-          git diff --cached --quiet || git commit -m "floor_watch: etat"
+          [ -f data/floor_state.json ] || exit 0
+          cp data/floor_state.json /tmp/mien.json
           for i in 1 2 3 4 5; do
-            git pull --rebase --autostash origin main && git push origin main && break
-            sleep 10
+            git fetch origin main
+            git reset --hard origin/main                # on repart du depot
+            git checkout origin/main -- data/floor_state.json 2>/dev/null || true
+            python -m scraper.floor_state_merge /tmp/mien.json data/floor_state.json
+            git config user.name "github-actions"
+            git config user.email "actions@github.com"
+            git add data/floor_state.json
+            git diff --cached --quiet && { echo "Rien a committer."; exit 0; }
+            git commit -m "floor_watch: etat (fusionne)"
+            git push origin main && exit 0
+            echo "push rejete — on refusionne avec l'etat du depot."
+            sleep $((i * 5))
           done
+          echo "⛔ etat NON pousse apres 5 essais." >&2
