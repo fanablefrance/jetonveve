@@ -52,6 +52,14 @@ on:
         description: "📚 Comics : prix maximal pour alerter, en $ (defaut 2)"
         required: false
         default: ""
+      mint_marge:
+        description: "🎯 Numéros : écart max au floor pour dire « le vendeur ne l'a pas vu » (défaut 20 %)"
+        required: false
+        default: ""
+      mint_score:
+        description: "🎯 Numéros : score minimal (défaut 2 — 6 = seulement le #1 et la 1re édition publique)"
+        required: false
+        default: ""
       comic_max_listings:
         description: "📚 Comics : nb max d'offres en vente (defaut 3 — au-dela c'est le prix du marche)"
         required: false
@@ -87,18 +95,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 📚 Le tirage des comics vit dans le Sheet, donc chez preda (PRIVE). On va
-      # chercher le seul fichier dont on a besoin, en lecture seule. Si ce
-      # checkout echoue, le signal comics se desactive tout seul — les alertes
-      # d'arbitrage, elles, continuent.
-      - name: Tirage des comics (CSV exporte par preda)
+      # 📚 Le catalogue vit dans le Sheet, donc chez preda (PRIVE) : tirage,
+      # 1re edition publique, nombre d'offres, note de classement. Rien de tout
+      # cela n'existe cote StackR. On va chercher le seul fichier dont on a
+      # besoin, en lecture seule. Si ce checkout echoue, les signaux comics et
+      # numeros s'eteignent tout seuls — le reste continue.
+      - name: "Catalogue (CSV exporte par preda : tirage, 1re edition publique, offres, note)"
         continue-on-error: true
         uses: actions/checkout@v4
         with:
           repository: VeVePreda/scrapeur-veve
           token: ${{ secrets.PREDA_TOKEN }}
           path: _preda
-          sparse-checkout: data/comics_supply.csv
+          sparse-checkout: data/elements.csv
           sparse-checkout-cone-mode: false
 
       - uses: actions/setup-python@v5
@@ -125,7 +134,20 @@ jobs:
           FLOOR_REQUIRE_SALE: ${{ github.event.inputs.require_sale || vars.FLOOR_REQUIRE_SALE || 'true' }}
           # 📚 Signal 4 : le comic a petit tirage brade (ni preuve de vente, ni
           # promesse de revente : un PRIX D'ENTREE absurde au regard de la rarete)
-          COMICS_CSV: _preda/data/comics_supply.csv
+          ELEMENTS_CSV: _preda/data/elements.csv
+          DATES_CSV: data/dates_cles.csv
+          # 💤 Les ecarts de prix sont ETEINTS (demande de Preda). Le code reste :
+          # mettre FLOOR_ARBITRAGE=true (variable de depot) le rallume.
+          FLOOR_ARBITRAGE: ${{ vars.FLOOR_ARBITRAGE || 'false' }}
+          FLOOR_SPREAD: ${{ vars.FLOOR_SPREAD || 'false' }}
+          # ⚠️ On ne peut pas lister sous 1 $ sur VeVe : un floor a 1,00 $ est le
+          # PLANCHER de la plateforme, pas une aubaine.
+          VEVE_PRIX_PLANCHER: ${{ vars.VEVE_PRIX_PLANCHER || '1' }}
+          # 🎯 La chasse aux numeros
+          MINT_ON: ${{ vars.MINT_ON || 'true' }}
+          MINT_MARGE_PCT: ${{ github.event.inputs.mint_marge || vars.MINT_MARGE_PCT || '20' }}
+          MINT_SCORE_MIN: ${{ github.event.inputs.mint_score || vars.MINT_SCORE_MIN || '2' }}
+          MINT_MAX_ALERTES: ${{ vars.MINT_MAX_ALERTES || '25' }}
           COMIC_SUPPLY_MAX: ${{ github.event.inputs.comic_supply || vars.COMIC_SUPPLY_MAX || '1000' }}
           COMIC_MAX_USD: ${{ github.event.inputs.comic_max_usd || vars.COMIC_MAX_USD || '2' }}
           COMIC_MAX_ALERTES: ${{ vars.COMIC_MAX_ALERTES || '25' }}
