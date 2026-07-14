@@ -127,10 +127,9 @@ PURGER_VENTES = os.environ.get("FLOOR_PURGER_VENTES", "").lower() in (
 #     precisement ceux qu'on cherche.
 #
 # Le TIRAGE ne vient pas de StackR (son champ `quantity` n'est pas prouve) mais
-# du CSV exporte par preda depuis le Sheet (`export_comics.py`), recupere ici en
-# lecture seule. ⚠️ Le supply d'un comic est celui de la SERIE, pas la somme de
+# du CSV exporte par preda depuis le Sheet (`export_elements.py`), recupere ici
+# en lecture seule. ⚠️ Le supply d'un comic est celui de la SERIE, pas la somme de
 # ses raretes (piege paye le 14/07 sur Captain America #7).
-COMICS_CSV = os.environ.get("COMICS_CSV", "_preda/data/comics_supply.csv")
 COMIC_SUPPLY_MAX = int(os.environ.get("COMIC_SUPPLY_MAX", "1000"))
 COMIC_MAX_USD = float(os.environ.get("COMIC_MAX_USD", "2"))
 # GARDE-FOU ANTI-DELUGE : si le 1er passage trouve des dizaines de comics sous
