@@ -53,6 +53,8 @@ from typing import Dict, List, Optional
 
 import requests
 
+from scraper import numeros as nu
+
 BASE = "https://www.stackr.world/api/trpc/publicVeve."
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
@@ -144,6 +146,36 @@ COMIC_MAX_ALERTES = int(os.environ.get("COMIC_MAX_ALERTES", "25"))
 # La donnee vient du CSV (market_totalListings, collecte chaque jour par
 # comic_prices depuis my-nft-tracker). VIDE = inconnu : on n'invente pas un zero.
 COMIC_MAX_LISTINGS = int(os.environ.get("COMIC_MAX_LISTINGS", "3"))
+# ⚠️ REGLE DE LA PLATEFORME (Preda, 14/07) : **on ne peut pas lister sous 1 $ sur
+# VeVe** ; sur StackR, si. Donc un floor VeVe a 1,00 $ n'est PAS une aubaine :
+# c'est le PLANCHER de la plateforme. L'item n'y est pas brade, il est au prix
+# minimum autorise — et beaucoup y touchent. Sur StackR, un prix sous 1 $ reste
+# une vraie decote.
+PLANCHER_VEVE = float(os.environ.get("VEVE_PRIX_PLANCHER", "1"))
+
+# ═══════════════════════════════════════════════════════════════════════════
+# LES INTERRUPTEURS — « les ecarts de prix, pas pour l'instant » (Preda, 14/07)
+# ═══════════════════════════════════════════════════════════════════════════
+# On n'EFFACE pas ce code : il est juste, il a coute cher (le bug des unites), et
+# il se rallume par une variable de depot le jour ou Preda le voudra.
+ARBITRAGE_ON = os.environ.get("FLOOR_ARBITRAGE", "false").lower() == "true"
+SPREAD_ON = os.environ.get("FLOOR_SPREAD", "false").lower() == "true"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 🎯 SIGNAL 5 — LA CHASSE AUX NUMEROS
+# ═══════════════════════════════════════════════════════════════════════════
+# Un #1, un 1234, un 2001 sur un Star Wars valent bien plus qu'une edition
+# banale. **Mais on n'alerte QUE si le vendeur ne l'a pas vu** : le prix doit
+# etre celui d'un numero ORDINAIRE (≤ floor + MINT_MARGE_PCT %). Sinon on
+# alerterait sur chaque #1 liste a 50x le floor — du bruit, tous les jours.
+#
+# ⚠️ Ce signal ne vit que sur le flux StackR : c'est le SEUL qui donne le NUMERO
+# D'EDITION de chaque offre. Le marche VeVe ne l'expose plus sans cookie.
+MINT_ON = os.environ.get("MINT_ON", "true").lower() != "false"
+MINT_MARGE_PCT = float(os.environ.get("MINT_MARGE_PCT", "20"))
+MINT_SCORE_MIN = int(os.environ.get("MINT_SCORE_MIN", "2"))
+MINT_MAX_ALERTES = int(os.environ.get("MINT_MAX_ALERTES", "25"))
+ELEMENTS_CSV = os.environ.get("ELEMENTS_CSV", "_preda/data/elements.csv")
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -188,36 +220,51 @@ def rendre(state: Dict, alerts: List[Dict], comics: bool = False) -> None:
     for a in alerts:
         if comics:
             (state.get("comics_vus") or {}).pop(a.get("uuid"), None)
+            (state.get("mints_vus") or {}).pop(a.get("nft"), None)
         else:
             (state.get("alerts") or {}).pop(a.get("uuid") or a.get("nft"), None)
 
 
-def charger_comics(chemin: str = None) -> Dict[str, Dict]:
-    """{uuid -> {name, rarity, edition, supply, serie}} pour les petits tirages."""
+def charger_elements(chemin: str = None) -> Dict[str, Dict]:
+    """{uuid -> fiche} pour TOUT le catalogue (comics ET collectibles).
+
+    Le pont `export_elements.py` (preda) porte : tirage, 1re edition publique,
+    nombre d'offres, note de classement, marque, licence. Rien de tout cela
+    n'existe cote StackR — et rien de tout cela ne se devine."""
     import csv as _csv
-    chemin = chemin or COMICS_CSV
+    chemin = chemin or ELEMENTS_CSV
     out: Dict[str, Dict] = {}
     try:
         with open(chemin, encoding="utf-8") as f:
             for r in _csv.DictReader(f):
                 uid = (r.get("veve_uuid") or "").strip()
-                sup = int(_f(r.get("supply")))
-                if not uid or not sup or sup > COMIC_SUPPLY_MAX:
+                if not uid:
                     continue
                 lst = (r.get("listings") or "").strip()
-                out[uid] = {"name": r.get("name") or uid[:8],
-                            "rarity": r.get("rarity") or "",
-                            "edition": r.get("edition_type") or "",
-                            "supply": sup,
-                            "serie": (r.get("series_uuid") or "").strip(),
-                            # VIDE = INCONNU, surtout pas zero : un zero invente
-                            # ferait passer pour rarissime un item qu'on n'a
-                            # simplement pas mesure.
-                            "listings": int(_f(lst)) if lst else None,
-                            "note": (r.get("note") or "").strip()}
+                out[uid] = {
+                    "name": r.get("name") or uid[:8],
+                    "categorie": (r.get("category") or "").strip(),
+                    "rarity": r.get("rarity") or "",
+                    "edition": r.get("edition_type") or "",
+                    "supply": int(_f(r.get("supply"))),
+                    "premiere": int(_f(r.get("first_public"))),
+                    # VIDE = INCONNU, surtout pas zero.
+                    "listings": int(_f(lst)) if lst else None,
+                    "note": (r.get("note") or "").strip(),
+                    "serie": (r.get("series_uuid") or "").strip(),
+                    "marque": (r.get("brand") or "").strip(),
+                    "licence": (r.get("licensor") or "").strip(),
+                }
     except FileNotFoundError:
-        print(f"  (pas de {chemin} : signal comics desactive)", file=sys.stderr)
+        print(f"  (pas de {chemin} : catalogue inconnu — signaux comics et "
+              f"numeros desactives)", file=sys.stderr)
     return out
+
+
+def comics_petit_tirage(cat: Dict[str, Dict]) -> Dict[str, Dict]:
+    return {u: c for u, c in cat.items()
+            if c.get("categorie") == "comic"
+            and 0 < c["supply"] <= COMIC_SUPPLY_MAX}
 
 
 def detect_comics(state: Dict, comics: Dict[str, Dict],
@@ -249,9 +296,12 @@ def detect_comics(state: Dict, comics: Dict[str, Dict],
                        "note": c.get("note") or "",
                        "veve_floor": veve.get(uid, 0.0)}
 
-    # 1. VEVE — le floor du marche VeVe (gems ~ $), rafraichi 1x/h
+    # 1. VEVE — le floor du marche VeVe (gems ~ $), rafraichi 1x/h.
+    # ⚠️ ON NE PEUT PAS LISTER SOUS 1 $ SUR VEVE : un floor a 1,00 $ n'est pas
+    # une aubaine, c'est le PLANCHER de la plateforme. Le signaler reviendrait a
+    # signaler « le minimum autorise ».
     for uid, vf in (veve or {}).items():
-        if uid in comics and 0 < vf < COMIC_MAX_USD:
+        if uid in comics and PLANCHER_VEVE < vf < COMIC_MAX_USD:
             _garder(uid, vf, "VeVe")
 
     # 2. STACKR — les listings du flux (prix en OMI)
@@ -859,14 +909,130 @@ def detect_spread(state: Dict, veve: Dict[str, float], omi: float,
     return out
 
 
+# ═══════════════════════════════════════════════════════════════════════════
+# 🎯 LA CHASSE AUX NUMEROS — detection
+# ═══════════════════════════════════════════════════════════════════════════
+
+def detect_mints(state, cat, listings, omi, veve=None, dates=None, ts=None):
+    """Un numero remarquable VENDU AU PRIX D'UN NUMERO BANAL.
+
+    Les deux moities du signal comptent :
+      * le NUMERO est remarquable (#1, 1234, 2001 sur un Star Wars…) — c'est
+        `numeros.motifs()` qui tranche, et il ne connait que des faits ;
+      * le PRIX est celui d'une edition ordinaire (≤ floor + MINT_MARGE_PCT %) —
+        autrement dit **le vendeur n'a pas vu ce qu'il vendait**. Sans cette
+        moitie-la, on alerterait sur chaque #1 liste a 50x le floor : du bruit,
+        tous les jours, jusqu'a ce que plus personne ne lise les alertes."""
+    ts = ts if ts is not None else time.time()
+    if not cat or not listings:
+        return []
+    vus = state.setdefault("mints_vus", {})
+    veve = veve or {}
+    out = []
+    for it in listings:
+        uid = str(it.get("element_id") or "")
+        c = cat.get(uid)
+        if not c:
+            continue
+        ed = int(_f(it.get("edition")))
+        prix = _f(it.get("price"))
+        if ed <= 0 or prix <= 0:
+            continue
+        nft = str(it.get("nft_id") or (uid + "#" + str(ed)))
+        if ts - vus.get(nft, 0) < COOLDOWN_H * 3600:
+            continue
+
+        annees = nu.annees_pour([c["name"], c.get("marque", ""),
+                                 c.get("licence", "")], dates)
+        mot = nu.motifs(ed, c["supply"], c["premiere"], annees)
+        pts = nu.score(mot)
+        if not mot or pts < MINT_SCORE_MIN:
+            continue
+
+        # LE PRIX D'UN NUMERO BANAL : on compare au floor du MEME marche
+        # (StackR), et a defaut au floor VeVe.
+        usd = prix * omi if omi else 0.0
+        sf = _f(it.get("stackr_floor_price"))
+        floor_usd = (sf * omi) if (sf > 0 and omi) else veve.get(uid, 0.0)
+        if floor_usd <= 0 or usd <= 0:
+            continue
+        if usd > floor_usd * (1 + MINT_MARGE_PCT / 100.0):
+            continue                 # le vendeur SAIT ce qu'il a : pas pour nous
+
+        vus[nft] = ts
+        out.append({"uuid": uid, "nft": nft, "edition": ed,
+                    "usd": round(usd, 2), "prix": prix,
+                    "floor": round(floor_usd, 2), "name": c["name"],
+                    "rarity": c.get("rarity", ""),
+                    "categorie": c.get("categorie", ""),
+                    "supply": c["supply"], "note": c.get("note", ""),
+                    "serie": c.get("serie", ""), "motifs": mot, "score": pts})
+
+    if len(out) > MINT_MAX_ALERTES:
+        # Meme regle que partout : au-dela, c'est le REGLAGE qui est trop large.
+        # On ne publie RIEN et **on ne memorise RIEN** — sinon on enterrerait
+        # pour 6 h des editions que personne n'aurait vues.
+        print("  ⛔ " + str(len(out)) + " numeros remarquables d'un coup : c'est "
+              "MINT_SCORE_MIN (=" + str(MINT_SCORE_MIN) + ") qui est trop bas. "
+              "RIEN n'est publie ni memorise.", file=sys.stderr)
+        for a in out:
+            vus.pop(a["nft"], None)
+        return []
+    out.sort(key=lambda a: -a["score"])
+    return out
+
+
+def carte_mint(a):
+    """Le lien pointe sur la RARETE (uuid de l'ELEMENT) : la page marche. Un lien
+    qui mene au mauvais item est pire qu'un lien mort — le lien mort, on le
+    voit."""
+    genre = "comics" if a.get("categorie") == "comic" else "collectibles"
+    lien = "https://www.veve.me/collectibles/en/market/" + genre + "/" + a["uuid"]
+    lignes = ["**#{:,}**".format(a["edition"]).replace(",", " ")
+              + " — " + nu.raconter(a["motifs"])]
+    if a.get("supply"):
+        lignes.append("Tirage : {:,} exemplaires".format(a["supply"])
+                      .replace(",", " "))
+    lignes.append("**Prix : {:.2f} $** · floor {:.2f} $ — *le prix d'une édition "
+                  "ordinaire*".format(a["usd"], a["floor"]))
+    if a.get("note"):
+        lignes.append("**Classement** : " + a["note"])
+    lignes.append("[Voir sur VeVe](" + lien + ")")
+    return {"title": ("🎯 " + a["name"])[:250], "color": 0xE67E22,
+            "description": "\n".join(lignes), "url": lien}
+
+
+def notify_mints(alerts):
+    if not alerts:
+        return 0
+    contenu = ("🎯 **" + str(len(alerts)) + " numéro(s) remarquable(s) au prix "
+               "d'une édition ordinaire** — "
+               + _dt.datetime.now(_dt.timezone.utc).strftime("%H:%M UTC"))
+    embeds = [carte_mint(a) for a in alerts[:10]]
+    if not WEBHOOK or SIMULER:
+        print("  [SIMULATION — rien n'est envoye]", flush=True)
+        for a in alerts[:10]:
+            print("    🎯 {:<32} #{:<7} {:>8.2f} $ (floor {:.2f}) · {}".format(
+                a["name"][:32], a["edition"], a["usd"], a["floor"],
+                nu.raconter(a["motifs"])), flush=True)
+        return len(alerts)
+    try:
+        r = requests.post(WEBHOOK, json={"content": contenu, "embeds": embeds},
+                          timeout=20)
+        if r.status_code == 429:
+            time.sleep(min(_f(r.json().get("retry_after")) + 1, 60))
+            requests.post(WEBHOOK, json={"content": contenu, "embeds": embeds},
+                          timeout=20)
+        print("  Discord : " + str(len(alerts)) + " numero(s) pousse(s).",
+              flush=True)
+    except Exception as e:                                  # noqa: BLE001
+        print("  Discord KO (" + str(e) + ")", flush=True)
+    return len(alerts)
+
+
 COULEURS = {"stackr": 0x3498DB,      # bleu   : sous le floor StackR
             "veve": 0x2ECC71,        # vert   : revendable plus cher sur VeVe
             "spread": 0xF1C40F}      # jaune  : ecart entre marches
-
-AVERTISSEMENT = ("⚠️ À titre indicatif — pas un conseil financier. Le floor "
-                 "VeVe est un prix DEMANDÉ : la marge est un plafond, pas un "
-                 "gain garanti. Les valeurs peuvent être inexactes.")
-
 
 def _omi(x) -> str:
     return f"{x:,.0f} OMI".replace(",", " ")
@@ -919,8 +1085,7 @@ def _embed(a: Dict) -> Dict:
                       f"après {FEE_PCT} % de frais".replace(",", " "))
     lignes.append(f"[Voir sur StackR →]({lien})")
     e = {"title": titre, "color": COULEURS[kind],
-         "description": "\n".join(lignes)[:4000], "url": lien,
-         "footer": {"text": AVERTISSEMENT}}
+         "description": "\n".join(lignes)[:4000], "url": lien}
     if a.get("img"):
         e["thumbnail"] = {"url": a["img"]}
     return e
@@ -997,11 +1162,19 @@ def main() -> int:
         print(f"🧹 {n} vente(s) collectee(s) avec la mauvaise unite : JETEES. "
               f"L'historique va se reconstruire en dollars.", flush=True)
     journal = Journal()
-    comics = charger_comics()
-    if comics:
-        print(f"📚 {len(comics)} element(s) de comics a tirage ≤ "
-              f"{COMIC_SUPPLY_MAX} suivis (alerte sous {COMIC_MAX_USD:g} $).",
+    cat = charger_elements()
+    comics = comics_petit_tirage(cat)
+    dates = nu.charger_dates()
+    if cat:
+        print(f"📚 {len(comics)} comic(s) a tirage ≤ {COMIC_SUPPLY_MAX} — alerte "
+              f"entre {PLANCHER_VEVE:g} $ et {COMIC_MAX_USD:g} $ (on ne peut pas "
+              f"lister sous {PLANCHER_VEVE:g} $ sur VeVe).", flush=True)
+        print(f"🎯 chasse aux numeros : {'ON' if MINT_ON else 'OFF'} sur "
+              f"{len(cat)} elements · {len(dates)} serie(s) avec des dates cles.",
               flush=True)
+    if not ARBITRAGE_ON:
+        print("💤 alertes d'ecart de prix : DESACTIVEES "
+              "(FLOOR_ARBITRAGE=true pour les rallumer).", flush=True)
     s = requests.Session()
     veve: Dict[str, float] = {}
     dernier_refresh = 0.0
@@ -1027,8 +1200,14 @@ def main() -> int:
             print(f"  [{i}/{POLLS}] aucun listing recu — on reessaiera.",
                   flush=True)
         else:
+            # detect() tient l'etat a jour (les floors StackR memorises) meme
+            # quand l'arbitrage est eteint : le signal comics s'en sert.
             a = detect(state, listings, omi, veve, journal=journal)
-            a += detect_spread(state, veve, omi, journal=journal)  # signal 3
+            if SPREAD_ON:
+                a += detect_spread(state, veve, omi, journal=journal)
+            if not ARBITRAGE_ON:
+                rendre(state, a)     # rien n'est publie, rien n'est enterre
+                a = []
             print(f"  [{i}/{POLLS}] {len(listings)} listings, {nv} vente(s), "
                   f"{len(a)} alerte(s), OMI={omi:.6f} $", flush=True)
             if a:
@@ -1040,6 +1219,19 @@ def main() -> int:
                     print(f"  🔇 plafond de messages atteint — {len(a)} affaire(s) "
                           f"NI publiee(s) NI memorisee(s) : elles ressortiront.",
                           flush=True)
+            if MINT_ON:
+                m = detect_mints(state, cat, listings, omi, veve, dates)
+                if m:
+                    if budget(state) > 0:
+                        print(f"  [{i}/{POLLS}] 🎯 {len(m)} numero(s) "
+                              f"remarquable(s) au prix d'une edition ordinaire !",
+                              flush=True)
+                        total += notify_mints(m)
+                        consommer(state)
+                    else:
+                        rendre(state, m, comics=True)
+                        print(f"  🔇 plafond atteint — {len(m)} numero(s) gardes "
+                              f"pour plus tard.", flush=True)
             c = detect_comics(state, comics, veve, listings, omi)
             if c:
                 if budget(state) > 0:
@@ -1064,7 +1256,9 @@ def main() -> int:
 if __name__ == "__main__":
     sys.exit(main())
 
-# FIN floor_watch.py v18 — LES DEUX FLUX N'ONT PAS LA MEME UNITE :
+# FIN floor_watch.py v19 — chasse aux numeros · plancher VeVe a 1 $ ·
+# ecarts de prix eteints · plus d'avertissement
+# v18 — LES DEUX FLUX N'ONT PAS LA MEME UNITE :
 # ventes VeVe en DOLLARS, ventes StackR en OMI.
 # FIN floor_watch.py v16 (profondeur du carnet + note de classement + budget de
 # messages : le spam est structurellement impossible)
