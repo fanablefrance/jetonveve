@@ -130,6 +130,60 @@ COMIC_MAX_USD = float(os.environ.get("COMIC_MAX_USD", "2"))
 # 200 cartes. On ne publie RIEN, on ne memorise RIEN (sinon on les enterrerait
 # pour de bon), on CRIE, et l'humain tranche.
 COMIC_MAX_ALERTES = int(os.environ.get("COMIC_MAX_ALERTES", "25"))
+# ⚠️ LA REGLE DE LA PROFONDEUR DU CARNET (Preda, 14/07) : « Spider-Man #546 a
+# 1 000 de supply, mais il y a HUIT offres a 1,75 $ — ce n'est pas une bonne
+# affaire. » Il a raison, et c'est general : **un prix bas sur une offre UNIQUE
+# est un signal ; le meme prix sur huit offres est un PLAFOND.** Sans la
+# profondeur du carnet, on confond la rarete et le prix du marche.
+# La donnee vient du CSV (market_totalListings, collecte chaque jour par
+# comic_prices depuis my-nft-tracker). VIDE = inconnu : on n'invente pas un zero.
+COMIC_MAX_LISTINGS = int(os.environ.get("COMIC_MAX_LISTINGS", "3"))
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 🔇 LE BUDGET DE MESSAGES — le spam doit etre STRUCTURELLEMENT impossible
+# ═══════════════════════════════════════════════════════════════════════════
+# Un cooldown par item ne suffit pas : 25 tours par run, 24 runs par jour, et
+# chaque tour peut trouver de NOUVEAUX items. Il faut un plafond qui ne depende
+# d'aucun reglage fin : au-dela, on se TAIT.
+#
+# ⚠️ ET SURTOUT : quand le budget est epuise, on NE MEMORISE RIEN. Marquer une
+# affaire comme « deja alertee » sans l'avoir envoyee, ce serait l'enterrer pour
+# 6 h — le garde-fou detruirait ce qu'il protege (leçon deja payee 2 fois).
+MAX_MSG_RUN = int(os.environ.get("FLOOR_MAX_MSG_RUN", "4"))
+MAX_MSG_JOUR = int(os.environ.get("FLOOR_MAX_MSG_JOUR", "12"))
+PAUSE_MSG = float(os.environ.get("FLOOR_PAUSE_MSG_S", "3"))
+_msg_run = 0
+
+
+def _aujourdhui() -> str:
+    return _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d")
+
+
+def budget(state: Dict) -> int:
+    """Combien de messages peut-on encore envoyer ? (run ET journee)"""
+    b = state.setdefault("budget", {})
+    if b.get("jour") != _aujourdhui():
+        b["jour"], b["n"] = _aujourdhui(), 0
+    return min(MAX_MSG_RUN - _msg_run, MAX_MSG_JOUR - int(b.get("n") or 0))
+
+
+def consommer(state: Dict) -> None:
+    global _msg_run
+    _msg_run += 1
+    b = state.setdefault("budget", {})
+    b["n"] = int(b.get("n") or 0) + 1
+    time.sleep(PAUSE_MSG)          # on espace, on ne mitraille pas
+
+
+def rendre(state: Dict, alerts: List[Dict], comics: bool = False) -> None:
+    """Rien n'a ete envoye : on EFFACE les marques, sinon ces affaires seraient
+    enterrees pour 6 h sans que personne ne les ait vues."""
+    for a in alerts:
+        if comics:
+            (state.get("comics_vus") or {}).pop(a.get("uuid"), None)
+        else:
+            (state.get("alerts") or {}).pop(a.get("uuid") or a.get("nft"), None)
 
 
 def charger_comics(chemin: str = None) -> Dict[str, Dict]:
@@ -144,11 +198,17 @@ def charger_comics(chemin: str = None) -> Dict[str, Dict]:
                 sup = int(_f(r.get("supply")))
                 if not uid or not sup or sup > COMIC_SUPPLY_MAX:
                     continue
+                lst = (r.get("listings") or "").strip()
                 out[uid] = {"name": r.get("name") or uid[:8],
                             "rarity": r.get("rarity") or "",
                             "edition": r.get("edition_type") or "",
                             "supply": sup,
-                            "serie": (r.get("series_uuid") or "").strip()}
+                            "serie": (r.get("series_uuid") or "").strip(),
+                            # VIDE = INCONNU, surtout pas zero : un zero invente
+                            # ferait passer pour rarissime un item qu'on n'a
+                            # simplement pas mesure.
+                            "listings": int(_f(lst)) if lst else None,
+                            "note": (r.get("note") or "").strip()}
     except FileNotFoundError:
         print(f"  (pas de {chemin} : signal comics desactive)", file=sys.stderr)
     return out
@@ -163,16 +223,24 @@ def detect_comics(state: Dict, comics: Dict[str, Dict],
         return []
     vus: Dict[str, float] = state.setdefault("comics_vus", {})
     trouve: Dict[str, Dict] = {}
+    ecartes: List = []
 
     def _garder(uid, prix, ou):
         c = comics[uid]
+        # ⚠️ LA PROFONDEUR DU CARNET. Huit offres au meme prix, ce n'est pas une
+        # aubaine : c'est le prix du marche. On ne retient que l'offre RARE.
+        n = c.get("listings")
+        if n is not None and n > COMIC_MAX_LISTINGS:
+            ecartes.append((c["name"], n))
+            return
         anc = trouve.get(uid)
         if anc and anc["usd"] <= prix:
             return
         trouve[uid] = {"uuid": uid, "usd": round(prix, 2), "ou": ou,
                        "name": c["name"], "rarity": c["rarity"],
                        "edition": c["edition"], "supply": c["supply"],
-                       "serie": c["serie"],
+                       "serie": c["serie"], "listings": n,
+                       "note": c.get("note") or "",
                        "veve_floor": veve.get(uid, 0.0)}
 
     # 1. VEVE — le floor du marche VeVe (gems ~ $), rafraichi 1x/h
@@ -197,6 +265,12 @@ def detect_comics(state: Dict, comics: Dict[str, Dict],
         if 0 < usd < COMIC_MAX_USD:
             _garder(uid, usd, "StackR")
 
+    if ecartes:
+        print(f"  📚 {len(ecartes)} comic(s) ecarte(s) : trop d'offres au meme "
+              f"prix (> {COMIC_MAX_LISTINGS}) — c'est le prix du marche, pas une "
+              f"aubaine. Ex. : "
+              + ", ".join(f"{n} ({k} offres)" for n, k in ecartes[:3]),
+              flush=True)
     out = [a for uid, a in trouve.items()
            if ts - vus.get(uid, 0) >= COOLDOWN_H * 3600]
     if not out:
@@ -231,6 +305,12 @@ def carte_comic(a: Dict) -> Dict:
     lien = LIEN_COMIC.format(uuid=a["uuid"]) if a.get("uuid") else ""
     lignes = [f"**Tirage** : {a['supply']:,} exemplaires".replace(",", " "),
               f"**Prix** : **{a['usd']:.2f} $** sur **{a['ou']}**"]
+    n = a.get("listings")
+    if n is not None:
+        lignes.append(f"**Offres en vente** : {n}"
+                      + (" — offre unique" if n <= 1 else ""))
+    if a.get("note"):
+        lignes.append(f"**Classement** : {a['note']}")
     if a.get("veve_floor"):
         lignes.append(f"Floor VeVe : {a['veve_floor']:.2f} $")
     if a.get("rarity") or a.get("edition"):
@@ -928,12 +1008,26 @@ def main() -> int:
             a += detect_spread(state, veve, omi, journal=journal)  # signal 3
             print(f"  [{i}/{POLLS}] {len(listings)} listings, {nv} vente(s), "
                   f"{len(a)} alerte(s), OMI={omi:.6f} $", flush=True)
-            total += notify(a)
+            if a:
+                if budget(state) > 0:
+                    total += notify(a)
+                    consommer(state)
+                else:
+                    rendre(state, a)      # RIEN n'est envoye, RIEN n'est enterre
+                    print(f"  🔇 plafond de messages atteint — {len(a)} affaire(s) "
+                          f"NI publiee(s) NI memorisee(s) : elles ressortiront.",
+                          flush=True)
             c = detect_comics(state, comics, veve, listings, omi)
             if c:
-                print(f"  [{i}/{POLLS}] 📚 {len(c)} comic(s) a petit tirage "
-                      f"sous {COMIC_MAX_USD:g} $ !", flush=True)
-                total += notify_comics(c)
+                if budget(state) > 0:
+                    print(f"  [{i}/{POLLS}] 📚 {len(c)} comic(s) a petit tirage "
+                          f"sous {COMIC_MAX_USD:g} $ !", flush=True)
+                    total += notify_comics(c)
+                    consommer(state)
+                else:
+                    rendre(state, c, comics=True)
+                    print(f"  🔇 plafond atteint — {len(c)} comic(s) gardes pour "
+                          f"plus tard (rien n'est enterre).", flush=True)
             save_state(state)
         if i < POLLS:
             time.sleep(INTERVAL_S)
@@ -947,7 +1041,9 @@ def main() -> int:
 if __name__ == "__main__":
     sys.exit(main())
 
-# FIN floor_watch.py v15 (le lien comic = uuid de l'ELEMENT, pas de la serie)
+# FIN floor_watch.py v16 (profondeur du carnet + note de classement + budget de
+# messages : le spam est structurellement impossible)
+# v15 (le lien comic = uuid de l'ELEMENT, pas de la serie)
 # v14 (+ signal 4 : le comic a petit tirage brade)\n# v13 — le module DIT pourquoi il se tait (journal des
 # recales) et sait tourner a blanc (FLOOR_SIMULER) : on regle sur des chiffres,
 # pas sur des suppositions.
