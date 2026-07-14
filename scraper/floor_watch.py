@@ -99,6 +99,114 @@ SALES_TYPES = ("MARKET_FIXED", "MARKET_AUCTION", "MARKET_STACKR")
 # entre marches sans preuve de vente (FLOOR_REQUIRE_SALE=false pour desactiver).
 REQUIRE_SALE = os.environ.get("FLOOR_REQUIRE_SALE", "true").lower() != "false"
 
+# ⚠️ MODE REGLAGE. Desserrer un seuil et decouvrir le resultat SUR LE DISCORD DE
+# LA COMMU, c'est se tromper devant tout le monde. FLOOR_SIMULER=1 : on calcule
+# tout, on n'envoie RIEN, on ecrit dans les logs.
+SIMULER = os.environ.get("FLOOR_SIMULER", "").lower() in ("1", "oui", "true")
+
+
+class Journal:
+    """⚠️ UN GARDE-FOU QUI NE DIT PAS POURQUOI IL BLOQUE EST UN MUR.
+
+    Zero alerte pendant deux jours, et aucun moyen de savoir QUI serrait trop :
+    la marge ? le benefice minimum ? l'ecart ? la preuve de vente ? Desserrer au
+    hasard, c'est deviner — et si deux verrous cedent en meme temps, on ne saura
+    toujours pas lequel bloquait. Alors on MESURE : chaque recale est compte par
+    motif, et ceux qui ont manque de peu sont gardes AVEC LEURS CHIFFRES.
+
+    Un run, et on sait exactement quel cran tourner, et de combien."""
+
+    LIBELLES = [
+        ("broutille", "trop petits (montant derisoire)"),
+        ("sans_floor", "sans floor VeVe connu (invendable en face)"),
+        ("illiquide", "ILLIQUIDES : aucune vente reelle vue"),
+        ("marge", "marge nette insuffisante"),
+        ("profit", "benefice en $ insuffisant"),
+        ("sous_cote", "pas assez sous le floor StackR"),
+        ("ecart", "ecart entre marches insuffisant"),
+        ("cooldown", "deja alerte recemment"),
+    ]
+    SEUILS = {"marge": ("FLOOR_MARGIN_PCT", MARGIN_PCT, "pts de marge"),
+              "profit": ("FLOOR_MIN_PROFIT", MIN_PROFIT, "$ de benefice"),
+              "ecart": ("FLOOR_SPREAD_PCT", SPREAD_PCT, "pts d'ecart"),
+              "sous_cote": ("FLOOR_DROP_PCT", DROP_PCT, "pts sous le floor"),
+              "illiquide": ("FLOOR_SALES_PAGES", SALES_PAGES,
+                            "pages d'historique de ventes")}
+
+    def __init__(self):
+        self.listings = 0
+        self.items = set()
+        self.motifs: Dict[str, int] = {}
+        self.presque: List[Dict] = []
+        self._deja = set()
+
+    def rejet(self, motif: str, cand: Dict = None, cle: str = None) -> None:
+        if cle is not None:
+            if (motif, cle) in self._deja:
+                return          # le meme item recale a chaque tour ne compte qu'une fois
+            self._deja.add((motif, cle))
+        self.motifs[motif] = self.motifs.get(motif, 0) + 1
+        if cand and cand.get("net", 0) > 0:
+            self.presque.append(dict(cand, bloque_par=motif))
+
+    def _manque(self, c: Dict) -> str:
+        m = c.get("bloque_par")
+        if m == "marge":
+            return f"il manque {MARGIN_PCT - c['marge']:.1f} pts de marge"
+        if m == "profit":
+            return f"il manque {MIN_PROFIT - c['net']:.2f} $ de benefice"
+        if m == "ecart":
+            return f"il manque {SPREAD_PCT - c.get('ecart', 0):.1f} pts d'ecart"
+        if m == "illiquide":
+            return "AUCUNE VENTE connue — ce n'est pas un seuil, c'est la preuve qui manque"
+        if m == "sous_cote":
+            return f"il manque {DROP_PCT - c.get('d_stackr', 0):.1f} pts sous le floor StackR"
+        return m or ""
+
+    def resume(self) -> str:
+        l = ["", "═" * 66,
+             "  JOURNAL DES RECALES — pourquoi rien n'est sorti",
+             "═" * 66,
+             f"  Examines : {self.listings} listing(s) neuf(s) · "
+             f"{len(self.items)} item(s) du marche"]
+        if not self.motifs:
+            l.append("  Aucun candidat ecarte : il n'y avait RIEN a examiner. "
+                     "Ce n'est pas un probleme de seuil — c'est la source.")
+            return "\n".join(l + ["═" * 66, ""])
+        l.append("  Ecartes :")
+        for k, lib in self.LIBELLES:
+            n = self.motifs.get(k, 0)
+            if not n:
+                continue
+            s = self.SEUILS.get(k)
+            reglage = f"   [{s[0]}={s[1]:g}]" if s else ""
+            l.append(f"     {n:>5}  {lib}{reglage}")
+        # LE VERDICT : quel verrou ecarte le plus de candidats REELS ?
+        vrais = {k: v for k, v in self.motifs.items()
+                 if k in self.SEUILS and v}
+        if vrais:
+            pire = max(vrais, key=lambda k: vrais[k])
+            s = self.SEUILS[pire]
+            l += ["", f"  ➜ LE VERROU QUI BLOQUE LE PLUS : {s[0]} (={s[1]:g}) — "
+                      f"{vrais[pire]} candidat(s) ecarte(s) par lui seul."]
+            if pire == "illiquide":
+                l.append("    ⚠️ Ce n'est PAS un seuil de rentabilite : ces items "
+                         "ne se vendent pas (ou pas dans notre fenetre de ~7 j).")
+                l.append("    Elargir FLOOR_SALES_PAGES donnerait plus de preuves ; "
+                         "baisser les marges ne servirait a RIEN.")
+        if self.presque:
+            self.presque.sort(key=lambda c: -c.get("net", 0))
+            l += ["", "  CEUX QUI ONT MANQUE DE PEU (par benefice) :"]
+            for c in self.presque[:8]:
+                l.append(f"     {c.get('name', '?')[:34]:<34} achat "
+                         f"{c.get('usd', 0):>8,.2f} $ → revente "
+                         f"{c.get('ref', 0):>9,.2f} $ · marge "
+                         f"{c.get('marge', 0):>6.1f} % · net "
+                         f"{c.get('net', 0):>+9,.2f} $")
+                l.append(f"     {'':34} ↳ {self._manque(c)}")
+        l += ["═" * 66, ""]
+        return "\n".join(l)
+
 
 def _marge(achat_usd: float, floor_veve_usd: float):
     """(benefice net en $, marge en % du capital engage)."""
@@ -325,11 +433,14 @@ def _revente(vf: float, uid: str, state: Dict):
 
 
 def detect(state: Dict, listings: List[Dict], omi: float,
-           veve: Dict[str, float], ts: float = None) -> List[Dict]:
+           veve: Dict[str, float], ts: float = None,
+           journal: "Journal" = None) -> List[Dict]:
     """Un listing sous le floor = une affaire. Deux comparaisons :
       * marche StackR : price vs stackr_floor_price (tous deux en OMI) ;
       * marche VeVe   : price converti en $ vs floor VeVe (gems ~ $).
-    Anti-bruit : listing deja vu, montant derisoire, cooldown par item."""
+    Anti-bruit : listing deja vu, montant derisoire, cooldown par item.
+    Chaque rejet est INSCRIT AU JOURNAL : un module qui se tait doit au moins
+    pouvoir dire pourquoi."""
     ts = ts if ts is not None else time.time()
     vus: Dict[str, float] = state.setdefault("vus", {})
     alerts: Dict[str, float] = state.setdefault("alerts", {})
@@ -344,8 +455,12 @@ def detect(state: Dict, listings: List[Dict], omi: float,
         price = _f(it.get("price"))
         if price <= 0:
             continue
+        if journal:
+            journal.listings += 1
         usd = price * omi if omi else 0.0
         if usd and usd < MIN_USD:
+            if journal:
+                journal.rejet("broutille")
             continue                       # broutille : on ignore
         sf = _f(it.get("stackr_floor_price"))
         uid = str(it.get("element_id") or "")
@@ -359,24 +474,34 @@ def detect(state: Dict, listings: List[Dict], omi: float,
         d_veve = (100.0 * (vf - usd) / vf) if (vf > 0 and usd > 0) else 0.0
         ref, last = _revente(vf, uid, state)
         net, marge = _marge(usd, ref)
-        # Deux regles :
-        #  * MEME MARCHE : le listing passe sous le floor StackR (sous-cotation
-        #    franche) -> seuil en % suffisant ;
-        #  * AUTRE MARCHE : on ne retient que ce qui RAPPORTE VRAIMENT une fois
-        #    les frais VeVe payes (marge nette ET benefice minimum en $).
+        cand = {"name": it.get("name") or uid[:8], "usd": usd, "ref": ref,
+                "net": net, "marge": marge, "ecart": d_veve,
+                "d_stackr": d_stackr}
         arbitrage = (marge >= MARGIN_PCT and net >= MIN_PROFIT)
         # Un arbitrage suppose de REVENDRE au floor VeVe. Si l'item n'a AUCUNE
-        # vente reelle connue, cette revente est une fiction — exactement comme
-        # pour l'ecart entre marches (trou de la v9 : le garde-fou ne couvrait
-        # que le signal 3, et « Her Majesty » est passe sans preuve de vente).
-        # La sous-cotation sur le MEME marche (floor StackR), elle, n'a pas
-        # besoin de preuve : c'est une comparaison a offre egale.
-        if arbitrage and REQUIRE_SALE and last is None:
-            arbitrage = False
-            state.setdefault("sans_vente", {})[uid] = ts
-        if d_stackr < DROP_PCT and not arbitrage:
+        # vente reelle connue, cette revente est une fiction. La sous-cotation
+        # sur le MEME marche (floor StackR), elle, n'a pas besoin de preuve :
+        # c'est une comparaison a offre egale.
+        preuve_ok = (last is not None) or not REQUIRE_SALE
+        sous_cote = d_stackr >= DROP_PCT
+        if not sous_cote and not (arbitrage and preuve_ok):
+            if arbitrage and not preuve_ok:
+                state.setdefault("sans_vente", {})[uid] = ts
+                if journal:
+                    journal.rejet("illiquide", cand)
+            elif journal:
+                if vf <= 0:
+                    journal.rejet("sans_floor")
+                elif marge < MARGIN_PCT:
+                    journal.rejet("marge", cand)
+                elif net < MIN_PROFIT:
+                    journal.rejet("profit", cand)
+                else:
+                    journal.rejet("sous_cote", cand)
             continue
         if ts - alerts.get(uid or nft, 0) < COOLDOWN_H * 3600:
+            if journal:
+                journal.rejet("cooldown")
             continue
         alerts[uid or nft] = ts
         out.append({"net": round(net, 2), "marge": round(marge, 1),
@@ -400,7 +525,7 @@ def detect(state: Dict, listings: List[Dict], omi: float,
 
 
 def detect_spread(state: Dict, veve: Dict[str, float], omi: float,
-                  ts: float = None) -> List[Dict]:
+                  ts: float = None, journal: "Journal" = None) -> List[Dict]:
     """SIGNAL 3 — ecart entre marches, sur les offres DEJA EN PLACE.
 
     Le floor StackR de chaque item est memorise au fil des listings vus
@@ -416,25 +541,48 @@ def detect_spread(state: Dict, veve: Dict[str, float], omi: float,
     for uid, infos in list(sfloors.items()):
         sf, name, rarity = infos[0], infos[1], infos[2]
         img = infos[3] if len(infos) > 3 else ""
+        if journal:
+            journal.items.add(uid)
         vf = veve.get(uid, 0.0)
         sf_usd = sf * omi
-        if vf <= 0 or sf_usd <= 0 or sf_usd < MIN_USD:
+        if sf_usd <= 0 or sf_usd < MIN_USD:
+            if journal:
+                journal.rejet("broutille", cle=uid)
+            continue
+        if vf <= 0:
+            if journal:
+                journal.rejet("sans_floor", cle=uid)
             continue
         ecart = 100.0 * (vf - sf_usd) / vf
         ref, last = _revente(vf, uid, state)
         net, marge = _marge(sf_usd, ref)
-        if ecart < SPREAD_PCT or marge < MARGIN_PCT or net < MIN_PROFIT:
+        cand = {"name": name, "usd": sf_usd, "ref": ref, "net": net,
+                "marge": marge, "ecart": ecart, "d_stackr": 0.0}
+        if ecart < SPREAD_PCT:
+            if journal:
+                journal.rejet("ecart", cand, cle=uid)
+            continue
+        if marge < MARGIN_PCT:
+            if journal:
+                journal.rejet("marge", cand, cle=uid)
+            continue
+        if net < MIN_PROFIT:
+            if journal:
+                journal.rejet("profit", cand, cle=uid)
             continue
         if REQUIRE_SALE and last is None:
             # aucune vente depuis ~7 jours : l'item NE SE VEND PAS. Revendre au
             # floor VeVe y est une fiction -> on se tait.
             state.setdefault("sans_vente", {})[uid] = ts
+            if journal:
+                journal.rejet("illiquide", cand, cle=uid)
             continue
         # MEME verrou que les listings (cle = uuid) : un item deja signale
         # comme listing ne doit PAS ressortir en "ecart de marches" — c'est la
-        # MEME affaire vue sous deux angles (constate au run du 12/07 :
-        # Fantastic Four et Ryu Battle alertaient deux fois).
+        # MEME affaire vue sous deux angles.
         if ts - alerts.get(uid, 0) < COOLDOWN_H * 3600:
+            if journal:
+                journal.rejet("cooldown", cle=uid)
             continue
         alerts[uid] = ts
         out.append({"net": round(net, 2), "marge": round(marge, 1),
@@ -525,8 +673,10 @@ def notify(alerts: List[Dict]) -> int:
                + _dt.datetime.now(_dt.timezone.utc).strftime("%H:%M UTC"))
     if len(alerts) > 10:
         contenu += f" (10 affichées sur {len(alerts)})"
-    if not WEBHOOK:
-        print("  [SIMULATION — pas de DISCORD_WEBHOOK]", flush=True)
+    if not WEBHOOK or SIMULER:
+        print("  [SIMULATION — rien n'est envoye"
+              + ("" if WEBHOOK else " : pas de DISCORD_WEBHOOK") + "]",
+              flush=True)
         for a in alerts[:10]:
             preuve = (f"derniere vente {a['last']:,.2f} $" if a.get("last")
                       else "aucune vente vue")
@@ -578,6 +728,7 @@ def save_state(st: Dict) -> None:
 def main() -> int:
     t0 = time.time()
     state = load_state()
+    journal = Journal()
     s = requests.Session()
     veve: Dict[str, float] = {}
     dernier_refresh = 0.0
@@ -603,8 +754,8 @@ def main() -> int:
             print(f"  [{i}/{POLLS}] aucun listing recu — on reessaiera.",
                   flush=True)
         else:
-            a = detect(state, listings, omi, veve)
-            a += detect_spread(state, veve, omi)     # signal 3
+            a = detect(state, listings, omi, veve, journal=journal)
+            a += detect_spread(state, veve, omi, journal=journal)  # signal 3
             print(f"  [{i}/{POLLS}] {len(listings)} listings, {nv} vente(s), "
                   f"{len(a)} alerte(s), OMI={omi:.6f} $", flush=True)
             total += notify(a)
@@ -613,10 +764,14 @@ def main() -> int:
             time.sleep(INTERVAL_S)
     print(f"Termine : {POLLS} tours, {total} alerte(s), "
           f"{time.time() - t0:.0f}s.", flush=True)
+    # ZERO ALERTE N'EST PAS UNE REPONSE : le journal dit QUEL verrou a serre.
+    print(journal.resume(), flush=True)
     return 0
 
 
 if __name__ == "__main__":
     sys.exit(main())
 
-# FIN floor_watch.py v12 (cartes lisibles + respect du rate limit)
+# FIN floor_watch.py v13 — le module DIT pourquoi il se tait (journal des
+# recales) et sait tourner a blanc (FLOOR_SIMULER) : on regle sur des chiffres,
+# pas sur des suppositions.
