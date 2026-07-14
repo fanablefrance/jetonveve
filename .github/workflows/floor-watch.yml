@@ -60,6 +60,12 @@ on:
         description: "📚 Comics : tirage maximal suivi (defaut 1000)"
         required: false
         default: ""
+      purger_ventes:
+        description: "🧹 JETER l'historique des ventes (a faire UNE fois : il a ete collecte avec la mauvaise unite)"
+        required: false
+        default: "non"
+        type: choice
+        options: ["non", "oui"]
       require_sale:
         description: "Exiger une vente reelle avant d'alerter (garde-fou : 71 % des items ne se vendent JAMAIS)"
         required: false
@@ -115,6 +121,7 @@ jobs:
           FLOOR_DROP_PCT: ${{ github.event.inputs.drop_pct || vars.FLOOR_DROP_PCT || '10' }}
           FLOOR_VEVE_PCT: ${{ vars.FLOOR_VEVE_PCT || '35' }}
           FLOOR_SALES_PAGES: ${{ github.event.inputs.sales_pages || vars.FLOOR_SALES_PAGES || '120' }}
+          FLOOR_PURGER_VENTES: ${{ github.event.inputs.purger_ventes == 'oui' && '1' || '' }}
           FLOOR_REQUIRE_SALE: ${{ github.event.inputs.require_sale || vars.FLOOR_REQUIRE_SALE || 'true' }}
           # 📚 Signal 4 : le comic a petit tirage brade (ni preuve de vente, ni
           # promesse de revente : un PRIX D'ENTREE absurde au regard de la rarete)
