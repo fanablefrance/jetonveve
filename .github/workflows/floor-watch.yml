@@ -1,24 +1,59 @@
 name: Alertes sous-floor
 
-# v3 : on ne balaie plus les 6 011 floors — on ecoute le FLUX DES LISTINGS
-# (publicVeve.getAllLatestListings_v2), ou chaque mise en vente arrive avec son
-# prix ET le floor du moment. ~695 listings/jour -> 1 requete toutes les 2 min
-# suffit (au lieu de 61 par tour) : plus reactif ET bien plus discret.
-# Un run = 25 tours de 2 min = ~50 min de veille, relance chaque heure.
+# v13 : le module DIT pourquoi il se tait.
+#
+# Deux jours sans une seule alerte, et aucun moyen de savoir QUI serrait trop :
+# la marge ? le benefice minimum ? l'ecart entre marches ? la preuve de vente ?
+# Desserrer au hasard, c'est deviner — et si deux verrous cedent en meme temps,
+# on ne saura toujours pas lequel bloquait. Le JOURNAL DES RECALES compte chaque
+# candidat ecarte, par motif, et garde ceux qui ont manque de peu AVEC LEURS
+# CHIFFRES. Un run, et on sait quel cran tourner, et de combien.
+#
+# TOUS LES SEUILS SONT DESORMAIS PILOTABLES SANS TOUCHER AU CODE (repo variables
+# ou champs de lancement). Et `simuler = oui` calcule tout SANS RIEN ENVOYER :
+# on ne regle pas un seuil en public, sur le Discord de la commu.
 
 on:
   schedule:
     - cron: "3 * * * *"
   workflow_dispatch:
     inputs:
-      drop_pct:
-        description: "Decote minimale pour alerter (%)"
+      simuler:
+        description: "Tourner a blanc : tout calculer, N'ENVOYER RIEN (pour regler les seuils)"
         required: false
-        default: "10"
+        default: "non"
+        type: choice
+        options: ["non", "oui"]
       polls:
         description: "Nombre de tours (2 min chacun)"
         required: false
         default: "25"
+      margin_pct:
+        description: "Marge nette minimale, en % (defaut 20)"
+        required: false
+        default: ""
+      min_profit:
+        description: "Benefice minimal, en $ (defaut 5)"
+        required: false
+        default: ""
+      spread_pct:
+        description: "Ecart minimal entre marches, en % (defaut 40)"
+        required: false
+        default: ""
+      drop_pct:
+        description: "Decote minimale sous le floor StackR, en % (defaut 10)"
+        required: false
+        default: ""
+      sales_pages:
+        description: "Pages d'historique de ventes (defaut 120 = ~7 j). L'elargir donne plus de PREUVES."
+        required: false
+        default: ""
+      require_sale:
+        description: "Exiger une vente reelle avant d'alerter (garde-fou : 71 % des items ne se vendent JAMAIS)"
+        required: false
+        default: "true"
+        type: choice
+        options: ["true", "false"]
 
 permissions:
   contents: write
@@ -42,9 +77,18 @@ jobs:
       - name: Veille des listings
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          FLOOR_DROP_PCT: ${{ github.event.inputs.drop_pct || '10' }}
+          FLOOR_SIMULER: ${{ github.event.inputs.simuler == 'oui' && '1' || '' }}
           FLOOR_POLLS: ${{ github.event.inputs.polls || '25' }}
           FLOOR_INTERVAL_S: "120"
+          # Un reglage vaut pour TOUS les runs suivants (repo variable), un champ
+          # de lancement ne vaut que pour CE run. L'ordre : champ > variable > defaut.
+          FLOOR_MARGIN_PCT: ${{ github.event.inputs.margin_pct || vars.FLOOR_MARGIN_PCT || '20' }}
+          FLOOR_MIN_PROFIT: ${{ github.event.inputs.min_profit || vars.FLOOR_MIN_PROFIT || '5' }}
+          FLOOR_SPREAD_PCT: ${{ github.event.inputs.spread_pct || vars.FLOOR_SPREAD_PCT || '40' }}
+          FLOOR_DROP_PCT: ${{ github.event.inputs.drop_pct || vars.FLOOR_DROP_PCT || '10' }}
+          FLOOR_VEVE_PCT: ${{ vars.FLOOR_VEVE_PCT || '35' }}
+          FLOOR_SALES_PAGES: ${{ github.event.inputs.sales_pages || vars.FLOOR_SALES_PAGES || '120' }}
+          FLOOR_REQUIRE_SALE: ${{ github.event.inputs.require_sale || vars.FLOOR_REQUIRE_SALE || 'true' }}
         run: python -m scraper.floor_watch
 
       - name: Commit de l'etat
@@ -54,4 +98,7 @@ jobs:
           git config user.email "actions@github.com"
           git add data/floor_state.json 2>/dev/null || true
           git diff --cached --quiet || git commit -m "floor_watch: etat"
-          git push || true
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash origin main && git push origin main && break
+            sleep 10
+          done
