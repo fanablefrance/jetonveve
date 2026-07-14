@@ -220,9 +220,15 @@ def detect_comics(state: Dict, comics: Dict[str, Dict],
     return out
 
 
+# ⚠️ LE LIEN VEVE D'UN COMIC : la page marche d'une RARETE, donc l'uuid de
+# l'ELEMENT — PAS celui de la serie. (Deja paye le 14/07 sur les crafts :
+# confondre les deux uuid donne la page de QUELQU'UN D'AUTRE, et un lien qui
+# s'ouvre a l'air juste tout en etant faux.)
+LIEN_COMIC = "https://www.veve.me/collectibles/en/market/comics/{uuid}"
+
+
 def carte_comic(a: Dict) -> Dict:
-    lien = (f"https://www.veve.me/comics/en/{a['serie']}" if a.get("serie")
-            else "")
+    lien = LIEN_COMIC.format(uuid=a["uuid"]) if a.get("uuid") else ""
     lignes = [f"**Tirage** : {a['supply']:,} exemplaires".replace(",", " "),
               f"**Prix** : **{a['usd']:.2f} $** sur **{a['ou']}**"]
     if a.get("veve_floor"):
@@ -231,9 +237,6 @@ def carte_comic(a: Dict) -> Dict:
         lignes.append(f"{a.get('rarity', '')} {a.get('edition', '')}".strip())
     if lien:
         lignes.append(f"[Voir sur VeVe]({lien})")
-    lignes.append("")
-    lignes.append("*Prix d'entree, pas un arbitrage : aucune revente n'est "
-                  "promise ici.*")
     return {"title": f"📚 {a['name']}"[:250],
             "description": "\n".join(lignes),
             "color": 0x9B59B6,
@@ -944,6 +947,7 @@ def main() -> int:
 if __name__ == "__main__":
     sys.exit(main())
 
-# FIN floor_watch.py v14 (+ signal 4 : le comic a petit tirage brade)\n# v13 — le module DIT pourquoi il se tait (journal des
+# FIN floor_watch.py v15 (le lien comic = uuid de l'ELEMENT, pas de la serie)
+# v14 (+ signal 4 : le comic a petit tirage brade)\n# v13 — le module DIT pourquoi il se tait (journal des
 # recales) et sait tourner a blanc (FLOOR_SIMULER) : on regle sur des chiffres,
 # pas sur des suppositions.
