@@ -48,6 +48,14 @@ on:
         description: "Pages d'historique de ventes (defaut 120 = ~7 j). L'elargir donne plus de PREUVES."
         required: false
         default: ""
+      comic_max_usd:
+        description: "📚 Comics : prix maximal pour alerter, en $ (defaut 2)"
+        required: false
+        default: ""
+      comic_supply:
+        description: "📚 Comics : tirage maximal suivi (defaut 1000)"
+        required: false
+        default: ""
       require_sale:
         description: "Exiger une vente reelle avant d'alerter (garde-fou : 71 % des items ne se vendent JAMAIS)"
         required: false
@@ -68,6 +76,21 @@ jobs:
     timeout-minutes: 70
     steps:
       - uses: actions/checkout@v4
+
+      # 📚 Le tirage des comics vit dans le Sheet, donc chez preda (PRIVE). On va
+      # chercher le seul fichier dont on a besoin, en lecture seule. Si ce
+      # checkout echoue, le signal comics se desactive tout seul — les alertes
+      # d'arbitrage, elles, continuent.
+      - name: Tirage des comics (CSV exporte par preda)
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: VeVePreda/scrapeur-veve
+          token: ${{ secrets.PREDA_TOKEN }}
+          path: _preda
+          sparse-checkout: data/comics_supply.csv
+          sparse-checkout-cone-mode: false
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -89,6 +112,12 @@ jobs:
           FLOOR_VEVE_PCT: ${{ vars.FLOOR_VEVE_PCT || '35' }}
           FLOOR_SALES_PAGES: ${{ github.event.inputs.sales_pages || vars.FLOOR_SALES_PAGES || '120' }}
           FLOOR_REQUIRE_SALE: ${{ github.event.inputs.require_sale || vars.FLOOR_REQUIRE_SALE || 'true' }}
+          # 📚 Signal 4 : le comic a petit tirage brade (ni preuve de vente, ni
+          # promesse de revente : un PRIX D'ENTREE absurde au regard de la rarete)
+          COMICS_CSV: _preda/data/comics_supply.csv
+          COMIC_SUPPLY_MAX: ${{ github.event.inputs.comic_supply || vars.COMIC_SUPPLY_MAX || '1000' }}
+          COMIC_MAX_USD: ${{ github.event.inputs.comic_max_usd || vars.COMIC_MAX_USD || '2' }}
+          COMIC_MAX_ALERTES: ${{ vars.COMIC_MAX_ALERTES || '25' }}
         run: python -m scraper.floor_watch
 
       - name: Commit de l'etat
