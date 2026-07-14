@@ -1,0 +1,96 @@
+name: Archive — médias de la veille
+
+# ~7 300 images, ~5 Go. Ici et pas sur preda : un repo PRIVE en plan gratuit
+# dispose d'environ 500 Mo d'artifacts — 5 Go n'y rentrent pas. Un repo PUBLIC a
+# des artifacts et des minutes illimites.
+#
+# Le JSONL reste chez preda (PRIVE) : on va le CHERCHER avec PREDA_TOKEN, on ne
+# le recopie jamais ici. Seul le REGISTRE (la liste des fichiers deja pris) vit
+# sur jetonveve — il ne contient aucun contenu, juste des noms.
+#
+# ⚠️ TELECHARGE L'ARTIFACT DE CHAQUE RUN. Le registre dit « c'est fait », il ne
+# garde pas les octets : les medias ne sont PAS commites (des Go dans git, c'est
+# un repo qu'on ne clone plus).
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_mo:
+        description: "Taille max de CE run, en Mo (l'artifact fera environ ça)"
+        required: false
+        default: "1500"
+      max_medias:
+        description: "Nb max de médias pour ce run (0 = pas de limite de nombre)"
+        required: false
+        default: "0"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: veve-medias
+  cancel-in-progress: false
+
+jobs:
+  medias:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      # 1. jetonveve : le script + le REGISTRE
+      - uses: actions/checkout@v4
+
+      # 2. preda (PRIVE) : le JSONL, en lecture seule, dans un sous-dossier
+      - name: Récupérer le JSONL depuis preda
+        uses: actions/checkout@v4
+        with:
+          repository: VeVePreda/scrapeur-veve
+          token: ${{ secrets.PREDA_TOKEN }}
+          path: _preda
+          sparse-checkout: data/archive_veille.jsonl
+          sparse-checkout-cone-mode: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install requests
+
+      - name: Téléchargement des médias
+        env:
+          # Le jeton sert UNIQUEMENT a ressusciter les URLs signees expirees
+          # (/attachments/refresh-urls). Sans lui, les pieces jointes de plus de
+          # ~24 h sont perdues.
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          ARCHIVE_JSONL: _preda/data/archive_veille.jsonl
+          ARCHIVE_MEDIAS: archive_medias
+          ARCHIVE_REGISTRE: data/archive_medias_faits.txt
+          ARCHIVE_MAX_MO: ${{ github.event.inputs.max_mo || '1500' }}
+          ARCHIVE_MAX_MEDIAS: ${{ github.event.inputs.max_medias || '0' }}
+        run: python -m scraper.archive_medias
+
+      # Le REGISTRE (des noms, pas des octets) : c'est lui qui permet la reprise.
+      # `if: always()` — ce qui est telecharge est dans l'artifact, donc le
+      # registre doit le dire, meme si le run s'est arrete en route.
+      - name: Commit du registre
+        if: always()
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/archive_medias_faits.txt 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "archive médias: registre"
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash origin main && git push origin main && break
+            sleep 10
+          done
+
+      # UN ARTIFACT PAR RUN (nomme par numero) : sinon le suivant ecraserait le
+      # precedent, et les octets seraient perdus alors que le registre dirait
+      # « c'est fait ».
+      - name: Artifact des médias
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: archive-medias-${{ github.run_number }}
+          path: archive_medias/
+          retention-days: 90
+          if-no-files-found: warn
