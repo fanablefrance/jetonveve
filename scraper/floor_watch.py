@@ -103,6 +103,12 @@ REQUIRE_SALE = os.environ.get("FLOOR_REQUIRE_SALE", "true").lower() != "false"
 # LA COMMU, c'est se tromper devant tout le monde. FLOOR_SIMULER=1 : on calcule
 # tout, on n'envoie RIEN, on ecrit dans les logs.
 SIMULER = os.environ.get("FLOOR_SIMULER", "").lower() in ("1", "oui", "true")
+# L'etat contient des ventes collectees AVEC LA MAUVAISE UNITE (divisees par
+# ~5 900). Elles ne se corrigent pas toutes seules : l'historique ne re-ecrit pas
+# une cle deja connue. Il faut les JETER une fois — sinon elles continueraient
+# d'ecraser les marges et de faire taire les alertes.
+PURGER_VENTES = os.environ.get("FLOOR_PURGER_VENTES", "").lower() in (
+    "1", "oui", "true")
 
 # ═══════════════════════════════════════════════════════════════════════════
 # 📚 SIGNAL 4 — LE COMIC A PETIT TIRAGE, BRADE (demande de Preda, 14/07)
@@ -555,10 +561,23 @@ def fetch_history(session=None, pages: int = SALES_PAGES,
                   omi: float = 0.0) -> Dict[str, list]:
     """{uuid -> [prix $ de la DERNIERE vente, jour]} depuis getVeveTransactions.
 
-    Ce flux porte element_id + price + created_at pour CHAQUE vente
-    (MARKET_FIXED / MARKET_AUCTION / MARKET_STACKR) et pagine loin (`cursor` =
-    numero de page) — contrairement au flux des ventes StackR, limite a ~50
-    lignes du jour, qui laissait les alertes sans preuve."""
+    ⚠️⚠️ LES DEUX FLUX N'ONT PAS LA MEME UNITE (verifie sur les donnees reelles
+    le 14/07, apres deux jours de silence inexplique) :
+      * `getAllLatestSales_v2` (ventes StackR) -> prix en **OMI**
+        (12 500 OMI = 2,11 $) -> il FAUT multiplier par le cours ;
+      * `getVeveTransactions` (ventes VeVe)    -> prix en **DOLLARS**
+        (MARKET_FIXED : 3,93 · 3,99 · 29,90 · 2,88) -> AUCUNE conversion.
+
+    On multipliait TOUT par le cours OMI : chaque vente VeVe etait donc divisee
+    par ~5 900. Une vente a 2 200 $ devenait 0,37 $ — et comme le prix de revente
+    retenu est le MINIMUM entre le floor et la derniere vente, la marge
+    s'effondrait a chaque fois. **Les preuves qu'on collectait TUAIENT les
+    alertes qu'elles devaient justifier.** Pire : les petites ventes tombaient a
+    0,00 apres arrondi et etaient jetees en silence (d'ou « 1 618 elements ont
+    une vente reelle (0 nouveaux) » alors que l'etat n'en gardait que 526).
+
+    `omi` reste dans la signature pour ne rien casser, mais N'EST PLUS UTILISE.
+    LEÇON : une unite ne se suppose pas. Deux sources, deux unites — toujours."""
     out: Dict[str, list] = {}
     s = session or requests.Session()
     for page in range(1, pages + 1):
@@ -575,11 +594,10 @@ def fetch_history(session=None, pages: int = SALES_PAGES,
             if str(it.get("status")) != "COMPLETE":
                 continue
             uid = str(it.get("element_id") or "")
-            pr = _f(it.get("price"))
+            pr = _f(it.get("price"))          # DEJA en dollars
             if not uid or pr <= 0 or uid in out:
                 continue                  # 1re occurrence = la plus RECENTE
-            out[uid] = [round(pr * omi, 2) if omi else 0.0,
-                        str(it.get("created_at") or "")[:10]]
+            out[uid] = [round(pr, 2), str(it.get("created_at") or "")[:10]]
         time.sleep(PAUSE)
     return out
 
@@ -973,6 +991,11 @@ def save_state(st: Dict) -> None:
 def main() -> int:
     t0 = time.time()
     state = load_state()
+    if PURGER_VENTES:
+        n = len(state.get("sales") or {})
+        state["sales"], state["sans_vente"] = {}, {}
+        print(f"🧹 {n} vente(s) collectee(s) avec la mauvaise unite : JETEES. "
+              f"L'historique va se reconstruire en dollars.", flush=True)
     journal = Journal()
     comics = charger_comics()
     if comics:
@@ -1041,6 +1064,8 @@ def main() -> int:
 if __name__ == "__main__":
     sys.exit(main())
 
+# FIN floor_watch.py v18 — LES DEUX FLUX N'ONT PAS LA MEME UNITE :
+# ventes VeVe en DOLLARS, ventes StackR en OMI.
 # FIN floor_watch.py v16 (profondeur du carnet + note de classement + budget de
 # messages : le spam est structurellement impossible)
 # v15 (le lien comic = uuid de l'ELEMENT, pas de la serie)
