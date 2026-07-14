@@ -52,6 +52,10 @@ on:
         description: "📚 Comics : prix maximal pour alerter, en $ (defaut 2)"
         required: false
         default: ""
+      comic_max_listings:
+        description: "📚 Comics : nb max d'offres en vente (defaut 3 — au-dela c'est le prix du marche)"
+        required: false
+        default: ""
       comic_supply:
         description: "📚 Comics : tirage maximal suivi (defaut 1000)"
         required: false
@@ -118,6 +122,15 @@ jobs:
           COMIC_SUPPLY_MAX: ${{ github.event.inputs.comic_supply || vars.COMIC_SUPPLY_MAX || '1000' }}
           COMIC_MAX_USD: ${{ github.event.inputs.comic_max_usd || vars.COMIC_MAX_USD || '2' }}
           COMIC_MAX_ALERTES: ${{ vars.COMIC_MAX_ALERTES || '25' }}
+          # « 8 offres a 1,75 $, ce n'est pas une affaire » : au-dela de ce
+          # nombre d'offres au meme prix, c'est le prix du MARCHE, pas une aubaine.
+          COMIC_MAX_LISTINGS: ${{ github.event.inputs.comic_max_listings || vars.COMIC_MAX_LISTINGS || '3' }}
+          # 🔇 LE SPAM EST STRUCTURELLEMENT IMPOSSIBLE : plafond de messages par
+          # run ET par jour, tous signaux confondus. Au-dela, on se TAIT — et on
+          # ne memorise rien, donc rien n'est perdu.
+          FLOOR_MAX_MSG_RUN: ${{ vars.FLOOR_MAX_MSG_RUN || '4' }}
+          FLOOR_MAX_MSG_JOUR: ${{ vars.FLOOR_MAX_MSG_JOUR || '12' }}
+          FLOOR_PAUSE_MSG_S: "3"
         run: python -m scraper.floor_watch
 
       - name: Commit de l'etat
