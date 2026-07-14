@@ -104,6 +104,168 @@ REQUIRE_SALE = os.environ.get("FLOOR_REQUIRE_SALE", "true").lower() != "false"
 # tout, on n'envoie RIEN, on ecrit dans les logs.
 SIMULER = os.environ.get("FLOOR_SIMULER", "").lower() in ("1", "oui", "true")
 
+# ═══════════════════════════════════════════════════════════════════════════
+# 📚 SIGNAL 4 — LE COMIC A PETIT TIRAGE, BRADE (demande de Preda, 14/07)
+# ═══════════════════════════════════════════════════════════════════════════
+# « Un comic a 1 000 exemplaires liste sous 2 $, sur VeVe ou sur StackR. »
+#
+# Ce n'est PAS un arbitrage, et c'est ce qui change tout :
+#   * on ne compare rien, on ne promet aucune revente : on constate un PRIX
+#     D'ENTREE absurde au regard de la rarete ;
+#   * donc **pas de preuve de vente exigee**. Le garde-fou « 71 % des items ne
+#     se vendent jamais » protege les promesses de PLUS-VALUE. Ici il n'y en a
+#     pas : a 2 $ pour 1/1000, le risque est de 2 $. Exiger une vente recente
+#     ferait taire exactement les items les plus dormants — c'est-a-dire
+#     precisement ceux qu'on cherche.
+#
+# Le TIRAGE ne vient pas de StackR (son champ `quantity` n'est pas prouve) mais
+# du CSV exporte par preda depuis le Sheet (`export_comics.py`), recupere ici en
+# lecture seule. ⚠️ Le supply d'un comic est celui de la SERIE, pas la somme de
+# ses raretes (piege paye le 14/07 sur Captain America #7).
+COMICS_CSV = os.environ.get("COMICS_CSV", "_preda/data/comics_supply.csv")
+COMIC_SUPPLY_MAX = int(os.environ.get("COMIC_SUPPLY_MAX", "1000"))
+COMIC_MAX_USD = float(os.environ.get("COMIC_MAX_USD", "2"))
+# GARDE-FOU ANTI-DELUGE : si le 1er passage trouve des dizaines de comics sous
+# le seuil, c'est le SEUIL qui est mal regle — on ne noie pas la commu sous
+# 200 cartes. On ne publie RIEN, on ne memorise RIEN (sinon on les enterrerait
+# pour de bon), on CRIE, et l'humain tranche.
+COMIC_MAX_ALERTES = int(os.environ.get("COMIC_MAX_ALERTES", "25"))
+
+
+def charger_comics(chemin: str = None) -> Dict[str, Dict]:
+    """{uuid -> {name, rarity, edition, supply, serie}} pour les petits tirages."""
+    import csv as _csv
+    chemin = chemin or COMICS_CSV
+    out: Dict[str, Dict] = {}
+    try:
+        with open(chemin, encoding="utf-8") as f:
+            for r in _csv.DictReader(f):
+                uid = (r.get("veve_uuid") or "").strip()
+                sup = int(_f(r.get("supply")))
+                if not uid or not sup or sup > COMIC_SUPPLY_MAX:
+                    continue
+                out[uid] = {"name": r.get("name") or uid[:8],
+                            "rarity": r.get("rarity") or "",
+                            "edition": r.get("edition_type") or "",
+                            "supply": sup,
+                            "serie": (r.get("series_uuid") or "").strip()}
+    except FileNotFoundError:
+        print(f"  (pas de {chemin} : signal comics desactive)", file=sys.stderr)
+    return out
+
+
+def detect_comics(state: Dict, comics: Dict[str, Dict],
+                  veve: Dict[str, float], listings: List[Dict], omi: float,
+                  ts: float = None) -> List[Dict]:
+    """Un comic a petit tirage sous COMIC_MAX_USD, des DEUX cotes du marche."""
+    ts = ts if ts is not None else time.time()
+    if not comics:
+        return []
+    vus: Dict[str, float] = state.setdefault("comics_vus", {})
+    trouve: Dict[str, Dict] = {}
+
+    def _garder(uid, prix, ou):
+        c = comics[uid]
+        anc = trouve.get(uid)
+        if anc and anc["usd"] <= prix:
+            return
+        trouve[uid] = {"uuid": uid, "usd": round(prix, 2), "ou": ou,
+                       "name": c["name"], "rarity": c["rarity"],
+                       "edition": c["edition"], "supply": c["supply"],
+                       "serie": c["serie"],
+                       "veve_floor": veve.get(uid, 0.0)}
+
+    # 1. VEVE — le floor du marche VeVe (gems ~ $), rafraichi 1x/h
+    for uid, vf in (veve or {}).items():
+        if uid in comics and 0 < vf < COMIC_MAX_USD:
+            _garder(uid, vf, "VeVe")
+
+    # 2. STACKR — les listings du flux (prix en OMI)
+    for it in listings or []:
+        uid = str(it.get("element_id") or "")
+        if uid not in comics or not omi:
+            continue
+        usd = _f(it.get("price")) * omi
+        if 0 < usd < COMIC_MAX_USD:
+            _garder(uid, usd, "StackR")
+
+    # 3. STACKR — les floors deja connus des items vus (offres EN PLACE)
+    for uid, infos in (state.get("sfloors") or {}).items():
+        if uid not in comics or not omi:
+            continue
+        usd = _f(infos[0]) * omi
+        if 0 < usd < COMIC_MAX_USD:
+            _garder(uid, usd, "StackR")
+
+    out = [a for uid, a in trouve.items()
+           if ts - vus.get(uid, 0) >= COOLDOWN_H * 3600]
+    if not out:
+        return []
+    if len(out) > COMIC_MAX_ALERTES:
+        # ⚠️ ON NE MEMORISE RIEN : un garde-fou ne doit jamais detruire ce qu'il
+        # protege. Si on notait ces uuid comme « vus », ils seraient enterres
+        # pour 6 h et Preda ne les reverrait jamais.
+        print(f"  ⛔ {len(out)} comics sous {COMIC_MAX_USD:g} $ — c'est le SEUIL "
+              f"qui est trop large, pas une aubaine. RIEN n'est publie ni "
+              f"memorise. Baisse COMIC_MAX_USD ou COMIC_SUPPLY_MAX, ou releve "
+              f"COMIC_MAX_ALERTES si tu les veux vraiment tous.",
+              file=sys.stderr)
+        for a in sorted(out, key=lambda x: x["usd"])[:10]:
+            print(f"     {a['name'][:40]:<40} {a['usd']:>6.2f} $ · "
+                  f"{a['supply']} ex. · {a['ou']}", file=sys.stderr)
+        return []
+    for a in out:
+        vus[a["uuid"]] = ts
+    out.sort(key=lambda a: (a["supply"], a["usd"]))   # le plus rare d'abord
+    return out
+
+
+def carte_comic(a: Dict) -> Dict:
+    lien = (f"https://www.veve.me/comics/en/{a['serie']}" if a.get("serie")
+            else "")
+    lignes = [f"**Tirage** : {a['supply']:,} exemplaires".replace(",", " "),
+              f"**Prix** : **{a['usd']:.2f} $** sur **{a['ou']}**"]
+    if a.get("veve_floor"):
+        lignes.append(f"Floor VeVe : {a['veve_floor']:.2f} $")
+    if a.get("rarity") or a.get("edition"):
+        lignes.append(f"{a.get('rarity', '')} {a.get('edition', '')}".strip())
+    if lien:
+        lignes.append(f"[Voir sur VeVe]({lien})")
+    lignes.append("")
+    lignes.append("*Prix d'entree, pas un arbitrage : aucune revente n'est "
+                  "promise ici.*")
+    return {"title": f"📚 {a['name']}"[:250],
+            "description": "\n".join(lignes),
+            "color": 0x9B59B6,
+            "url": lien or None}
+
+
+def notify_comics(alerts: List[Dict]) -> int:
+    if not alerts:
+        return 0
+    contenu = (f"📚 **{len(alerts)} comic(s) a petit tirage sous "
+               f"{COMIC_MAX_USD:g} $** — "
+               + _dt.datetime.now(_dt.timezone.utc).strftime("%H:%M UTC"))
+    embeds = [carte_comic(a) for a in alerts[:10]]
+    if not WEBHOOK or SIMULER:
+        print("  [SIMULATION — rien n'est envoye]", flush=True)
+        for a in alerts[:10]:
+            print(f"    📚 {a['name'][:40]:<40} {a['usd']:>6.2f} $ · "
+                  f"{a['supply']} ex. · {a['ou']}", flush=True)
+        return len(alerts)
+    try:
+        r = requests.post(WEBHOOK, json={"content": contenu, "embeds": embeds},
+                          timeout=20)
+        if r.status_code == 429:
+            time.sleep(min(_f(r.json().get("retry_after")) + 1, 60))
+            requests.post(WEBHOOK, json={"content": contenu, "embeds": embeds},
+                          timeout=20)
+        print(f"  Discord : {len(alerts)} comic(s) pousse(s).", flush=True)
+    except Exception as e:                                  # noqa: BLE001
+        print(f"  Discord KO ({e})", flush=True)
+    return len(alerts)
+
+
 
 class Journal:
     """⚠️ UN GARDE-FOU QUI NE DIT PAS POURQUOI IL BLOQUE EST UN MUR.
@@ -729,6 +891,11 @@ def main() -> int:
     t0 = time.time()
     state = load_state()
     journal = Journal()
+    comics = charger_comics()
+    if comics:
+        print(f"📚 {len(comics)} element(s) de comics a tirage ≤ "
+              f"{COMIC_SUPPLY_MAX} suivis (alerte sous {COMIC_MAX_USD:g} $).",
+              flush=True)
     s = requests.Session()
     veve: Dict[str, float] = {}
     dernier_refresh = 0.0
@@ -759,6 +926,11 @@ def main() -> int:
             print(f"  [{i}/{POLLS}] {len(listings)} listings, {nv} vente(s), "
                   f"{len(a)} alerte(s), OMI={omi:.6f} $", flush=True)
             total += notify(a)
+            c = detect_comics(state, comics, veve, listings, omi)
+            if c:
+                print(f"  [{i}/{POLLS}] 📚 {len(c)} comic(s) a petit tirage "
+                      f"sous {COMIC_MAX_USD:g} $ !", flush=True)
+                total += notify_comics(c)
             save_state(state)
         if i < POLLS:
             time.sleep(INTERVAL_S)
@@ -772,6 +944,6 @@ def main() -> int:
 if __name__ == "__main__":
     sys.exit(main())
 
-# FIN floor_watch.py v13 — le module DIT pourquoi il se tait (journal des
+# FIN floor_watch.py v14 (+ signal 4 : le comic a petit tirage brade)\n# v13 — le module DIT pourquoi il se tait (journal des
 # recales) et sait tourner a blanc (FLOOR_SIMULER) : on regle sur des chiffres,
 # pas sur des suppositions.
