@@ -100,6 +100,16 @@ on:
         default: "false"
         type: choice
         options: ["false", "true"]
+      pic_on:
+        description: "🔥 Pic d'activité hors drop : allumer ce canal (ventes du jour d'un item qui explosent vs sa moyenne) → canal dedie"
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
+      pic_ratio:
+        description: "🔥 Pic : multiple de la moyenne des jours actifs pour alerter (defaut 3 = ×3)"
+        required: false
+        default: ""
       purger_ventes:
         description: "🧹 JETER l'historique des ventes (a faire UNE fois : il a ete collecte avec la mauvaise unite)"
         required: false
@@ -207,6 +217,16 @@ jobs:
           ATL_MARGIN_PCT: ${{ vars.ATL_MARGIN_PCT || '25' }}
           # 🆕 n'alerte que si le floor depasse l'ATH d'au moins X % (defaut 25).
           ATH_MARGIN_PCT: ${{ vars.ATH_MARGIN_PCT || '25' }}
+          # 🔥 PIC D'ACTIVITE HORS DROP (canal dedie WEBHOOK_ATH). ETEINT par
+          # defaut : on calibre en simuler avant d'allumer, comme les autres. La
+          # baseline vient des ~7 j de ventes deja charges (zero requete en plus) ;
+          # un item qui vient de dropper n'a pas d'historique -> ecarte tout seul.
+          PIC_ON: ${{ github.event.inputs.pic_on || vars.PIC_ON || 'false' }}
+          PIC_RATIO: ${{ github.event.inputs.pic_ratio || vars.PIC_RATIO || '3' }}
+          PIC_MIN_COUNT: ${{ vars.PIC_MIN_COUNT || '4' }}
+          PIC_MIN_JOURS: ${{ vars.PIC_MIN_JOURS || '2' }}
+          PIC_MIN_BASE: ${{ vars.PIC_MIN_BASE || '1' }}
+          PIC_MAX: ${{ vars.PIC_MAX || '10' }}
           # 🔇 LE SPAM EST STRUCTURELLEMENT IMPOSSIBLE : plafond de messages par
           # run ET par jour, tous signaux confondus. Au-dela, on se TAIT — et on
           # ne memorise rien, donc rien n'est perdu.
