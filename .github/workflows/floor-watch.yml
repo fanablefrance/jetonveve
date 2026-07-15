@@ -68,6 +68,26 @@ on:
         description: "📚 Comics : tirage maximal suivi (defaut 1000)"
         required: false
         default: ""
+      veve_steal:
+        description: "🩸 Vol sur le floor VeVe : allumer ce canal (chute du floor VeVe vs sa valeur recente)"
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
+      steal_pct:
+        description: "🩸 Chute minimale du floor VeVe pour alerter, en % (defaut 25)"
+        required: false
+        default: ""
+      sale_spike:
+        description: "📈 Vente au-dessus du floor : allumer ce canal (une vente reelle bien au-dessus du floor)"
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
+      spike_ratio:
+        description: "📈 Multiple du floor a partir duquel une vente est notable (defaut 2 = ×2)"
+        required: false
+        default: ""
       purger_ventes:
         description: "🧹 JETER l'historique des ventes (a faire UNE fois : il a ete collecte avec la mauvaise unite)"
         required: false
@@ -154,6 +174,16 @@ jobs:
           # « 8 offres a 1,75 $, ce n'est pas une affaire » : au-dela de ce
           # nombre d'offres au meme prix, c'est le prix du MARCHE, pas une aubaine.
           COMIC_MAX_LISTINGS: ${{ github.event.inputs.comic_max_listings || vars.COMIC_MAX_LISTINGS || '3' }}
+          # 🩸📈 LOT 1 (15/07) — deux canaux single-marche, ETEINTS par defaut.
+          # On les allume et on les calibre UN A LA FOIS (simuler d'abord).
+          VEVE_STEAL_ON: ${{ github.event.inputs.veve_steal || vars.VEVE_STEAL_ON || 'false' }}
+          VEVE_STEAL_PCT: ${{ github.event.inputs.steal_pct || vars.VEVE_STEAL_PCT || '25' }}
+          VEVE_STEAL_MIN_USD: ${{ vars.VEVE_STEAL_MIN_USD || '1' }}
+          VEVE_STEAL_MAX: ${{ vars.VEVE_STEAL_MAX || '10' }}
+          SALE_SPIKE_ON: ${{ github.event.inputs.sale_spike || vars.SALE_SPIKE_ON || 'false' }}
+          SALE_SPIKE_RATIO: ${{ github.event.inputs.spike_ratio || vars.SALE_SPIKE_RATIO || '2' }}
+          SALE_SPIKE_MIN_USD: ${{ vars.SALE_SPIKE_MIN_USD || '5' }}
+          SALE_SPIKE_MAX: ${{ vars.SALE_SPIKE_MAX || '10' }}
           # 🔇 LE SPAM EST STRUCTURELLEMENT IMPOSSIBLE : plafond de messages par
           # run ET par jour, tous signaux confondus. Au-dela, on se TAIT — et on
           # ne memorise rien, donc rien n'est perdu.
