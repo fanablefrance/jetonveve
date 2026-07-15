@@ -44,6 +44,7 @@ Env : DISCORD_WEBHOOK (sinon simulation dans les logs), FLOOR_DROP_PCT (10),
 from __future__ import annotations
 
 import datetime as _dt
+import hashlib as _hashlib
 import json
 import os
 import sys
@@ -198,10 +199,15 @@ WEBHOOK_ATH = os.environ.get("DISCORD_WEBHOOK_ATH", "").strip() or WEBHOOK
 # affine en direct). Signal marche -> canal dedie.
 ATH_ON = os.environ.get("ATH_ON", "false").lower() == "true"
 ATH_MAX = int(os.environ.get("ATH_MAX", "10"))
+# On n'alerte un nouvel ATH que s'il depasse l'ancien d'au moins ce %.
+ATH_MARGIN_PCT = float(os.environ.get("ATH_MARGIN_PCT", "25"))
 # 📉 PLUS-BAS HISTORIQUE : un floor qui touche son ATL. Signal d'achat -> canal
 # principal (avec 🩸/🎯/📚).
 ATL_ON = os.environ.get("ATL_ON", "false").lower() == "true"
 ATL_MAX = int(os.environ.get("ATL_MAX", "10"))
+# ⚠️ On n'alerte un plus-bas que s'il est au moins ce % SOUS l'ATL connu
+# (sinon 1,29 -> 1,28 declencherait une notif inutile — demande Preda 15/07).
+ATL_MARGIN_PCT = float(os.environ.get("ATL_MARGIN_PCT", "25"))
 # ⚠️ Le tracker renvoie parfois un ATH aberrant (1e15 = listing troll/fat-finger).
 # Au-dela de ce plafond, l'ATH est juge INCONNU (ni signal, ni affichage).
 ATH_CAP = float(os.environ.get("ATH_CAP", "1000000000"))
@@ -233,29 +239,35 @@ ELEMENTS_CSV = os.environ.get("ELEMENTS_CSV", "_preda/data/elements.csv")
 # ⚠️ ET SURTOUT : quand le budget est epuise, on NE MEMORISE RIEN. Marquer une
 # affaire comme « deja alertee » sans l'avoir envoyee, ce serait l'enterrer pour
 # 6 h — le garde-fou detruirait ce qu'il protege (leçon deja payee 2 fois).
-MAX_MSG_RUN = int(os.environ.get("FLOOR_MAX_MSG_RUN", "4"))
-MAX_MSG_JOUR = int(os.environ.get("FLOOR_MAX_MSG_JOUR", "12"))
+# 🔇 PLAFOND ANTI-BAN. Discord tolere ~30 msg/min PAR WEBHOOK ; on se limite a
+# MAX_MSG_MIN (20) par webhook sur une fenetre glissante de 60 s. Chaque canal
+# (principal / dedie) a son PROPRE compteur — ce sont des buckets Discord
+# separes. + 3 s entre deux envois : on espace, on ne mitraille pas, et on
+# respecte le 429 dans les notify (retry_after).
+MAX_MSG_MIN = int(os.environ.get("FLOOR_MAX_MSG_MIN", "20"))
 PAUSE_MSG = float(os.environ.get("FLOOR_PAUSE_MSG_S", "3"))
-_msg_run = 0
 
 
-def _aujourdhui() -> str:
-    return _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d")
+def _wh_key(wh) -> str:
+    # JAMAIS le webhook en clair dans l'etat (repo PUBLIC) : une empreinte.
+    return _hashlib.sha1((wh or "-").encode()).hexdigest()[:12]
 
 
-def budget(state: Dict) -> int:
-    """Combien de messages peut-on encore envoyer ? (run ET journee)"""
-    b = state.setdefault("budget", {})
-    if b.get("jour") != _aujourdhui():
-        b["jour"], b["n"] = _aujourdhui(), 0
-    return min(MAX_MSG_RUN - _msg_run, MAX_MSG_JOUR - int(b.get("n") or 0))
+def budget(state: Dict, wh=None, ts: float = None) -> int:
+    """Combien de messages ce WEBHOOK peut encore envoyer dans la minute qui
+    vient (fenetre glissante 60 s, plafond MAX_MSG_MIN)."""
+    ts = ts if ts is not None else time.time()
+    r = state.setdefault("rate", {})
+    k = _wh_key(wh)
+    recent = [t for t in r.get(k, []) if ts - t < 60]
+    r[k] = recent
+    return MAX_MSG_MIN - len(recent)
 
 
-def consommer(state: Dict) -> None:
-    global _msg_run
-    _msg_run += 1
-    b = state.setdefault("budget", {})
-    b["n"] = int(b.get("n") or 0) + 1
+def consommer(state: Dict, wh=None, ts: float = None) -> None:
+    ts = ts if ts is not None else time.time()
+    r = state.setdefault("rate", {})
+    r.setdefault(_wh_key(wh), []).append(round(ts, 1))
     time.sleep(PAUSE_MSG)          # on espace, on ne mitraille pas
 
 
@@ -1219,7 +1231,7 @@ def detect_ath(state, veve, cat=None, ts=None):
             seen[uid] = [round(vf, 4), ts]           # on suit l'extreme live
         if not ATH_ON:
             continue
-        if vf <= PLANCHER_VEVE or eff <= 0 or vf <= eff:
+        if vf <= PLANCHER_VEVE or eff <= 0 or vf < eff * (1 + ATH_MARGIN_PCT / 100.0):
             continue
         last = (state.get("sales") or {}).get(uid)
         ls = _f(last[0]) if last else 0.0
@@ -1267,7 +1279,7 @@ def detect_atl(state, veve, cat=None, ts=None):
             seen[uid] = [round(vf, 4), ts]           # on suit l'extreme bas live
         if not ATL_ON:
             continue
-        if vf <= PLANCHER_VEVE or eff <= 0 or vf >= eff:
+        if vf <= PLANCHER_VEVE or eff <= 0 or vf > eff * (1 - ATL_MARGIN_PCT / 100.0):
             continue
         last = (state.get("sales") or {}).get(uid)
         ls = _f(last[0]) if last else 0.0
@@ -1585,11 +1597,11 @@ def main() -> int:
                 # Preda l'allume).
                 stl = detect_veve_steal(state, veve, cat)
                 if stl:
-                    if budget(state) > 0:
+                    if budget(state, WEBHOOK) > 0:
                         print(f"  🩸 {len(stl)} floor(s) VeVe effondre(s) !",
                               flush=True)
                         total += notify_steal(stl)
-                        consommer(state)
+                        consommer(state, WEBHOOK)
                     else:
                         for a in stl:
                             state.get("alerts_steal", {}).pop(a["uuid"], None)
@@ -1597,16 +1609,16 @@ def main() -> int:
                               "pour plus tard (rien n'est enterre).", flush=True)
                 # 🆕 NOUVEAU ATH (canal dedie) · 📉 PLUS-BAS HISTORIQUE (principal).
                 # Comme le 🩸, l'extreme live est TOUJOURS enregistre (meme OFF).
-                for _lib, _det, _notif, _chan in (
-                        ("🆕 ATH", detect_ath, notify_ath, "alerts_ath"),
-                        ("📉 plus-bas", detect_atl, notify_atl, "alerts_atl")):
+                for _lib, _det, _notif, _chan, _wh in (
+                        ("🆕 ATH", detect_ath, notify_ath, "alerts_ath", WEBHOOK_ATH),
+                        ("📉 plus-bas", detect_atl, notify_atl, "alerts_atl", WEBHOOK)):
                     _res = _det(state, veve, cat)
                     if not _res:
                         continue
-                    if budget(state) > 0:
+                    if budget(state, _wh) > 0:
                         print(f"  {_lib} : {len(_res)} signal(s) !", flush=True)
                         total += _notif(_res)
-                        consommer(state)
+                        consommer(state, _wh)
                     else:
                         for _a in _res:
                             state.get(_chan, {}).pop(_a["uuid"], None)
@@ -1635,9 +1647,9 @@ def main() -> int:
             print(f"  [{i}/{POLLS}] {len(listings)} listings, {nv} vente(s), "
                   f"{len(a)} alerte(s), OMI={omi:.6f} $", flush=True)
             if a:
-                if budget(state) > 0:
+                if budget(state, WEBHOOK) > 0:
                     total += notify(a)
-                    consommer(state)
+                    consommer(state, WEBHOOK)
                 else:
                     rendre(state, a)      # RIEN n'est envoye, RIEN n'est enterre
                     print(f"  🔇 plafond de messages atteint — {len(a)} affaire(s) "
@@ -1646,23 +1658,23 @@ def main() -> int:
             if MINT_ON:
                 m = detect_mints(state, cat, listings, omi, veve, dates)
                 if m:
-                    if budget(state) > 0:
+                    if budget(state, WEBHOOK) > 0:
                         print(f"  [{i}/{POLLS}] 🎯 {len(m)} numero(s) "
                               f"remarquable(s) au prix d'une edition ordinaire !",
                               flush=True)
                         total += notify_mints(m)
-                        consommer(state)
+                        consommer(state, WEBHOOK)
                     else:
                         rendre(state, m, comics=True)
                         print(f"  🔇 plafond atteint — {len(m)} numero(s) gardes "
                               f"pour plus tard.", flush=True)
             c = detect_comics(state, comics, veve, listings, omi)
             if c:
-                if budget(state) > 0:
+                if budget(state, WEBHOOK) > 0:
                     print(f"  [{i}/{POLLS}] 📚 {len(c)} comic(s) a petit tirage "
                           f"sous {COMIC_MAX_USD:g} $ !", flush=True)
                     total += notify_comics(c)
-                    consommer(state)
+                    consommer(state, WEBHOOK)
                 else:
                     rendre(state, c, comics=True)
                     print(f"  🔇 plafond atteint — {len(c)} comic(s) gardes pour "
@@ -1670,11 +1682,11 @@ def main() -> int:
             # 📈 LA VENTE AU-DESSUS DU FLOOR — sur le flux des ventes du tour.
             sp = detect_sale_spike(state, ventes, veve, omi, cat)
             if sp:
-                if budget(state) > 0:
+                if budget(state, WEBHOOK_ATH) > 0:
                     print(f"  [{i}/{POLLS}] 📈 {len(sp)} vente(s) tres au-dessus "
                           f"du floor !", flush=True)
                     total += notify_spike(sp)
-                    consommer(state)
+                    consommer(state, WEBHOOK_ATH)
                 else:
                     for a in sp:
                         state.get("alerts_spike", {}).pop(a["uuid"], None)
