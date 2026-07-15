@@ -1,0 +1,120 @@
+name: Archive des salons (messages + médias)
+
+# ONE-SHOT (Preda va supprimer ces salons pour en ouvrir de nouveaux -> on
+# capture le corpus UNE fois, pour le chatbot). Sur JETONVEVE car le repo est
+# PUBLIC : artifacts et minutes illimites -> les MEDIAS passent (sur preda, prive,
+# la limite d'artifact de 500 Mo bloquait).
+#
+# Le code scraper/archive_discord.py (identique a celui de preda) fait messages
+# ET medias en UNE passe : il descend les messages (URLs de PJ FRAICHES) puis
+# telecharge les medias dans la foulee -> les URLs signees n'ont pas le temps
+# d'expirer (~24 h). Le multi-salon vit dans la boucle shell (nom:id).
+#
+# ⚠️ ON NE COMMIT RIEN : le texte des messages ne va PAS dans le git public. Tout
+# (JSONL + medias) part dans l'ARTIFACT, que Preda telecharge et garde. Une
+# relance repart de zero par salon (petits salons ~1000 messages = quelques
+# secondes) — pas besoin d'etat persistant.
+#
+# ⚠️ PREALABLE : le bot a le MESSAGE CONTENT INTENT (deja ON depuis la veille) ET,
+# sur CHAQUE salon, « Voir le salon » + « Lire l'historique ». Sinon : salon muet
+# (rien ecrit) ou 403 (salon saute, la boucle continue). Secret DISCORD_BOT_TOKEN
+# requis sur jetonveve (deja present depuis la passe medias de la veille).
+
+on:
+  workflow_dispatch:
+    inputs:
+      salon:
+        description: "Quel salon (nom) ou 'tous'"
+        required: false
+        default: "tous"
+      modes:
+        description: "Quoi faire"
+        required: false
+        default: "messages,images"
+        type: choice
+        options: ["messages,images", "messages", "images"]
+      max_pages:
+        description: "Nb max de pages de 100 messages (0 = tout)"
+        required: false
+        default: "0"
+      max_medias:
+        description: "Nb max de médias par salon (0 = tout)"
+        required: false
+        default: "0"
+      purger:
+        description: "Repartir de zéro (efface le JSONL du/des salon(s) visé(s) dans ce run)"
+        required: false
+        default: "non"
+        type: choice
+        options: ["non", "oui"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: veve-archive-salons
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install requests
+
+      - name: Collecte (messages + médias, tous les salons ou un seul)
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          ARCHIVE_MODES: ${{ github.event.inputs.modes || 'messages,images' }}
+          ARCHIVE_MAX_PAGES: ${{ github.event.inputs.max_pages || '0' }}
+          ARCHIVE_MAX_MEDIAS: ${{ github.event.inputs.max_medias || '0' }}
+          ARCHIVE_PURGER: ${{ github.event.inputs.purger == 'oui' && '1' || '' }}
+          SALON: ${{ github.event.inputs.salon || 'tous' }}
+        run: |
+          # ── LES SALONS À ARCHIVER (nom:id). La veille est déjà faite ailleurs. ──
+          SALONS="value-comics:1133415487368351754
+          forum-stats:1161531388558856202
+          mcfarlane:1126838164032589825
+          bazar:1192712757120864307
+          disney-pinnacle:1174320609610706974
+          mcu-dcu:1126841893716770888
+          crypto:1126841126125588611
+          candy:1126840628517556274
+          elmonx:1126837520282431628
+          digitoys:1126840163088224267
+          fanable:1352265099821449216
+          web3:1126841463624450158
+          concours:1153358341377110148"
+          echo "$SALONS" | while IFS=: read -r nom id; do
+            nom=$(echo "$nom" | tr -d '[:space:]')
+            id=$(echo "$id" | tr -d '[:space:]')
+            if [ -z "$nom" ] || [ -z "$id" ]; then continue; fi
+            if [ "$SALON" != "tous" ] && [ "$SALON" != "$nom" ]; then continue; fi
+            echo "═══════════════ $nom ($id) ═══════════════"
+            ARCHIVE_CHANNEL="$id" \
+            ARCHIVE_JSONL="data/archive_${nom}.jsonl" \
+            ARCHIVE_STATE="data/archive_${nom}_state.json" \
+            ARCHIVE_MEDIAS="archive_medias_${nom}" \
+            python -m scraper.archive_discord \
+              || echo "⚠️ $nom : échec / salon muet / pas d'accès — on continue."
+          done
+          echo "═══════════════ RÉCAP TAILLES ═══════════════"
+          du -sh data/archive_*.jsonl archive_medias_* 2>/dev/null || true
+
+      # Tout part dans l'artifact (public = illimité), RIEN dans git. Preda le
+      # télécharge et le garde pour nourrir le chatbot.
+      - name: Artifact (messages + médias)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: archive-salons-${{ github.run_number }}
+          path: |
+            data/archive_*.jsonl
+            archive_medias_*/
+          retention-days: 90
+          if-no-files-found: warn
