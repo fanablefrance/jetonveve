@@ -85,9 +85,21 @@ on:
         type: choice
         options: ["false", "true"]
       spike_ratio:
-        description: "📈 Multiple du floor a partir duquel une vente est notable (defaut 2 = ×2)"
+        description: "📈 Multiple du floor a partir duquel une vente est notable (defaut 3 = ×3)"
         required: false
         default: ""
+      ath_on:
+        description: "🆕 Nouveau ATH : allumer ce canal (floor qui bat son plus-haut historique) → canal dedie"
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
+      atl_on:
+        description: "📉 Plus-bas historique : allumer ce canal (floor au plus bas jamais vu) → canal principal"
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
       purger_ventes:
         description: "🧹 JETER l'historique des ventes (a faire UNE fois : il a ete collecte avec la mauvaise unite)"
         required: false
@@ -139,6 +151,8 @@ jobs:
       - name: Veille des listings
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          # Canal dedie (🆕 ATH + 📈 x3 + pic). Absent -> repli sur le principal.
+          DISCORD_WEBHOOK_ATH: ${{ secrets.DISCORD_WEBHOOK_ATH }}
           FLOOR_SIMULER: ${{ github.event.inputs.simuler == 'oui' && '1' || '' }}
           FLOOR_POLLS: ${{ github.event.inputs.polls || '25' }}
           FLOOR_INTERVAL_S: "120"
@@ -181,9 +195,14 @@ jobs:
           VEVE_STEAL_MIN_USD: ${{ vars.VEVE_STEAL_MIN_USD || '1' }}
           VEVE_STEAL_MAX: ${{ vars.VEVE_STEAL_MAX || '10' }}
           SALE_SPIKE_ON: ${{ github.event.inputs.sale_spike || vars.SALE_SPIKE_ON || 'false' }}
-          SALE_SPIKE_RATIO: ${{ github.event.inputs.spike_ratio || vars.SALE_SPIKE_RATIO || '2' }}
+          SALE_SPIKE_RATIO: ${{ github.event.inputs.spike_ratio || vars.SALE_SPIKE_RATIO || '3' }}
           SALE_SPIKE_MIN_USD: ${{ vars.SALE_SPIKE_MIN_USD || '5' }}
           SALE_SPIKE_MAX: ${{ vars.SALE_SPIKE_MAX || '10' }}
+          # 🆕 ATH (canal dedie) · 📉 plus-bas (canal principal). ETEINTS par defaut.
+          ATH_ON: ${{ github.event.inputs.ath_on || vars.ATH_ON || 'false' }}
+          ATL_ON: ${{ github.event.inputs.atl_on || vars.ATL_ON || 'false' }}
+          ATH_MAX: ${{ vars.ATH_MAX || '10' }}
+          ATL_MAX: ${{ vars.ATL_MAX || '10' }}
           # 🔇 LE SPAM EST STRUCTURELLEMENT IMPOSSIBLE : plafond de messages par
           # run ET par jour, tous signaux confondus. Au-dela, on se TAIT — et on
           # ne memorise rien, donc rien n'est perdu.
