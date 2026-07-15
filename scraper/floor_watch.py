@@ -187,9 +187,24 @@ STEAL_MAX = int(os.environ.get("VEVE_STEAL_MAX", "10"))
 #    du MEME marche (StackR, memorise), a defaut au floor VeVe, et toujours en
 #    dollars pour ne pas melanger les unites (leçon v18).
 SPIKE_ON = os.environ.get("SALE_SPIKE_ON", "false").lower() == "true"
-SPIKE_RATIO = float(os.environ.get("SALE_SPIKE_RATIO", "2"))
+SPIKE_RATIO = float(os.environ.get("SALE_SPIKE_RATIO", "3"))
 SPIKE_MIN_USD = float(os.environ.get("SALE_SPIKE_MIN_USD", "5"))
 SPIKE_MAX = int(os.environ.get("SALE_SPIKE_MAX", "10"))
+
+# ═══ CANAL DEDIE (15/07) : 🆕 ATH + 📈 (x3) + pic hors drop → webhook separe ═══
+# Si le secret n'est pas defini, on retombe sur le webhook principal (rien perdu).
+WEBHOOK_ATH = os.environ.get("DISCORD_WEBHOOK_ATH", "").strip() or WEBHOOK
+# 🆕 NOUVEAU ATH : un floor qui bat son plus-haut historique (ATH du tracker,
+# affine en direct). Signal marche -> canal dedie.
+ATH_ON = os.environ.get("ATH_ON", "false").lower() == "true"
+ATH_MAX = int(os.environ.get("ATH_MAX", "10"))
+# 📉 PLUS-BAS HISTORIQUE : un floor qui touche son ATL. Signal d'achat -> canal
+# principal (avec 🩸/🎯/📚).
+ATL_ON = os.environ.get("ATL_ON", "false").lower() == "true"
+ATL_MAX = int(os.environ.get("ATL_MAX", "10"))
+# ⚠️ Le tracker renvoie parfois un ATH aberrant (1e15 = listing troll/fat-finger).
+# Au-dela de ce plafond, l'ATH est juge INCONNU (ni signal, ni affichage).
+ATH_CAP = float(os.environ.get("ATH_CAP", "1000000000"))
 
 # ═══════════════════════════════════════════════════════════════════════════
 # 🎯 SIGNAL 5 — LA CHASSE AUX NUMEROS
@@ -284,6 +299,11 @@ def charger_elements(chemin: str = None) -> Dict[str, Dict]:
                     "serie": (r.get("series_uuid") or "").strip(),
                     "marque": (r.get("brand") or "").strip(),
                     "licence": (r.get("licensor") or "").strip(),
+                    # ATL/ATH du floor (peuples par preda depuis MyNftTracker).
+                    # ATL <= 0 = inconnu ; ATH aberrant (>= ATH_CAP) = inconnu.
+                    "atl": (lambda a: a if a > 0 else None)(_f(r.get("atl"))),
+                    "ath": (lambda a: a if 0 < a < ATH_CAP else None)(
+                        _f(r.get("ath"))),
                 }
     except FileNotFoundError:
         print(f"  (pas de {chemin} : catalogue inconnu — signaux comics et "
@@ -334,7 +354,7 @@ def detect_comics(state: Dict, comics: Dict[str, Dict],
                        "edition": c["edition"], "supply": c["supply"],
                        "serie": c["serie"], "listings": n,
                        "note": c.get("note") or "",
-                       "veve_floor": veve.get(uid, 0.0)}
+                       "veve_floor": veve.get(uid, 0.0), "atl": c.get("atl")}
 
     # SEULE SOURCE : les NOUVELLES mises en vente StackR (prix en OMI), fraiches
     # a la minute (flux interroge toutes les 2 min). Aucun balayage de
@@ -395,6 +415,8 @@ def carte_comic(a: Dict) -> Dict:
         lignes.append(f"**Classement** : {a['note']}")
     if a.get("veve_floor"):
         lignes.append(f"Floor VeVe : {a['veve_floor']:.2f} $")
+    if a.get("atl"):
+        lignes.append(f"Plus-bas historique : {a['atl']:.2f} $")
     if a.get("rarity") or a.get("edition"):
         lignes.append(f"{a.get('rarity', '')} {a.get('edition', '')}".strip())
     if lien:
@@ -986,7 +1008,7 @@ def detect_mints(state, cat, listings, omi, veve=None, dates=None, ts=None):
             continue                 # le vendeur SAIT ce qu'il a : pas pour nous
 
         vus[nft] = ts
-        out.append({"uuid": uid, "nft": nft, "edition": ed,
+        out.append({"uuid": uid, "nft": nft, "edition": ed, "atl": c.get("atl"),
                     "usd": round(usd, 2), "prix": prix,
                     "floor": round(floor_usd, 2), "name": c["name"],
                     "rarity": c.get("rarity", ""),
@@ -1023,6 +1045,8 @@ def carte_mint(a):
                   "ordinaire*".format(a["usd"], a["floor"]))
     if a.get("note"):
         lignes.append("**Classement** : " + a["note"])
+    if a.get("atl"):
+        lignes.append("Plus-bas historique : **{:.2f} $**".format(a["atl"]))
     lignes.append("[Voir sur VeVe](" + lien + ")")
     return {"title": ("🎯 " + a["name"])[:250], "color": 0xE67E22,
             "description": "\n".join(lignes), "url": lien}
@@ -1108,7 +1132,7 @@ def detect_veve_steal(state, veve, cat=None, ts=None):
         out.append({"uuid": uid, "name": nom,
                     "categorie": c.get("categorie", ""),
                     "floor": round(vf, 2), "avant": round(prev, 2),
-                    "drop": round(drop, 1),
+                    "drop": round(drop, 1), "atl": c.get("atl"),
                     "last": round(ls, 2) if ls > 0 else None})
     if len(out) > STEAL_MAX:
         # trop d'un coup = un seuil trop bas, pas 20 aubaines. RIEN memorise.
@@ -1161,7 +1185,8 @@ def detect_sale_spike(state, ventes, veve, omi, cat=None, ts=None):
         out.append({"uuid": uid, "name": nom,
                     "categorie": c.get("categorie", ""),
                     "vente": round(sale_usd, 2), "floor": round(floor_usd, 2),
-                    "ratio": round(ratio, 1), "edition": v.get("edition")})
+                    "ratio": round(ratio, 1), "edition": v.get("edition"),
+                    "atl": c.get("atl")})
     for k, t in list(vues.items()):                  # 24 h de ventes vues
         if ts - t > 86400:
             vues.pop(k, None)
@@ -1176,12 +1201,105 @@ def detect_sale_spike(state, ventes, veve, omi, cat=None, ts=None):
     return out
 
 
+def detect_ath(state, veve, cat=None, ts=None):
+    """🆕 Un floor qui BAT son plus-haut historique (ATH tracker, affine en
+    direct). Signal marche -> canal dedie. Preuve de vente exigee : un floor
+    gonfle sans acheteur ne dit rien."""
+    ts = ts if ts is not None else time.time()
+    seen = state.setdefault("ath_seen", {})          # {uuid:[floor,ts]} extreme live
+    alerts = state.setdefault("alerts_ath", {})
+    cat = cat or {}
+    out = []
+    for uid, vf_ in (veve or {}).items():
+        vf = _f(vf_)
+        prev = _f((seen.get(uid) or [0])[0])
+        ref = _f((cat.get(uid) or {}).get("ath") or 0)
+        eff = max(ref, prev)                         # plus-haut connu
+        if vf > prev:
+            seen[uid] = [round(vf, 4), ts]           # on suit l'extreme live
+        if not ATH_ON:
+            continue
+        if vf <= PLANCHER_VEVE or eff <= 0 or vf <= eff:
+            continue
+        last = (state.get("sales") or {}).get(uid)
+        ls = _f(last[0]) if last else 0.0
+        if REQUIRE_SALE and ls <= 0:
+            continue
+        if ts - alerts.get(uid, 0) < COOLDOWN_H * 3600:
+            continue
+        alerts[uid] = ts
+        c = cat.get(uid) or {}
+        nom = c.get("name") or (state.get("sfloors", {}).get(uid)
+                                or [None, uid[:8]])[1]
+        out.append({"uuid": uid, "name": nom, "categorie": c.get("categorie", ""),
+                    "floor": round(vf, 2), "ath": round(eff, 2),
+                    "last": round(ls, 2) if ls > 0 else None})
+    if len(out) > ATH_MAX:
+        for a in out:
+            alerts.pop(a["uuid"], None)
+        print("  ⛔ " + str(len(out)) + " nouveaux ATH d'un coup — anormal. "
+              "RIEN publie ni memorise.", file=sys.stderr)
+        return []
+    out.sort(key=lambda a: -a["floor"])
+    return out
+
+
+def detect_atl(state, veve, cat=None, ts=None):
+    """📉 Un floor qui touche son PLUS-BAS historique (ATL tracker, affine en
+    direct) = le moins cher jamais vu. Signal d'achat -> canal principal.
+    Preuve de vente exigee : un plus-bas sur un item qui ne se vend jamais ne
+    vaut rien."""
+    ts = ts if ts is not None else time.time()
+    seen = state.setdefault("atl_seen", {})
+    alerts = state.setdefault("alerts_atl", {})
+    cat = cat or {}
+    out = []
+    for uid, vf_ in (veve or {}).items():
+        vf = _f(vf_)
+        if vf <= 0:
+            continue
+        vieux = seen.get(uid)
+        prev = _f(vieux[0]) if isinstance(vieux, list) and vieux else 0.0
+        ref = _f((cat.get(uid) or {}).get("atl") or 0)
+        cands = [x for x in (ref, prev) if x > 0]
+        eff = min(cands) if cands else 0.0           # plus-bas connu
+        if prev <= 0 or vf < prev:
+            seen[uid] = [round(vf, 4), ts]           # on suit l'extreme bas live
+        if not ATL_ON:
+            continue
+        if vf <= PLANCHER_VEVE or eff <= 0 or vf >= eff:
+            continue
+        last = (state.get("sales") or {}).get(uid)
+        ls = _f(last[0]) if last else 0.0
+        if REQUIRE_SALE and ls <= 0:
+            continue
+        if ts - alerts.get(uid, 0) < COOLDOWN_H * 3600:
+            continue
+        alerts[uid] = ts
+        c = cat.get(uid) or {}
+        nom = c.get("name") or (state.get("sfloors", {}).get(uid)
+                                or [None, uid[:8]])[1]
+        out.append({"uuid": uid, "name": nom, "categorie": c.get("categorie", ""),
+                    "floor": round(vf, 2), "atl": round(eff, 2),
+                    "last": round(ls, 2) if ls > 0 else None})
+    if len(out) > ATL_MAX:
+        for a in out:
+            alerts.pop(a["uuid"], None)
+        print("  ⛔ " + str(len(out)) + " plus-bas d'un coup — anormal. RIEN "
+              "publie ni memorise.", file=sys.stderr)
+        return []
+    out.sort(key=lambda a: a["floor"])
+    return out
+
+
 def carte_steal(a):
     lien = lien_marche(a["uuid"], a.get("categorie", ""))
     lignes = ["Floor VeVe : **{:.2f} $**  —  etait {:.2f} $  (**−{} %**)".format(
         a["floor"], a["avant"], a["drop"])]
     if a.get("last"):
         lignes.append("Derniere vente reelle : **{:.2f} $**".format(a["last"]))
+    if a.get("atl"):
+        lignes.append("Plus-bas historique : **{:.2f} $**".format(a["atl"]))
     lignes.append("[Voir sur VeVe](" + lien + ")")
     return {"title": ("🩸 " + a["name"])[:250], "color": 0xE74C3C,
             "description": "\n".join(lignes), "url": lien}
@@ -1191,30 +1309,34 @@ def carte_spike(a):
     lien = lien_marche(a["uuid"], a.get("categorie", ""))
     nom = a["name"] + (" #{}".format(a["edition"]) if a.get("edition") else "")
     lignes = ["Vendu **{:.2f} $**  —  floor {:.2f} $  (**×{}**)".format(
-        a["vente"], a["floor"], a["ratio"]),
-        "[Voir sur VeVe](" + lien + ")"]
+        a["vente"], a["floor"], a["ratio"])]
+    if a.get("atl"):
+        lignes.append("Plus-bas historique : **{:.2f} $**".format(a["atl"]))
+    lignes.append("[Voir sur VeVe](" + lien + ")")
     return {"title": ("📈 " + nom)[:250], "color": 0x1ABC9C,
             "description": "\n".join(lignes), "url": lien}
 
 
-def _notify_lot1(alerts, titre, carte, ligne_sim):
-    """Un message groupe, 10 cartes max, 429 respecte — comme les autres."""
+def _notify_lot1(alerts, titre, carte, ligne_sim, webhook=None):
+    """Un message groupe, 10 cartes max, 429 respecte — comme les autres.
+    `webhook` route vers un autre canal (None = webhook principal)."""
+    wh = webhook if webhook is not None else WEBHOOK
     if not alerts:
         return 0
     contenu = titre + " — " + _dt.datetime.now(_dt.timezone.utc).strftime(
         "%H:%M UTC")
     embeds = [carte(a) for a in alerts[:10]]
-    if not WEBHOOK or SIMULER:
+    if not wh or SIMULER:
         print("  [SIMULATION — rien n'est envoye]", flush=True)
         for a in alerts[:10]:
             print("    " + ligne_sim(a), flush=True)
         return len(alerts)
     try:
-        r = requests.post(WEBHOOK, json={"content": contenu, "embeds": embeds},
+        r = requests.post(wh, json={"content": contenu, "embeds": embeds},
                           timeout=20)
         if r.status_code == 429:
             time.sleep(min(_f(r.json().get("retry_after")) + 1, 60))
-            requests.post(WEBHOOK, json={"content": contenu, "embeds": embeds},
+            requests.post(wh, json={"content": contenu, "embeds": embeds},
                           timeout=20)
         print("  Discord : " + str(len(alerts)) + " carte(s) poussee(s).",
               flush=True)
@@ -1238,7 +1360,49 @@ def notify_spike(alerts):
         "📈 **" + str(len(alerts)) + " vente(s) au-dessus du floor**",
         carte_spike,
         lambda a: "📈 {:<32} vendu {:>8.2f} $ (floor {:.2f}, ×{})".format(
-            a["name"][:32], a["vente"], a["floor"], a["ratio"]))
+            a["name"][:32], a["vente"], a["floor"], a["ratio"]),
+        webhook=WEBHOOK_ATH)
+
+
+def carte_ath(a):
+    lien = lien_marche(a["uuid"], a.get("categorie", ""))
+    lignes = ["Floor VeVe : **{:.2f} $** — nouveau **plus-haut historique** "
+              "(ancien ATH {:.2f} $)".format(a["floor"], a["ath"])]
+    if a.get("last"):
+        lignes.append("Derniere vente reelle : **{:.2f} $**".format(a["last"]))
+    lignes.append("[Voir sur VeVe](" + lien + ")")
+    return {"title": ("🆕 " + a["name"])[:250], "color": 0x9B59B6,
+            "description": "\n".join(lignes), "url": lien}
+
+
+def carte_atl(a):
+    lien = lien_marche(a["uuid"], a.get("categorie", ""))
+    lignes = ["Floor VeVe : **{:.2f} $** — **plus-bas historique** "
+              "(ancien ATL {:.2f} $)".format(a["floor"], a["atl"])]
+    if a.get("last"):
+        lignes.append("Derniere vente reelle : **{:.2f} $**".format(a["last"]))
+    lignes.append("[Voir sur VeVe](" + lien + ")")
+    return {"title": ("📉 " + a["name"])[:250], "color": 0x2980B9,
+            "description": "\n".join(lignes), "url": lien}
+
+
+def notify_ath(alerts):
+    return _notify_lot1(
+        alerts,
+        "🆕 **" + str(len(alerts)) + " nouveau(x) plus-haut(s) historique(s)**",
+        carte_ath,
+        lambda a: "🆕 {:<32} {:>8.2f} $ (ancien ATH {:.2f})".format(
+            a["name"][:32], a["floor"], a["ath"]),
+        webhook=WEBHOOK_ATH)
+
+
+def notify_atl(alerts):
+    return _notify_lot1(
+        alerts,
+        "📉 **" + str(len(alerts)) + " plus-bas historique(s)**",
+        carte_atl,
+        lambda a: "📉 {:<32} {:>8.2f} $ (ancien ATL {:.2f})".format(
+            a["name"][:32], a["floor"], a["atl"]))
 
 
 COULEURS = {"stackr": 0x3498DB,      # bleu   : sous le floor StackR
@@ -1391,8 +1555,16 @@ def main() -> int:
              else "OFF (VEVE_STEAL_ON=true pour l'allumer ; le floor courant "
                   "est enregistre en attendant)"), flush=True)
     print("📈 vente au-dessus du floor : "
-          + ("ON · ×" + str(SPIKE_RATIO) if SPIKE_ON
+          + ("ON · ×" + str(SPIKE_RATIO) + " → canal dedie" if SPIKE_ON
              else "OFF (SALE_SPIKE_ON=true pour l'allumer)"), flush=True)
+    print("🆕 nouveau ATH : "
+          + ("ON → canal dedie" if ATH_ON else "OFF (ATH_ON=true)")
+          + ("" if os.environ.get("DISCORD_WEBHOOK_ATH")
+             else "  (⚠️ DISCORD_WEBHOOK_ATH absent → canal principal)"),
+          flush=True)
+    print("📉 plus-bas historique : "
+          + ("ON (canal principal)" if ATL_ON else "OFF (ATL_ON=true)"),
+          flush=True)
     s = requests.Session()
     veve: Dict[str, float] = {}
     dernier_refresh = 0.0
@@ -1423,6 +1595,23 @@ def main() -> int:
                             state.get("alerts_steal", {}).pop(a["uuid"], None)
                         print("  🔇 plafond atteint — vols floor VeVe gardes "
                               "pour plus tard (rien n'est enterre).", flush=True)
+                # 🆕 NOUVEAU ATH (canal dedie) · 📉 PLUS-BAS HISTORIQUE (principal).
+                # Comme le 🩸, l'extreme live est TOUJOURS enregistre (meme OFF).
+                for _lib, _det, _notif, _chan in (
+                        ("🆕 ATH", detect_ath, notify_ath, "alerts_ath"),
+                        ("📉 plus-bas", detect_atl, notify_atl, "alerts_atl")):
+                    _res = _det(state, veve, cat)
+                    if not _res:
+                        continue
+                    if budget(state) > 0:
+                        print(f"  {_lib} : {len(_res)} signal(s) !", flush=True)
+                        total += _notif(_res)
+                        consommer(state)
+                    else:
+                        for _a in _res:
+                            state.get(_chan, {}).pop(_a["uuid"], None)
+                        print(f"  🔇 plafond atteint — {_lib} gardes pour "
+                              f"plus tard.", flush=True)
             hist = fetch_history(s, SALES_PAGES, omi)
             n_h = merge_history(state, hist)
             print(f"  historique : {len(hist)} elements ont une vente reelle "
