@@ -203,11 +203,15 @@ jobs:
           ATL_ON: ${{ github.event.inputs.atl_on || vars.ATL_ON || 'false' }}
           ATH_MAX: ${{ vars.ATH_MAX || '10' }}
           ATL_MAX: ${{ vars.ATL_MAX || '10' }}
+          # 📉 n'alerte que si le floor est au moins X % SOUS l'ATL (defaut 25).
+          ATL_MARGIN_PCT: ${{ vars.ATL_MARGIN_PCT || '25' }}
+          # 🆕 n'alerte que si le floor depasse l'ATH d'au moins X % (defaut 25).
+          ATH_MARGIN_PCT: ${{ vars.ATH_MARGIN_PCT || '25' }}
           # 🔇 LE SPAM EST STRUCTURELLEMENT IMPOSSIBLE : plafond de messages par
           # run ET par jour, tous signaux confondus. Au-dela, on se TAIT — et on
           # ne memorise rien, donc rien n'est perdu.
-          FLOOR_MAX_MSG_RUN: ${{ vars.FLOOR_MAX_MSG_RUN || '4' }}
-          FLOOR_MAX_MSG_JOUR: ${{ vars.FLOOR_MAX_MSG_JOUR || '12' }}
+          # Plafond anti-ban : 20 messages/min PAR webhook (fenetre glissante).
+          FLOOR_MAX_MSG_MIN: ${{ vars.FLOOR_MAX_MSG_MIN || '20' }}
           FLOOR_PAUSE_MSG_S: "3"
         run: python -m scraper.floor_watch
 
