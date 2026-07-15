@@ -44,9 +44,9 @@ POIDS = {
     "bas": 3,
     "haut": 2,
     "sequence": 3,
-    # palindrome abaisse de 3 a 1 le 15/07 : ~2 % d'un tirage,
-    # trop commun pour declencher SEUL (score 1 < MINT_SCORE_MIN=2).
-    # Il compte encore dans une combinaison.
+    # palindrome abaisse de 3 a 1 le 15/07 : ~2 % d'un tirage, trop commun
+    # pour declencher SEUL (score 1 < MINT_SCORE_MIN=2). Il compte encore
+    # dans une combinaison.
     "palindrome": 1,
     "repetition": 3,
     "angelique": 2,

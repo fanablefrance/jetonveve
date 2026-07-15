@@ -161,6 +161,37 @@ ARBITRAGE_ON = os.environ.get("FLOOR_ARBITRAGE", "false").lower() == "true"
 SPREAD_ON = os.environ.get("FLOOR_SPREAD", "false").lower() == "true"
 
 # ═══════════════════════════════════════════════════════════════════════════
+# LOT 1 (15/07) — DEUX SIGNAUX SINGLE-MARCHE (sans l'arbitrage inter-marches)
+# ═══════════════════════════════════════════════════════════════════════════
+# On construit ces deux canaux ETEINTS par defaut : on les allume et on les
+# calibre UN A LA FOIS, en simuler d'abord, comme tout le reste.
+#
+# A. 🩸 LE VOL SUR LE FLOOR VEVE. Le floor VeVe d'un item s'effondre par rapport
+#    a sa valeur RECENTE (memorisee au dernier rafraichissement) : quelqu'un
+#    vient de brader sur le marche ou l'on ACHETE vraiment. Single-marche (floor
+#    VeVe vs floor VeVe) — donc RIEN a voir avec l'arbitrage inter-marches
+#    eteint. C'est la finalite d'origine : « une offre placee sous le floor
+#    DEVIENT le floor ». Preuve de vente exigee (REQUIRE_SALE) : un floor qui
+#    tombe sur un item qui ne se vend jamais n'est pas une affaire. Et on ignore
+#    le plancher plateforme (1 $).
+#    ⚠️ Le floor VeVe n'est rafraichi qu'1x/h -> ce signal se juge d'un
+#    rafraichissement a l'autre (granularite horaire, coherente avec le cron).
+STEAL_ON = os.environ.get("VEVE_STEAL_ON", "false").lower() == "true"
+STEAL_PCT = float(os.environ.get("VEVE_STEAL_PCT", "25"))
+STEAL_MIN_USD = float(os.environ.get("VEVE_STEAL_MIN_USD", str(MIN_USD)))
+STEAL_MAX = int(os.environ.get("VEVE_STEAL_MAX", "10"))
+# B. 📈 LA VENTE TRES AU-DESSUS DU FLOOR. Un item vient de se VENDRE (vente
+#    reelle, pas une offre) pour bien plus que son floor : la demande chauffe.
+#    Signal d'INFORMATION, pas une affaire a saisir — donc pas de preuve de
+#    vente a exiger (la vente EST la preuve). On compare de preference au floor
+#    du MEME marche (StackR, memorise), a defaut au floor VeVe, et toujours en
+#    dollars pour ne pas melanger les unites (leçon v18).
+SPIKE_ON = os.environ.get("SALE_SPIKE_ON", "false").lower() == "true"
+SPIKE_RATIO = float(os.environ.get("SALE_SPIKE_RATIO", "2"))
+SPIKE_MIN_USD = float(os.environ.get("SALE_SPIKE_MIN_USD", "5"))
+SPIKE_MAX = int(os.environ.get("SALE_SPIKE_MAX", "10"))
+
+# ═══════════════════════════════════════════════════════════════════════════
 # 🎯 SIGNAL 5 — LA CHASSE AUX NUMEROS
 # ═══════════════════════════════════════════════════════════════════════════
 # Un #1, un 1234, un 2001 sur un Star Wars valent bien plus qu'une edition
@@ -1029,6 +1060,191 @@ def notify_mints(alerts):
     return len(alerts)
 
 
+# ═══════════════════════════════════════════════════════════════════════════
+# LOT 1 — 🩸 LE VOL SUR LE FLOOR VEVE  ·  📈 LA VENTE AU-DESSUS DU FLOOR
+# ═══════════════════════════════════════════════════════════════════════════
+
+def lien_marche(uuid: str, categorie: str = "") -> str:
+    """La page marche VeVe d'un ELEMENT. comic -> /comics, sinon /collectibles.
+    (Meme regle que carte_mint : l'uuid de l'ELEMENT, jamais celui de la serie.)"""
+    genre = "comics" if categorie == "comic" else "collectibles"
+    return "https://www.veve.me/collectibles/en/market/" + genre + "/" + uuid
+
+
+def detect_veve_steal(state, veve, cat=None, ts=None):
+    """A. Le floor VeVe s'effondre vs sa valeur RECENTE = un vol sur le marche
+    ou l'on achete vraiment (single-marche : floor VeVe vs floor VeVe memorise).
+
+    ⚠️ On ENREGISTRE toujours le floor courant (`vfloors`), meme canal eteint —
+    ainsi le jour ou Preda l'allume, la reference est deja la et le 1er run
+    detecte, au lieu d'attendre un 2e rafraichissement."""
+    ts = ts if ts is not None else time.time()
+    anc = state.setdefault("vfloors", {})            # {uuid: [floor$, ts]}
+    alerts = state.setdefault("alerts_steal", {})
+    cat = cat or {}
+    out = []
+    for uid, vf_ in (veve or {}).items():
+        vf = _f(vf_)
+        vieux = anc.get(uid)
+        prev = _f(vieux[0]) if isinstance(vieux, list) and vieux else 0.0
+        anc[uid] = [round(vf, 4), ts]                # <-- enregistrement systematique
+        if not STEAL_ON:
+            continue
+        # 1re observation (pas de reference), plancher plateforme, ou pas de chute
+        if prev <= 0 or vf <= PLANCHER_VEVE or vf >= prev:
+            continue
+        drop = 100.0 * (prev - vf) / prev
+        if drop < STEAL_PCT or (prev - vf) < STEAL_MIN_USD:
+            continue
+        last = (state.get("sales") or {}).get(uid)
+        ls = _f(last[0]) if last else 0.0
+        if REQUIRE_SALE and ls <= 0:
+            # un floor qui tombe sur un item qui ne se vend jamais n'est pas une
+            # affaire : c'est une vitrine sans acheteur.
+            state.setdefault("sans_vente", {})[uid] = ts
+            continue
+        if ts - alerts.get(uid, 0) < COOLDOWN_H * 3600:
+            continue
+        alerts[uid] = ts
+        c = cat.get(uid) or {}
+        nom = c.get("name") or (state.get("sfloors", {}).get(uid)
+                                or [None, uid[:8]])[1]
+        out.append({"uuid": uid, "name": nom,
+                    "categorie": c.get("categorie", ""),
+                    "floor": round(vf, 2), "avant": round(prev, 2),
+                    "drop": round(drop, 1),
+                    "last": round(ls, 2) if ls > 0 else None})
+    if len(out) > STEAL_MAX:
+        # trop d'un coup = un seuil trop bas, pas 20 aubaines. RIEN memorise.
+        for a in out:
+            alerts.pop(a["uuid"], None)
+        print("  ⛔ " + str(len(out)) + " floors VeVe en chute d'un coup : "
+              "VEVE_STEAL_PCT (=" + str(STEAL_PCT) + ") trop bas. RIEN publie "
+              "ni memorise.", file=sys.stderr)
+        return []
+    out.sort(key=lambda a: -a["drop"])
+    return out
+
+
+def detect_sale_spike(state, ventes, veve, omi, cat=None, ts=None):
+    """B. Une vente REELLE conclue bien au-dessus du floor : la demande chauffe.
+
+    Signal d'information (pas une affaire a saisir). Reference = floor du MEME
+    marche (StackR, memorise) de preference, sinon floor VeVe ; tout ramene en
+    dollars pour ne jamais melanger OMI et $ (la leçon des unites, v18)."""
+    ts = ts if ts is not None else time.time()
+    if not ventes or not omi or not SPIKE_ON:
+        return []
+    cat = cat or {}
+    vues = state.setdefault("ventes_vues", {})
+    sfloors = state.get("sfloors", {})
+    alerts = state.setdefault("alerts_spike", {})
+    out = []
+    for v in ventes:
+        uid = str(v.get("element_id") or "")
+        pr = _f(v.get("price"))                       # OMI
+        cle = uid + "|" + str(v.get("timestamp") or "")
+        if not uid or pr <= 0 or cle in vues:
+            continue
+        vues[cle] = ts
+        sale_usd = pr * omi
+        if sale_usd < SPIKE_MIN_USD:
+            continue
+        sfo = _f((sfloors.get(uid) or [0])[0])
+        floor_usd = (sfo * omi) if sfo > 0 else veve.get(uid, 0.0)
+        if floor_usd <= 0:
+            continue
+        ratio = sale_usd / floor_usd
+        if ratio < SPIKE_RATIO:
+            continue
+        if ts - alerts.get(uid, 0) < COOLDOWN_H * 3600:
+            continue
+        alerts[uid] = ts
+        c = cat.get(uid) or {}
+        nom = c.get("name") or (sfloors.get(uid) or [None, uid[:8]])[1]
+        out.append({"uuid": uid, "name": nom,
+                    "categorie": c.get("categorie", ""),
+                    "vente": round(sale_usd, 2), "floor": round(floor_usd, 2),
+                    "ratio": round(ratio, 1), "edition": v.get("edition")})
+    for k, t in list(vues.items()):                  # 24 h de ventes vues
+        if ts - t > 86400:
+            vues.pop(k, None)
+    if len(out) > SPIKE_MAX:
+        for a in out:
+            alerts.pop(a["uuid"], None)
+        print("  ⛔ " + str(len(out)) + " ventes au-dessus du floor d'un coup : "
+              "SALE_SPIKE_RATIO (=" + str(SPIKE_RATIO) + ") trop bas. RIEN "
+              "publie ni memorise.", file=sys.stderr)
+        return []
+    out.sort(key=lambda a: -a["ratio"])
+    return out
+
+
+def carte_steal(a):
+    lien = lien_marche(a["uuid"], a.get("categorie", ""))
+    lignes = ["Floor VeVe : **{:.2f} $**  —  etait {:.2f} $  (**−{} %**)".format(
+        a["floor"], a["avant"], a["drop"])]
+    if a.get("last"):
+        lignes.append("Derniere vente reelle : **{:.2f} $**".format(a["last"]))
+    lignes.append("[Voir sur VeVe](" + lien + ")")
+    return {"title": ("🩸 " + a["name"])[:250], "color": 0xE74C3C,
+            "description": "\n".join(lignes), "url": lien}
+
+
+def carte_spike(a):
+    lien = lien_marche(a["uuid"], a.get("categorie", ""))
+    nom = a["name"] + (" #{}".format(a["edition"]) if a.get("edition") else "")
+    lignes = ["Vendu **{:.2f} $**  —  floor {:.2f} $  (**×{}**)".format(
+        a["vente"], a["floor"], a["ratio"]),
+        "[Voir sur VeVe](" + lien + ")"]
+    return {"title": ("📈 " + nom)[:250], "color": 0x1ABC9C,
+            "description": "\n".join(lignes), "url": lien}
+
+
+def _notify_lot1(alerts, titre, carte, ligne_sim):
+    """Un message groupe, 10 cartes max, 429 respecte — comme les autres."""
+    if not alerts:
+        return 0
+    contenu = titre + " — " + _dt.datetime.now(_dt.timezone.utc).strftime(
+        "%H:%M UTC")
+    embeds = [carte(a) for a in alerts[:10]]
+    if not WEBHOOK or SIMULER:
+        print("  [SIMULATION — rien n'est envoye]", flush=True)
+        for a in alerts[:10]:
+            print("    " + ligne_sim(a), flush=True)
+        return len(alerts)
+    try:
+        r = requests.post(WEBHOOK, json={"content": contenu, "embeds": embeds},
+                          timeout=20)
+        if r.status_code == 429:
+            time.sleep(min(_f(r.json().get("retry_after")) + 1, 60))
+            requests.post(WEBHOOK, json={"content": contenu, "embeds": embeds},
+                          timeout=20)
+        print("  Discord : " + str(len(alerts)) + " carte(s) poussee(s).",
+              flush=True)
+    except Exception as e:                            # noqa: BLE001
+        print("  Discord KO (" + str(e) + ")", flush=True)
+    return len(alerts)
+
+
+def notify_steal(alerts):
+    return _notify_lot1(
+        alerts,
+        "🩸 **" + str(len(alerts)) + " floor(s) VeVe effondre(s)**",
+        carte_steal,
+        lambda a: "🩸 {:<32} {:>7.2f} $ (etait {:.2f}, −{} %)".format(
+            a["name"][:32], a["floor"], a["avant"], a["drop"]))
+
+
+def notify_spike(alerts):
+    return _notify_lot1(
+        alerts,
+        "📈 **" + str(len(alerts)) + " vente(s) au-dessus du floor**",
+        carte_spike,
+        lambda a: "📈 {:<32} vendu {:>8.2f} $ (floor {:.2f}, ×{})".format(
+            a["name"][:32], a["vente"], a["floor"], a["ratio"]))
+
+
 COULEURS = {"stackr": 0x3498DB,      # bleu   : sous le floor StackR
             "veve": 0x2ECC71,        # vert   : revendable plus cher sur VeVe
             "spread": 0xF1C40F}      # jaune  : ecart entre marches
@@ -1174,6 +1390,13 @@ def main() -> int:
     if not ARBITRAGE_ON:
         print("💤 alertes d'ecart de prix : DESACTIVEES "
               "(FLOOR_ARBITRAGE=true pour les rallumer).", flush=True)
+    print("🩸 vol sur le floor VeVe : "
+          + ("ON · seuil −" + str(STEAL_PCT) + " %" if STEAL_ON
+             else "OFF (VEVE_STEAL_ON=true pour l'allumer ; le floor courant "
+                  "est enregistre en attendant)"), flush=True)
+    print("📈 vente au-dessus du floor : "
+          + ("ON · ×" + str(SPIKE_RATIO) if SPIKE_ON
+             else "OFF (SALE_SPIKE_ON=true pour l'allumer)"), flush=True)
     s = requests.Session()
     veve: Dict[str, float] = {}
     dernier_refresh = 0.0
@@ -1188,12 +1411,29 @@ def main() -> int:
                 dernier_refresh = time.time()
                 print(f"  floors VeVe rafraichis : {len(veve)} elements.",
                       flush=True)
+                # 🩸 LE VOL SUR LE FLOOR VEVE — se juge d'un rafraichissement a
+                # l'autre. detect_veve_steal enregistre TOUJOURS le floor
+                # courant, meme canal eteint (reference prete pour le jour ou
+                # Preda l'allume).
+                stl = detect_veve_steal(state, veve, cat)
+                if stl:
+                    if budget(state) > 0:
+                        print(f"  🩸 {len(stl)} floor(s) VeVe effondre(s) !",
+                              flush=True)
+                        total += notify_steal(stl)
+                        consommer(state)
+                    else:
+                        for a in stl:
+                            state.get("alerts_steal", {}).pop(a["uuid"], None)
+                        print("  🔇 plafond atteint — vols floor VeVe gardes "
+                              "pour plus tard (rien n'est enterre).", flush=True)
             hist = fetch_history(s, SALES_PAGES, omi)
             n_h = merge_history(state, hist)
             print(f"  historique : {len(hist)} elements ont une vente reelle "
                   f"({n_h} nouveaux) — les autres sont juges illiquides.",
                   flush=True)
-        nv = note_sales(state, fetch_sales(s), omi)   # ventes REELLES
+        ventes = fetch_sales(s)                       # ventes REELLES (OMI)
+        nv = note_sales(state, ventes, omi)
         listings = fetch_listings(s)
         if not listings:
             print(f"  [{i}/{POLLS}] aucun listing recu — on reessaiera.",
@@ -1242,6 +1482,19 @@ def main() -> int:
                     rendre(state, c, comics=True)
                     print(f"  🔇 plafond atteint — {len(c)} comic(s) gardes pour "
                           f"plus tard (rien n'est enterre).", flush=True)
+            # 📈 LA VENTE AU-DESSUS DU FLOOR — sur le flux des ventes du tour.
+            sp = detect_sale_spike(state, ventes, veve, omi, cat)
+            if sp:
+                if budget(state) > 0:
+                    print(f"  [{i}/{POLLS}] 📈 {len(sp)} vente(s) tres au-dessus "
+                          f"du floor !", flush=True)
+                    total += notify_spike(sp)
+                    consommer(state)
+                else:
+                    for a in sp:
+                        state.get("alerts_spike", {}).pop(a["uuid"], None)
+                    print("  🔇 plafond atteint — ventes notables gardees pour "
+                          "plus tard (rien n'est enterre).", flush=True)
             save_state(state)
         if i < POLLS:
             time.sleep(INTERVAL_S)
@@ -1255,6 +1508,8 @@ def main() -> int:
 if __name__ == "__main__":
     sys.exit(main())
 
+# FIN floor_watch.py v21 — LOT 1 : 🩸 vol sur le floor VeVe + 📈 vente au-dessus
+# du floor (deux canaux single-marche, ETEINTS par defaut, calibres un a un).
 # FIN floor_watch.py v19 — chasse aux numeros · plancher VeVe a 1 $ ·
 # ecarts de prix eteints · plus d'avertissement
 # v18 — LES DEUX FLUX N'ONT PAS LA MEME UNITE :
