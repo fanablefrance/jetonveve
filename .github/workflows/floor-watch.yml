@@ -110,6 +110,12 @@ on:
         description: "🔥 Pic : multiple de la moyenne des jours actifs pour alerter (defaut 3 = ×3)"
         required: false
         default: ""
+      hprix_feed:
+        description: "🌉 Pont → 🟠H-PRIX : ecrire les floors collectibles qui changent dans data/hprix_feed.csv (preda l'ingere)"
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
       purger_ventes:
         description: "🧹 JETER l'historique des ventes (a faire UNE fois : il a ete collecte avec la mauvaise unite)"
         required: false
@@ -227,6 +233,13 @@ jobs:
           PIC_MIN_JOURS: ${{ vars.PIC_MIN_JOURS || '2' }}
           PIC_MIN_BASE: ${{ vars.PIC_MIN_BASE || '1' }}
           PIC_MAX: ${{ vars.PIC_MAX || '10' }}
+          # 🌉 LE PONT VEILLE → 🟠H-PRIX (collectibles). OFF par defaut : on ecrit
+          # dans data/hprix_feed.csv, preda l'ingere. Champ > variable > defaut.
+          # La reference des floors est tenue a jour meme OFF (rien a cracher au
+          # 1er allumage). Meme unite que H-PRIX (gems ~ $), zero conversion.
+          HPRIX_FEED_ON: ${{ github.event.inputs.hprix_feed || vars.HPRIX_FEED_ON || 'false' }}
+          HPRIX_FEED_DAYS: ${{ vars.HPRIX_FEED_DAYS || '7' }}
+          HPRIX_FEED_CAP: ${{ vars.HPRIX_FEED_CAP || '1000000000' }}
           # 🔇 LE SPAM EST STRUCTURELLEMENT IMPOSSIBLE : plafond de messages par
           # run ET par jour, tous signaux confondus. Au-dela, on se TAIT — et on
           # ne memorise rien, donc rien n'est perdu.
@@ -247,16 +260,22 @@ jobs:
         run: |
           [ -f data/floor_state.json ] || exit 0
           cp data/floor_state.json /tmp/mien.json
+          # 🌉 Le pont : data/hprix_feed.csv n'est ecrit QUE par ce workflow
+          # (runs serialises par la concurrency) -> on reprend NOTRE version
+          # complete (deja auto-trimmee) apres le reset, qui l'effacerait sinon.
+          [ -f data/hprix_feed.csv ] && cp data/hprix_feed.csv /tmp/hprix_feed.csv
           for i in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main                # on repart du depot
             git checkout origin/main -- data/floor_state.json 2>/dev/null || true
             python -m scraper.floor_state_merge /tmp/mien.json data/floor_state.json
+            [ -f /tmp/hprix_feed.csv ] && cp /tmp/hprix_feed.csv data/hprix_feed.csv
             git config user.name "github-actions"
             git config user.email "actions@github.com"
             git add data/floor_state.json
+            [ -f data/hprix_feed.csv ] && git add data/hprix_feed.csv
             git diff --cached --quiet && { echo "Rien a committer."; exit 0; }
-            git commit -m "floor_watch: etat (fusionne)"
+            git commit -m "floor_watch: etat (fusionne) + pont H-PRIX"
             git push origin main && exit 0
             echo "push rejete — on refusionne avec l'etat du depot."
             sleep $((i * 5))
