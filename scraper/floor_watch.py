@@ -212,6 +212,25 @@ ATL_MARGIN_PCT = float(os.environ.get("ATL_MARGIN_PCT", "25"))
 # Au-dela de ce plafond, l'ATH est juge INCONNU (ni signal, ni affichage).
 ATH_CAP = float(os.environ.get("ATH_CAP", "1000000000"))
 
+# ═══════════════════════════════════════════════════════════════════════════
+# 🌉 LE PONT VEILLE → 🟠H-PRIX (15/07)
+# ═══════════════════════════════════════════════════════════════════════════
+# On observe DEJA le floor VeVe de ~6 000 elements 1x/h (getElements). Au lieu
+# de le jeter, on l'ecrit dans un CSV que preda ingere dans 🟠H-PRIX (page
+# d'historique append-on-change). Plus frais (horaire) et plus large que le scan
+# quotidien de floors.py, ZERO requete en plus.
+# ⚠️ UNITE : getElements `floor_market_price` est en gems ~ $, EXACTEMENT la meme
+# que `market_lowestOffer` de 🟠H-PRIX (verifie 15/07 : Sea Queen = 5 000 000 des
+# deux cotes) -> AUCUNE conversion. Les trolls (>= HPRIX_FEED_CAP) sont ignores
+# comme partout ailleurs. COLLECTIBLES uniquement : les comics restent la
+# propriete de comic_prices.py (une seule source par champ).
+# On n'emet qu'un VRAI changement (vs la derniere valeur emise, `hprix_emitted`).
+# OFF par defaut : on l'allume une fois le pont verifie de bout en bout.
+HPRIX_FEED_ON = os.environ.get("HPRIX_FEED_ON", "false").lower() == "true"
+HPRIX_FEED_PATH = os.environ.get("HPRIX_FEED", "data/hprix_feed.csv")
+HPRIX_FEED_DAYS = int(os.environ.get("HPRIX_FEED_DAYS", "7"))
+HPRIX_FEED_CAP = float(os.environ.get("HPRIX_FEED_CAP", str(ATH_CAP)))
+
 # 🔥 LOT 3 (15/07) — PIC D'ACTIVITE HORS DROP → canal dedie (WEBHOOK_ATH). Un
 # item DEJA installe dont les VENTES du jour explosent vs sa moyenne des jours
 # actifs precedents (source : le flux getVeveTransactions, deja pagine par
@@ -788,6 +807,82 @@ def fetch_veve_floors(session=None) -> Dict[str, float]:
         page += 1
         time.sleep(PAUSE)
     return out
+
+
+# ---------------------------------------------------------------------------
+# 🌉 Le pont veille → 🟠H-PRIX
+# ---------------------------------------------------------------------------
+
+def _num_feed(v: float):
+    """Un entier reste un entier, sinon un flottant a 4 decimales : le CSV est
+    relu par du Python cote preda (point decimal), pas par le Sheet FR."""
+    f = round(_f(v), 4)
+    return int(f) if f == int(f) else f
+
+
+def _ecrire_hprix_feed(lignes: List[list]) -> None:
+    """Append-on-change vers data/hprix_feed.csv, puis auto-trim a
+    HPRIX_FEED_DAYS. On reecrit tout le fichier (trie chronologiquement) : le
+    fichier reste petit (quelques jours de changements) et le commit n'a qu'a
+    reprendre CETTE version complete (cf. step commit du workflow)."""
+    import csv as _csv
+    entete = ["uuid", "name", "categorie", "floor_usd", "ts"]
+    lues: List[list] = []
+    try:
+        with open(HPRIX_FEED_PATH, encoding="utf-8", newline="") as f:
+            r = _csv.reader(f)
+            head = next(r, None)
+            for row in r:
+                if len(row) >= 5:
+                    lues.append(row[:5])
+    except FileNotFoundError:
+        pass
+    lues.extend(lignes)
+    cutoff = time.strftime(
+        "%Y-%m-%d %H:%M:%S",
+        time.gmtime(time.time() - HPRIX_FEED_DAYS * 86400))
+    lues = [row for row in lues if row[4] >= cutoff]
+    os.makedirs(os.path.dirname(HPRIX_FEED_PATH) or ".", exist_ok=True)
+    with open(HPRIX_FEED_PATH, "w", encoding="utf-8", newline="") as f:
+        w = _csv.writer(f)
+        w.writerow(entete)
+        w.writerows(lues)
+
+
+def emit_hprix_feed(state: Dict, veve: Dict[str, float],
+                    cat: Dict[str, Dict] = None, ts: float = None) -> int:
+    """Le PONT : quand le floor VeVe d'un COLLECTIBLE change vs la derniere
+    valeur emise, on append une ligne au feed. preda l'ingere dans 🟠H-PRIX.
+
+    ⚠️ MEME unite que H-PRIX (gems ~ $) -> aucune conversion. Trolls ignores.
+    COMICS EXCLUS (comic_prices.py en reste proprietaire). On enregistre la
+    reference (`hprix_emitted`) MEME quand le pont est OFF, pour ne pas cracher
+    tout l'univers au 1er allumage — meme discipline que `vfloors`."""
+    ts = ts if ts is not None else time.time()
+    stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(ts))
+    emis = state.setdefault("hprix_emitted", {})     # {uuid: [floor$, ts]}
+    cat = cat or {}
+    lignes: List[list] = []
+    for uid, vf_ in (veve or {}).items():
+        vf = _num_feed(vf_)
+        if vf <= 0 or vf >= HPRIX_FEED_CAP:          # vide ou troll : on saute
+            continue
+        c = cat.get(uid) or {}
+        # Sans fiche catalogue on ne connait pas la categorie : par prudence on
+        # ne prend QUE ce qu'on sait etre un collectible (les comics = ailleurs).
+        if c.get("categorie") != "collectible":
+            continue
+        anc = emis.get(uid)
+        prev = _f(anc[0]) if isinstance(anc, list) and anc else None
+        if prev is not None and prev == float(vf):   # aucun changement
+            continue
+        emis[uid] = [vf, ts]                          # reference systematique
+        if not HPRIX_FEED_ON:
+            continue                                  # OFF : on note, on n'ecrit pas
+        lignes.append([uid, c.get("name") or uid[:8], "collectible", vf, stamp])
+    if lignes:
+        _ecrire_hprix_feed(lignes)
+    return len(lignes)
 
 
 # ---------------------------------------------------------------------------
@@ -1682,6 +1777,12 @@ def main() -> int:
              + " ventes/j) → canal dedie" if PIC_ON
              else "OFF (PIC_ON=true pour l'allumer ; calibre en SIMULER)"),
           flush=True)
+    print("🌉 pont veille→🟠H-PRIX : "
+          + ("ON → " + HPRIX_FEED_PATH + " (collectibles ; preda l'ingere)"
+             if HPRIX_FEED_ON
+             else "OFF (HPRIX_FEED_ON=true ; la reference des floors est tenue "
+                  "a jour en attendant)"),
+          flush=True)
     s = requests.Session()
     veve: Dict[str, float] = {}
     dernier_refresh = 0.0
@@ -1696,6 +1797,13 @@ def main() -> int:
                 dernier_refresh = time.time()
                 print(f"  floors VeVe rafraichis : {len(veve)} elements.",
                       flush=True)
+                # 🌉 LE PONT → 🟠H-PRIX : on ecrit les floors collectibles qui ont
+                # CHANGE dans data/hprix_feed.csv (preda l'ingere). Reference
+                # tenue a jour meme quand le pont est OFF.
+                nf = emit_hprix_feed(state, veve, cat)
+                if HPRIX_FEED_ON:
+                    print(f"  🌉 pont H-PRIX : {nf} floor(s) collectible(s) "
+                          f"change(s) → {HPRIX_FEED_PATH}.", flush=True)
                 # 🩸 LE VOL SUR LE FLOOR VEVE — se juge d'un rafraichissement a
                 # l'autre. detect_veve_steal enregistre TOUJOURS le floor
                 # courant, meme canal eteint (reference prete pour le jour ou
