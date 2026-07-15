@@ -212,6 +212,19 @@ ATL_MARGIN_PCT = float(os.environ.get("ATL_MARGIN_PCT", "25"))
 # Au-dela de ce plafond, l'ATH est juge INCONNU (ni signal, ni affichage).
 ATH_CAP = float(os.environ.get("ATH_CAP", "1000000000"))
 
+# 🔥 LOT 3 (15/07) — PIC D'ACTIVITE HORS DROP → canal dedie (WEBHOOK_ATH). Un
+# item DEJA installe dont les VENTES du jour explosent vs sa moyenne des jours
+# actifs precedents (source : le flux getVeveTransactions, deja pagine par
+# fetch_history — zero requete en plus). Le « hors drop » est GRATUIT : un item
+# qui vient de dropper n'a pas d'historique -> baseline vide -> ecarte tout seul.
+# OFF par defaut (on calibre le seuil avant d'allumer, comme les autres canaux).
+PIC_ON = os.environ.get("PIC_ON", "false").lower() == "true"
+PIC_RATIO = float(os.environ.get("PIC_RATIO", "3"))         # x la moyenne/jour actif
+PIC_MIN_COUNT = int(os.environ.get("PIC_MIN_COUNT", "4"))   # plancher absolu de ventes du jour
+PIC_MIN_JOURS = int(os.environ.get("PIC_MIN_JOURS", "2"))   # jours actifs prealables requis
+PIC_MIN_BASE = float(os.environ.get("PIC_MIN_BASE", "1"))   # ventes/jour min. AVANT le pic
+PIC_MAX = int(os.environ.get("PIC_MAX", "10"))
+
 # ═══════════════════════════════════════════════════════════════════════════
 # 🎯 SIGNAL 5 — LA CHASSE AUX NUMEROS
 # ═══════════════════════════════════════════════════════════════════════════
@@ -689,6 +702,11 @@ def fetch_history(session=None, pages: int = SALES_PAGES,
     `omi` reste dans la signature pour ne rien casser, mais N'EST PLUS UTILISE.
     LEÇON : une unite ne se suppose pas. Deux sources, deux unites — toujours."""
     out: Dict[str, list] = {}
+    # vol[uid][jour] = NB de ventes completes ce jour-la (pour le pic d'activite).
+    # C'est du NOMBRE, pas du prix — et le meme flux le donne sans une requete
+    # de plus. On compte donc CHAQUE vente, avant le filtre `uid in out` qui, lui,
+    # ne retient que la 1re occurrence (la plus recente) pour le prix de revente.
+    vol: Dict[str, Dict[str, int]] = {}
     s = session or requests.Session()
     for page in range(1, pages + 1):
         payload = {"limit": 100}
@@ -705,11 +723,17 @@ def fetch_history(session=None, pages: int = SALES_PAGES,
                 continue
             uid = str(it.get("element_id") or "")
             pr = _f(it.get("price"))          # DEJA en dollars
-            if not uid or pr <= 0 or uid in out:
+            if not uid or pr <= 0:
+                continue
+            jour = str(it.get("created_at") or "")[:10]
+            if jour:
+                vol.setdefault(uid, {})
+                vol[uid][jour] = vol[uid].get(jour, 0) + 1
+            if uid in out:
                 continue                  # 1re occurrence = la plus RECENTE
-            out[uid] = [round(pr, 2), str(it.get("created_at") or "")[:10]]
+            out[uid] = [round(pr, 2), jour]
         time.sleep(PAUSE)
-    return out
+    return out, vol
 
 
 def merge_history(state: Dict, hist: Dict[str, list]) -> int:
@@ -1417,6 +1441,82 @@ def notify_atl(alerts):
             a["name"][:32], a["floor"], a["atl"]))
 
 
+def detect_pic(state, vol, cat=None, ts=None):
+    """🔥 Un item DEJA installe dont les VENTES DU JOUR explosent vs sa moyenne
+    des jours actifs precedents. Source : `vol[uid][jour]` = nb de ventes
+    completes ce jour-la (rempli par fetch_history, zero requete de plus).
+
+    « HORS DROP » EST GRATUIT : un item qui vient de dropper n'a pas de jours
+    actifs anterieurs -> baseline vide -> ecarte de lui-meme. Pas besoin de
+    connaitre le calendrier des drops.
+
+    Un pic = aujourd'hui >= PIC_RATIO x la moyenne des jours actifs precedents,
+    ET >= PIC_MIN_COUNT ventes (plancher absolu : ×3 sur 1 -> 3 n'est pas un
+    evenement), ET une baseline >= PIC_MIN_BASE sur >= PIC_MIN_JOURS jours (sans
+    quoi le ratio n'a aucun sens)."""
+    ts = ts if ts is not None else time.time()
+    alerts = state.setdefault("alerts_pic", {})
+    cat = cat or {}
+    if not PIC_ON or not vol:
+        return []
+    # « Aujourd'hui » = le jour le PLUS RECENT vu dans TOUT le flux (on ne
+    # suppose pas que le flux soit trie : on prend le max).
+    tous = [j for m in vol.values() for j in m]
+    if not tous:
+        return []
+    aujourd = max(tous)
+    out = []
+    for uid, jours in vol.items():
+        today = jours.get(aujourd, 0)
+        if today < PIC_MIN_COUNT:
+            continue
+        avant = [n for j, n in jours.items() if j < aujourd]
+        if len(avant) < PIC_MIN_JOURS:
+            continue                       # pas d'historique -> hors drop, ecarte
+        base = sum(avant) / len(avant)
+        if base < PIC_MIN_BASE or today < base * PIC_RATIO:
+            continue
+        if ts - alerts.get(uid, 0) < COOLDOWN_H * 3600:
+            continue
+        alerts[uid] = ts
+        c = cat.get(uid) or {}
+        nom = c.get("name") or (state.get("sfloors", {}).get(uid)
+                                or [None, uid[:8]])[1]
+        out.append({"uuid": uid, "name": nom,
+                    "categorie": c.get("categorie", ""),
+                    "today": today, "base": round(base, 1),
+                    "ratio": round(today / base, 1) if base else 0,
+                    "jours": len(avant)})
+    if len(out) > PIC_MAX:
+        for a in out:
+            alerts.pop(a["uuid"], None)
+        print("  ⛔ " + str(len(out)) + " pics d'un coup — anormal. RIEN "
+              "publie ni memorise.", file=sys.stderr)
+        return []
+    out.sort(key=lambda a: -a["ratio"])
+    return out
+
+
+def carte_pic(a):
+    lien = lien_marche(a["uuid"], a.get("categorie", ""))
+    lignes = ["**{}** ventes aujourd'hui — moyenne **{}**/j sur {} jour(s) "
+              "actif(s)  (**×{}**)".format(
+                  a["today"], a["base"], a["jours"], a["ratio"]),
+              "[Voir sur VeVe](" + lien + ")"]
+    return {"title": ("🔥 " + a["name"])[:250], "color": 0xE67E22,
+            "description": "\n".join(lignes), "url": lien}
+
+
+def notify_pic(alerts):
+    return _notify_lot1(
+        alerts,
+        "🔥 **" + str(len(alerts)) + " pic(s) d'activite hors drop**",
+        carte_pic,
+        lambda a: "🔥 {:<32} {:>3} ventes (moy {}/j, ×{})".format(
+            a["name"][:32], a["today"], a["base"], a["ratio"]),
+        webhook=WEBHOOK_ATH)
+
+
 COULEURS = {"stackr": 0x3498DB,      # bleu   : sous le floor StackR
             "veve": 0x2ECC71,        # vert   : revendable plus cher sur VeVe
             "spread": 0xF1C40F}      # jaune  : ecart entre marches
@@ -1577,6 +1677,11 @@ def main() -> int:
     print("📉 plus-bas historique : "
           + ("ON (canal principal)" if ATL_ON else "OFF (ATL_ON=true)"),
           flush=True)
+    print("🔥 pic d'activite hors drop : "
+          + ("ON · ×" + str(PIC_RATIO) + " (min " + str(PIC_MIN_COUNT)
+             + " ventes/j) → canal dedie" if PIC_ON
+             else "OFF (PIC_ON=true pour l'allumer ; calibre en SIMULER)"),
+          flush=True)
     s = requests.Session()
     veve: Dict[str, float] = {}
     dernier_refresh = 0.0
@@ -1624,11 +1729,27 @@ def main() -> int:
                             state.get(_chan, {}).pop(_a["uuid"], None)
                         print(f"  🔇 plafond atteint — {_lib} gardes pour "
                               f"plus tard.", flush=True)
-            hist = fetch_history(s, SALES_PAGES, omi)
+            hist, vol = fetch_history(s, SALES_PAGES, omi)
             n_h = merge_history(state, hist)
             print(f"  historique : {len(hist)} elements ont une vente reelle "
                   f"({n_h} nouveaux) — les autres sont juges illiquides.",
                   flush=True)
+            # 🔥 PIC D'ACTIVITE HORS DROP (canal dedie) — les ventes DU JOUR d'un
+            # item deja installe explosent vs sa moyenne. Baseline = `vol` (meme
+            # flux, zero requete de plus). Un drop frais n'a pas de baseline ->
+            # ecarte tout seul (« hors drop » gratuit).
+            pics = detect_pic(state, vol, cat)
+            if pics:
+                if budget(state, WEBHOOK_ATH) > 0:
+                    print(f"  🔥 {len(pics)} pic(s) d'activite hors drop !",
+                          flush=True)
+                    total += notify_pic(pics)
+                    consommer(state, WEBHOOK_ATH)
+                else:
+                    for a in pics:
+                        state.get("alerts_pic", {}).pop(a["uuid"], None)
+                    print("  🔇 plafond atteint — pics d'activite gardes pour "
+                          "plus tard (rien n'est enterre).", flush=True)
         ventes = fetch_sales(s)                       # ventes REELLES (OMI)
         nv = note_sales(state, ventes, omi)
         listings = fetch_listings(s)
