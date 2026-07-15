@@ -1,0 +1,264 @@
+name: Alertes sous-floor
+
+# v13 : le module DIT pourquoi il se tait.
+#
+# Deux jours sans une seule alerte, et aucun moyen de savoir QUI serrait trop :
+# la marge ? le benefice minimum ? l'ecart entre marches ? la preuve de vente ?
+# Desserrer au hasard, c'est deviner — et si deux verrous cedent en meme temps,
+# on ne saura toujours pas lequel bloquait. Le JOURNAL DES RECALES compte chaque
+# candidat ecarte, par motif, et garde ceux qui ont manque de peu AVEC LEURS
+# CHIFFRES. Un run, et on sait quel cran tourner, et de combien.
+#
+# TOUS LES SEUILS SONT DESORMAIS PILOTABLES SANS TOUCHER AU CODE (repo variables
+# ou champs de lancement). Et `simuler = oui` calcule tout SANS RIEN ENVOYER :
+# on ne regle pas un seuil en public, sur le Discord de la commu.
+
+on:
+  schedule:
+    - cron: "3 * * * *"
+  workflow_dispatch:
+    inputs:
+      simuler:
+        description: "Tourner a blanc : tout calculer, N'ENVOYER RIEN (pour regler les seuils)"
+        required: false
+        default: "non"
+        type: choice
+        options: ["non", "oui"]
+      polls:
+        description: "Nombre de tours (2 min chacun)"
+        required: false
+        default: "25"
+      margin_pct:
+        description: "Marge nette minimale, en % (defaut 20)"
+        required: false
+        default: ""
+      min_profit:
+        description: "Benefice minimal, en $ (defaut 5)"
+        required: false
+        default: ""
+      spread_pct:
+        description: "Ecart minimal entre marches, en % (defaut 40)"
+        required: false
+        default: ""
+      drop_pct:
+        description: "Decote minimale sous le floor StackR, en % (defaut 10)"
+        required: false
+        default: ""
+      sales_pages:
+        description: "Pages d'historique de ventes (defaut 120 = ~7 j). L'elargir donne plus de PREUVES."
+        required: false
+        default: ""
+      comic_max_usd:
+        description: "📚 Comics : prix maximal pour alerter, en $ (defaut 2)"
+        required: false
+        default: ""
+      mint_marge:
+        description: "🎯 Numéros : écart max au floor pour dire « le vendeur ne l'a pas vu » (défaut 20 %)"
+        required: false
+        default: ""
+      mint_score:
+        description: "🎯 Numéros : score minimal (défaut 2 — 6 = seulement le #1 et la 1re édition publique)"
+        required: false
+        default: ""
+      comic_max_listings:
+        description: "📚 Comics : nb max d'offres en vente (defaut 3 — au-dela c'est le prix du marche)"
+        required: false
+        default: ""
+      comic_supply:
+        description: "📚 Comics : tirage maximal suivi (defaut 1000)"
+        required: false
+        default: ""
+      veve_steal:
+        description: "🩸 Vol sur le floor VeVe : allumer ce canal (chute du floor VeVe vs sa valeur recente)"
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
+      steal_pct:
+        description: "🩸 Chute minimale du floor VeVe pour alerter, en % (defaut 25)"
+        required: false
+        default: ""
+      sale_spike:
+        description: "📈 Vente au-dessus du floor : allumer ce canal (une vente reelle bien au-dessus du floor)"
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
+      spike_ratio:
+        description: "📈 Multiple du floor a partir duquel une vente est notable (defaut 3 = ×3)"
+        required: false
+        default: ""
+      ath_on:
+        description: "🆕 Nouveau ATH : allumer ce canal (floor qui bat son plus-haut historique) → canal dedie"
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
+      atl_on:
+        description: "📉 Plus-bas historique : allumer ce canal (floor au plus bas jamais vu) → canal principal"
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
+      pic_on:
+        description: "🔥 Pic d'activité hors drop : allumer ce canal (ventes du jour d'un item qui explosent vs sa moyenne) → canal dedie"
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
+      pic_ratio:
+        description: "🔥 Pic : multiple de la moyenne des jours actifs pour alerter (defaut 3 = ×3)"
+        required: false
+        default: ""
+      purger_ventes:
+        description: "🧹 JETER l'historique des ventes (a faire UNE fois : il a ete collecte avec la mauvaise unite)"
+        required: false
+        default: "non"
+        type: choice
+        options: ["non", "oui"]
+      require_sale:
+        description: "Exiger une vente reelle avant d'alerter (garde-fou : 71 % des items ne se vendent JAMAIS)"
+        required: false
+        default: "true"
+        type: choice
+        options: ["true", "false"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: floor-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+
+      # 📚 Le catalogue vit dans le Sheet, donc chez preda (PRIVE) : tirage,
+      # 1re edition publique, nombre d'offres, note de classement. Rien de tout
+      # cela n'existe cote StackR. On va chercher le seul fichier dont on a
+      # besoin, en lecture seule. Si ce checkout echoue, les signaux comics et
+      # numeros s'eteignent tout seuls — le reste continue.
+      - name: "Catalogue (CSV exporte par preda : tirage, 1re edition publique, offres, note)"
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: VeVePreda/scrapeur-veve
+          token: ${{ secrets.PREDA_TOKEN }}
+          path: _preda
+          sparse-checkout: data/elements.csv
+          sparse-checkout-cone-mode: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+
+      - name: Veille des listings
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          # Canal dedie (🆕 ATH + 📈 x3 + pic). Absent -> repli sur le principal.
+          DISCORD_WEBHOOK_ATH: ${{ secrets.DISCORD_WEBHOOK_ATH }}
+          FLOOR_SIMULER: ${{ github.event.inputs.simuler == 'oui' && '1' || '' }}
+          FLOOR_POLLS: ${{ github.event.inputs.polls || '25' }}
+          FLOOR_INTERVAL_S: "120"
+          # Un reglage vaut pour TOUS les runs suivants (repo variable), un champ
+          # de lancement ne vaut que pour CE run. L'ordre : champ > variable > defaut.
+          FLOOR_MARGIN_PCT: ${{ github.event.inputs.margin_pct || vars.FLOOR_MARGIN_PCT || '20' }}
+          FLOOR_MIN_PROFIT: ${{ github.event.inputs.min_profit || vars.FLOOR_MIN_PROFIT || '5' }}
+          FLOOR_SPREAD_PCT: ${{ github.event.inputs.spread_pct || vars.FLOOR_SPREAD_PCT || '40' }}
+          FLOOR_DROP_PCT: ${{ github.event.inputs.drop_pct || vars.FLOOR_DROP_PCT || '10' }}
+          FLOOR_VEVE_PCT: ${{ vars.FLOOR_VEVE_PCT || '35' }}
+          FLOOR_SALES_PAGES: ${{ github.event.inputs.sales_pages || vars.FLOOR_SALES_PAGES || '120' }}
+          FLOOR_PURGER_VENTES: ${{ github.event.inputs.purger_ventes == 'oui' && '1' || '' }}
+          FLOOR_REQUIRE_SALE: ${{ github.event.inputs.require_sale || vars.FLOOR_REQUIRE_SALE || 'true' }}
+          # 📚 Signal 4 : le comic a petit tirage brade (ni preuve de vente, ni
+          # promesse de revente : un PRIX D'ENTREE absurde au regard de la rarete)
+          ELEMENTS_CSV: _preda/data/elements.csv
+          DATES_CSV: data/dates_cles.csv
+          # 💤 Les ecarts de prix sont ETEINTS (demande de Preda). Le code reste :
+          # mettre FLOOR_ARBITRAGE=true (variable de depot) le rallume.
+          FLOOR_ARBITRAGE: ${{ vars.FLOOR_ARBITRAGE || 'false' }}
+          FLOOR_SPREAD: ${{ vars.FLOOR_SPREAD || 'false' }}
+          # ⚠️ On ne peut pas lister sous 1 $ sur VeVe : un floor a 1,00 $ est le
+          # PLANCHER de la plateforme, pas une aubaine.
+          VEVE_PRIX_PLANCHER: ${{ vars.VEVE_PRIX_PLANCHER || '1' }}
+          # 🎯 La chasse aux numeros
+          MINT_ON: ${{ vars.MINT_ON || 'true' }}
+          MINT_MARGE_PCT: ${{ github.event.inputs.mint_marge || vars.MINT_MARGE_PCT || '20' }}
+          MINT_SCORE_MIN: ${{ github.event.inputs.mint_score || vars.MINT_SCORE_MIN || '2' }}
+          MINT_MAX_ALERTES: ${{ vars.MINT_MAX_ALERTES || '25' }}
+          COMIC_SUPPLY_MAX: ${{ github.event.inputs.comic_supply || vars.COMIC_SUPPLY_MAX || '1000' }}
+          COMIC_MAX_USD: ${{ github.event.inputs.comic_max_usd || vars.COMIC_MAX_USD || '2' }}
+          COMIC_MAX_ALERTES: ${{ vars.COMIC_MAX_ALERTES || '25' }}
+          # « 8 offres a 1,75 $, ce n'est pas une affaire » : au-dela de ce
+          # nombre d'offres au meme prix, c'est le prix du MARCHE, pas une aubaine.
+          COMIC_MAX_LISTINGS: ${{ github.event.inputs.comic_max_listings || vars.COMIC_MAX_LISTINGS || '3' }}
+          # 🩸📈 LOT 1 (15/07) — deux canaux single-marche, ETEINTS par defaut.
+          # On les allume et on les calibre UN A LA FOIS (simuler d'abord).
+          VEVE_STEAL_ON: ${{ github.event.inputs.veve_steal || vars.VEVE_STEAL_ON || 'false' }}
+          VEVE_STEAL_PCT: ${{ github.event.inputs.steal_pct || vars.VEVE_STEAL_PCT || '25' }}
+          VEVE_STEAL_MIN_USD: ${{ vars.VEVE_STEAL_MIN_USD || '1' }}
+          VEVE_STEAL_MAX: ${{ vars.VEVE_STEAL_MAX || '10' }}
+          SALE_SPIKE_ON: ${{ github.event.inputs.sale_spike || vars.SALE_SPIKE_ON || 'false' }}
+          SALE_SPIKE_RATIO: ${{ github.event.inputs.spike_ratio || vars.SALE_SPIKE_RATIO || '3' }}
+          SALE_SPIKE_MIN_USD: ${{ vars.SALE_SPIKE_MIN_USD || '5' }}
+          SALE_SPIKE_MAX: ${{ vars.SALE_SPIKE_MAX || '10' }}
+          # 🆕 ATH (canal dedie) · 📉 plus-bas (canal principal). ETEINTS par defaut.
+          ATH_ON: ${{ github.event.inputs.ath_on || vars.ATH_ON || 'false' }}
+          ATL_ON: ${{ github.event.inputs.atl_on || vars.ATL_ON || 'false' }}
+          ATH_MAX: ${{ vars.ATH_MAX || '10' }}
+          ATL_MAX: ${{ vars.ATL_MAX || '10' }}
+          # 📉 n'alerte que si le floor est au moins X % SOUS l'ATL (defaut 25).
+          ATL_MARGIN_PCT: ${{ vars.ATL_MARGIN_PCT || '25' }}
+          # 🆕 n'alerte que si le floor depasse l'ATH d'au moins X % (defaut 25).
+          ATH_MARGIN_PCT: ${{ vars.ATH_MARGIN_PCT || '25' }}
+          # 🔥 PIC D'ACTIVITE HORS DROP (canal dedie WEBHOOK_ATH). ETEINT par
+          # defaut : on calibre en simuler avant d'allumer, comme les autres. La
+          # baseline vient des ~7 j de ventes deja charges (zero requete en plus) ;
+          # un item qui vient de dropper n'a pas d'historique -> ecarte tout seul.
+          PIC_ON: ${{ github.event.inputs.pic_on || vars.PIC_ON || 'false' }}
+          PIC_RATIO: ${{ github.event.inputs.pic_ratio || vars.PIC_RATIO || '3' }}
+          PIC_MIN_COUNT: ${{ vars.PIC_MIN_COUNT || '4' }}
+          PIC_MIN_JOURS: ${{ vars.PIC_MIN_JOURS || '2' }}
+          PIC_MIN_BASE: ${{ vars.PIC_MIN_BASE || '1' }}
+          PIC_MAX: ${{ vars.PIC_MAX || '10' }}
+          # 🔇 LE SPAM EST STRUCTURELLEMENT IMPOSSIBLE : plafond de messages par
+          # run ET par jour, tous signaux confondus. Au-dela, on se TAIT — et on
+          # ne memorise rien, donc rien n'est perdu.
+          # Plafond anti-ban : 20 messages/min PAR webhook (fenetre glissante).
+          FLOOR_MAX_MSG_MIN: ${{ vars.FLOOR_MAX_MSG_MIN || '20' }}
+          FLOOR_PAUSE_MSG_S: "3"
+        run: python -m scraper.floor_watch
+
+      # ⚠️ LA RECOLTE EST SACREE — y compris contre git.
+      # Le 14/07, un `git pull --rebase` a bute sur data/floor_state.json
+      # (« CONFLICT ») et l'etat du run n'a JAMAIS ete pousse : ventes
+      # decouvertes, floors memorises, budget de messages — tout perdu.
+      # On ne rebase donc plus cet etat : on le FUSIONNE. Les deux versions sont
+      # vraies (chaque run a vu ce que l'autre n'a pas vu) ; ecraser reviendrait
+      # a jeter la moitie de la recolte.
+      - name: Commit de l'etat (fusion, jamais d'ecrasement)
+        if: always()
+        run: |
+          [ -f data/floor_state.json ] || exit 0
+          cp data/floor_state.json /tmp/mien.json
+          for i in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main                # on repart du depot
+            git checkout origin/main -- data/floor_state.json 2>/dev/null || true
+            python -m scraper.floor_state_merge /tmp/mien.json data/floor_state.json
+            git config user.name "github-actions"
+            git config user.email "actions@github.com"
+            git add data/floor_state.json
+            git diff --cached --quiet && { echo "Rien a committer."; exit 0; }
+            git commit -m "floor_watch: etat (fusionne)"
+            git push origin main && exit 0
+            echo "push rejete — on refusionne avec l'etat du depot."
+            sleep $((i * 5))
+          done
+          echo "⛔ etat NON pousse apres 5 essais." >&2
