@@ -598,34 +598,49 @@ def write_sheet(daily, split=None) -> str:
     sheet_id = _clean_env("SHEET_ID")
     if not raw or not sheet_id:
         return "secrets absents — CSV seul (normal en rodage)."
-    try:
-        import gspread
-        from google.oauth2.service_account import Credentials
-        creds = Credentials.from_service_account_info(
-            json.loads(raw),
-            scopes=["https://www.googleapis.com/auth/spreadsheets"])
-        sh = gspread.authorize(creds).open_by_key(sheet_id)
+    # ⚠️ 15/07 : cette ecriture echouait EN SILENCE depuis ~2 jours — 🔥H-BURNS
+    # fige au 07-12 (partiel) alors que le CSV avancait jusqu'au 07-14. Cause :
+    # un simple `return "echec (...)"` noye dans le log, aucun cri, la SANTE
+    # seule voyait la stagnation. Desormais : 3 essais + backoff, et si ca casse
+    # encore on CRIE sur stderr (greppable). La recolte CSV reste la preuve ;
+    # le Sheet, lui, ne doit plus mentir en douce.
+    derniere = ""
+    for essai in range(1, 4):
         try:
-            ws = sh.worksheet(BURNS_TAB)
-        except gspread.WorksheetNotFound:
-            ws = sh.add_worksheet(title=BURNS_TAB, rows=1000,
-                                  cols=len(SHEET_HEADER))
-        grid = build_sheet_grid(daily, split)
-        ws.clear()
-        ws.update(range_name="A1", values=grid, value_input_option="RAW")
-        try:
-            ws.freeze(rows=1)
-            ws.format("1:1", {"textFormat": {"bold": True}})
-            ws.format(f"D2:E{len(grid)}",
-                      {"numberFormat": {"type": "NUMBER", "pattern": "#,##0"}})
-            ws.format(f"F2:J{len(grid)}",
-                      {"numberFormat": {"type": "NUMBER", "pattern": "#,##0"}})
-        except Exception:
-            pass
-        return f"{BURNS_TAB} mis a jour ({len(grid) - 1} lignes)."
-    except Exception as e:
-        diag = f"len(json)={len(raw)}, 1er car={raw[:1]!r}" if raw else "json vide"
-        return f"echec ({e}) [{diag}] — le CSV fait foi."
+            import gspread
+            from google.oauth2.service_account import Credentials
+            creds = Credentials.from_service_account_info(
+                json.loads(raw),
+                scopes=["https://www.googleapis.com/auth/spreadsheets"])
+            sh = gspread.authorize(creds).open_by_key(sheet_id)
+            try:
+                ws = sh.worksheet(BURNS_TAB)
+            except gspread.WorksheetNotFound:
+                ws = sh.add_worksheet(title=BURNS_TAB, rows=1000,
+                                      cols=len(SHEET_HEADER))
+            grid = build_sheet_grid(daily, split)
+            ws.clear()
+            ws.update(range_name="A1", values=grid, value_input_option="RAW")
+            try:
+                ws.freeze(rows=1)
+                ws.format("1:1", {"textFormat": {"bold": True}})
+                ws.format(f"D2:E{len(grid)}",
+                          {"numberFormat": {"type": "NUMBER", "pattern": "#,##0"}})
+                ws.format(f"F2:J{len(grid)}",
+                          {"numberFormat": {"type": "NUMBER", "pattern": "#,##0"}})
+            except Exception:
+                pass
+            return f"{BURNS_TAB} mis a jour ({len(grid) - 1} lignes)."
+        except Exception as e:
+            derniere = str(e)
+            print(f"   write_sheet essai {essai}/3 echoue : {e}", flush=True)
+            time.sleep(essai * 5)
+    diag = f"len(json)={len(raw)}, 1er car={raw[:1]!r}" if raw else "json vide"
+    dernier = max((d for (d, _s) in daily), default="?") if daily else "?"
+    print(f"⚠️⚠️ 🔥H-BURNS NON MIS A JOUR apres 3 essais ({derniere}) [{diag}] — "
+          f"le Sheet reste FIGE ; le CSV (jusqu'a {dernier}) fait foi. "
+          f"🩺 SANTE le signalera.", file=sys.stderr, flush=True)
+    return f"ECHEC ({derniere}) [{diag}] — 🔥H-BURNS FIGE, voir stderr."
 
 
 def main() -> int:
