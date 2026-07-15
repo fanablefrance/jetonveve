@@ -300,7 +300,17 @@ def comics_petit_tirage(cat: Dict[str, Dict]) -> Dict[str, Dict]:
 def detect_comics(state: Dict, comics: Dict[str, Dict],
                   veve: Dict[str, float], listings: List[Dict], omi: float,
                   ts: float = None) -> List[Dict]:
-    """Un comic a petit tirage sous COMIC_MAX_USD, des DEUX cotes du marche."""
+    """Un comic a petit tirage sous COMIC_MAX_USD, sur le flux des NOUVELLES
+    MISES EN VENTE StackR — et RIEN d'autre.
+
+    ⚠️ Preda (15/07) : « une bonne affaire ne tient pas plus de quelques
+    minutes ». On ne balaie donc PLUS l'existant — ni le floor VeVe de tous les
+    items (getElements, rafraichi 1x/h : jamais « recent »), ni les offres
+    StackR deja memorisees (`sfloors`). Seulement ce qui vient d'etre liste,
+    comme la chasse aux numeros. Le floor VeVe ne sert plus qu'a AFFICHER une
+    reference sur la carte, jamais a declencher.
+    NB : sans cookie, le marche VeVe n'expose aucun flux de nouveaux listings —
+    ce signal ne vit donc que sur StackR."""
     ts = ts if ts is not None else time.time()
     if not comics:
         return []
@@ -326,28 +336,14 @@ def detect_comics(state: Dict, comics: Dict[str, Dict],
                        "note": c.get("note") or "",
                        "veve_floor": veve.get(uid, 0.0)}
 
-    # 1. VEVE — le floor du marche VeVe (gems ~ $), rafraichi 1x/h.
-    # ⚠️ ON NE PEUT PAS LISTER SOUS 1 $ SUR VEVE : un floor a 1,00 $ n'est pas
-    # une aubaine, c'est le PLANCHER de la plateforme. Le signaler reviendrait a
-    # signaler « le minimum autorise ».
-    for uid, vf in (veve or {}).items():
-        if uid in comics and PLANCHER_VEVE < vf < COMIC_MAX_USD:
-            _garder(uid, vf, "VeVe")
-
-    # 2. STACKR — les listings du flux (prix en OMI)
+    # SEULE SOURCE : les NOUVELLES mises en vente StackR (prix en OMI), fraiches
+    # a la minute (flux interroge toutes les 2 min). Aucun balayage de
+    # l'existant : une affaire ne survit pas assez longtemps pour ca.
     for it in listings or []:
         uid = str(it.get("element_id") or "")
         if uid not in comics or not omi:
             continue
         usd = _f(it.get("price")) * omi
-        if 0 < usd < COMIC_MAX_USD:
-            _garder(uid, usd, "StackR")
-
-    # 3. STACKR — les floors deja connus des items vus (offres EN PLACE)
-    for uid, infos in (state.get("sfloors") or {}).items():
-        if uid not in comics or not omi:
-            continue
-        usd = _f(infos[0]) * omi
         if 0 < usd < COMIC_MAX_USD:
             _garder(uid, usd, "StackR")
 
@@ -1508,7 +1504,8 @@ def main() -> int:
 if __name__ == "__main__":
     sys.exit(main())
 
-# FIN floor_watch.py v21 — LOT 1 : 🩸 vol sur le floor VeVe + 📈 vente au-dessus
+# FIN floor_watch.py v22 — comics : uniquement les nouvelles mises en vente
+# StackR (plus de balayage de l'existant). // v21 — LOT 1 : 🩸 vol sur le floor VeVe + 📈 vente au-dessus
 # du floor (deux canaux single-marche, ETEINTS par defaut, calibres un a un).
 # FIN floor_watch.py v19 — chasse aux numeros · plancher VeVe a 1 $ ·
 # ecarts de prix eteints · plus d'avertissement
