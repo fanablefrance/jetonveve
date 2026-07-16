@@ -1,0 +1,71 @@
+name: Analytics - ledger writer (entrepot)
+
+# WRITER LEGER (16/07/2026) : le calcul lourd du ledger vit sur jetonveve
+# (workflow analytics-derived -> Release publique analytics-derived). Ici on
+# telecharge les CSV derives (~45 Mo) et on ecrit les MEMES onglets Sheet que
+# scraper/ledger.py (fonctions importees, parite au caractere pres) en 1-2 min
+# au lieu de 10-16 min de rejeu.
+#
+# /!\ PAS de cron tant que la validation croisee avec l'ancien ledger n'est
+# pas faite : les deux ecriraient les memes onglets. Une fois valide, deplacer
+# ici le cron "0 22 * * 4" de ledger.yml et neutraliser ce dernier (secours).
+
+on:
+  workflow_dispatch:
+    inputs:
+      steps:
+        description: "Sorties (all, ou liste : whales,corner,size,pseudos,pulse,save)"
+        required: false
+        default: "all"
+      release_base:
+        description: "Base des derives (secours N-1 : ...analytics-derived-prev)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  writer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+      SHEET_ID: ${{ secrets.SHEET_ID }}
+      RUN_STEPS: ${{ github.event.inputs.steps || 'all' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Ecrire les onglets depuis l'entrepot
+        run: |
+          export RUN_DATE=$(TZ=America/Los_Angeles date +%F)
+          if [ -n "${{ github.event.inputs.release_base }}" ]; then
+            export RELEASE_BASE="${{ github.event.inputs.release_base }}"
+          fi
+          python -m scraper.ledger_writer
+
+      - name: Publier grand livre + profils (Release ledger-data, drop-in prod)
+        if: ${{ always() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ls data/wallet_profiles.csv.gz >/dev/null 2>&1 || { echo "Pas de profils a publier."; exit 0; }
+          BASE="${{ github.event.inputs.release_base }}"
+          [ -z "$BASE" ] && BASE="https://github.com/fanablefrance/jetonveve/releases/download/analytics-derived"
+          curl -sL --fail -o data/ledger.csv.gz "$BASE/ledger_full.csv.gz" \
+            || echo "ledger_full.csv.gz indisponible - profils seuls."
+          gh release view ledger-data >/dev/null 2>&1 || \
+            gh release create ledger-data --title "Grand livre + profils wallets" \
+              --notes "data/ledger.csv.gz (veve_uuid,edition,holder,listed) + data/wallet_profiles.csv.gz — desormais derives de l'entrepot jetonveve (analytics-derived)."
+          FILES="data/wallet_profiles.csv.gz"
+          [ -f data/ledger.csv.gz ] && FILES="$FILES data/ledger.csv.gz"
+          gh release upload ledger-data $FILES --clobber
+          echo "Publie :" && ls -lh data/

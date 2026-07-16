@@ -24,12 +24,13 @@ jobs:
       - name: Dependances
         run: pip install duckdb
 
-      - name: "Telecharger la Release transfers-full"
+      - name: "Telecharger transfers-full + catalogue"
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release download transfers-full -p transfers_full.csv.gz -D .
-          ls -lh transfers_full.csv.gz
+          gh release download catalogue -p catalogue.csv.gz -D .
+          ls -lh transfers_full.csv.gz catalogue.csv.gz
 
       - name: "Secours N-1 (copie de la release actuelle AVANT ecrasement)"
         env:
@@ -58,6 +59,12 @@ jobs:
           python -m scraper.analytics_derived transfers_full.csv.gz derived
           ls -lh derived/ transfers.parquet
 
+      - name: "Calcul ledger derives (pulse + corner 111 + profils A VIE)"
+        run: |
+          export RUN_DATE=$(TZ=America/Los_Angeles date +%F)
+          python -m scraper.ledger_derived transfers.parquet catalogue.csv.gz derived
+          ls -lh derived/
+
       - name: "Publier la Release analytics-derived"
         env:
           GH_TOKEN: ${{ github.token }}
@@ -65,7 +72,7 @@ jobs:
           gh release view analytics-derived >/dev/null 2>&1 || \
             gh release create analytics-derived \
               -t "Analytics derives" \
-              -n "CSV derives de transfers-full : grand livre, profils wallets, cornérisation, supply fantome."
+              -n "CSV derives de transfers-full : grand livre, profils wallets, cornérisation, supply fantome, pulse, corner 111, profils complets."
           gh release upload analytics-derived derived/* --clobber
           echo "✅ Release analytics-derived mise a jour."
 
