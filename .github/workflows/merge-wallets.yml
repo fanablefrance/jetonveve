@@ -1,0 +1,56 @@
+name: Fusion wallets (first_seen definitif, 3 eres)
+
+# Une source DEFINITIVE des dates de creation de wallet : le first_seen le plus
+# ancien vu sur GoChain (2020/2021) / IMX (2021-2026) / CollectChain (2026+).
+# Tourne sur jetonveve (PUBLIC = minutes illimitees). Les 3 registres sont des
+# CSV publics -> aucun token. A relancer quand un scan a avance.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: merge-wallets
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4          # pour data/gochain_wallets.csv (ce repo)
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: "Rassembler les 3 registres (tous publics)"
+        run: |
+          mkdir -p regs
+          cp data/gochain_wallets.csv regs/ 2>/dev/null \
+            || echo "Pas de gochain_wallets.csv local (GoChain ignore ce run)."
+          curl -fsSL -o regs/wallet_registry_deep.csv \
+            https://raw.githubusercontent.com/astronemagame-maker/astronema/main/data/wallet_registry_deep.csv \
+            || echo "deep indisponible"
+          curl -fsSL -o regs/wallet_registry_imx.csv \
+            https://raw.githubusercontent.com/lepaolo/paolo/main/data/wallet_registry_imx.csv \
+            || echo "imx indisponible"
+          echo "Registres recuperes :" && ls -lh regs/
+
+      - name: "Fusion (first_seen = le plus ancien des 3 eres)"
+        run: |
+          python -m scraper.merge_wallets regs wallets_full.csv
+          gzip -f wallets_full.csv
+          ls -lh wallets_full.csv.gz
+
+      - name: "Publier la Release wallets-full"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view wallets-full >/dev/null 2>&1 || \
+            gh release create wallets-full \
+              --title "Wallets — first_seen definitif (GoChain + IMX + CollectChain)" \
+              --notes "1 CSV.gz : chaque wallet avec son first_seen le PLUS ANCIEN des 3 eres (date de creation reelle), first_seen_era, last_active, tx_count, et la presence par ere. Sources publiques : wallet_registry_deep (astronema), wallet_registry_imx (paolo), gochain_wallets (jetonveve). Regenerable a la demande via ce workflow."
+          gh release upload wallets-full wallets_full.csv.gz --clobber
+          echo "✅ Release wallets-full mise a jour."
