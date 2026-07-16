@@ -448,7 +448,7 @@ LIEN_COMIC = "https://www.veve.me/collectibles/en/market/comics/{uuid}"
 
 
 def carte_comic(a: Dict) -> Dict:
-    lien = LIEN_COMIC.format(uuid=a["uuid"]) if a.get("uuid") else ""
+    lien = lien_stackr(a["uuid"], "comic") if a.get("uuid") else ""
     lignes = [f"**Tirage** : {a['supply']:,} exemplaires".replace(",", " "),
               f"**Prix** : **{a['usd']:.2f} $** sur **{a['ou']}**"]
     n = a.get("listings")
@@ -464,7 +464,7 @@ def carte_comic(a: Dict) -> Dict:
     if a.get("rarity") or a.get("edition"):
         lignes.append(f"{a.get('rarity', '')} {a.get('edition', '')}".strip())
     if lien:
-        lignes.append(f"[Voir sur VeVe]({lien})")
+        lignes.append(f"[Voir sur StackR]({lien})")
     return {"title": f"📚 {a['name']}"[:250],
             "description": "\n".join(lignes),
             "color": 0x9B59B6,
@@ -1165,20 +1165,19 @@ def carte_mint(a):
     """Le lien pointe sur la RARETE (uuid de l'ELEMENT) : la page marche. Un lien
     qui mene au mauvais item est pire qu'un lien mort — le lien mort, on le
     voit."""
-    genre = "comics" if a.get("categorie") == "comic" else "collectibles"
-    lien = "https://www.veve.me/collectibles/en/market/" + genre + "/" + a["uuid"]
+    lien = lien_stackr(a["uuid"], a.get("categorie", ""))
     lignes = ["**#{:,}**".format(a["edition"]).replace(",", " ")
               + " — " + nu.raconter(a["motifs"])]
     if a.get("supply"):
         lignes.append("Tirage : {:,} exemplaires".format(a["supply"])
                       .replace(",", " "))
-    lignes.append("**Prix : {:.2f} $** · floor {:.2f} $ — *le prix d'une édition "
-                  "ordinaire*".format(a["usd"], a["floor"]))
+    lignes.append("**Prix : {:.2f} $** · floor {:.2f} $".format(
+        a["usd"], a["floor"]))
     if a.get("note"):
         lignes.append("**Classement** : " + a["note"])
     if a.get("atl"):
         lignes.append("Plus-bas historique : **{:.2f} $**".format(a["atl"]))
-    lignes.append("[Voir sur VeVe](" + lien + ")")
+    lignes.append("[Voir sur StackR](" + lien + ")")
     return {"title": ("🎯 " + a["name"])[:250], "color": 0xE67E22,
             "description": "\n".join(lignes), "url": lien}
 
@@ -1186,8 +1185,7 @@ def carte_mint(a):
 def notify_mints(alerts):
     if not alerts:
         return 0
-    contenu = ("🎯 **" + str(len(alerts)) + " numéro(s) remarquable(s) au prix "
-               "d'une édition ordinaire** — "
+    contenu = ("🎯 **" + str(len(alerts)) + " numéro(s) remarquable(s)** — "
                + _dt.datetime.now(_dt.timezone.utc).strftime("%H:%M UTC"))
     embeds = [carte_mint(a) for a in alerts[:10]]
     if not WEBHOOK or SIMULER:
@@ -1220,6 +1218,17 @@ def lien_marche(uuid: str, categorie: str = "") -> str:
     (Meme regle que carte_mint : l'uuid de l'ELEMENT, jamais celui de la serie.)"""
     genre = "comics" if categorie == "comic" else "collectibles"
     return "https://www.veve.me/collectibles/en/market/" + genre + "/" + uuid
+
+
+def lien_stackr(uuid: str, categorie: str = "") -> str:
+    """La page StackR de l'ELEMENT — marche en OMI, onglet Listings + achat direct.
+    Quand l'alerte porte un prix EN OMI (numeros, comics, vente ×3), on pointe
+    ici et non sur VeVe. Le segment reprend l'element_type StackR (verifie le
+    16/07) : COMIC_COVER -> /comic-cover, sinon /collectible. Toujours l'uuid de
+    l'ELEMENT (jamais la serie), meme regle que les liens VeVe."""
+    genre = "comic-cover" if categorie == "comic" else "collectible"
+    return ("https://www.stackr.world/collections/veve/" + genre + "/" + uuid
+            + "?table=Listings&action=buy")
 
 
 def detect_veve_steal(state, veve, cat=None, ts=None):
@@ -1437,13 +1446,13 @@ def carte_steal(a):
 
 
 def carte_spike(a):
-    lien = lien_marche(a["uuid"], a.get("categorie", ""))
+    lien = lien_stackr(a["uuid"], a.get("categorie", ""))
     nom = a["name"] + (" #{}".format(a["edition"]) if a.get("edition") else "")
     lignes = ["Vendu **{:.2f} $**  —  floor {:.2f} $  (**×{}**)".format(
         a["vente"], a["floor"], a["ratio"])]
     if a.get("atl"):
         lignes.append("Plus-bas historique : **{:.2f} $**".format(a["atl"]))
-    lignes.append("[Voir sur VeVe](" + lien + ")")
+    lignes.append("[Voir sur StackR](" + lien + ")")
     return {"title": ("📈 " + nom)[:250], "color": 0x1ABC9C,
             "description": "\n".join(lignes), "url": lien}
 
@@ -1635,7 +1644,7 @@ def _embed(a: Dict) -> Dict:
         Voir sur StackR →
     """
     nom = f"{a['name']}" + (f" #{a['edition']}" if a.get("edition") else "")
-    lien = f"https://www.stackr.world/element/{a['uuid']}"
+    lien = lien_stackr(a['uuid'], a.get('categorie', ''))
     lignes = []
     if a.get("spread"):
         kind, titre = "spread", "↔️ Écart entre marchés"
@@ -1889,7 +1898,7 @@ def main() -> int:
                 if m:
                     if budget(state, WEBHOOK) > 0:
                         print(f"  [{i}/{POLLS}] 🎯 {len(m)} numero(s) "
-                              f"remarquable(s) au prix d'une edition ordinaire !",
+                              f"remarquable(s) !",
                               flush=True)
                         total += notify_mints(m)
                         consommer(state, WEBHOOK)
