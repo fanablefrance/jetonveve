@@ -1363,7 +1363,11 @@ def detect_ath(state, veve, cat=None, ts=None):
             continue
         last = (state.get("sales") or {}).get(uid)
         ls = _f(last[0]) if last else 0.0
-        if REQUIRE_SALE and ls <= 0:
+        # 🆕 ATH : une VENTE reelle est TOUJOURS exigee (demande Preda 16/07),
+        # independamment du REQUIRE_SALE global. Un floor est un prix DEMANDE,
+        # trollable a la hausse ; sans un acheteur qui a vraiment paye, un
+        # « nouveau plus-haut » n'est qu'une annonce -> le canal se noyait.
+        if ls <= 0:
             continue
         if ts - alerts.get(uid, 0) < COOLDOWN_H * 3600:
             continue
@@ -1407,12 +1411,14 @@ def detect_atl(state, veve, cat=None, ts=None):
             seen[uid] = [round(vf, 4), ts]           # on suit l'extreme bas live
         if not ATL_ON:
             continue
-        if vf <= PLANCHER_VEVE or eff <= 0 or vf > eff * (1 - ATL_MARGIN_PCT / 100.0):
+        # 📉 ATL : un floor SOUS le plus-bas connu SUFFIT (demande Preda 16/07) —
+        # ni marge, ni preuve de vente. Descendre sous l'ATL est deja l'info
+        # (contrairement au 🆕 ATH, un plus-bas ne se troll pas : personne ne
+        # liste sous le marche par erreur pour tromper).
+        if vf <= PLANCHER_VEVE or eff <= 0 or vf >= eff:
             continue
         last = (state.get("sales") or {}).get(uid)
         ls = _f(last[0]) if last else 0.0
-        if REQUIRE_SALE and ls <= 0:
-            continue
         if ts - alerts.get(uid, 0) < COOLDOWN_H * 3600:
             continue
         alerts[uid] = ts
