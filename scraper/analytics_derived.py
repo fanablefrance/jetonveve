@@ -22,6 +22,8 @@ seq unique ; last_active par wallet avec exclusion du re-mint de migration
 Usage : python -m scraper.analytics_derived <transfers_full.csv[.gz]> [outdir]
 Env   : RUN_DATE=YYYY-MM-DD (defaut : aujourd'hui UTC — le workflow passe la
         date PT), DUCK_MEM (defaut 10GB), EXPECTED_MIN (defaut 35000000),
+        PARQUET_OUT=chemin (publie le parquet au lieu de le jeter — consomme
+        ensuite par URL via DuckDB httpfs, lecture partielle sans telecharger),
         KEEP_PARQUET=1 (debug).
 """
 import os
@@ -60,7 +62,7 @@ def main() -> None:
     run_date = os.environ.get("RUN_DATE") or time.strftime("%Y-%m-%d")
     expected_min = int(os.environ.get("EXPECTED_MIN") or 35_000_000)
     os.makedirs(outdir, exist_ok=True)
-    pq = "transfers_tmp.parquet"      # hors outdir : jamais uploade
+    pq = "transfers_tmp.parquet"      # hors outdir : jamais uploade tel quel
 
     con = duckdb.connect()
     con.execute(f"SET memory_limit='{os.environ.get('DUCK_MEM', '10GB')}'")
@@ -203,7 +205,11 @@ def main() -> None:
     for row in con.execute("""SELECT uuid, circulating, ghost_supply FROM corner
             ORDER BY ghost_supply DESC LIMIT 5""").fetchall():
         print("  ", row)
-    if not os.environ.get("KEEP_PARQUET") and os.path.exists(pq):
+    pq_out = os.environ.get("PARQUET_OUT")
+    if pq_out:
+        os.replace(pq, pq_out)
+        print(f"parquet publie : {pq_out} ({os.path.getsize(pq_out)/1e6:.0f} Mo)")
+    elif not os.environ.get("KEEP_PARQUET") and os.path.exists(pq):
         os.remove(pq)
     print(f"TOTAL : {time.time() - t0:.0f}s")
 
