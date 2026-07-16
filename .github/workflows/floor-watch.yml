@@ -71,7 +71,7 @@ on:
       veve_steal:
         description: "🩸 Vol sur le floor VeVe : allumer ce canal (chute du floor VeVe vs sa valeur recente)"
         required: false
-        default: "false"
+        default: "true"
         type: choice
         options: ["false", "true"]
       steal_pct:
@@ -81,7 +81,7 @@ on:
       sale_spike:
         description: "📈 Vente au-dessus du floor : allumer ce canal (une vente reelle bien au-dessus du floor)"
         required: false
-        default: "false"
+        default: "true"
         type: choice
         options: ["false", "true"]
       spike_ratio:
@@ -91,19 +91,19 @@ on:
       ath_on:
         description: "🆕 Nouveau ATH : allumer ce canal (floor qui bat son plus-haut historique) → canal dedie"
         required: false
-        default: "false"
+        default: "true"
         type: choice
         options: ["false", "true"]
       atl_on:
         description: "📉 Plus-bas historique : allumer ce canal (floor au plus bas jamais vu) → canal principal"
         required: false
-        default: "false"
+        default: "true"
         type: choice
         options: ["false", "true"]
       pic_on:
         description: "🔥 Pic d'activité hors drop : allumer ce canal (ventes du jour d'un item qui explosent vs sa moyenne) → canal dedie"
         required: false
-        default: "false"
+        default: "true"
         type: choice
         options: ["false", "true"]
       pic_ratio:
@@ -113,7 +113,7 @@ on:
       hprix_feed:
         description: "🌉 Pont → 🟠H-PRIX : ecrire les floors collectibles qui changent dans data/hprix_feed.csv (preda l'ingere)"
         required: false
-        default: "false"
+        default: "true"
         type: choice
         options: ["false", "true"]
       purger_ventes:
