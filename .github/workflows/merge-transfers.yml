@@ -10,12 +10,16 @@ name: Fusion transferts (IMX + CollectChain, un fichier)
 # (holders-snapshot + imx-archive chez paolo, chain-archive chez astronema)
 # + 1 source privee (chain-archive-daily chez preda -> secret PREDA_TOKEN).
 # A relancer a la demande quand un scan a avance.
+# v2 (16/07) : secours N-1 (copie transfers-full-prev AVANT ecrasement) +
+# chainage automatique du workflow analytics-derived a la fin (1 seul
+# dispatch regenere tout l'entrepot).
 
 on:
   workflow_dispatch:
 
 permissions:
   contents: write
+  actions: write        # pour chainer analytics.yml (gh workflow run)
 
 concurrency:
   group: merge-transfers
@@ -74,6 +78,25 @@ jobs:
           python -m scraper.merge_transfers arch transfers_full.csv.gz
           ls -lh transfers_full.csv.gz
 
+      - name: "Secours N-1 (copie de la release actuelle AVANT ecrasement)"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view transfers-full >/dev/null 2>&1; then
+            mkdir -p prev
+            gh release download transfers-full -D prev --clobber || true
+            if [ -n "$(ls -A prev 2>/dev/null)" ]; then
+              gh release view transfers-full-prev >/dev/null 2>&1 || \
+                gh release create transfers-full-prev \
+                  -t "Transferts — veille (secours N-1)" \
+                  -n "Copie automatique de la release transfers-full (csv.gz + parquet) AVANT sa derniere mise a jour."
+              gh release upload transfers-full-prev prev/* --clobber
+              echo "✅ N-1 sauvegarde ($(du -sh prev | cut -f1))."
+            fi
+          else
+            echo "ℹ️ Premiere publication — pas de N-1."
+          fi
+
       - name: "Publier la Release transfers-full"
         env:
           GH_TOKEN: ${{ github.token }}
@@ -81,6 +104,14 @@ jobs:
           gh release view transfers-full >/dev/null 2>&1 || \
             gh release create transfers-full \
               --title "Transferts NFT — IMX + CollectChain (source unifiee)" \
-              --notes "1 CSV.gz de tous les transferts NFT VeVe sur IMX (2021-2026) et CollectChain (2026+), au meme schema : era, ts_utc, date_pt, kind, category, veve_uuid, edition, from, to, tx_ref. L'IMX est habille via le holders-snapshot (token_id -> veve_uuid). Dedup IMX par txn_id / CollectChain par block:log_index, tri chronologique. GoChain exclu (NFT custodial). Regenerable a la demande via ce workflow."
+              --notes "1 CSV.gz de tous les transferts NFT VeVe sur IMX (2021-2026) et CollectChain (2026+), au meme schema : era, ts_utc, date_pt, kind, category, veve_uuid, edition, from, to, tx_ref. L'IMX est habille via le holders-snapshot (token_id -> veve_uuid). Dedup IMX par txn_id / CollectChain par block:log_index, tri chronologique. GoChain exclu (NFT custodial). Regenerable a la demande via ce workflow. + transfers.parquet (publie par analytics.yml) : meme donnee, queryable par URL via DuckDB httpfs."
           gh release upload transfers-full transfers_full.csv.gz --clobber
           echo "✅ Release transfers-full mise a jour."
+
+      - name: "Chainer analytics-derived (parquet + CSV derives)"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run analytics.yml \
+            && echo "✅ analytics-derived declenche." \
+            || echo "⚠️ Chainage rate — lancer analytics-derived a la main."

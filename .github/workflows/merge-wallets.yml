@@ -4,6 +4,8 @@ name: Fusion wallets (first_seen definitif, 3 eres)
 # ancien vu sur GoChain (2020/2021) / IMX (2021-2026) / CollectChain (2026+).
 # Tourne sur jetonveve (PUBLIC = minutes illimitees). Les 3 registres sont des
 # CSV publics -> aucun token. A relancer quand un scan a avance.
+# v2 (16/07) : secours N-1 — la release precedente est copiee en
+# wallets-full-prev AVANT ecrasement (retombee si un run sort corrompu).
 
 on:
   workflow_dispatch:
@@ -43,6 +45,25 @@ jobs:
           python -m scraper.merge_wallets regs wallets_full.csv
           gzip -f wallets_full.csv
           ls -lh wallets_full.csv.gz
+
+      - name: "Secours N-1 (copie de la release actuelle AVANT ecrasement)"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view wallets-full >/dev/null 2>&1; then
+            mkdir -p prev
+            gh release download wallets-full -D prev --clobber || true
+            if [ -n "$(ls -A prev 2>/dev/null)" ]; then
+              gh release view wallets-full-prev >/dev/null 2>&1 || \
+                gh release create wallets-full-prev \
+                  -t "Wallets — veille (secours N-1)" \
+                  -n "Copie automatique de la release wallets-full AVANT sa derniere mise a jour."
+              gh release upload wallets-full-prev prev/* --clobber
+              echo "✅ N-1 sauvegarde."
+            fi
+          else
+            echo "ℹ️ Premiere publication — pas de N-1."
+          fi
 
       - name: "Publier la Release wallets-full"
         env:

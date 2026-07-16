@@ -1,0 +1,64 @@
+name: catalogue-export
+
+# Publie le catalogue (uuid -> nom, rarete, serie, tirage, store, floor du
+# jour) en Release `catalogue` sur jetonveve (public). Rend l'entrepot
+# AUTOSUFFISANT : alertes/chatbot/tracking joignent les noms par uuid sans
+# acces Google. Tourne sur PREDA (les donnees viennent du Sheet) apres le
+# daily. Secret requis : JETONVEVE_TOKEN (PAT fine-grained du compte
+# fanablefrance, contents read/write sur le seul repo jetonveve).
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "41 6 * * *"        # 06:41 UTC, apres le daily de 04:11
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Dependances
+        run: pip install -r requirements.txt
+
+      - name: "Exporter le catalogue depuis le Sheet"
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          SHEET_ID: ${{ secrets.SHEET_ID }}
+        run: |
+          python -m scraper.catalog_export
+          ls -lh catalogue.csv.gz
+
+      - name: "Secours N-1 puis publication (Release catalogue, jetonveve)"
+        env:
+          GH_TOKEN: ${{ secrets.JETONVEVE_TOKEN }}
+        run: |
+          R="fanablefrance/jetonveve"
+          if [ -z "$GH_TOKEN" ]; then
+            echo "ERREUR : secret JETONVEVE_TOKEN absent." && exit 1
+          fi
+          if gh release view catalogue -R $R >/dev/null 2>&1; then
+            mkdir -p prev
+            gh release download catalogue -R $R -D prev --clobber || true
+            if [ -n "$(ls -A prev 2>/dev/null)" ]; then
+              gh release view catalogue-prev -R $R >/dev/null 2>&1 || \
+                gh release create catalogue-prev -R $R \
+                  -t "Catalogue — veille (secours N-1)" \
+                  -n "Copie automatique de la release catalogue AVANT sa derniere mise a jour."
+              gh release upload catalogue-prev -R $R prev/* --clobber
+              echo "✅ N-1 sauvegarde."
+            fi
+          else
+            gh release create catalogue -R $R \
+              -t "Catalogue VeVe (uuid -> nom, rarete, serie, tirage, store, floor)" \
+              -n "1 CSV.gz quotidien : le referentiel des ~19k items pour joindre analytics-derived et transfers.parquet par uuid, sans acces au Sheet. Colonnes : uuid, kind, name, edition_type, rarity, release_date, series, brand, licensor, tirage, store_price, floor, listings, ath, atl."
+          fi
+          gh release upload catalogue -R $R catalogue.csv.gz --clobber
+          echo "✅ Release catalogue mise a jour."

@@ -6,6 +6,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: analytics-derived
+  cancel-in-progress: false
+
 jobs:
   analytics:
     runs-on: ubuntu-latest
@@ -27,12 +31,32 @@ jobs:
           gh release download transfers-full -p transfers_full.csv.gz -D .
           ls -lh transfers_full.csv.gz
 
+      - name: "Secours N-1 (copie de la release actuelle AVANT ecrasement)"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view analytics-derived >/dev/null 2>&1; then
+            mkdir -p prev
+            gh release download analytics-derived -D prev --clobber || true
+            if [ -n "$(ls -A prev 2>/dev/null)" ]; then
+              gh release view analytics-derived-prev >/dev/null 2>&1 || \
+                gh release create analytics-derived-prev \
+                  -t "Analytics derives — veille (secours N-1)" \
+                  -n "Copie automatique de la release analytics-derived AVANT sa derniere mise a jour. Retombee pour les consommateurs si un run produit un fichier corrompu."
+              gh release upload analytics-derived-prev prev/* --clobber
+              echo "✅ N-1 sauvegarde ($(ls prev | wc -l) fichiers)."
+            fi
+          else
+            echo "ℹ️ Premiere publication — pas de N-1."
+          fi
+
       - name: "Calcul des derives (DuckDB)"
         run: |
           export RUN_DATE=$(TZ=America/Los_Angeles date +%F)
+          export PARQUET_OUT=transfers.parquet
           echo "RUN_DATE=$RUN_DATE (PT)"
           python -m scraper.analytics_derived transfers_full.csv.gz derived
-          ls -lh derived/
+          ls -lh derived/ transfers.parquet
 
       - name: "Publier la Release analytics-derived"
         env:
@@ -44,3 +68,10 @@ jobs:
               -n "CSV derives de transfers-full : grand livre, profils wallets, cornérisation, supply fantome."
           gh release upload analytics-derived derived/* --clobber
           echo "✅ Release analytics-derived mise a jour."
+
+      - name: "Publier transfers.parquet (Release transfers-full)"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload transfers-full transfers.parquet --clobber
+          echo "✅ transfers.parquet publie — queryable par URL (DuckDB httpfs, lecture partielle)."
