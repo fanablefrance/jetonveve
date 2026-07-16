@@ -1,0 +1,86 @@
+name: Fusion transferts (IMX + CollectChain, un fichier)
+
+# Une source unifiee des transferts NFT VeVe sur les 2 eres qui comptent :
+# IMX (2021->2026) + CollectChain (2026->). GoChain est exclu (NFT custodial).
+# L'IMX n'a que token_id -> on l'habille au schema CollectChain grace au
+# holders-snapshot (token_id -> veve_uuid). Les eras ne se chevauchent pas :
+# IMX trie puis CollectChain trie = deja chronologique.
+#
+# Tourne sur jetonveve (PUBLIC = minutes illimitees). 3 sources publiques
+# (holders-snapshot + imx-archive chez paolo, chain-archive chez astronema)
+# + 1 source privee (chain-archive-daily chez preda -> secret PREDA_TOKEN).
+# A relancer a la demande quand un scan a avance.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: merge-transfers
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4          # pour scraper/merge_transfers.py
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: "holders-snapshot (paolo, public) — la carte token_id -> veve_uuid"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p arch/holders arch/imx arch/cc
+          gh release download holders-snapshot -R lepaolo/paolo \
+            --dir arch/holders --pattern '*.csv.gz' --clobber \
+            || echo "⚠️ holders-snapshot indisponible (IMX sortira sans veve_uuid)."
+
+      - name: "imx-archive (paolo, public) — les transferts IMX"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download imx-archive -R lepaolo/paolo \
+            --dir arch/imx --pattern '*.csv.gz' --clobber \
+            || echo "⚠️ imx-archive indisponible."
+
+      - name: "chain-archive (astronema, public) — CollectChain profond"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download chain-archive -R astronemagame-maker/astronema \
+            --dir arch/cc --pattern '*.csv.gz' --clobber \
+            || echo "⚠️ chain-archive indisponible."
+
+      - name: "chain-archive-daily (preda, PRIVE) — le quotidien CollectChain"
+        env:
+          GH_TOKEN: ${{ secrets.PREDA_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "ℹ️ Pas de PREDA_TOKEN — le quotidien preda est ignore (le deep suffit deja)."
+          else
+            gh release download chain-archive-daily -R VeVePreda/scrapeur-veve \
+              --dir arch/cc --pattern '*.csv.gz' --clobber \
+              || echo "⚠️ chain-archive-daily indisponible."
+          fi
+          echo "Sources rassemblees :" && du -sh arch/holders arch/imx arch/cc 2>/dev/null
+
+      - name: "Fusion (IMX habille + CollectChain, dedup + chronologique)"
+        run: |
+          python -m scraper.merge_transfers arch transfers_full.csv.gz
+          ls -lh transfers_full.csv.gz
+
+      - name: "Publier la Release transfers-full"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view transfers-full >/dev/null 2>&1 || \
+            gh release create transfers-full \
+              --title "Transferts NFT — IMX + CollectChain (source unifiee)" \
+              --notes "1 CSV.gz de tous les transferts NFT VeVe sur IMX (2021-2026) et CollectChain (2026+), au meme schema : era, ts_utc, date_pt, kind, category, veve_uuid, edition, from, to, tx_ref. L'IMX est habille via le holders-snapshot (token_id -> veve_uuid). Dedup IMX par txn_id / CollectChain par block:log_index, tri chronologique. GoChain exclu (NFT custodial). Regenerable a la demande via ce workflow."
+          gh release upload transfers-full transfers_full.csv.gz --clobber
+          echo "✅ Release transfers-full mise a jour."
