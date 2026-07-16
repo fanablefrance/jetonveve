@@ -1,0 +1,46 @@
+name: analytics-derived
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  analytics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Dependances
+        run: pip install duckdb
+
+      - name: "Telecharger la Release transfers-full"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download transfers-full -p transfers_full.csv.gz -D .
+          ls -lh transfers_full.csv.gz
+
+      - name: "Calcul des derives (DuckDB)"
+        run: |
+          export RUN_DATE=$(TZ=America/Los_Angeles date +%F)
+          echo "RUN_DATE=$RUN_DATE (PT)"
+          python -m scraper.analytics_derived transfers_full.csv.gz derived
+          ls -lh derived/
+
+      - name: "Publier la Release analytics-derived"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view analytics-derived >/dev/null 2>&1 || \
+            gh release create analytics-derived \
+              -t "Analytics derives" \
+              -n "CSV derives de transfers-full : grand livre, profils wallets, cornérisation, supply fantome."
+          gh release upload analytics-derived derived/* --clobber
+          echo "✅ Release analytics-derived mise a jour."
