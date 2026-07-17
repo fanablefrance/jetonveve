@@ -55,6 +55,7 @@ from typing import Dict, List, Optional
 import requests
 
 from scraper import numeros as nu
+from scraper import price_baseline as pb
 
 BASE = "https://www.stackr.world/api/trpc/publicVeve."
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -264,6 +265,15 @@ PIC_MIN_COUNT = int(os.environ.get("PIC_MIN_COUNT", "4"))   # plancher absolu de
 PIC_MIN_JOURS = int(os.environ.get("PIC_MIN_JOURS", "2"))   # jours actifs prealables requis
 PIC_MIN_BASE = float(os.environ.get("PIC_MIN_BASE", "1"))   # ventes/jour min. AVANT le pic
 PIC_MAX = int(os.environ.get("PIC_MAX", "10"))
+# 📊🔊 SIGNAUX BASELINES (magasin de prix prices-full) — OFF par defaut.
+# 📊 plus-bas de distribution : floor dans les HISTLOW_PCT % les moins chers
+# de son histoire multi-annees (canal principal). 🔊 anomalie d'offres : nb
+# d'offres >> norme historique (canal dedie). Lisent prices_baselines.csv.gz.
+HISTLOW_ON = os.environ.get("HISTLOW_ON", "false").lower() == "true"
+HISTLOW_PCT = float(os.environ.get("HISTLOW_PCT", "10"))
+HISTLOW_MIN_PTS = int(os.environ.get("HISTLOW_MIN_POINTS", "30"))
+VOL_ON = os.environ.get("VOL_ON", "false").lower() == "true"
+VOL_RATIO = float(os.environ.get("VOL_RATIO", "3"))
 
 # ═══════════════════════════════════════════════════════════════════════════
 # 🎯 SIGNAL 5 — LA CHASSE AUX NUMEROS
@@ -1577,6 +1587,46 @@ def notify_atl(alerts):
             a["name"][:32], a["floor"], a["atl"]))
 
 
+def carte_histlow(a):
+    lien = lien_marche(a["uuid"], a.get("categorie", ""))
+    lignes = ["Floor VeVe : **{:.2f} $** — **{}e percentile** de son histoire "
+              "({} points)".format(a["floor"], int(a["rank"]), a.get("n") or 0)]
+    if a.get("min") is not None:
+        lignes.append("Plus bas jamais vu : **{:.2f} $**  ·  median **{:.2f} $**"
+                      .format(a.get("min") or 0, a.get("p50") or 0))
+    lignes.append("[Voir sur VeVe](" + lien + ")")
+    return {"title": ("📊 " + a["name"])[:250], "color": 0x2980B9,
+            "description": "\n".join(lignes), "url": lien}
+
+
+def notify_histlow(alerts):
+    return _notify_lot1(
+        alerts,
+        "📊 **" + str(len(alerts)) + " floor(s) dans le bas de leur histoire**",
+        carte_histlow,
+        lambda a: "📊 {:<32} {:>8.2f} $ ({}e pct)".format(
+            a["name"][:32], a["floor"], int(a["rank"])))
+
+
+def carte_vol(a):
+    lien = lien_stackr(a["uuid"], a.get("categorie", ""))
+    lignes = ["**{} offres** — ×{:.1f} la norme (median {:.0f}, p90 {:.0f})".format(
+        a["listings"], a["ratio"], a.get("med") or 0, a.get("p90") or 0),
+        "[Voir sur StackR](" + lien + ")"]
+    return {"title": ("🔊 " + a["name"])[:250], "color": 0xE67E22,
+            "description": "\n".join(lignes), "url": lien}
+
+
+def notify_vol(alerts):
+    return _notify_lot1(
+        alerts,
+        "🔊 **" + str(len(alerts)) + " anomalie(s) d'offres**",
+        carte_vol,
+        lambda a: "🔊 {:<32} {} offres (×{:.1f})".format(
+            a["name"][:32], a["listings"], a["ratio"]),
+        webhook=WEBHOOK_ATH)
+
+
 def detect_atl_stackr(state, flux, omi, cat=None, ts=None):
     """📉 PLUS-BAS StackR FRAIS : un prix StackR (mise en vente ou vente du
     tour) jamais vu aussi bas pour cet item SUR LE MARCHE StackR. Instantane
@@ -1860,6 +1910,10 @@ def main() -> int:
               f"L'historique va se reconstruire en dollars.", flush=True)
     journal = Journal()
     cat = charger_elements()
+    baselines = pb.load_baselines() if (HISTLOW_ON or VOL_ON) else {}
+    if baselines:
+        print(f"  📊 baselines de prix chargees : {len(baselines)} items",
+              flush=True)
     comics = comics_petit_tirage(cat)
     dates = nu.charger_dates()
     if cat:
@@ -2009,6 +2063,40 @@ def main() -> int:
                         state.get("alerts_pic", {}).pop(a["uuid"], None)
                     print("  🔇 plafond atteint — pics d'activite gardes pour "
                           "plus tard (rien n'est enterre).", flush=True)
+                # 📊 PLUS-BAS DE DISTRIBUTION (percentile multi-annees → canal
+                # principal) · 🔊 ANOMALIE D'OFFRES (→ canal dedie). Lisent le
+                # magasin de prix ; renvoient [] si baselines vide (donc rien
+                # tant que prices-full/les vars ne sont pas branches).
+                hl = pb.detect_hist_low(
+                    state, veve, baselines, cat, state.get("sales"),
+                    on=HISTLOW_ON, pct=HISTLOW_PCT, plancher=PLANCHER_VEVE,
+                    cooldown_h=COOLDOWN_H, maxn=ATL_MAX, min_points=HISTLOW_MIN_PTS)
+                if hl:
+                    if budget(state, WEBHOOK) > 0:
+                        print(f"  📊 {len(hl)} floor(s) dans le bas de leur "
+                              f"histoire !", flush=True)
+                        total += notify_histlow(hl)
+                        consommer(state, WEBHOOK)
+                    else:
+                        for a in hl:
+                            state.get("alerts_histlow", {}).pop(a["uuid"], None)
+                        print("  🔇 plafond atteint — 📊 gardes pour plus tard.",
+                              flush=True)
+                lm = {u: c["listings"] for u, c in cat.items()
+                      if c.get("listings") is not None}
+                va = pb.detect_vol_anomaly(
+                    state, lm, baselines, cat, on=VOL_ON, ratio=VOL_RATIO,
+                    cooldown_h=COOLDOWN_H, maxn=ATL_MAX)
+                if va:
+                    if budget(state, WEBHOOK_ATH) > 0:
+                        print(f"  🔊 {len(va)} anomalie(s) d'offres !", flush=True)
+                        total += notify_vol(va)
+                        consommer(state, WEBHOOK_ATH)
+                    else:
+                        for a in va:
+                            state.get("alerts_vol", {}).pop(a["uuid"], None)
+                        print("  🔇 plafond atteint — 🔊 gardes pour plus tard.",
+                              flush=True)
             # 🐋 GROS TRANSFERTS on-chain (wallet-a-wallet) des comptes suivis —
             # meme cadence horaire que le refresh (collectscan est public, on
             # reste poli). → canal whale dedie.
