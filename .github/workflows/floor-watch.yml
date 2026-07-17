@@ -106,6 +106,12 @@ on:
         default: "false"
         type: choice
         options: ["false", "true"]
+      whale_on:
+        description: "🐋 Suivi comptes whale/team (tags 🟣C-PSEUDOS) → canal dedie"
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
       pic_on:
         description: "🔥 Pic d'activité hors drop : allumer ce canal (ventes du jour d'un item qui explosent vs sa moyenne) → canal dedie"
         required: false
@@ -161,7 +167,9 @@ jobs:
           repository: VeVePreda/scrapeur-veve
           token: ${{ secrets.PREDA_TOKEN }}
           path: _preda
-          sparse-checkout: data/elements.csv
+          sparse-checkout: |
+            data/elements.csv
+            data/tracked_accounts.csv
           sparse-checkout-cone-mode: false
 
       - uses: actions/setup-python@v5
@@ -232,6 +240,13 @@ jobs:
           ATL_STACKR_MIN_USD: ${{ vars.ATL_STACKR_MIN_USD || '1' }}
           ATL_STACKR_MARGIN_PCT: ${{ vars.ATL_STACKR_MARGIN_PCT || '5' }}
           ATL_STACKR_MAX: ${{ vars.ATL_STACKR_MAX || '10' }}
+          # 🐋 suivi whale/team (fusionne ici : meme flux StackR)
+          DISCORD_WEBHOOK_WHALE: ${{ secrets.DISCORD_WEBHOOK_WHALE }}
+          WHALE_ON: ${{ github.event.inputs.whale_on || vars.WHALE_ON || 'false' }}
+          WHALE_XFER_MIN: ${{ vars.WHALE_XFER_MIN || '5' }}
+          WHALE_MIN_USD: ${{ vars.WHALE_MIN_USD || '1' }}
+          WHALE_MAX: ${{ vars.WHALE_MAX || '10' }}
+          WHALE_XFER_PAGES: ${{ vars.WHALE_XFER_PAGES || '3' }}
           # 🆕 n'alerte que si le floor depasse l'ATH d'au moins X % (defaut 25).
           ATH_MARGIN_PCT: ${{ vars.ATH_MARGIN_PCT || '25' }}
           # 🔥 PIC D'ACTIVITE HORS DROP (canal dedie WEBHOOK_ATH). ETEINT par
