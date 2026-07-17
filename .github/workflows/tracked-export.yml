@@ -1,0 +1,46 @@
+name: Export comptes suivis (pont whale/team)
+
+# Exporte les lignes 🟣C-PSEUDOS taguees (« Type de compte ») dans
+# data/tracked_accounts.csv, que jetonveve/whale_watch lit en sparse-checkout.
+# Le tag est manuel et change rarement -> un export horaire suffit largement.
+
+on:
+  schedule:
+    - cron: "35 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tracked-export
+  cancel-in-progress: false
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Export des comptes suivis
+        env:
+          SHEET_ID: ${{ secrets.SHEET_ID }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: python -m scraper.export_tracked
+      - name: Commit du CSV comptes suivis
+        if: always()
+        run: |
+          git config user.name "veve-daily-bot"
+          git config user.email "actions@users.noreply.github.com"
+          [ -f data/tracked_accounts.csv ] && git add data/tracked_accounts.csv
+          git diff --cached --quiet && { echo "Rien a committer."; exit 0; }
+          git commit -m "comptes suivis: export du pont (whale/team)"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && break
+            sleep $((i * 5))
+          done
