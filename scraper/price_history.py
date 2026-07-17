@@ -397,6 +397,49 @@ def run_append(catalogue: str, store: str, source_for_last: str) -> int:
     return 0
 
 
+def run_baselines(source: str, out_csv: str, cap: float = 1e9) -> int:
+    """Derive un fichier COMPACT de references par item (percentiles floor +
+    baseline offres). 1 ligne / uuid. Consomme par les alertes."""
+    if not source or not os.path.exists(source):
+        print("baselines : aucune source — rien a deriver.", flush=True)
+        return 0
+    import duckdb
+    rel = (f"read_parquet('{source}')" if source.endswith(".parquet")
+           else f"read_csv_auto('{source}', header=true)")
+    con = duckdb.connect()
+    q = f"""
+        COPY (
+          WITH src AS (
+            SELECT veve_uuid, CAST(floor AS DOUBLE) AS floor,
+                   CAST(listings AS DOUBLE) AS listings, ts_utc
+            FROM {rel}
+            WHERE TRY_CAST(floor AS DOUBLE) > 0
+              AND TRY_CAST(floor AS DOUBLE) < {cap}
+          )
+          SELECT veve_uuid, count(*) AS n_points,
+                 min(ts_utc) AS first_ts, max(ts_utc) AS last_ts,
+                 min(floor) AS floor_min,
+                 quantile_cont(floor, 0.05) AS floor_p5,
+                 quantile_cont(floor, 0.25) AS floor_p25,
+                 quantile_cont(floor, 0.50) AS floor_p50,
+                 quantile_cont(floor, 0.75) AS floor_p75,
+                 quantile_cont(floor, 0.95) AS floor_p95,
+                 max(floor) AS floor_max,
+                 quantile_cont(listings, 0.50) AS listings_p50,
+                 quantile_cont(listings, 0.90) AS listings_p90,
+                 max(listings) AS listings_max,
+                 arg_max(floor, ts_utc) AS last_floor,
+                 arg_max(listings, ts_utc) AS last_listings
+          FROM src GROUP BY veve_uuid ORDER BY veve_uuid
+        ) TO '{out_csv}' (FORMAT csv, HEADER, COMPRESSION gzip)
+    """
+    con.execute(q)
+    n = con.execute(
+        f"SELECT count(*) FROM read_csv_auto('{out_csv}', header=true)").fetchone()[0]
+    print(f"baselines : {n} items references -> {out_csv}.", flush=True)
+    return 0
+
+
 def run_publish(store: str, parquet_out: str, csv_out: str) -> int:
     """Reconstruit parquet + csv.gz DISTINCT et tries. Auto-guerit les doublons."""
     if not os.path.exists(store):
@@ -441,7 +484,12 @@ def main() -> int:
         return run_append(catalogue, store, src)
     if mode == "publish":
         return run_publish(store, parquet_out, csv_out)
-    print(f"PH_MODE inconnu : {mode!r} (backfill|append|publish)", file=sys.stderr)
+    if mode == "baselines":
+        out = os.environ.get("BASELINES_OUT", "prices_baselines.csv.gz")
+        src = parquet_out if os.path.exists(parquet_out) else store
+        return run_baselines(src, out)
+    print(f"PH_MODE inconnu : {mode!r} (backfill|append|publish|baselines)",
+          file=sys.stderr)
     return 2
 
 
