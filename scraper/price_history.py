@@ -11,7 +11,12 @@ de meilleures references pour les alertes.
 Source
 ------
 `GET my-nft-tracker-backend.azurewebsites.net/api/NftPriceMetrics`
-    ?guid=<veve_uuid>&fromTimeStamp=<ISO Z>&toTimeStamp=<ISO|vide>
+    ?guid=<id my-nft-tracker>&fromTimeStamp=<ISO Z>&toTimeStamp=<ISO|vide>
+⚠️ le `guid` est l'id INTERNE my-nft-tracker (champ `uuid` de /api/Nfts),
+PAS le veve_uuid (= externalReference, celui du catalogue). D'ou la carte
+veve_uuid->id tracker (build_id_map). Les COMICS n'ont pas de courbe ici
+(NftPriceMetrics renvoie [] meme apres trade) -> backfill collectibles only,
+les comics accumulent via l'append quotidien.
 PUBLIC, sans auth. Renvoie un tableau chronologique de
     {nftUuid, createdTimestamp, lowestMarketPrice(=floor), totalMarketListings}
 
@@ -72,6 +77,14 @@ except Exception:                      # requests absent en test unitaire pur
 API = "https://my-nft-tracker-backend.azurewebsites.net/api/NftPriceMetrics"
 FILLER_UUID = "00000000-0000-0000-0000-000000000000"
 STORE_HEADER = ("veve_uuid", "ts_utc", "floor", "listings")
+API_NFTS = "https://my-nft-tracker-backend.azurewebsites.net/api/Nfts"
+NFTS_PAGE = int(os.environ.get("PH_NFTS_PAGE", "24"))   # >24 corrompt la pagination
+# my-nft-tracker n'expose la courbe (NftPriceMetrics) que pour les COLLECTIBLES ;
+# les comics y renvoient [] meme apres avoir trade -> on ne les backfille pas (ils
+# accumulent via l'append quotidien). Override possible : PH_BACKFILL_KINDS.
+BACKFILL_KINDS = {k.strip().lower() for k in
+                  os.environ.get("PH_BACKFILL_KINDS", "collectible").split(",")
+                  if k.strip()}
 
 GENESIS = os.environ.get("PH_GENESIS", "2021-06-01")
 WINDOW_DAYS = int(os.environ.get("PH_WINDOW_DAYS", "120"))
@@ -107,7 +120,7 @@ def _raw_get(url: str) -> Tuple[Optional[list], str]:
                 body = r.json()
             except Exception as e:
                 return None, f"json invalide: {str(e)[:80]}"
-            return body if isinstance(body, list) else [], ""
+            return body, ""
         return None, f"HTTP {r.status_code}"
     except Exception as e:                              # reseau : retente
         return None, str(e)[:140]
@@ -171,9 +184,9 @@ def fetch_window(uuid: str, frm: dt.date, to: dt.date) -> Tuple[Optional[list], 
     last = ""
     for attempt in range(1, RETRIES + 1):
         data, err = HTTP_GET(url)
-        if data is not None:
+        if isinstance(data, list):
             return [d for d in data if d.get("nftUuid") == uuid], ""
-        last = err
+        last = err or "reponse inattendue (non-liste)"
         time.sleep(BACKOFF * attempt)
     return None, last
 
@@ -196,19 +209,21 @@ def fetch_range(uuid: str, frm: dt.date, to: dt.date) -> Tuple[list, bool]:
     return left + right, (okl and okr)
 
 
-def backfill_item(uuid: str, start: dt.date, end: dt.date) -> Tuple[List[tuple], bool]:
-    """Rejoue l'historique complet d'un item. Renvoie (lignes_on_change, ok)."""
+def backfill_item(veve_uuid: str, tracker_id: str, start: dt.date,
+                  end: dt.date) -> Tuple[List[tuple], bool]:
+    """Rejoue l'historique complet d'un item. `tracker_id` = guid my-nft-tracker
+    (!= veve_uuid) interroge a l'API ; les lignes sont stockees sous veve_uuid."""
     obs: list = []
     ok = True
     cur = start
     while cur < end:
         nxt = min(cur + dt.timedelta(days=WINDOW_DAYS), end)
-        part, okp = fetch_range(uuid, cur, nxt)
+        part, okp = fetch_range(tracker_id, cur, nxt)
         obs.extend(part)
         ok = ok and okp
         time.sleep(PAUSE)
         cur = nxt
-    return compress(uuid, obs), ok
+    return compress(veve_uuid, obs), ok
 
 
 # ---------------------------------------------------------------------------
@@ -326,11 +341,102 @@ def last_values(source: str) -> Dict[str, Tuple[Optional[float], Optional[int]]]
 # Modes
 # ---------------------------------------------------------------------------
 
+def fetch_nfts_page(offset: int) -> Tuple[Optional[list], Optional[int], str]:
+    """Une page /api/Nfts. Renvoie (records|None, total|None, err). Ne leve jamais."""
+    url = f"{API_NFTS}?offset={offset}&limit={NFTS_PAGE}"
+    last = ""
+    for attempt in range(1, RETRIES + 1):
+        data, err = HTTP_GET(url)
+        if isinstance(data, dict):
+            recs = data.get("resultEntries") or []
+            tot = (data.get("meta") or {}).get("entries_TotalAvailable")
+            return recs, (int(tot) if tot is not None else None), ""
+        last = err or "reponse inattendue"
+        time.sleep(BACKOFF * attempt)
+    return None, None, last
+
+
+def _id_map_from_catalogue(cat: List[dict]) -> Dict[str, str]:
+    """Si le catalogue porte une colonne `tracker_id` (fix propre cote preda),
+    on l'utilise -> aucun balayage /api/Nfts. Sinon {} (on balaiera)."""
+    m: Dict[str, str] = {}
+    for r in cat:
+        tid = (r.get("tracker_id") or "").strip()
+        uid = (r.get("uuid") or "").strip()
+        if tid and uid:
+            m[uid] = tid
+    return m
+
+
+def build_id_map(state_dir: str, refresh: bool = False) -> Tuple[Dict[str, str], bool]:
+    """Map veve_uuid (externalReference) -> id my-nft-tracker (uuid = le guid des
+    metriques !). Balayage /api/Nfts, MIS EN CACHE (data/prices/id_map.json) et
+    repris (PH_MAP_FLUSH pages). Renvoie (map, complet). Ne perd jamais sa recolte.
+    """
+    path = os.path.join(state_dir, "id_map.json")
+    id_map: Dict[str, str] = {}
+    offset = 0
+    if os.path.exists(path) and not refresh:
+        try:
+            saved = json.load(open(path, encoding="utf-8"))
+            id_map = dict(saved.get("map", {}))
+            offset = int(saved.get("offset", 0))
+            if saved.get("done"):
+                print(f"id_map : {len(id_map)} items (cache complet).", flush=True)
+                return id_map, True
+        except Exception:
+            id_map, offset = {}, 0
+
+    def _save(off: int, done: bool):
+        os.makedirs(state_dir, exist_ok=True)
+        tmp = path + ".tmp"
+        json.dump({"map": id_map, "offset": off, "done": done},
+                  open(tmp, "w", encoding="utf-8"))
+        os.replace(tmp, path)
+
+    flush = int(os.environ.get("PH_MAP_FLUSH", "50"))
+    total = None
+    page_no = 0
+    while True:
+        recs, tot, err = fetch_nfts_page(offset)
+        if recs is None:
+            print(f"  id_map : offset={offset} en echec ({err}) — arret, "
+                  f"{len(id_map)} mappings gardes (repris au prochain run).",
+                  flush=True)
+            _save(offset, False)
+            return id_map, False
+        if tot is not None:
+            total = tot
+        for r in recs:
+            ext = (r.get("externalReference") or "").strip()
+            tid = (r.get("uuid") or "").strip()
+            if ext and tid:
+                id_map[ext] = tid
+        offset += NFTS_PAGE
+        page_no += 1
+        if page_no % flush == 0:
+            _save(offset, False)
+            print(f"  id_map : {offset} balayes, {len(id_map)} mappings.", flush=True)
+        if not recs or (total is not None and offset >= total):
+            break
+    _save(offset, True)
+    print(f"id_map : balayage complet, {len(id_map)} mappings.", flush=True)
+    return id_map, True
+
+
 def run_backfill(catalogue: str, store: str, state_dir: str) -> int:
     cat = read_catalogue(catalogue)
     done = load_done(state_dir)
     genesis = _parse_release_date(GENESIS) or dt.date(2021, 6, 1)
     end = dt.datetime.utcnow().date() + dt.timedelta(days=1)
+
+    # Le guid des metriques = l'id INTERNE my-nft-tracker (!= veve_uuid). Carte
+    # depuis le catalogue si dispo, sinon balayage /api/Nfts (cache, repris).
+    id_map = _id_map_from_catalogue(cat)
+    map_complete = bool(id_map)
+    if not id_map:
+        id_map, map_complete = build_id_map(
+            state_dir, refresh=os.environ.get("PH_REFRESH_MAP") == "1")
 
     todo = [r for r in cat if r["uuid"].strip() not in done]
     if MAX_ITEMS:
@@ -342,39 +448,47 @@ def run_backfill(catalogue: str, store: str, state_dir: str) -> int:
         print("Rien a faire — backfill deja complet.", flush=True)
         return 0
 
-    def work(row: dict) -> Tuple[str, List[tuple], bool]:
-        uuid = row["uuid"].strip()
+    def work(row: dict):
+        veve = row["uuid"].strip()
+        kind = (row.get("kind") or "").strip().lower()
+        if BACKFILL_KINDS and kind and kind not in BACKFILL_KINDS:
+            return veve, [], "done0"     # ex. comics : pas de time-series tracker
+        tid = id_map.get(veve)
+        if not tid:
+            # pas d'id tracker : si la carte est COMPLETE, l'item n'a pas de fiche
+            # tracker -> rien a collecter, on le clot ; sinon on le reprend plus tard.
+            return veve, [], ("done0" if map_complete else "noid")
         start = _parse_release_date(row.get("release_date", "")) or genesis
         if start < genesis:
             start = genesis
-        lines, ok = backfill_item(uuid, start, end)
-        return uuid, lines, ok
+        lines, ok = backfill_item(veve, tid, start, end)
+        return veve, lines, ("ok" if ok else "fail")
 
-    total_rows = failed = processed = 0
+    total_rows = failed = noid = processed = 0
     for i in range(0, len(todo), FLUSH_ITEMS):
         chunk = todo[i:i + FLUSH_ITEMS]
         buf: List[tuple] = []
         ok_uuids: List[str] = []
         with ThreadPoolExecutor(max_workers=WORKERS) as ex:
-            for uuid, lines, ok in ex.map(work, chunk):
+            for veve, lines, status in ex.map(work, chunk):
                 processed += 1
-                if ok:
+                if status in ("ok", "done0"):
                     buf.extend(lines)
-                    ok_uuids.append(uuid)          # RECOLTE SACREE : on ne marque
-                else:                              # done QUE si l'item est complet
+                    ok_uuids.append(veve)          # RECOLTE SACREE : done seulement
+                elif status == "fail":             # si complet (ou sans fiche)
                     failed += 1
-        # flush : ecrire AVANT de marquer done (une coupure => re-fetch propre,
-        # les doublons eventuels sont fondus par le DISTINCT du mode publish).
+                else:                              # noid : carte incomplete -> retente
+                    noid += 1
         total_rows += append_rows(store, buf)
         done.update(ok_uuids)
         save_done(state_dir, done)
         print(f"  lot {i // FLUSH_ITEMS + 1} : {processed}/{len(todo)} items, "
-              f"+{len(buf)} lignes (total {total_rows}), {failed} sautes.",
-              flush=True)
+              f"+{len(buf)} lignes (total {total_rows}), {failed} sautes, "
+              f"{noid} sans id.", flush=True)
 
-    tag = "INCOMPLET" if failed else "COMPLET"
+    tag = "INCOMPLET" if (failed or noid) else "COMPLET"
     print(f"{tag} : {processed} items, {total_rows} lignes on-change ecrites, "
-          f"{failed} sautes (retentes au prochain run).", flush=True)
+          f"{failed} sautes + {noid} sans id (retentes au prochain run).", flush=True)
     return 0
 
 
