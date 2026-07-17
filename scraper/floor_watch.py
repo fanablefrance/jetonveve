@@ -212,6 +212,27 @@ ATL_MARGIN_PCT = float(os.environ.get("ATL_MARGIN_PCT", "25"))
 # Au-dela de ce plafond, l'ATH est juge INCONNU (ni signal, ni affichage).
 ATH_CAP = float(os.environ.get("ATH_CAP", "1000000000"))
 
+# 📉 FRAICHEUR DU PLUS-BAS VeVe (demande Preda 17/07) — le floor VeVe n'est
+# lisible qu'1x/h (getElements, sans cookie). Un plus-bas forme a 09:20 n'est
+# « vu » qu'au prochain refresh reussi : si un refresh a saute, l'ecart s'empile
+# a ~2 h et l'alerte n'est plus instantanee. On n'alerte donc un plus-bas VeVe
+# QUE si le refresh PRECEDENT date de <= ATL_FRESH_MIN minutes (le plus-bas est
+# alors survenu dans la derniere heure) ; sinon rien (la reference reste a jour).
+ATL_FRESH_MIN = float(os.environ.get("ATL_FRESH_MIN", "70"))
+
+# 📉 PLUS-BAS StackR FRAIS — la reponse « vraiment instantane » : le flux StackR
+# (getAllLatestListings_v2/Sales) est sonde toutes les 2 min. Une mise en vente
+# ou une vente a un prix JAMAIS VU aussi bas sur le marche StackR pour cet item
+# declenche en <= 2 min. Reference = plus-bas StackR observe EN DIRECT ($, memoire
+# separee `atl_stackr`), JAMAIS le floor VeVe : StackR est structurellement moins
+# cher (leçon arbitrage), comparer au floor VeVe alerterait en continu. Construit
+# OFF par defaut (on calibre en SIMULER avant d'allumer, comme tout signal neuf).
+ATL_STACKR_ON = os.environ.get("ATL_STACKR_ON", "false").lower() == "true"
+ATL_STACKR_MIN_USD = float(os.environ.get("ATL_STACKR_MIN_USD", "1"))
+# Il faut battre l'ancien plus-bas d'au moins ce % (sinon 1,29 -> 1,28 = bruit).
+ATL_STACKR_MARGIN_PCT = float(os.environ.get("ATL_STACKR_MARGIN_PCT", "5"))
+ATL_STACKR_MAX = int(os.environ.get("ATL_STACKR_MAX", "10"))
+
 # ═══════════════════════════════════════════════════════════════════════════
 # 🌉 LE PONT VEILLE → 🟠H-PRIX (15/07)
 # ═══════════════════════════════════════════════════════════════════════════
@@ -1388,7 +1409,7 @@ def detect_ath(state, veve, cat=None, ts=None):
     return out
 
 
-def detect_atl(state, veve, cat=None, ts=None):
+def detect_atl(state, veve, cat=None, ts=None, fresh=True):
     """📉 Un floor qui touche son PLUS-BAS historique (ATL tracker, affine en
     direct) = le moins cher jamais vu. Signal d'achat -> canal principal.
     Preuve de vente exigee : un plus-bas sur un item qui ne se vend jamais ne
@@ -1416,6 +1437,11 @@ def detect_atl(state, veve, cat=None, ts=None):
         # (contrairement au 🆕 ATH, un plus-bas ne se troll pas : personne ne
         # liste sous le marche par erreur pour tromper).
         if vf <= PLANCHER_VEVE or eff <= 0 or vf >= eff:
+            continue
+        # 📉 FRAICHEUR : si le refresh precedent est trop vieux (un cron a saute),
+        # ce plus-bas a pu survenir il y a bien plus d'une heure -> pas
+        # instantane -> on se tait (la reference reste a jour). Demande Preda.
+        if not fresh:
             continue
         last = (state.get("sales") or {}).get(uid)
         ls = _f(last[0]) if last else 0.0
@@ -1549,6 +1575,80 @@ def notify_atl(alerts):
         carte_atl,
         lambda a: "📉 {:<32} {:>8.2f} $ (ancien ATL {:.2f})".format(
             a["name"][:32], a["floor"], a["atl"]))
+
+
+def detect_atl_stackr(state, flux, omi, cat=None, ts=None):
+    """📉 PLUS-BAS StackR FRAIS : un prix StackR (mise en vente ou vente du
+    tour) jamais vu aussi bas pour cet item SUR LE MARCHE StackR. Instantane
+    (flux 2 min). La reference est le plus-bas StackR observe en direct ($),
+    memoire separee `atl_stackr` — JAMAIS le floor VeVe (StackR est moins cher,
+    on alerterait en continu). Jamais d'alerte a la 1re observation."""
+    ts = ts if ts is not None else time.time()
+    seen = state.setdefault("atl_stackr", {})        # {uuid:[low_usd, ts]}
+    alerts = state.setdefault("alerts_atl_stackr", {})
+    cat = cat or {}
+    out = []
+    for it in flux or []:
+        uid = str(it.get("element_id") or "")
+        if not uid:
+            continue
+        pr = _f(it.get("price"))                       # OMI
+        if pr <= 0:
+            continue
+        usd = pr * omi if omi else 0.0
+        if usd <= 0:
+            continue
+        vieux = seen.get(uid)
+        prev = _f(vieux[0]) if isinstance(vieux, list) and vieux else 0.0
+        if prev <= 0 or usd < prev:
+            seen[uid] = [round(usd, 4), ts]            # on suit le plus-bas live
+        if not ATL_STACKR_ON:
+            continue
+        if usd < ATL_STACKR_MIN_USD:
+            continue
+        if prev <= 0:                                  # 1re observation : pas de reference
+            continue
+        if usd >= prev * (1 - ATL_STACKR_MARGIN_PCT / 100.0):
+            continue
+        if ts - alerts.get(uid, 0) < COOLDOWN_H * 3600:
+            continue
+        alerts[uid] = ts
+        c = cat.get(uid) or {}
+        genre = c.get("categorie") or (
+            "comic" if str(it.get("element_type") or "") == "COMIC_COVER"
+            else "collectible")
+        nom = c.get("name") or it.get("name") or uid[:8]
+        out.append({"uuid": uid, "name": nom, "categorie": genre,
+                    "edition": it.get("edition") or "",
+                    "usd": round(usd, 2), "prev": round(prev, 2),
+                    "omi": round(pr)})
+    if len(out) > ATL_STACKR_MAX:
+        for a in out:
+            alerts.pop(a["uuid"], None)
+        print("  ⛔ " + str(len(out)) + " plus-bas StackR d'un coup — anormal. "
+              "RIEN publie ni memorise.", file=sys.stderr)
+        return []
+    out.sort(key=lambda a: a["usd"])
+    return out
+
+
+def carte_atl_stackr(a):
+    lien = lien_stackr(a["uuid"], a.get("categorie", ""))
+    nom = a["name"] + (" #{}".format(a["edition"]) if a.get("edition") else "")
+    lignes = ["Prix StackR : **{:.2f} $** ({} OMI) — **plus-bas jamais vu** sur "
+              "StackR (ancien {:.2f} $)".format(a["usd"], a["omi"], a["prev"]),
+              "[Voir sur StackR](" + lien + ")"]
+    return {"title": ("📉 " + nom)[:250], "color": 0x2980B9,
+            "description": "\n".join(lignes), "url": lien}
+
+
+def notify_atl_stackr(alerts):
+    return _notify_lot1(
+        alerts,
+        "📉 **" + str(len(alerts)) + " plus-bas StackR frais**",
+        carte_atl_stackr,
+        lambda a: "📉 {:<32} {:>8.2f} $ (ancien {:.2f})".format(
+            a["name"][:32], a["usd"], a["prev"]))
 
 
 def detect_pic(state, vol, cat=None, ts=None):
@@ -1787,6 +1887,11 @@ def main() -> int:
     print("📉 plus-bas historique : "
           + ("ON (canal principal)" if ATL_ON else "OFF (ATL_ON=true)"),
           flush=True)
+    print("📉 plus-bas StackR frais (flux 2 min) : "
+          + ("ON (canal principal)" if ATL_STACKR_ON
+             else "OFF (ATL_STACKR_ON=true ; la reference StackR est tenue a "
+                  "jour en attendant)"),
+          flush=True)
     print("🔥 pic d'activite hors drop : "
           + ("ON · ×" + str(PIC_RATIO) + " (min " + str(PIC_MIN_COUNT)
              + " ventes/j) → canal dedie" if PIC_ON
@@ -1810,6 +1915,17 @@ def main() -> int:
             if neuf:
                 veve = neuf
                 dernier_refresh = time.time()
+                _prev_ref = _f(state.get("last_refresh_ts") or 0)
+                _atl_fresh = (_prev_ref > 0
+                              and dernier_refresh - _prev_ref
+                              <= ATL_FRESH_MIN * 60)
+                state["last_refresh_ts"] = dernier_refresh
+                if ATL_ON and _prev_ref > 0 and not _atl_fresh:
+                    print("  📉 plus-bas VeVe : refresh precedent trop vieux "
+                          f"({(dernier_refresh - _prev_ref) / 60:.0f} min > "
+                          f"{ATL_FRESH_MIN:g}) — un plus-bas ne serait pas "
+                          "instantane, on se tait (reference mise a jour).",
+                          flush=True)
                 print(f"  floors VeVe rafraichis : {len(veve)} elements.",
                       flush=True)
                 # 🌉 LE PONT → 🟠H-PRIX : on ecrit les floors collectibles qui ont
@@ -1840,7 +1956,9 @@ def main() -> int:
                 for _lib, _det, _notif, _chan, _wh in (
                         ("🆕 ATH", detect_ath, notify_ath, "alerts_ath", WEBHOOK_ATH),
                         ("📉 plus-bas", detect_atl, notify_atl, "alerts_atl", WEBHOOK)):
-                    _res = _det(state, veve, cat)
+                    _res = (_det(state, veve, cat, fresh=_atl_fresh)
+                            if _det is detect_atl
+                            else _det(state, veve, cat))
                     if not _res:
                         continue
                     if budget(state, _wh) > 0:
@@ -1935,6 +2053,21 @@ def main() -> int:
                     for a in sp:
                         state.get("alerts_spike", {}).pop(a["uuid"], None)
                     print("  🔇 plafond atteint — ventes notables gardees pour "
+                          "plus tard (rien n'est enterre).", flush=True)
+            # 📉 PLUS-BAS StackR FRAIS (flux 2 min = instantane) — sur les mises
+            # en vente ET les ventes du tour. Reference = plus-bas StackR observe
+            # en direct ($), memoire separee ; canal principal.
+            atls = detect_atl_stackr(state, listings + ventes, omi, cat)
+            if atls:
+                if budget(state, WEBHOOK) > 0:
+                    print(f"  [{i}/{POLLS}] 📉 {len(atls)} plus-bas StackR "
+                          f"frais !", flush=True)
+                    total += notify_atl_stackr(atls)
+                    consommer(state, WEBHOOK)
+                else:
+                    for a in atls:
+                        state.get("alerts_atl_stackr", {}).pop(a["uuid"], None)
+                    print("  🔇 plafond atteint — plus-bas StackR gardes pour "
                           "plus tard (rien n'est enterre).", flush=True)
             save_state(state)
         if i < POLLS:
