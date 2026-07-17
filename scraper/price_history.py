@@ -430,10 +430,22 @@ def build_id_map(state_dir: str, refresh: bool = False) -> Tuple[Dict[str, str],
     return id_map, True
 
 
+def _write_status(txt: str) -> None:
+    """Ecrit COMPLET / <nb items faits ce run> pour que le workflow decide de
+    s'auto-enchainer (backfill non fini) ou de s'arreter."""
+    try:
+        with open(os.environ.get("PH_STATUS_FILE", "ph_status.txt"), "w",
+                  encoding="utf-8") as f:
+            f.write(txt)
+    except Exception:
+        pass
+
+
 def run_backfill(catalogue: str, store: str, state_dir: str) -> int:
     t0 = time.time()
     cat = read_catalogue(catalogue)
     done = load_done(state_dir)
+    n_done0 = len(done)
     genesis = _parse_release_date(GENESIS) or dt.date(2021, 6, 1)
     end = dt.datetime.utcnow().date() + dt.timedelta(days=1)
 
@@ -505,6 +517,7 @@ def run_backfill(catalogue: str, store: str, state_dir: str) -> int:
           f"{failed} sautes + {noid} sans id"
           + (" + budget temps atteint" if stopped_early else "")
           + " (retentes au prochain run).", flush=True)
+    _write_status("COMPLET" if tag == "COMPLET" else str(len(done) - n_done0))
     return 0
 
 
