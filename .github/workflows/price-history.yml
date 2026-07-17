@@ -18,6 +18,9 @@ on:
       max_items:
         description: "backfill : limite d'items par run (0 = tout)"
         default: "0"
+      max_minutes:
+        description: "backfill : budget de temps par run en min (arret propre AVANT le timeout ; 0 = illimite)"
+        default: "300"
       window_days:
         description: "backfill : taille de fenetre en jours"
         default: "120"
@@ -72,6 +75,7 @@ jobs:
         env:
           PH_MODE: ${{ github.event.inputs.mode || 'append' }}
           PH_MAX_ITEMS: ${{ github.event.inputs.max_items || '0' }}
+          PH_MAX_MINUTES: ${{ github.event.inputs.max_minutes || vars.PH_MAX_MINUTES || '300' }}
           PH_WINDOW_DAYS: ${{ github.event.inputs.window_days || '120' }}
           PH_WORKERS: ${{ github.event.inputs.workers || '4' }}
           PH_FLUSH_ITEMS: ${{ github.event.inputs.flush_items || '300' }}
