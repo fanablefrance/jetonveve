@@ -33,6 +33,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: price-history
@@ -164,3 +165,17 @@ jobs:
             sleep 10
           done
           echo "push de l'etat non abouti (la release est sauve ; recommit au prochain run)."
+
+      - name: "Auto-enchainer le backfill tant qu'il reste des items"
+        if: ${{ (github.event.inputs.mode || 'append') == 'backfill' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          S="$(cat ph_status.txt 2>/dev/null || echo '')"
+          if [ -n "$S" ] && [ "$S" != "COMPLET" ] && [ "$S" != "0" ]; then
+            echo "Backfill incomplet ($S items ce run) -> relance automatique du suivant."
+            gh workflow run price-history.yml \
+              -f mode=backfill -f max_items=0 -f max_minutes=300 -f window_days=120
+          else
+            echo "Backfill COMPLET (ou aucun progres) -> pas de relance."
+          fi
