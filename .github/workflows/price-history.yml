@@ -1,0 +1,144 @@
+name: price-history
+
+# Magasin de prix IMPERISSABLE (release prices-full : prices.parquet + prices.csv.gz).
+#   - cron quotidien  : mode append (GRATUIT, lit catalogue.csv.gz, zero appel API)
+#   - dispatch manuel : mode backfill (rejoue l'historique NftPriceMetrics, REPRENABLE
+#                       -> relancer jusqu'a "COMPLET") ou publish seul.
+
+on:
+  schedule:
+    - cron: "11 7 * * *"        # 07:11 UTC, apres catalogue-export (06:41)
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "append (quotidien) | backfill (historique, a relancer) | publish"
+        type: choice
+        options: [append, backfill, publish]
+        default: append
+      max_items:
+        description: "backfill : limite d'items par run (0 = tout)"
+        default: "0"
+      window_days:
+        description: "backfill : taille de fenetre en jours"
+        default: "120"
+      workers:
+        description: "backfill : items en parallele"
+        default: "4"
+      flush_items:
+        description: "backfill : items entre deux flush (ecriture + etat)"
+        default: "300"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: price-history
+  cancel-in-progress: false
+
+jobs:
+  prices:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350          # backfill long : reprend au run suivant (etat commite)
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Dependances
+        run: pip install duckdb requests
+
+      - name: "Telecharger le catalogue (uuid + release_date + floor du jour)"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download catalogue -p catalogue.csv.gz -D . --clobber
+          ls -lh catalogue.csv.gz
+
+      - name: "Telecharger le store prices-full actuel (s'il existe)"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view prices-full >/dev/null 2>&1; then
+            gh release download prices-full -p prices.csv.gz -D . --clobber || true
+            gh release download prices-full -p prices.parquet -D . --clobber || true
+            [ -f prices.csv.gz ] && gunzip -kf prices.csv.gz && echo "store repris ($(wc -l < prices.csv) lignes)."
+          else
+            echo "ℹ️ Premiere execution — pas de store existant."
+          fi
+
+      - name: "Collecte (mode = ${{ github.event.inputs.mode || 'append' }})"
+        env:
+          PH_MODE: ${{ github.event.inputs.mode || 'append' }}
+          PH_MAX_ITEMS: ${{ github.event.inputs.max_items || '0' }}
+          PH_WINDOW_DAYS: ${{ github.event.inputs.window_days || '120' }}
+          PH_WORKERS: ${{ github.event.inputs.workers || '4' }}
+          PH_FLUSH_ITEMS: ${{ github.event.inputs.flush_items || '300' }}
+          CATALOGUE: catalogue.csv.gz
+          STORE: prices.csv
+          STATE_DIR: data/prices
+          PARQUET_OUT: prices.parquet
+        run: |
+          if [ "${PH_MODE}" != "publish" ]; then
+            python -m scraper.price_history
+          else
+            echo "publish seul — pas de collecte."
+          fi
+
+      - name: "Reconstruire parquet + csv.gz (DISTINCT, trie) — auto-guerison"
+        env:
+          PH_MODE: publish
+          STORE: prices.csv
+          PARQUET_OUT: prices.parquet
+          CSV_OUT: prices.csv.gz
+        run: |
+          python -m scraper.price_history
+          ls -lh prices.parquet prices.csv.gz
+
+      - name: "Secours N-1 (copie de prices-full AVANT ecrasement)"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view prices-full >/dev/null 2>&1; then
+            mkdir -p prev
+            gh release download prices-full -D prev --clobber || true
+            if [ -n "$(ls -A prev 2>/dev/null)" ]; then
+              gh release view prices-full-prev >/dev/null 2>&1 || \
+                gh release create prices-full-prev \
+                  -t "Magasin de prix — veille (secours N-1)" \
+                  -n "Copie automatique de prices-full AVANT sa derniere mise a jour. Retombee si un run produit un fichier corrompu."
+              gh release upload prices-full-prev prev/* --clobber
+              echo "✅ N-1 sauvegarde."
+            fi
+          else
+            echo "ℹ️ Pas de N-1 (premiere publication)."
+          fi
+
+      - name: "Publier la release prices-full"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view prices-full >/dev/null 2>&1 || \
+            gh release create prices-full \
+              -t "Magasin de prix impérissable" \
+              -n "Courbe floor + nb d'offres par item VeVe (my-nft-tracker), append-on-change. prices.parquet queryable par URL (DuckDB httpfs) ; prices.csv.gz idem. Schema : veve_uuid, ts_utc, floor, listings."
+          gh release upload prices-full prices.parquet prices.csv.gz --clobber
+          echo "✅ prices-full publie."
+
+      - name: "Commit de l'etat de reprise (backfill) avec rebase+retry"
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f data/prices/ph_done.txt 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "Aucun changement d'etat a committer."
+            exit 0
+          fi
+          git commit -m "price-history: etat de reprise (backfill)"
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash origin ${GITHUB_REF_NAME:-main} && \
+              git push origin HEAD:${GITHUB_REF_NAME:-main} && { echo "push OK"; exit 0; }
+            echo "push rejete, essai $i…"; sleep 10
+          done
+          echo "⚠️ push de l'etat non abouti — la recolte (release) est sauve, l'etat sera recommite au prochain run."
