@@ -141,7 +141,7 @@ def _tracke(tracked, wallet, username) -> Optional[Dict]:
 def detect_marche(state, listings, ventes, tracked, omi):
     """Achats, ventes et mises en vente d'un compte suivi. Chaque evenement est
     identifie par (genre, nft_id, timestamp) et dedoublonne dans `vus`."""
-    vus = state.setdefault("vus", {})
+    vus = state.setdefault("whale_vus", {})
     ts = time.time()
     cand: List[Dict] = []
     local = set()
@@ -217,7 +217,7 @@ def detect_transferts(state, tracked):
     (mint) et le burn sink : ne restent que les vrais transferts. Dedup par tx.
     """
     par_wallet, _ = tracked
-    vus = state.setdefault("tx_vus", {})
+    vus = state.setdefault("whale_tx_vus", {})
     ts = time.time()
     cand: List[Dict] = []
 

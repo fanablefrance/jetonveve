@@ -1903,6 +1903,24 @@ def main() -> int:
              else "OFF (HPRIX_FEED_ON=true ; la reference des floors est tenue "
                   "a jour en attendant)"),
           flush=True)
+    # 🐋 SUIVI WHALE/TEAM — fusionne dans CE workflow le 17/07 : le flux StackR
+    # est deja recupere ici, inutile de le fetch une 2e fois dans un workflow a
+    # part. Les detecteurs vivent dans whale_watch (module separe, lisible) ; on
+    # les pilote depuis cette boucle. Import DIFFERE : whale_watch importe
+    # floor_watch, un import en tete de fichier ferait un cycle.
+    from scraper import whale_watch as ww
+    ww.SIMULER = ww.SIMULER or SIMULER        # un run floor en simuler simule aussi le whale
+    wtracked = ww.charger_tracked() if ww.WHALE_ON else ({}, {})
+    whale_actif = ww.WHALE_ON and (wtracked[0] or wtracked[1])
+    n_whale = len({id(v) for v in wtracked[0].values()}
+                  | {id(v) for v in wtracked[1].values()})
+    print("🐋 suivi whale/team : "
+          + (f"ON · {n_whale} compte(s) suivi(s) → canal "
+             + ("dedie" if os.environ.get("DISCORD_WEBHOOK_WHALE") else "principal")
+             if whale_actif
+             else "OFF (WHALE_ON=true + comptes tagues dans 🟣C-PSEUDOS)"),
+          flush=True)
+
     s = requests.Session()
     veve: Dict[str, float] = {}
     dernier_refresh = 0.0
@@ -1991,6 +2009,15 @@ def main() -> int:
                         state.get("alerts_pic", {}).pop(a["uuid"], None)
                     print("  🔇 plafond atteint — pics d'activite gardes pour "
                           "plus tard (rien n'est enterre).", flush=True)
+            # 🐋 GROS TRANSFERTS on-chain (wallet-a-wallet) des comptes suivis —
+            # meme cadence horaire que le refresh (collectscan est public, on
+            # reste poli). → canal whale dedie.
+            if whale_actif:
+                wx = ww.detect_transferts(state, wtracked)
+                if wx:
+                    total += ww.notifier(state, wx)
+                    print(f"  🐋 {len(wx)} gros transfert(s) compte suivi.",
+                          flush=True)
         ventes = fetch_sales(s)                       # ventes REELLES (OMI)
         nv = note_sales(state, ventes, omi)
         listings = fetch_listings(s)
@@ -2069,6 +2096,14 @@ def main() -> int:
                         state.get("alerts_atl_stackr", {}).pop(a["uuid"], None)
                     print("  🔇 plafond atteint — plus-bas StackR gardes pour "
                           "plus tard (rien n'est enterre).", flush=True)
+            # 🐋 ACHATS / VENTES / MISES EN VENTE des comptes suivis, sur le MEME
+            # flux (listings + ventes) deja recupere ce tour → canal whale dedie.
+            if whale_actif:
+                wm = ww.detect_marche(state, listings, ventes, wtracked, omi)
+                if wm:
+                    print(f"  [{i}/{POLLS}] 🐋 {len(wm)} evenement(s) marche "
+                          f"compte suivi.", flush=True)
+                    total += ww.notifier(state, wm)
             save_state(state)
         if i < POLLS:
             time.sleep(INTERVAL_S)
