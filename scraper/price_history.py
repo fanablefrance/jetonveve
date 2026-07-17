@@ -15,8 +15,8 @@ Source
 ⚠️ le `guid` est l'id INTERNE my-nft-tracker (champ `uuid` de /api/Nfts),
 PAS le veve_uuid (= externalReference, celui du catalogue). D'ou la carte
 veve_uuid->id tracker (build_id_map). Les COMICS n'ont pas de courbe ici
-(NftPriceMetrics renvoie [] meme apres trade) -> backfill collectibles only,
-les comics accumulent via l'append quotidien.
+(NftPriceMetrics renvoie [] seulement pour les items JAMAIS trades) -> on
+backfille tout ; les items sans historique sont clos a 0 ligne, gratuitement.
 PUBLIC, sans auth. Renvoie un tableau chronologique de
     {nftUuid, createdTimestamp, lowestMarketPrice(=floor), totalMarketListings}
 
@@ -79,11 +79,12 @@ FILLER_UUID = "00000000-0000-0000-0000-000000000000"
 STORE_HEADER = ("veve_uuid", "ts_utc", "floor", "listings")
 API_NFTS = "https://my-nft-tracker-backend.azurewebsites.net/api/Nfts"
 NFTS_PAGE = int(os.environ.get("PH_NFTS_PAGE", "24"))   # >24 corrompt la pagination
-# my-nft-tracker n'expose la courbe (NftPriceMetrics) que pour les COLLECTIBLES ;
-# les comics y renvoient [] meme apres avoir trade -> on ne les backfille pas (ils
-# accumulent via l'append quotidien). Override possible : PH_BACKFILL_KINDS.
+# NftPriceMetrics sert la courbe des COLLECTIBLES ET des comics TRADES (confirme
+# 17/07 : un comic grail a un historique complet ; seuls les comics jamais trades
+# renvoient [] -> 0 ligne, clos proprement). Defaut vide = TOUT le catalogue ;
+# PH_BACKFILL_KINDS=collectible pour ne faire que les collectibles.
 BACKFILL_KINDS = {k.strip().lower() for k in
-                  os.environ.get("PH_BACKFILL_KINDS", "collectible").split(",")
+                  os.environ.get("PH_BACKFILL_KINDS", "").split(",")
                   if k.strip()}
 
 GENESIS = os.environ.get("PH_GENESIS", "2021-06-01")
