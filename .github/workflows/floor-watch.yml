@@ -122,26 +122,6 @@ on:
         description: "🔥 Pic : multiple de la moyenne des jours actifs pour alerter (defaut 3 = ×3)"
         required: false
         default: ""
-      histlow_on:
-        description: "📊 Plus-bas de distribution (percentile multi-annees) : allumer → canal principal"
-        required: false
-        default: "false"
-        type: choice
-        options: ["false", "true"]
-      histlow_pct:
-        description: "📊 Percentile bas sous lequel alerter (defaut 10 = les 10% les moins chers de l'histoire)"
-        required: false
-        default: ""
-      vol_on:
-        description: "🔊 Anomalie d'offres (nb d'offres vs norme historique) : allumer → canal dedie"
-        required: false
-        default: "false"
-        type: choice
-        options: ["false", "true"]
-      vol_ratio:
-        description: "🔊 Multiple de la mediane d'offres pour alerter (defaut 3 = ×3)"
-        required: false
-        default: ""
       hprix_feed:
         description: "🌉 Pont → 🟠H-PRIX : ecrire les floors collectibles qui changent dans data/hprix_feed.csv (preda l'ingere)"
         required: false
@@ -280,11 +260,11 @@ jobs:
           PIC_MIN_BASE: ${{ vars.PIC_MIN_BASE || '1' }}
           PIC_MAX: ${{ vars.PIC_MAX || '10' }}
           # 📊🔊 SIGNAUX BASELINES (magasin de prix prices-full). ETEINTS par defaut.
-          HISTLOW_ON: ${{ github.event.inputs.histlow_on || vars.HISTLOW_ON || 'false' }}
-          HISTLOW_PCT: ${{ github.event.inputs.histlow_pct || vars.HISTLOW_PCT || '10' }}
+          HISTLOW_ON: ${{ vars.HISTLOW_ON || 'false' }}
+          HISTLOW_PCT: ${{ vars.HISTLOW_PCT || '10' }}
           HISTLOW_MIN_POINTS: ${{ vars.HISTLOW_MIN_POINTS || '30' }}
-          VOL_ON: ${{ github.event.inputs.vol_on || vars.VOL_ON || 'false' }}
-          VOL_RATIO: ${{ github.event.inputs.vol_ratio || vars.VOL_RATIO || '3' }}
+          VOL_ON: ${{ vars.VOL_ON || 'false' }}
+          VOL_RATIO: ${{ vars.VOL_RATIO || '3' }}
           # 🌉 LE PONT VEILLE → 🟠H-PRIX (collectibles). OFF par defaut : on ecrit
           # dans data/hprix_feed.csv, preda l'ingere. Champ > variable > defaut.
           # La reference des floors est tenue a jour meme OFF (rien a cracher au
