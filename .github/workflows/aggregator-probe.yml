@@ -1,0 +1,30 @@
+name: Probe agrégateur (webhooks source)
+
+# One-shot : liste les webhooks « Channel Follower » de #aglomerateur pour
+# construire la table de routage source -> post de forum. Colle le LOG dans le
+# chat. Rien n'est commité, aucune donnée écrite.
+#
+# Prérequis : secret DISCORD_BOT_TOKEN (bot d'archive) + le bot voit
+# #aglomerateur et a « Gérer les webhooks » sur ce salon. Aucun intent requis.
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel_id:
+        description: "id du salon agrégateur (défaut = #aglomerateur)"
+        required: false
+        default: "1527591046505173072"
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Lister les webhooks source
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          AGG_CHANNEL_ID: ${{ github.event.inputs.channel_id || '1527591046505173072' }}
+        run: python scraper/aggregator_probe.py
