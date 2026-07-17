@@ -52,7 +52,8 @@ echoue est saute (jamais de raise qui jette le reste), retente au run suivant.
 Env : PH_MODE, CATALOGUE (catalogue.csv.gz), STORE (prices.csv),
       STATE_DIR (data/prices), PARQUET_OUT (prices.parquet),
       PH_GENESIS (2021-06-01), PH_WINDOW_DAYS (120), PH_WORKERS (4),
-      PH_FLUSH_ITEMS (300), PH_MAX_ITEMS (0=tout).
+      PH_FLUSH_ITEMS (300), PH_MAX_ITEMS (0=tout), PH_MAX_MINUTES (300 ; budget
+      temps -> arret propre avant timeout, 0=illimite).
 """
 
 from __future__ import annotations
@@ -93,6 +94,10 @@ MIN_WINDOW_DAYS = int(os.environ.get("PH_MIN_WINDOW_DAYS", "15"))
 WORKERS = int(os.environ.get("PH_WORKERS", "4"))
 FLUSH_ITEMS = int(os.environ.get("PH_FLUSH_ITEMS", "300"))
 MAX_ITEMS = int(os.environ.get("PH_MAX_ITEMS", "0"))
+# ⏱️ BUDGET DE TEMPS (min) : le backfill s'arrete PROPREMENT avant le timeout du
+# job GitHub (350 min) pour laisser les etapes publish+commit persister la
+# progression -> `max_items=0` devient sur, chaque run sauve sa recolte. 0 = illimite.
+MAX_MINUTES = float(os.environ.get("PH_MAX_MINUTES", "300"))
 TIMEOUT = int(os.environ.get("PH_TIMEOUT", "40"))
 RETRIES = int(os.environ.get("PH_RETRIES", "6"))
 BACKOFF = float(os.environ.get("PH_BACKOFF", "2"))
@@ -426,6 +431,7 @@ def build_id_map(state_dir: str, refresh: bool = False) -> Tuple[Dict[str, str],
 
 
 def run_backfill(catalogue: str, store: str, state_dir: str) -> int:
+    t0 = time.time()
     cat = read_catalogue(catalogue)
     done = load_done(state_dir)
     genesis = _parse_release_date(GENESIS) or dt.date(2021, 6, 1)
@@ -466,7 +472,14 @@ def run_backfill(catalogue: str, store: str, state_dir: str) -> int:
         return veve, lines, ("ok" if ok else "fail")
 
     total_rows = failed = noid = processed = 0
+    stopped_early = False
     for i in range(0, len(todo), FLUSH_ITEMS):
+        if MAX_MINUTES and (time.time() - t0) > MAX_MINUTES * 60:
+            stopped_early = True
+            print(f"  ⏱️ budget de temps atteint ({MAX_MINUTES:g} min) — arret PROPRE "
+                  f"a {processed}/{len(todo)} items ; publish+commit vont persister, "
+                  f"le prochain run reprend.", flush=True)
+            break
         chunk = todo[i:i + FLUSH_ITEMS]
         buf: List[tuple] = []
         ok_uuids: List[str] = []
@@ -487,9 +500,11 @@ def run_backfill(catalogue: str, store: str, state_dir: str) -> int:
               f"+{len(buf)} lignes (total {total_rows}), {failed} sautes, "
               f"{noid} sans id.", flush=True)
 
-    tag = "INCOMPLET" if (failed or noid) else "COMPLET"
+    tag = "INCOMPLET" if (failed or noid or stopped_early) else "COMPLET"
     print(f"{tag} : {processed} items, {total_rows} lignes on-change ecrites, "
-          f"{failed} sautes + {noid} sans id (retentes au prochain run).", flush=True)
+          f"{failed} sautes + {noid} sans id"
+          + (" + budget temps atteint" if stopped_early else "")
+          + " (retentes au prochain run).", flush=True)
     return 0
 
 
