@@ -100,6 +100,12 @@ on:
         default: "true"
         type: choice
         options: ["false", "true"]
+      atl_stackr:
+        description: "📉 Plus-bas StackR FRAIS (flux 2 min, instantane) : allumer ce canal → canal principal"
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
       pic_on:
         description: "🔥 Pic d'activité hors drop : allumer ce canal (ventes du jour d'un item qui explosent vs sa moyenne) → canal dedie"
         required: false
@@ -221,6 +227,11 @@ jobs:
           ATL_MAX: ${{ vars.ATL_MAX || '10' }}
           # 📉 n'alerte que si le floor est au moins X % SOUS l'ATL (defaut 25).
           ATL_MARGIN_PCT: ${{ vars.ATL_MARGIN_PCT || '25' }}
+          ATL_FRESH_MIN: ${{ vars.ATL_FRESH_MIN || '70' }}
+          ATL_STACKR_ON: ${{ github.event.inputs.atl_stackr || vars.ATL_STACKR_ON || 'false' }}
+          ATL_STACKR_MIN_USD: ${{ vars.ATL_STACKR_MIN_USD || '1' }}
+          ATL_STACKR_MARGIN_PCT: ${{ vars.ATL_STACKR_MARGIN_PCT || '5' }}
+          ATL_STACKR_MAX: ${{ vars.ATL_STACKR_MAX || '10' }}
           # 🆕 n'alerte que si le floor depasse l'ATH d'au moins X % (defaut 25).
           ATH_MARGIN_PCT: ${{ vars.ATH_MARGIN_PCT || '25' }}
           # 🔥 PIC D'ACTIVITE HORS DROP (canal dedie WEBHOOK_ATH). ETEINT par

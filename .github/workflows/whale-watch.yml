@@ -1,0 +1,100 @@
+name: 🐋 Suivi comptes whale/team
+
+on:
+  schedule:
+    - cron: "5 * * * *"          # chaque heure (decale des autres workflows)
+  workflow_dispatch:
+    inputs:
+      whale_on:
+        description: "🐋 Allumer le suivi (sinon rien n'est fait)"
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
+      simuler:
+        description: "SIMULER : tout calculer, RIEN envoyer (regler les seuils au calme)"
+        required: false
+        default: "non"
+        type: choice
+        options: ["non", "oui"]
+      polls:
+        description: "Nombre de tours (defaut 25 x 120 s ≈ 50 min)"
+        required: false
+        default: ""
+      xfer_min:
+        description: "🔀 Gros transfert = au moins N jetons dans une meme tx (defaut 5)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: whale-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+
+      # 🐋 Les comptes suivis (tag « Type de compte ») vivent dans le Sheet,
+      # donc chez preda (PRIVE). On va chercher le seul fichier necessaire, en
+      # lecture seule. Si ce checkout echoue, le module se tait poliment (aucun
+      # compte suivi) — rien d'autre n'est touche.
+      - name: "Comptes suivis (CSV exporte par preda depuis 🟣C-PSEUDOS)"
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: VeVePreda/scrapeur-veve
+          token: ${{ secrets.PREDA_TOKEN }}
+          path: _preda
+          sparse-checkout: data/tracked_accounts.csv
+          sparse-checkout-cone-mode: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+
+      - name: Suivi des comptes whale/team
+        env:
+          DISCORD_WEBHOOK_WHALE: ${{ secrets.DISCORD_WEBHOOK_WHALE }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          WHALE_ON: ${{ github.event.inputs.whale_on || vars.WHALE_ON || 'false' }}
+          WHALE_SIMULER: ${{ github.event.inputs.simuler == 'oui' && '1' || '' }}
+          WHALE_POLLS: ${{ github.event.inputs.polls || vars.WHALE_POLLS || '25' }}
+          WHALE_XFER_MIN: ${{ github.event.inputs.xfer_min || vars.WHALE_XFER_MIN || '5' }}
+          WHALE_MIN_USD: ${{ vars.WHALE_MIN_USD || '1' }}
+          WHALE_MAX: ${{ vars.WHALE_MAX || '10' }}
+          WHALE_REFRESH_MIN: ${{ vars.WHALE_REFRESH_MIN || '60' }}
+          WHALE_XFER_PAGES: ${{ vars.WHALE_XFER_PAGES || '3' }}
+          FLOOR_MAX_MSG_MIN: ${{ vars.FLOOR_MAX_MSG_MIN || '20' }}
+        run: python -m scraper.whale_watch
+
+      # ⚠️ LA RECOLTE EST SACREE — y compris contre git. Meme regle que
+      # floor_watch : on ne rebase pas l'etat, on le FUSIONNE (union +
+      # plus-recent-gagne) via scraper.floor_state_merge, generique.
+      - name: Commit de l'etat (fusion, jamais d'ecrasement)
+        if: always()
+        run: |
+          [ -f data/whale_state.json ] || exit 0
+          cp data/whale_state.json /tmp/mien.json
+          for i in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            git checkout origin/main -- data/whale_state.json 2>/dev/null || true
+            python -m scraper.floor_state_merge /tmp/mien.json data/whale_state.json
+            git config user.name "github-actions"
+            git config user.email "actions@github.com"
+            git add data/whale_state.json
+            git diff --cached --quiet && { echo "Rien a committer."; exit 0; }
+            git commit -m "whale_watch: etat (fusionne)"
+            git push origin main && exit 0
+            echo "push rejete — on refusionne avec l'etat du depot."
+            sleep $((i * 5))
+          done
+          echo "⛔ etat NON pousse apres 5 essais." >&2
