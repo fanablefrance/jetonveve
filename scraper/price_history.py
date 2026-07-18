@@ -325,7 +325,7 @@ def last_values(source: str) -> Dict[str, Tuple[Optional[float], Optional[int]]]
     try:
         import duckdb
         rel = ("read_parquet('%s')" % source if source.endswith(".parquet")
-               else "read_csv_auto('%s', header=true)" % source)
+               else f"read_csv_auto('{source}', header=true)")
         q = (f"SELECT veve_uuid, arg_max(floor, ts_utc) f, "
              f"arg_max(listings, ts_utc) l FROM {rel} GROUP BY veve_uuid")
         for uuid, f, l in duckdb.connect().execute(q).fetchall():
@@ -584,25 +584,55 @@ def run_baselines(source: str, out_csv: str, cap: float = 1e9) -> int:
 
 
 def run_publish(store: str, parquet_out: str, csv_out: str) -> int:
-    """Reconstruit parquet + csv.gz DISTINCT et tries. Auto-guerit les doublons."""
+    """Reconstruit parquet + csv.gz DISTINCT et tries. Auto-guerit les doublons.
+
+    ⚠️ On lit le store en PYTHON (module csv), PAS via le sniffer DuckDB : ce
+    dernier a plante en prod (« could not detect dialect ») des qu'une ligne a un
+    nombre de colonnes inattendu. csv.reader gere le quoting et on saute proprement
+    les lignes malformees (!= 4 champs). Puis DuckDB ecrit le parquet depuis un CSV
+    PROPRE (colonnes garanties)."""
     if not os.path.exists(store):
         print("publish : aucun store a publier.", flush=True)
         return 0
+    import csv as _csv
     import duckdb
+    seen = {}
+    n_in = bad = 0
+    with open(store, encoding="utf-8", newline="") as f:
+        rd = _csv.reader(f)
+        next(rd, None)                                   # entete
+        for row in rd:
+            n_in += 1
+            if len(row) != 4 or not row[0] or not row[1]:
+                bad += 1
+                continue
+            seen[(row[0], row[1], row[2], row[3])] = None   # dedup exact
+    rows = sorted(seen.keys(), key=lambda t: (t[0], t[1]))
+    clean = store + ".clean"
+    with open(clean, "w", encoding="utf-8", newline="") as f:
+        w = _csv.writer(f)
+        w.writerow(STORE_HEADER)
+        w.writerows(rows)
     con = duckdb.connect()
-    src = f"read_csv_auto('{store}', header=true)"
-    n_in = con.execute(f"SELECT count(*) FROM {src}").fetchone()[0]
-    dedup = (f"SELECT DISTINCT veve_uuid, ts_utc, floor, listings FROM {src} "
-             f"ORDER BY veve_uuid, ts_utc")
-    con.execute(f"COPY ({dedup}) TO '{parquet_out}' (FORMAT parquet, COMPRESSION zstd)")
-    con.execute(f"COPY ({dedup}) TO '{csv_out}' (FORMAT csv, HEADER, COMPRESSION gzip)")
+    src = ("read_csv('%s', header=true, columns={'veve_uuid':'VARCHAR',"
+           "'ts_utc':'VARCHAR','floor':'VARCHAR','listings':'VARCHAR'})" % clean)
+    q = ("SELECT veve_uuid, ts_utc, TRY_CAST(floor AS DOUBLE) AS floor, "
+         "TRY_CAST(listings AS BIGINT) AS listings FROM %s "
+         "WHERE TRY_CAST(floor AS DOUBLE) IS NOT NULL "
+         "ORDER BY veve_uuid, ts_utc" % src)
+    con.execute(f"COPY ({q}) TO '{parquet_out}' (FORMAT parquet, COMPRESSION zstd)")
+    con.execute(f"COPY ({q}) TO '{csv_out}' (FORMAT csv, HEADER, COMPRESSION gzip)")
     n_out = con.execute(
         f"SELECT count(*) FROM read_parquet('{parquet_out}')").fetchone()[0]
     n_items = con.execute(
         f"SELECT count(DISTINCT veve_uuid) FROM read_parquet('{parquet_out}')"
     ).fetchone()[0]
-    print(f"publish : {n_in} lignes brutes -> {n_out} distinctes sur {n_items} "
-          f"items. Ecrits : {parquet_out} + {csv_out}.", flush=True)
+    try:
+        os.remove(clean)
+    except OSError:
+        pass
+    print(f"publish : {n_in} lignes lues ({bad} ecartees) -> {n_out} distinctes "
+          f"sur {n_items} items. Ecrits : {parquet_out} + {csv_out}.", flush=True)
     return 0
 
 
