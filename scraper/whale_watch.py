@@ -330,6 +330,11 @@ def notifier(state, cartes):
     contenu = "🐋 **{} evenement(s) — comptes suivis** — {}".format(
         len(cartes), _dt.datetime.now(_dt.timezone.utc).strftime("%H:%M UTC"))
     embeds = [carte(a) for a in cartes[:10]]
+    # Les evenements de genre « gros transfert » n'ont pas d'uuid : le pont
+    # les ignore tout seul (sans identifiant, impossible de dedoublonner ni
+    # de croiser une liste de surveillance).
+    from scraper import bot_alertes
+    bot_alertes.pousser_lot("whale", cartes[:10], embeds, simuler=SIMULER)
     try:
         r = requests.post(WEBHOOK, json={"content": contenu, "embeds": embeds},
                           timeout=20)

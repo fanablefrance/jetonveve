@@ -57,6 +57,19 @@ import requests
 from scraper import numeros as nu
 from scraper import price_baseline as pb
 
+# Pont vers le bot d'alertes (etape 4 du bot Discord). Volontairement
+# tolerant : si le fichier manque, floor_watch doit continuer a tourner
+# comme avant. Un module d'agrement ne rend jamais un collecteur dependant
+# de lui.
+try:
+    from scraper import bot_alertes
+except Exception:                                          # noqa: BLE001
+    class _BotMuet:
+        @staticmethod
+        def pousser_lot(*a, **k):
+            return 0
+    bot_alertes = _BotMuet()
+
 BASE = "https://www.stackr.world/api/trpc/publicVeve."
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
@@ -509,6 +522,7 @@ def notify_comics(alerts: List[Dict]) -> int:
                f"{COMIC_MAX_USD:g} $** — "
                + _dt.datetime.now(_dt.timezone.utc).strftime("%H:%M UTC"))
     embeds = [carte_comic(a) for a in alerts[:10]]
+    bot_alertes.pousser_lot("comics", alerts[:10], embeds, simuler=SIMULER)
     if not WEBHOOK or SIMULER:
         print("  [SIMULATION — rien n'est envoye]", flush=True)
         for a in alerts[:10]:
@@ -1219,6 +1233,7 @@ def notify_mints(alerts):
     contenu = ("🎯 **" + str(len(alerts)) + " numéro(s) remarquable(s)** — "
                + _dt.datetime.now(_dt.timezone.utc).strftime("%H:%M UTC"))
     embeds = [carte_mint(a) for a in alerts[:10]]
+    bot_alertes.pousser_lot("mint", alerts[:10], embeds, simuler=SIMULER)
     if not WEBHOOK or SIMULER:
         print("  [SIMULATION — rien n'est envoye]", flush=True)
         for a in alerts[:10]:
@@ -1499,7 +1514,7 @@ def carte_spike(a):
             "description": "\n".join(lignes), "url": lien}
 
 
-def _notify_lot1(alerts, titre, carte, ligne_sim, webhook=None):
+def _notify_lot1(alerts, titre, carte, ligne_sim, webhook=None, canal=None):
     """Un message groupe, 10 cartes max, 429 respecte — comme les autres.
     `webhook` route vers un autre canal (None = webhook principal)."""
     wh = webhook if webhook is not None else WEBHOOK
@@ -1508,6 +1523,7 @@ def _notify_lot1(alerts, titre, carte, ligne_sim, webhook=None):
     contenu = titre + " — " + _dt.datetime.now(_dt.timezone.utc).strftime(
         "%H:%M UTC")
     embeds = [carte(a) for a in alerts[:10]]
+    bot_alertes.pousser_lot(canal, alerts[:10], embeds, simuler=SIMULER)
     if not wh or SIMULER:
         print("  [SIMULATION — rien n'est envoye]", flush=True)
         for a in alerts[:10]:
@@ -1533,7 +1549,8 @@ def notify_steal(alerts):
         "🩸 **" + str(len(alerts)) + " floor(s) VeVe effondre(s)**",
         carte_steal,
         lambda a: "🩸 {:<32} {:>7.2f} $ (etait {:.2f}, −{} %)".format(
-            a["name"][:32], a["floor"], a["avant"], a["drop"]))
+            a["name"][:32], a["floor"], a["avant"], a["drop"]),
+        canal="steal")
 
 
 def notify_spike(alerts):
@@ -1543,7 +1560,8 @@ def notify_spike(alerts):
         carte_spike,
         lambda a: "📈 {:<32} vendu {:>8.2f} $ (floor {:.2f}, ×{})".format(
             a["name"][:32], a["vente"], a["floor"], a["ratio"]),
-        webhook=WEBHOOK_ATH)
+        webhook=WEBHOOK_ATH,
+        canal="spike")
 
 
 def carte_ath(a):
@@ -1575,7 +1593,8 @@ def notify_ath(alerts):
         carte_ath,
         lambda a: "🆕 {:<32} {:>8.2f} $ (ancien ATH {:.2f})".format(
             a["name"][:32], a["floor"], a["ath"]),
-        webhook=WEBHOOK_ATH)
+        webhook=WEBHOOK_ATH,
+        canal="ath")
 
 
 def notify_atl(alerts):
@@ -1584,7 +1603,8 @@ def notify_atl(alerts):
         "📉 **" + str(len(alerts)) + " plus-bas historique(s)**",
         carte_atl,
         lambda a: "📉 {:<32} {:>8.2f} $ (ancien ATL {:.2f})".format(
-            a["name"][:32], a["floor"], a["atl"]))
+            a["name"][:32], a["floor"], a["atl"]),
+        canal="atl")
 
 
 def carte_histlow(a):
@@ -1605,7 +1625,8 @@ def notify_histlow(alerts):
         "📊 **" + str(len(alerts)) + " floor(s) dans le bas de leur histoire**",
         carte_histlow,
         lambda a: "📊 {:<32} {:>8.2f} $ ({}e pct)".format(
-            a["name"][:32], a["floor"], int(a["rank"])))
+            a["name"][:32], a["floor"], int(a["rank"])),
+        canal="histlow")
 
 
 def carte_vol(a):
@@ -1624,7 +1645,8 @@ def notify_vol(alerts):
         carte_vol,
         lambda a: "🔊 {:<32} {} offres (×{:.1f})".format(
             a["name"][:32], a["listings"], a["ratio"]),
-        webhook=WEBHOOK_ATH)
+        webhook=WEBHOOK_ATH,
+        canal="vol")
 
 
 def detect_atl_stackr(state, flux, omi, cat=None, ts=None):
@@ -1698,7 +1720,8 @@ def notify_atl_stackr(alerts):
         "📉 **" + str(len(alerts)) + " plus-bas StackR frais**",
         carte_atl_stackr,
         lambda a: "📉 {:<32} {:>8.2f} $ (ancien {:.2f})".format(
-            a["name"][:32], a["usd"], a["prev"]))
+            a["name"][:32], a["usd"], a["prev"]),
+        canal="atl_stackr")
 
 
 def detect_pic(state, vol, cat=None, ts=None):
@@ -1774,7 +1797,8 @@ def notify_pic(alerts):
         carte_pic,
         lambda a: "🔥 {:<32} {:>3} ventes (moy {}/j, ×{})".format(
             a["name"][:32], a["today"], a["base"], a["ratio"]),
-        webhook=WEBHOOK_ATH)
+        webhook=WEBHOOK_ATH,
+        canal="pic")
 
 
 COULEURS = {"stackr": 0x3498DB,      # bleu   : sous le floor StackR
@@ -1844,6 +1868,7 @@ def notify(alerts: List[Dict]) -> int:
     if not alerts:
         return 0
     embeds = [_embed(a) for a in alerts[:10]]
+    bot_alertes.pousser_lot("affaires", alerts[:10], embeds, simuler=SIMULER)
     contenu = (f"🚨 **{len(alerts)} affaire(s)** — "
                + _dt.datetime.now(_dt.timezone.utc).strftime("%H:%M UTC"))
     if len(alerts) > 10:
