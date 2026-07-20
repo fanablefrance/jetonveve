@@ -40,15 +40,18 @@ import sys
 import urllib.request
 
 ETAT = os.environ.get("AUDIT_ETAT", "data/floor_state.json")
-BASELINES = os.environ.get(
-    "BASELINES_SRC",
-    "https://github.com/fanablefrance/jetonveve/releases/download/"
-    "prices-full/prices_baselines.csv.gz")
+# ⚠️ `.get(nom, defaut)` rend la CHAINE VIDE si la variable existe mais
+# est vide — ce qui est exactement ce que fait un champ de lancement laisse
+# blanc. Le defaut n'est alors JAMAIS applique, et urlopen("") echoue sur
+# « unknown url type ». Vu en vrai au 1er lancement du 20/07.
+_DEFAUT_BASELINES = ("https://github.com/fanablefrance/jetonveve/releases/"
+                     "download/prices-full/prices_baselines.csv.gz")
+BASELINES = os.environ.get("BASELINES_SRC", "").strip() or _DEFAUT_BASELINES
 
 # Au-dela, un prix n'est pas un prix : c'est une offre farfelue ou une
 # faute de frappe. Sert d'etalon a l'audit (et de plafond propose au code).
-PRIX_MAX = float(os.environ.get("FLOOR_PRIX_MAX", "100000"))
-PLANCHER = float(os.environ.get("VEVE_PRIX_PLANCHER", "1"))
+PRIX_MAX = float(os.environ.get("FLOOR_PRIX_MAX", "").strip() or 100000)
+PLANCHER = float(os.environ.get("VEVE_PRIX_PLANCHER", "").strip() or 1)
 
 
 def _j(ts):
@@ -177,11 +180,12 @@ def balayage_atl(etat):
     if ts_atl:
         vieux = min(ts_atl.values())
         recent = max(ts_atl.values())
-        print(f"\n  ⭐ profondeur reelle de la reference : {_j(vieux)} -> {_j(recent)}")
-        print(f"     soit {(recent - vieux)/86400:.1f} jours d'histoire.")
-        print("     Le signal s'appelle « plus-bas HISTORIQUE ». S'il ne repose")
-        print("     que sur quelques jours, le nom promet plus que la donnee.")
-        print("     C'est exactement le trou que 📊 (multi-annees) doit combler.")
+        print(f"\n  `atl_seen` couvre {_j(vieux)} -> {_j(recent)}, soit "
+              f"{(recent - vieux)/86400:.1f} jours.")
+        print("  ⚠️ NE PAS EN CONCLURE que 📉 ne connait que ces jours-la :")
+        print("     `detect_atl` prend min(ATL du catalogue, plus-bas observe),")
+        print("     et l'ATL du catalogue vient de `allTimeLowest` — le vrai")
+        print("     plus-bas publie par VeVe. Voir la section 3bis.")
 
 
 def presence(etat):
