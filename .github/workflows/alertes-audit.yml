@@ -38,6 +38,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Le catalogue vit dans l'autre depot (prive). Sans lui, la section
+      # 3bis ne peut pas dire sur quoi 📉 s'appuie vraiment.
+      # `continue-on-error` : l'audit reste utile sans, il le dit simplement.
+      - name: "Catalogue (pour la section 3bis)"
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: VeVePreda/scrapeur-veve
+          token: ${{ secrets.PREDA_TOKEN }}
+          path: _preda
+          sparse-checkout: data/elements.csv
+          sparse-checkout-cone-mode: false
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
