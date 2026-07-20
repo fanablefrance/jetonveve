@@ -184,8 +184,26 @@ jobs:
           # Canal dedie (🆕 ATH + 📈 x3 + pic). Absent -> repli sur le principal.
           DISCORD_WEBHOOK_ATH: ${{ secrets.DISCORD_WEBHOOK_ATH }}
           FLOOR_SIMULER: ${{ github.event.inputs.simuler == 'oui' && '1' || '' }}
-          FLOOR_POLLS: ${{ github.event.inputs.polls || '25' }}
-          FLOOR_INTERVAL_S: "120"
+          # ⚠️ 20/07/2026 : cette ligne n'avait PAS de `vars.` — poser une
+          # variable de depot FLOOR_POLLS ne changeait donc rien du tout, et
+          # l'experience lancee ce jour-la a tourne a 25 tours sans qu'on le
+          # voie. Toutes les lignes voisines en avaient un ; celle-ci non.
+          FLOOR_POLLS: ${{ github.event.inputs.polls || vars.FLOOR_POLLS || '12' }}
+          # ⭐ Le plus gros poste de requetes : fetch_veve_floors balaie le
+          # catalogue entier en pagination (~62 pages a limit=100). Passer a
+          # 250 le ramene a ~25 pages, A DONNEES IDENTIQUES. Si l'API plafonne
+          # et ignore la valeur, on retombe sans casse sur le comportement
+          # actuel.
+          FLOOR_ELEM_LIMIT: ${{ vars.FLOOR_ELEM_LIMIT || '100' }}
+          FLOOR_REFRESH_MIN: ${{ vars.FLOOR_REFRESH_MIN || '60' }}
+          FLOOR_LISTINGS: ${{ vars.FLOOR_LISTINGS || '50' }}
+          FLOOR_COOLDOWN_H: ${{ vars.FLOOR_COOLDOWN_H || '6' }}
+          # Plafond de vraisemblance : au-dela, un prix n'est pas un signal.
+          FLOOR_PRIX_MAX: ${{ vars.FLOOR_PRIX_MAX || '50000' }}
+          # Sentinelle de recolte maigre (detection de blocage).
+          FLOOR_MIN_RATIO: ${{ vars.FLOOR_MIN_RATIO || '0.8' }}
+          FLOOR_MAIGRE_ALERTE: ${{ vars.FLOOR_MAIGRE_ALERTE || '3' }}
+          FLOOR_INTERVAL_S: ${{ vars.FLOOR_INTERVAL_S || '120' }}
           # Un reglage vaut pour TOUS les runs suivants (repo variable), un champ
           # de lancement ne vaut que pour CE run. L'ordre : champ > variable > defaut.
           FLOOR_MARGIN_PCT: ${{ github.event.inputs.margin_pct || vars.FLOOR_MARGIN_PCT || '20' }}
@@ -263,6 +281,8 @@ jobs:
           HISTLOW_ON: ${{ vars.HISTLOW_ON || 'false' }}
           HISTLOW_PCT: ${{ vars.HISTLOW_PCT || '10' }}
           HISTLOW_MIN_POINTS: ${{ vars.HISTLOW_MIN_POINTS || '30' }}
+          # Plafond propre a 📊/🔊 (ne desserre pas 📉).
+          HISTLOW_MAX: ${{ vars.HISTLOW_MAX || '10' }}
           VOL_ON: ${{ vars.VOL_ON || 'false' }}
           VOL_RATIO: ${{ vars.VOL_RATIO || '3' }}
           # 🌉 LE PONT VEILLE → 🟠H-PRIX (collectibles). OFF par defaut : on ecrit
