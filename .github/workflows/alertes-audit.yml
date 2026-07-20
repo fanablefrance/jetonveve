@@ -1,0 +1,63 @@
+# ⚠️ DEPOT : fanablefrance/jetonveve   ·   CHEMIN : .github/workflows/alertes-audit.yml
+#
+# 🔍 LE BANC D'ESSAI DES ALERTES — il ne poste RIEN et n'ecrit RIEN.
+#
+# Il lit l'etat de production (data/floor_state.json, ecrit par floor-watch)
+# et les baselines multi-annees de la release prices-full, puis il affiche :
+#   · ce qui a vraiment tire, et a quelle cadence ;
+#   · les valeurs aberrantes qui produiraient des cartes invraisemblables ;
+#   · pour CHAQUE seuil envisageable, combien d'alertes il produirait.
+#
+# MANUEL UNIQUEMENT : un calibrage se lance quand on en a besoin, il n'a
+# aucune raison de tourner toutes les nuits.
+#
+# A LANCER : onglet Actions -> « Audit des alertes » -> Run workflow.
+# Tout se lit dans les logs, il n'y a rien a telecharger.
+
+name: Audit des alertes
+
+on:
+  workflow_dispatch:
+    inputs:
+      prix_max:
+        description: "Plafond de vraisemblance en $ (au-dela, un prix n'est pas un prix)"
+        required: false
+        default: "100000"
+      baselines:
+        description: "URL des baselines (vide = la release prices-full)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Aucune dependance : le script n'utilise que la bibliotheque standard.
+      # C'est voulu — un outil de diagnostic qui a besoin d'etre installe est
+      # un outil qu'on ne lance pas.
+
+      - name: Verifier que l'etat existe
+        run: |
+          if [ ! -f data/floor_state.json ]; then
+            echo "❌ data/floor_state.json absent."
+            echo "   Ce fichier est ecrit par le workflow floor-watch."
+            echo "   Lance-le au moins une fois avant l'audit."
+            exit 1
+          fi
+          echo "✅ etat trouve ($(du -h data/floor_state.json | cut -f1))"
+
+      - name: Banc d'essai
+        env:
+          FLOOR_PRIX_MAX: ${{ github.event.inputs.prix_max || '100000' }}
+          BASELINES_SRC: ${{ github.event.inputs.baselines }}
+        run: python -m scraper.alertes_audit
