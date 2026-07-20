@@ -1,13 +1,26 @@
+# ⚠️ DEPOT : fanablefrance/jetonveve   ·   CHEMIN : tests/test_price_history.py
+# Le projet vit sur 6 depots et DEUX comptes GitHub. Un fichier
+# depose au mauvais endroit ne provoque aucune erreur : il dort.
+
 """Tests price_history — map veve_uuid->id tracker (/api/Nfts), filtrage
 remplissage, on-change, reprise, recolte sacree, append, baselines. Zero reseau."""
 import csv
 import datetime as dt
 import gzip
-import importlib.util
-import pytest
 import os
 import sys
 from urllib.parse import urlparse, parse_qs
+
+import pytest
+
+# `run_baselines` fait tout son calcul en SQL DuckDB. Le bac a sable n'a pas la
+# dependance ; l'absence d'un moteur SQL n'est pas une regression du projet.
+# ⭐ On SAUTE (visible dans le rapport) au lieu d'ECHOUER : un rouge permanent
+# qu'on apprend a ignorer finit par masquer un vrai rouge.
+try:
+    import duckdb                                    # noqa: F401
+except ImportError:
+    duckdb = None
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scraper"))
 import price_history as ph  # noqa: E402
@@ -175,8 +188,8 @@ def test_append_ajoute_seulement_les_changements(tmp_path):
     assert len([r for r in rows if r["veve_uuid"] == UUID_B]) == 1
 
 
-@pytest.mark.skipif(importlib.util.find_spec("duckdb") is None,
-                    reason="duckdb absent : les baselines se calculent en SQL")
+@pytest.mark.skipif(duckdb is None, reason="duckdb absent (bac a sable) — "
+                    "ce test mesure le SQL, pas la logique python")
 def test_baselines_percentiles_et_troll_exclu(tmp_path):
     store = str(tmp_path / "prices.csv"); out = str(tmp_path / "baselines.csv.gz")
     with open(store, "w", newline="") as f:
@@ -191,18 +204,10 @@ def test_baselines_percentiles_et_troll_exclu(tmp_path):
     assert 500 <= float(r["floor_p50"]) <= 600 and float(r["last_floor"]) == 1000
 
 
-# ⚠️ TEST PERIME, REMIS D'ACCORD LE 20/07/2026.
-# Il exigeait « comic -> aucune ligne ». Or le code a change EXPRES le
-# 17/07 (cf. le commentaire en tete de price_history.py) : un comic GRAIL a
-# un historique complet chez le tracker ; seuls les comics jamais trades
-# rendent une courbe vide, et ce cas-la est deja couvert par le retour
-# "done0". Le test encodait donc l'ancienne intention et echouait depuis,
-# sur un depot par ailleurs sain.
-# Le nom est conserve pour ne pas casser un eventuel filtre, mais il ment :
-# on ne saute plus les comics, on les traite comme les autres.
-
-def test_backfill_saute_les_comics(tmp_path):
-    cat = str(tmp_path / "catalogue.csv.gz"); store = str(tmp_path / "prices.csv")
+def _cat_mixte(tmp_path):
+    """Un collectible et un comic, tous deux TRADES (donc tous deux pourvus
+    d'un historique chez le tracker)."""
+    cat = str(tmp_path / "catalogue.csv.gz")
     with gzip.open(cat, "wt", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["uuid", "kind", "release_date", "floor", "listings"])
         w.writeheader()
@@ -210,11 +215,43 @@ def test_backfill_saute_les_comics(tmp_path):
                     "release_date": "01/01/2026 00:00:00", "floor": "6900", "listings": "7"})
         w.writerow({"uuid": UUID_B, "kind": "Comic",
                     "release_date": "01/02/2026 00:00:00", "floor": "120", "listings": "1"})
-    ph.run_backfill(cat, store, str(tmp_path))
+    return cat
+
+
+# ⚠️ CE TEST S'APPELAIT `test_backfill_saute_les_comics` ET ETAIT ROUGE.
+# Il encodait une intention ABANDONNEE LE 17/07/2026. Constat de ce jour-la,
+# ecrit dans price_history.py l. 83-84 : « un comic grail a un historique
+# complet ; seuls les comics jamais trades » rendent done0. Les comics ne sont
+# donc plus sautes par nature — ils le sont sur DEMANDE, via PH_BACKFILL_KINDS.
+# ⭐ Un test rouge qu'on apprend a ignorer ne protege plus rien : celui-ci
+# disait « les comics sont sautes » alors que le code, volontairement, les
+# collecte. Il est remis d'accord avec l'intention reelle, et le filtre
+# optionnel qui subsiste reçoit enfin son propre test.
+
+def test_un_comic_trade_a_bien_son_historique(tmp_path):
+    """L'intention du 17/07 : ce qui decide n'est pas la CATEGORIE, c'est
+    l'existence d'une time-series chez le tracker."""
+    store = str(tmp_path / "prices.csv")
+    ph.run_backfill(_cat_mixte(tmp_path), store, str(tmp_path))
     done = ph.load_done(str(tmp_path))
     assert UUID_A in done and UUID_B in done          # les deux clos
     rows = _read_store(store)
-    assert len([r for r in rows if r["veve_uuid"] == UUID_A]) == 3   # collectible: historique
-    # ⬇️ etait `== 0` : un comic AVEC courbe est desormais historise comme
-    #    un collectible. C'est le comportement voulu depuis le 17/07.
-    assert len([r for r in rows if r["veve_uuid"] == UUID_B]) == 2
+    assert len([r for r in rows if r["veve_uuid"] == UUID_A]) == 3   # collectible
+    assert len([r for r in rows if r["veve_uuid"] == UUID_B]) == 2   # comic TRADE
+
+
+def test_le_filtre_par_categorie_reste_disponible_sur_demande(tmp_path):
+    """PH_BACKFILL_KINDS=collectible : la capacite de sauter les comics existe
+    toujours, elle n'est simplement plus le defaut."""
+    store = str(tmp_path / "prices.csv")
+    avant = ph.BACKFILL_KINDS
+    ph.BACKFILL_KINDS = {"collectible"}               # lu a l'import : on patche
+    try:
+        ph.run_backfill(_cat_mixte(tmp_path), store, str(tmp_path))
+    finally:
+        ph.BACKFILL_KINDS = avant
+    done = ph.load_done(str(tmp_path))
+    assert UUID_A in done and UUID_B in done          # clos tous les deux
+    rows = _read_store(store)
+    assert len([r for r in rows if r["veve_uuid"] == UUID_A]) == 3
+    assert len([r for r in rows if r["veve_uuid"] == UUID_B]) == 0   # comic saute
