@@ -3,6 +3,8 @@ remplissage, on-change, reprise, recolte sacree, append, baselines. Zero reseau.
 import csv
 import datetime as dt
 import gzip
+import importlib.util
+import pytest
 import os
 import sys
 from urllib.parse import urlparse, parse_qs
@@ -173,6 +175,8 @@ def test_append_ajoute_seulement_les_changements(tmp_path):
     assert len([r for r in rows if r["veve_uuid"] == UUID_B]) == 1
 
 
+@pytest.mark.skipif(importlib.util.find_spec("duckdb") is None,
+                    reason="duckdb absent : les baselines se calculent en SQL")
 def test_baselines_percentiles_et_troll_exclu(tmp_path):
     store = str(tmp_path / "prices.csv"); out = str(tmp_path / "baselines.csv.gz")
     with open(store, "w", newline="") as f:
@@ -186,6 +190,16 @@ def test_baselines_percentiles_et_troll_exclu(tmp_path):
     assert float(r["floor_min"]) == 100 and float(r["floor_max"]) == 1000
     assert 500 <= float(r["floor_p50"]) <= 600 and float(r["last_floor"]) == 1000
 
+
+# ⚠️ TEST PERIME, REMIS D'ACCORD LE 20/07/2026.
+# Il exigeait « comic -> aucune ligne ». Or le code a change EXPRES le
+# 17/07 (cf. le commentaire en tete de price_history.py) : un comic GRAIL a
+# un historique complet chez le tracker ; seuls les comics jamais trades
+# rendent une courbe vide, et ce cas-la est deja couvert par le retour
+# "done0". Le test encodait donc l'ancienne intention et echouait depuis,
+# sur un depot par ailleurs sain.
+# Le nom est conserve pour ne pas casser un eventuel filtre, mais il ment :
+# on ne saute plus les comics, on les traite comme les autres.
 
 def test_backfill_saute_les_comics(tmp_path):
     cat = str(tmp_path / "catalogue.csv.gz"); store = str(tmp_path / "prices.csv")
@@ -201,4 +215,6 @@ def test_backfill_saute_les_comics(tmp_path):
     assert UUID_A in done and UUID_B in done          # les deux clos
     rows = _read_store(store)
     assert len([r for r in rows if r["veve_uuid"] == UUID_A]) == 3   # collectible: historique
-    assert len([r for r in rows if r["veve_uuid"] == UUID_B]) == 0   # comic: rien (saute)
+    # ⬇️ etait `== 0` : un comic AVEC courbe est desormais historise comme
+    #    un collectible. C'est le comportement voulu depuis le 17/07.
+    assert len([r for r in rows if r["veve_uuid"] == UUID_B]) == 2

@@ -70,8 +70,22 @@ def test_hist_low_off_ne_declenche_pas():
     assert out == []
 
 
+# ⚠️ 20/07/2026 — 📊 et 🔊 ne signalent plus un ETAT mais une ENTREE dans la
+# bande. Consequence sur ces tests : il faut d'abord un passage HORS bande
+# (l'amorcage), sinon le detecteur n'a rien a quoi comparer et se tait.
+# Ce n'est pas une contrainte de test, c'est le correctif lui-meme : sans
+# amorcage, le premier run publiait tout le stock d'un coup et le garde-fou
+# anti-avalanche bloquait 📊 definitivement. Voir tests/test_histlow_transition.py.
+
+def _amorcer(st, prix=500):
+    """Un passage hors bande, pour que l'entree suivante en soit une."""
+    pb.detect_hist_low(st, {UID: prix}, BL, _cat(), {UID: [50]}, ts=1.7e9 - 7200,
+                       on=True, pct=10)
+
+
 def test_hist_low_declenche_avec_preuve():
     st = {}
+    _amorcer(st)
     out = pb.detect_hist_low(st, {UID: 120}, BL, _cat(), {UID: [50]}, ts=1.7e9,
                              on=True, pct=10)
     assert len(out) == 1 and out[0]["uuid"] == UID and out[0]["rank"] <= 5
@@ -79,6 +93,7 @@ def test_hist_low_declenche_avec_preuve():
 
 def test_hist_low_sans_vente_ecarte():
     st = {}
+    _amorcer(st)
     out = pb.detect_hist_low(st, {UID: 120}, BL, _cat(), sales={}, ts=1.7e9,
                              on=True, require_sale=True)
     assert out == []
@@ -86,13 +101,17 @@ def test_hist_low_sans_vente_ecarte():
 
 def test_hist_low_pas_assez_historique():
     bl = {UID: dict(BL[UID], n_points=5)}
-    out = pb.detect_hist_low({}, {UID: 120}, bl, _cat(), {UID: [50]}, ts=1.7e9,
+    st = {}
+    pb.detect_hist_low(st, {UID: 500}, bl, _cat(), {UID: [50]}, ts=1.7e9 - 7200,
+                       on=True, min_points=30)
+    out = pb.detect_hist_low(st, {UID: 120}, bl, _cat(), {UID: [50]}, ts=1.7e9,
                              on=True, min_points=30)
     assert out == []
 
 
 def test_hist_low_cooldown():
     st = {}
+    _amorcer(st)
     a = pb.detect_hist_low(st, {UID: 120}, BL, _cat(), {UID: [50]}, ts=1.7e9,
                            on=True)
     b = pb.detect_hist_low(st, {UID: 120}, BL, _cat(), {UID: [50]},
@@ -103,7 +122,10 @@ def test_hist_low_cooldown():
 # --- detect_vol_anomaly ----------------------------------------------------
 
 def test_vol_anomaly_declenche_au_dessus_norme():
-    out = pb.detect_vol_anomaly({}, {UID: 15}, BL, _cat(), ts=1.7e9,
+    st = {}
+    pb.detect_vol_anomaly(st, {UID: 2}, BL, _cat(), ts=1.7e9 - 7200,
+                          on=True, ratio=3.0)               # amorcage, sous la norme
+    out = pb.detect_vol_anomaly(st, {UID: 15}, BL, _cat(), ts=1.7e9,
                                 on=True, ratio=3.0)         # 15 >= 4*3 et >= p90(8)
     assert len(out) == 1 and out[0]["ratio"] == 3.8
 
