@@ -320,6 +320,11 @@ PIC_MAX = int(os.environ.get("PIC_MAX", "10"))
 HISTLOW_ON = os.environ.get("HISTLOW_ON", "false").lower() == "true"
 HISTLOW_PCT = float(os.environ.get("HISTLOW_PCT", "10"))
 HISTLOW_MIN_PTS = int(os.environ.get("HISTLOW_MIN_POINTS", "30"))
+# Plafond PROPRE a 📊/🔊 : le regler ne doit pas desserrer 📉, qui partageait
+# ATL_MAX avec eux. Chez 📉 un debordement signale une recolte aberrante et
+# le lot doit etre jete ; chez 📊 il signale un seuil large et le lot doit
+# etre etale. Deux sens opposes ne peuvent pas tenir dans un seul reglage.
+HISTLOW_MAX = int(os.environ.get("HISTLOW_MAX", "10"))
 VOL_ON = os.environ.get("VOL_ON", "false").lower() == "true"
 VOL_RATIO = float(os.environ.get("VOL_RATIO", "3"))
 
@@ -2192,7 +2197,8 @@ def main() -> int:
                 hl = pb.detect_hist_low(
                     state, veve, baselines, cat, state.get("sales"),
                     on=HISTLOW_ON, pct=HISTLOW_PCT, plancher=PLANCHER_VEVE,
-                    cooldown_h=COOLDOWN_H, maxn=ATL_MAX, min_points=HISTLOW_MIN_PTS)
+                    cooldown_h=COOLDOWN_H, maxn=HISTLOW_MAX,
+                    min_points=HISTLOW_MIN_PTS)
                 if hl:
                     if budget(state, WEBHOOK) > 0:
                         print(f"  📊 {len(hl)} floor(s) dans le bas de leur "
@@ -2208,7 +2214,7 @@ def main() -> int:
                       if c.get("listings") is not None}
                 va = pb.detect_vol_anomaly(
                     state, lm, baselines, cat, on=VOL_ON, ratio=VOL_RATIO,
-                    cooldown_h=COOLDOWN_H, maxn=ATL_MAX)
+                    cooldown_h=COOLDOWN_H, maxn=HISTLOW_MAX)
                 if va:
                     if budget(state, WEBHOOK_ATH) > 0:
                         print(f"  🔊 {len(va)} anomalie(s) d'offres !", flush=True)

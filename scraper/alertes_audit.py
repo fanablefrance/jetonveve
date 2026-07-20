@@ -328,21 +328,31 @@ def balayage_histlow(etat, base):
     print(f"  distribution des rangs : min {tries[0]:.0f} · "
           f"p25 {tries[len(tries)//4]:.0f} · median {tries[len(tries)//2]:.0f} · "
           f"max {tries[-1]:.0f}\n")
-    print(f"  {'HISTLOW_PCT':>12} {'candidats':>10} {'avec vente':>12}"
-          f" {'>=30 points':>12}   {'par jour*':>10}")
+    tot = len(rangs)
+    print(f"  {'HISTLOW_PCT':>12} {'dans la bande':>14} {'avec vente':>12}"
+          f" {'>=30 points':>12} {'% du suivi':>11}")
     for pct in (5, 10, 15, 20, 25, 30):
         sel = [(v, n) for r, v, n in rangs if r <= pct]
-        avec_vente = sum(1 for v, _ in sel if v)
+        avec = sum(1 for v, _ in sel if v)
         assez = sum(1 for v, n in sel if v and n)
-        # * ce que tu recevrais vraiment : preuve de vente ET assez d'histoire,
-        #   etale sur le cooldown de 6 h (4 fenetres par jour au maximum).
-        print(f"  {pct:>11} % {len(sel):>10} {avec_vente:>12} {assez:>12}"
-              f"   {min(assez, 10*4):>10}")
+        print(f"  {pct:>11} % {len(sel):>14} {avec:>12} {assez:>12}"
+              f" {100.0*assez/max(tot,1):>10.1f} %")
     print()
-    print("  * plafonne par ALERT_MAX (10) et le cooldown de 6 h : au-dela,")
-    print("    le detecteur juge son seuil trop bas et NE PUBLIE RIEN.")
-    print("  Vise la colonne « >=30 points » : c'est ce que le code retiendra")
-    print("  vraiment (preuve de vente + assez d'historique).")
+    print("  ⚠️ CE TABLEAU EST UN STOCK, PAS UN DEBIT.")
+    print("  Il compte les items ASSIS dans la bande a l'instant du releve.")
+    print("  Depuis le correctif du 20/07, 📊 ne signale plus un etat mais une")
+    print("  ENTREE dans la bande — comme 📉 signale un franchissement. Le")
+    print("  stock ci-dessus sera donc absorbe EN SILENCE au premier run")
+    print("  (l'amorcage), et tu ne recevras ensuite que les entrees reelles.")
+    print()
+    print("  ➡️ Lis ces chiffres comme une SELECTIVITE, pas comme un volume :")
+    print("     plus la colonne « >=30 points » est petite, plus la bande est")
+    print("     etroite, et plus une entree y est un evenement rare.")
+    print("  ➡️ Le debit reel ne se deduit pas d'un seul releve : il demande")
+    print("     deux instantanes. Le plafond, lui, est garanti par HISTLOW_MAX")
+    print("     (10 par run), et un debordement se DIT desormais sur stderr.")
+    print("  ➡️ Depart conseille : HISTLOW_PCT=5. Tu peux l'elargir apres")
+    print("     quelques jours ; l'inverse est plus penible a vivre.")
 
 
 def balayage_vol(etat, base):

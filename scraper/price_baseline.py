@@ -30,6 +30,7 @@ import csv
 import gzip
 import io
 import os
+import sys
 import time
 from typing import Dict, List, Optional
 
@@ -159,6 +160,75 @@ def vol_ratio(bl: Dict, listings: Optional[float]) -> Optional[float]:
 # garde-fou MAX, plancher, preuve de vente). Tous OFF tant que `on=False`.
 # ---------------------------------------------------------------------------
 
+
+# ═══════════════════════════════════════════════════════════════════════
+#  DEUX OUTILS COMMUNS A 📊 ET 🔊 — ajoutes le 20/07/2026
+#
+#  Ces deux detecteurs sont des detecteurs d'ETAT (« le floor EST dans le
+#  bas de son histoire »), pas de TRANSITION comme 📉 detect_atl (« le
+#  floor VIENT DE passer sous son plus-bas »). La difference est tout sauf
+#  cosmetique :
+#
+#    · 📉 compare a `atl_seen`, qu'il met a jour aussitot -> le meme item
+#      ne peut pas re-tirer sur le meme plus-bas. Stock ~ 0, flux ~ 2/jour.
+#      Son garde-fou anti-avalanche ne se declenche jamais.
+#
+#    · 📊 n'avait aucun equivalent : a chaque run il redecouvrait TOUT le
+#      stock d'items assis dans la bande basse. Mesure du 20/07 sur les
+#      donnees de prod : 92 items a 5 %, 724 a 30 % — toujours au-dessus
+#      de maxn=10. Le garde-fou rendait alors [] ET effaçait les cooldowns
+#      qu'il venait de poser, donc le run suivant retrouvait exactement le
+#      meme lot. 📊 etait BLOQUE a tous les seuils, et bloque EN SILENCE
+#      (`if hl:` etant faux, meme le message d'avalanche ne sortait pas).
+#
+#  Parade en deux temps :
+#    1. `_amorcage` + registre « dedans » -> on ne signale que l'ENTREE
+#       dans la bande, comme 📉 signale le franchissement. Le stock devient
+#       un flux. Le tout premier passage apprend l'etat du monde sans rien
+#       publier : sans lui, l'amorcage lui-meme serait l'avalanche.
+#    2. `_rendre` -> quand ca deborde quand meme, on publie les `maxn`
+#       meilleurs et on REND les autres au run suivant, au lieu de jeter le
+#       lot entier. Meme principe que le garde-fou de budget de floor_watch :
+#       « rien n'est enterre ».
+#
+#  ⚠️ Ne PAS transposer ceci a detect_atl : la, abandonner le lot est le
+#  bon reflexe, parce qu'un debordement y signale une recolte aberrante et
+#  non un seuil mal regle.
+# ═══════════════════════════════════════════════════════════════════════
+
+_PURGE_S = 7 * 24 * 3600            # un item absent 7 j sort du registre
+
+
+def _amorcage(state: Dict, cle: str):
+    """Rend (premier_passage, registre). Au premier passage on observe sans
+    publier : le registre est vide, donc TOUT ressemblerait a une entree."""
+    neuf = cle not in state
+    return neuf, state.setdefault(cle, {})
+
+
+def _purger(registre: Dict, ts: float) -> None:
+    for uid in [u for u, t in registre.items() if ts - (t or 0) > _PURGE_S]:
+        registre.pop(uid, None)
+
+
+def _rendre(out: List[Dict], maxn: int, alerts: Dict, registre: Dict,
+            signal: str) -> List[Dict]:
+    """Deborde ? On garde les `maxn` premiers (deja tries par pertinence) et
+    on rend les autres au prochain run. Le message part sur stderr : un lot
+    tronque doit se voir, sinon on ne distingue pas « trop de candidats » de
+    « marche calme »."""
+    if len(out) <= maxn:
+        return out
+    garde, reste = out[:maxn], out[maxn:]
+    for a in reste:
+        alerts.pop(a["uuid"], None)
+        registre.pop(a["uuid"], None)      # non signale -> reste a signaler
+    print("  🔇 " + signal + " : " + str(len(out)) + " candidats, "
+          + str(maxn) + " publies, " + str(len(reste)) + " rendus au prochain "
+          "run (rien n'est enterre).", file=sys.stderr)
+    return garde
+
+
 def detect_hist_low(state: Dict, veve: Dict[str, float], baselines: Dict[str, Dict],
                     cat: Optional[Dict] = None, sales: Optional[Dict] = None,
                     ts: Optional[float] = None, *, on: bool = False,
@@ -172,18 +242,30 @@ def detect_hist_low(state: Dict, veve: Dict[str, float], baselines: Dict[str, Di
     """
     ts = ts if ts is not None else time.time()
     alerts = state.setdefault("alerts_histlow", {})
+    amorce, dedans = _amorcage(state, "histlow_dedans")
+    _purger(dedans, ts)
     cat = cat or {}
     sales = sales or {}
     out: List[Dict] = []
     for uid, vf_ in (veve or {}).items():
         vf = _f(vf_) or 0.0
         bl = baselines.get(uid)
-        if not on or vf <= plancher or not bl:
-            continue
-        if (bl.get("n_points") or 0) < min_points:      # pas assez d'histoire
+        if vf <= plancher or not bl:
             continue
         rank = pct_rank(bl, vf)
-        if rank is None or rank > pct:
+        if rank is None:
+            continue
+        if rank > pct:
+            dedans.pop(uid, None)      # sorti de la bande : re-signalable
+            continue
+        # --- ici l'item EST dans la bande. Le registre est tenu meme quand le
+        #     signal est eteint : le jour ou on l'allume, il n'y a pas
+        #     d'avalanche de rattrapage.
+        deja = uid in dedans
+        dedans[uid] = ts
+        if not on or amorce or deja:
+            continue
+        if (bl.get("n_points") or 0) < min_points:      # pas assez d'histoire
             continue
         if require_sale:
             last = sales.get(uid)
@@ -198,12 +280,8 @@ def detect_hist_low(state: Dict, veve: Dict[str, float], baselines: Dict[str, Di
                     "rank": round(rank, 1), "p5": bl.get("floor_p5"),
                     "min": bl.get("floor_min"), "p50": bl.get("floor_p50"),
                     "n": bl.get("n_points")})
-    if len(out) > maxn:                                 # avalanche = seuil mal regle
-        for a in out:
-            alerts.pop(a["uuid"], None)
-        return []
     out.sort(key=lambda a: a["rank"])
-    return out
+    return _rendre(out, maxn, alerts, dedans, "📊")
 
 
 def detect_vol_anomaly(state: Dict, listings_map: Dict[str, float],
@@ -218,18 +296,27 @@ def detect_vol_anomaly(state: Dict, listings_map: Dict[str, float],
     """
     ts = ts if ts is not None else time.time()
     alerts = state.setdefault("alerts_vol", {})
+    amorce, dedans = _amorcage(state, "vol_dedans")
+    _purger(dedans, ts)
     cat = cat or {}
     out: List[Dict] = []
     for uid, cur_ in (listings_map or {}).items():
         cur = _f(cur_)
         bl = baselines.get(uid)
-        if not on or cur is None or cur < min_listings or not bl:
-            continue
-        if (bl.get("n_points") or 0) < min_points:
+        if cur is None or not bl:
             continue
         med = bl.get("listings_p50") or 0
         p90 = bl.get("listings_p90") or 0
-        if med <= 0 or cur < med * ratio or cur < p90:
+        dans = (cur >= min_listings and med > 0
+                and cur >= med * ratio and cur >= p90)
+        if not dans:
+            dedans.pop(uid, None)
+            continue
+        deja = uid in dedans
+        dedans[uid] = ts
+        if not on or amorce or deja:
+            continue
+        if (bl.get("n_points") or 0) < min_points:
             continue
         if ts - alerts.get(uid, 0) < cooldown_h * 3600:
             continue
@@ -238,9 +325,5 @@ def detect_vol_anomaly(state: Dict, listings_map: Dict[str, float],
         out.append({"uuid": uid, "name": c.get("name") or uid[:8],
                     "categorie": c.get("categorie", ""), "listings": int(cur),
                     "med": med, "p90": p90, "ratio": round(cur / med, 1)})
-    if len(out) > maxn:
-        for a in out:
-            alerts.pop(a["uuid"], None)
-        return []
     out.sort(key=lambda a: -a["ratio"])
-    return out
+    return _rendre(out, maxn, alerts, dedans, "🔊")
