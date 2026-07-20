@@ -20,9 +20,9 @@ on:
   workflow_dispatch:
     inputs:
       prix_max:
-        description: "Plafond de vraisemblance en $ (au-dela, un prix n'est pas un prix)"
+        description: "Plafond de vraisemblance en $ (vide = 50000, les grails VeVe plafonnent vers 15 000 $)"
         required: false
-        default: "100000"
+        default: ""
       baselines:
         description: "URL des baselines (vide = la release prices-full)"
         required: false
@@ -71,6 +71,6 @@ jobs:
 
       - name: Banc d'essai
         env:
-          FLOOR_PRIX_MAX: ${{ github.event.inputs.prix_max || '100000' }}
+          FLOOR_PRIX_MAX: ${{ github.event.inputs.prix_max }}
           BASELINES_SRC: ${{ github.event.inputs.baselines }}
         run: python -m scraper.alertes_audit
