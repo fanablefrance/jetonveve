@@ -50,7 +50,7 @@ BASELINES = os.environ.get("BASELINES_SRC", "").strip() or _DEFAUT_BASELINES
 
 # Au-dela, un prix n'est pas un prix : c'est une offre farfelue ou une
 # faute de frappe. Sert d'etalon a l'audit (et de plafond propose au code).
-PRIX_MAX = float(os.environ.get("FLOOR_PRIX_MAX", "").strip() or 100000)
+PRIX_MAX = float(os.environ.get("FLOOR_PRIX_MAX", "").strip() or 50000)
 PLANCHER = float(os.environ.get("VEVE_PRIX_PLANCHER", "").strip() or 1)
 
 

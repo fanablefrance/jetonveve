@@ -180,7 +180,12 @@ PLANCHER_VEVE = float(os.environ.get("VEVE_PRIX_PLANCHER", "1"))
 # decredibilise un canal entier — surtout un canal payant.
 # ⚠️ REQUIRE_SALE en ecarte deja 19 sur 20 cote floors ; il n'y a rien
 # d'equivalent cote VENTES, ou une seule ligne suffit.
-PRIX_MAX = float(os.environ.get("FLOOR_PRIX_MAX", "100000"))
+#
+# 50 000 $ : valeur choisie par Preda le 20/07, et bien fondee — les grails
+# du marche VeVe ne depassent pas ~15 000 $. Un plafond a plus de trois fois
+# le plus cher item connu ne peut pas ecarter une vraie affaire ; il n'ecarte
+# que des offres farfelues.
+PRIX_MAX = float(os.environ.get("FLOOR_PRIX_MAX", "").strip() or 50000)
 
 # 🛡️ SENTINELLE DE RECOLTE MAIGRE (audit du 19/07/2026).
 # fetch_veve_floors pagine ~76 pages et SAUTE EN SILENCE celles qui
