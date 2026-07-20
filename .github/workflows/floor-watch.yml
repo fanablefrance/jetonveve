@@ -1,3 +1,7 @@
+# ⚠️ DEPOT : fanablefrance/jetonveve   ·   CHEMIN : .github/workflows/floor-watch.yml
+# Le projet vit sur 6 depots et DEUX comptes GitHub. Un fichier
+# depose au mauvais endroit ne provoque aucune erreur : il dort.
+
 name: Alertes sous-floor
 
 # v13 : le module DIT pourquoi il se tait.
@@ -184,25 +188,14 @@ jobs:
           # Canal dedie (🆕 ATH + 📈 x3 + pic). Absent -> repli sur le principal.
           DISCORD_WEBHOOK_ATH: ${{ secrets.DISCORD_WEBHOOK_ATH }}
           FLOOR_SIMULER: ${{ github.event.inputs.simuler == 'oui' && '1' || '' }}
-          # ⚠️ 20/07/2026 : cette ligne n'avait PAS de `vars.` — poser une
-          # variable de depot FLOOR_POLLS ne changeait donc rien du tout, et
-          # l'experience lancee ce jour-la a tourne a 25 tours sans qu'on le
-          # voie. Toutes les lignes voisines en avaient un ; celle-ci non.
+          # 🔴 CORRIGE LE 20/07 — CETTE LIGNE N'AVAIT PAS DE `vars.`
+          # Consequence : poser la variable de depot FLOOR_POLLS=12 n'avait
+          # AUCUN effet. L'experience lancee le 20/07 a tourne a 25 tours
+          # ([1/25] dans le log) et l'aurait fait jusqu'au 22/07 pour rien.
+          # ⭐ REFLEXE A PRENDRE : avant de recommander une variable, verifier
+          # qu'elle est cablee jusqu'au bout — `vars.X` ICI **ET**
+          # `os.environ.get("X")` dans le code. Les deux, sinon rien.
           FLOOR_POLLS: ${{ github.event.inputs.polls || vars.FLOOR_POLLS || '12' }}
-          # ⭐ Le plus gros poste de requetes : fetch_veve_floors balaie le
-          # catalogue entier en pagination (~62 pages a limit=100). Passer a
-          # 250 le ramene a ~25 pages, A DONNEES IDENTIQUES. Si l'API plafonne
-          # et ignore la valeur, on retombe sans casse sur le comportement
-          # actuel.
-          FLOOR_ELEM_LIMIT: ${{ vars.FLOOR_ELEM_LIMIT || '100' }}
-          FLOOR_REFRESH_MIN: ${{ vars.FLOOR_REFRESH_MIN || '60' }}
-          FLOOR_LISTINGS: ${{ vars.FLOOR_LISTINGS || '50' }}
-          FLOOR_COOLDOWN_H: ${{ vars.FLOOR_COOLDOWN_H || '6' }}
-          # Plafond de vraisemblance : au-dela, un prix n'est pas un signal.
-          FLOOR_PRIX_MAX: ${{ vars.FLOOR_PRIX_MAX || '50000' }}
-          # Sentinelle de recolte maigre (detection de blocage).
-          FLOOR_MIN_RATIO: ${{ vars.FLOOR_MIN_RATIO || '0.8' }}
-          FLOOR_MAIGRE_ALERTE: ${{ vars.FLOOR_MAIGRE_ALERTE || '3' }}
           FLOOR_INTERVAL_S: ${{ vars.FLOOR_INTERVAL_S || '120' }}
           # Un reglage vaut pour TOUS les runs suivants (repo variable), un champ
           # de lancement ne vaut que pour CE run. L'ordre : champ > variable > defaut.
@@ -281,8 +274,6 @@ jobs:
           HISTLOW_ON: ${{ vars.HISTLOW_ON || 'false' }}
           HISTLOW_PCT: ${{ vars.HISTLOW_PCT || '10' }}
           HISTLOW_MIN_POINTS: ${{ vars.HISTLOW_MIN_POINTS || '30' }}
-          # Plafond propre a 📊/🔊 (ne desserre pas 📉).
-          HISTLOW_MAX: ${{ vars.HISTLOW_MAX || '10' }}
           VOL_ON: ${{ vars.VOL_ON || 'false' }}
           VOL_RATIO: ${{ vars.VOL_RATIO || '3' }}
           # 🌉 LE PONT VEILLE → 🟠H-PRIX (collectibles). OFF par defaut : on ecrit
@@ -297,7 +288,94 @@ jobs:
           # ne memorise rien, donc rien n'est perdu.
           # Plafond anti-ban : 20 messages/min PAR webhook (fenetre glissante).
           FLOOR_MAX_MSG_MIN: ${{ vars.FLOOR_MAX_MSG_MIN || '20' }}
-          FLOOR_PAUSE_MSG_S: "3"
+          FLOOR_PAUSE_MSG_S: ${{ vars.FLOOR_PAUSE_MSG_S || '3' }}
+
+          # ═══════════════════════════════════════════════════════════════
+          # 🔴 20/07 — LES 15 REGLAGES QUE LE CODE LISAIT SANS QUE PERSONNE
+          #            NE PUISSE LES POSER
+          # ═══════════════════════════════════════════════════════════════
+          # Controle systematique : 76 reglages lus par floor_watch.py, 67
+          # poses ici, 15 absents. Un `os.environ.get("X", defaut)` sans ligne
+          # correspondante ne casse RIEN et ne dit RIEN — il applique
+          # silencieusement son defaut. C'est la pire des pannes : muette.
+          # Trois recommandations etaient donc inapplicables sans qu'aucun
+          # message ne le signale (l'optimisation -60 %, le plafond de
+          # vraisemblance, la sentinelle anti-blocage).
+          #
+          # Commande de controle, a relancer apres toute modification du code :
+          #   comparer  re.findall(r'os\.environ\.get\(\s*"([A-Z_0-9]+)"', code)
+          #        a    re.findall(r'^\s+([A-Z_0-9]+):', workflow)
+          # (le test tests/test_reglages_cables.py le fait automatiquement)
+
+          # --- Collecte : le cout en requetes ---------------------------------
+          # ⭐ L'OPTIMISATION EN ATTENTE : 250 au lieu de 100 = -60 % de
+          # requetes A DONNEES IDENTIQUES (moins d'appels, plus gros chacun).
+          # Laisse a 100 = le defaut du code : AUCUN changement de comportement
+          # tant que Preda n'a pas pose la variable. Une seule variable a la
+          # fois, sinon la mesure ne dit plus rien.
+          FLOOR_ELEM_LIMIT: ${{ vars.FLOOR_ELEM_LIMIT || '100' }}
+          FLOOR_LISTINGS: ${{ vars.FLOOR_LISTINGS || '50' }}
+          # ⚠️ NE PAS DESCENDRE SANS REFLECHIR : le floor n'est relu qu'UNE
+          # fois par run. C'est la cause mesuree du baillon de 📉 (ATL_FRESH_MIN
+          # = 70 min face a un ecart de refresh observe a 233 min). Le remede
+          # est le cron/VPS, pas ce chiffre.
+          FLOOR_REFRESH_MIN: ${{ vars.FLOOR_REFRESH_MIN || '60' }}
+          FLOOR_TIMEOUT: ${{ vars.FLOOR_TIMEOUT || '45' }}
+          FLOOR_RETRIES: ${{ vars.FLOOR_RETRIES || '6' }}
+          FLOOR_PAUSE: ${{ vars.FLOOR_PAUSE || '0.2' }}
+
+          # --- Seuils economiques --------------------------------------------
+          FLOOR_FEE_PCT: ${{ vars.FLOOR_FEE_PCT || '8.5' }}
+          FLOOR_MIN_USD: ${{ vars.FLOOR_MIN_USD || '1' }}
+          FLOOR_COOLDOWN_H: ${{ vars.FLOOR_COOLDOWN_H || '6' }}
+
+          # --- 🛡️ Le plafond de vraisemblance --------------------------------
+          # Valeur fixee par Preda : « au-dela de 50 000 $ ce n'est pas la
+          # peine, meme les grails du marche ne depassent pas 15 k ». Releve :
+          # 20 items a floor > 100 000 $ (dont un a 42 420 420 420 420 $) et
+          # une vente a 18 666 667 $. Le sujet n'est pas le volume — c'est rare
+          # — mais la CREDIBILITE : une seule carte « vendu 18 666 667 $ »
+          # decredibilise un canal payant entier.
+          FLOOR_PRIX_MAX: ${{ vars.FLOOR_PRIX_MAX || '50000' }}
+          ATH_CAP: ${{ vars.ATH_CAP || '1000000000' }}
+
+          # --- 🚨 La sentinelle anti-blocage ---------------------------------
+          # Si la recolte tombe sous MIN_RATIO de la precedente, on crie au lieu
+          # de conclure au calme plat. Une recolte maigre et un marche calme se
+          # ressemblent dans un log — pas dans les chiffres.
+          FLOOR_MIN_RATIO: ${{ vars.FLOOR_MIN_RATIO || '0.8' }}
+          FLOOR_MAIGRE_ALERTE: ${{ vars.FLOOR_MAIGRE_ALERTE || '3' }}
+
+          # --- Chemins : POSES EN DUR, ET C'EST VOLONTAIRE -------------------
+          # ⛔ Ces deux-la ne prennent PAS de `vars.`, contrairement aux 13
+          # autres. L'etape de commit plus bas teste `data/floor_state.json` et
+          # `data/hprix_feed.csv` en dur : une variable mal saisie ferait ecrire
+          # le run ailleurs, le commit ne trouverait rien, et LA RECOLTE DU RUN
+          # SERAIT PERDUE EN SILENCE. « Pilotable » ne vaut pas le risque quand
+          # la seule raison de changer un chemin est un test.
+          FLOOR_STATE: data/floor_state.json
+          HPRIX_FEED: data/hprix_feed.csv
+
+          # --- ⭐ 5 DE PLUS, TROUVES EN ELARGISSANT LE CONTROLE ---------------
+          # Le workflow ne lance qu'un module (`python -m scraper.floor_watch`),
+          # mais celui-ci en PILOTE trois autres : numeros, price_baseline et
+          # whale_watch. Leurs reglages se lisent dans le meme environnement et
+          # personne ne les posait non plus. Tous laisses au defaut du code :
+          # aucun changement de comportement, juste la main rendue.
+          #
+          # 🎯 numeros — le signal LE PLUS ACTIF (8,9 tirs/jour). « Remarquable »
+          # = dans les BAS premiers numeros ou les HAUT derniers du tirage.
+          MINT_BAS: ${{ vars.MINT_BAS || '10' }}
+          MINT_HAUT: ${{ vars.MINT_HAUT || '10' }}
+          # 📊 ou vivent les percentiles du magasin de prix. A ne changer que
+          # pour pointer une release de test.
+          BASELINES_SRC: ${{ vars.BASELINES_SRC || '' }}
+          # 🐋 duree de memoire du dedoublonnage. ⚠️ La descendre fait
+          # RE-ALERTER de vieux evenements — c'est un anti-doublon, pas un cache.
+          WHALE_VU_TTL_H: ${{ vars.WHALE_VU_TTL_H || '48' }}
+          # 🐋 le pont : le CSV des comptes tagues, ecrit par le sparse-checkout
+          # `_preda` plus haut. Absent -> le module se tait poliment.
+          TRACKED_CSV: _preda/data/tracked_accounts.csv
         run: python -m scraper.floor_watch
 
       # ⚠️ LA RECOLTE EST SACREE — y compris contre git.
