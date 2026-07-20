@@ -1,3 +1,7 @@
+# ⚠️ DEPOT : fanablefrance/jetonveve   ·   CHEMIN : scraper/floor_watch.py
+# Le projet vit sur 6 depots et DEUX comptes GitHub. Un fichier
+# depose au mauvais endroit ne provoque aucune erreur : il dort.
+
 """🚨 ALERTES SOUS-FLOOR v3 — le flux des LISTINGS (12/07/2026).
 
 v1/v2 balayaient les 6 011 floors (61 requetes/tour) en esperant voir un floor
@@ -166,6 +170,32 @@ COMIC_MAX_LISTINGS = int(os.environ.get("COMIC_MAX_LISTINGS", "3"))
 # minimum autorise — et beaucoup y touchent. Sur StackR, un prix sous 1 $ reste
 # une vraie decote.
 PLANCHER_VEVE = float(os.environ.get("VEVE_PRIX_PLANCHER", "1"))
+# 🚫 PLAFOND DE VRAISEMBLANCE (audit du 19/07/2026, sur l'etat de prod).
+# Il y a un plancher depuis toujours, il manquait le plafond. Releve reel :
+# 20 items affichent un floor > 100 000 $ (jusqu'a 42 000 MILLIARDS — une
+# offre farfelue seule en vitrine), et une vente est enregistree a
+# 18 666 667 $, soit ×1 867 son floor.
+# Ces valeurs ne font pas de VOLUME (elles sont rares), elles font des
+# CARTES INVRAISEMBLABLES. Et une seule carte « vendu 18 666 667 $ »
+# decredibilise un canal entier — surtout un canal payant.
+# ⚠️ REQUIRE_SALE en ecarte deja 19 sur 20 cote floors ; il n'y a rien
+# d'equivalent cote VENTES, ou une seule ligne suffit.
+PRIX_MAX = float(os.environ.get("FLOOR_PRIX_MAX", "100000"))
+
+# 🛡️ SENTINELLE DE RECOLTE MAIGRE (audit du 19/07/2026).
+# fetch_veve_floors pagine ~76 pages et SAUTE EN SILENCE celles qui
+# echouent. Un blocage partiel remontait donc une carte des floors
+# amputee, que `if neuf:` acceptait telle quelle — un dictionnaire d'un
+# seul item est « vrai ». Resultat : 📉 🆕 🩸 ne surveillaient plus qu'une
+# poignee d'items, l'horloge de fraicheur se declarait a jour, et le
+# journal restait vide.
+# ⭐ Un blocage ressemblait EXACTEMENT a un marche calme.
+# Desormais : sous FLOOR_MIN_RATIO de la meilleure recolte connue, on
+# REFUSE la carte et on GARDE l'ancienne. Mieux vaut des floors d'il y a
+# une heure que 98 % d'angles morts qu'on ignore.
+FLOOR_MIN_RATIO = float(os.environ.get("FLOOR_MIN_RATIO", "0.8"))
+# Combien de refus consecutifs avant de crier sur Discord.
+FLOOR_MAIGRE_ALERTE = int(os.environ.get("FLOOR_MAIGRE_ALERTE", "3"))
 
 # ═══════════════════════════════════════════════════════════════════════════
 # LES INTERRUPTEURS — « les ecarts de prix, pas pour l'instant » (Preda, 14/07)
@@ -685,6 +715,42 @@ def _get(proc: str, payload: Optional[Dict], session=None, meta=None):
             print(f"    {proc} : {e} — nouvel essai dans {wait} s", flush=True)
             time.sleep(wait)
     return None
+
+
+def recolte_credible(recus: int, attendu: float,
+                     ratio: float = None) -> bool:
+    """La recolte de floors est-elle assez complete pour etre crue ?
+
+    PURE, donc testable sans reseau. `attendu` est la meilleure recolte
+    connue (elle decroit lentement pour suivre un catalogue qui retrecit
+    vraiment). Sans reference, on accepte : c'est le premier run.
+    """
+    ratio = FLOOR_MIN_RATIO if ratio is None else ratio
+    if attendu <= 0:
+        return True
+    return recus >= attendu * ratio
+
+
+def attendu_suivant(attendu: float, recus: int) -> float:
+    """Met a jour la reference. Monte tout de suite, descend de 0,5 % par
+    run — un catalogue qui retrecit vraiment est suivi en quelques jours,
+    mais une chute brutale ne fait pas baisser la garde."""
+    return max(float(recus), attendu * 0.995)
+
+
+def _crier(texte: str) -> None:
+    """Un cri sur le canal principal quand la COLLECTE elle-meme va mal.
+
+    Ce n'est pas une alerte de marche : c'est le systeme qui dit qu'il ne
+    voit plus rien. Sans ca, un blocage se lit comme un marche calme.
+    Ne leve jamais : un cri rate ne doit pas tuer le run.
+    """
+    try:
+        requests.post(WEBHOOK, json={"content": texte[:1900],
+                                     "allowed_mentions": {"parse": []}},
+                      timeout=15)
+    except Exception as e:                                  # noqa: BLE001
+        print(f"    cri d'alerte non parti : {e}", flush=True)
 
 
 def _f(x) -> float:
@@ -1299,6 +1365,11 @@ def detect_veve_steal(state, veve, cat=None, ts=None):
         # 1re observation (pas de reference), plancher plateforme, ou pas de chute
         if prev <= 0 or vf <= PLANCHER_VEVE or vf >= prev:
             continue
+        # Un « etait 42 000 milliards » n'est pas une chute, c'est une
+        # offre farfelue qui disparait. On se tait plutot que d'annoncer
+        # -99,99 %.
+        if prev > PRIX_MAX or vf > PRIX_MAX:
+            continue
         drop = 100.0 * (prev - vf) / prev
         if drop < STEAL_PCT or (prev - vf) < STEAL_MIN_USD:
             continue
@@ -1354,7 +1425,7 @@ def detect_sale_spike(state, ventes, veve, omi, cat=None, ts=None):
             continue
         vues[cle] = ts
         sale_usd = pr * omi
-        if sale_usd < SPIKE_MIN_USD:
+        if sale_usd < SPIKE_MIN_USD or sale_usd > PRIX_MAX:
             continue
         sfo = _f((sfloors.get(uid) or [0])[0])
         floor_usd = (sfo * omi) if sfo > 0 else veve.get(uid, 0.0)
@@ -1405,7 +1476,9 @@ def detect_ath(state, veve, cat=None, ts=None):
             seen[uid] = [round(vf, 4), ts]           # on suit l'extreme live
         if not ATH_ON:
             continue
-        if vf <= PLANCHER_VEVE or eff <= 0 or vf < eff * (1 + ATH_MARGIN_PCT / 100.0):
+        if (vf <= PLANCHER_VEVE or vf > PRIX_MAX
+                or eff <= 0 or eff > PRIX_MAX
+                or vf < eff * (1 + ATH_MARGIN_PCT / 100.0)):
             continue
         last = (state.get("sales") or {}).get(uid)
         ls = _f(last[0]) if last else 0.0
@@ -1461,7 +1534,8 @@ def detect_atl(state, veve, cat=None, ts=None, fresh=True):
         # ni marge, ni preuve de vente. Descendre sous l'ATL est deja l'info
         # (contrairement au 🆕 ATH, un plus-bas ne se troll pas : personne ne
         # liste sous le marche par erreur pour tromper).
-        if vf <= PLANCHER_VEVE or eff <= 0 or vf >= eff:
+        if (vf <= PLANCHER_VEVE or vf > PRIX_MAX
+                or eff <= 0 or eff > PRIX_MAX or vf >= eff):
             continue
         # 📉 FRAICHEUR : si le refresh precedent est trop vieux (un cron a saute),
         # ce plus-bas a pu survenir il y a bien plus d'une heure -> pas
@@ -2009,7 +2083,25 @@ def main() -> int:
         # floors VeVe + historique des ventes : rafraichis 1x/heure
         if time.time() - dernier_refresh > REFRESH_MIN * 60:
             neuf = fetch_veve_floors(s)
+            _attendu = _f(state.get("floors_attendus") or 0)
+            if neuf and not recolte_credible(len(neuf), _attendu):
+                # 🛡️ Recolte maigre : on REFUSE et on garde l'ancienne carte.
+                _maigres = int(_f(state.get("floors_maigres") or 0)) + 1
+                state["floors_maigres"] = _maigres
+                print(f"  🛡️ RECOLTE MAIGRE : {len(neuf)} floors recus pour "
+                      f"~{_attendu:.0f} attendus ({len(neuf)/max(_attendu,1)*100:.0f} %). "
+                      "Carte precedente CONSERVEE — on prefere des floors d'il y a "
+                      "une heure a 98 % d'angles morts. Cause probable : blocage, "
+                      "coupure reseau, ou API en panne.", flush=True)
+                if _maigres >= FLOOR_MAIGRE_ALERTE and WEBHOOK and not SIMULER:
+                    _crier(f"🛡️ **Collecte en difficulte** — {_maigres} "
+                           f"rafraichissements maigres d'affilee "
+                           f"({len(neuf)}/{_attendu:.0f} floors). Les alertes de "
+                           "prix tournent sur des donnees figees. A regarder.")
+                neuf = None
             if neuf:
+                state["floors_attendus"] = attendu_suivant(_attendu, len(neuf))
+                state["floors_maigres"] = 0
                 veve = neuf
                 dernier_refresh = time.time()
                 _prev_ref = _f(state.get("last_refresh_ts") or 0)

@@ -1,3 +1,7 @@
+# ⚠️ DEPOT : fanablefrance/jetonveve   ·   CHEMIN : scraper/bot_alertes.py
+# Le projet vit sur 6 depots et DEUX comptes GitHub. Un fichier
+# depose au mauvais endroit ne provoque aucune erreur : il dort.
+
 """Pont floor_watch -> bot Discord (etape 4 du bot).
 
 ⚠️ CE FICHIER VA DANS LE DEPOT `jetonveve`, dans `scraper/`.

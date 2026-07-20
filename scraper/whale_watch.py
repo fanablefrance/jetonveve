@@ -1,3 +1,7 @@
+# ⚠️ DEPOT : fanablefrance/jetonveve   ·   CHEMIN : scraper/whale_watch.py
+# Le projet vit sur 6 depots et DEUX comptes GitHub. Un fichier
+# depose au mauvais endroit ne provoque aucune erreur : il dort.
+
 """🐋 SUIVI DES COMPTES WHALE / VeVe TEAM — canal Discord dedie.
 
 POURQUOI CE MODULE
