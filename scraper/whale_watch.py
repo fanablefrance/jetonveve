@@ -38,9 +38,29 @@ marche viennent du flux (2 min = instantane) ; les gros transferts on-chain
 sont releves 1x/h (collectscan est un explorateur public, on reste poli).
 
 Anti-bruit : chaque evenement marche est dedoublonne par (genre, nft_id,
-timestamp) ; chaque transfert par hash de tx. Au-dela de WHALE_MAX evenements
-d'un coup, on ne publie RIEN et on ne MEMORISE RIEN (un seuil mal regle n'est
-pas 20 nouvelles ; on crie, l'humain tranche) — meme regle que partout ailleurs.
+timestamp) ; chaque transfert par hash de tx.
+
+DEBORDEMENT — CORRIGE LE 20/07/2026, VU DANS UN LOG DE PROD
+-----------------------------------------------------------
+L'ancienne regle etait « au-dela de WHALE_MAX d'un coup, on ne publie RIEN et
+on ne MEMORISE RIEN ». Elle a rendu ce module MUET :
+
+    ⛔ 26 evenements comptes suivis d'un coup — anormal. RIEN publie ni memorise.
+
+repete a l'identique 25 fois par run, indefiniment. Sans memorisation, les
+memes 26 evenements etaient redecouverts, recomptes, rejetes au tour suivant —
+et le compteur ne redescendait JAMAIS sous le plafond. 🐋 ne publiait plus rien.
+
+⭐ LA REPETITION A L'IDENTIQUE DANS UN LOG EST LA SIGNATURE DE CE DEFAUT : un
+vrai pic de marche varie d'un tour a l'autre. A chercher dans les autres logs.
+
+La regle correcte distingue le TYPE de detecteur (lecon de 📊/🔊, 20/07) :
+  · 📉 ATL est un detecteur de TRANSITION — un debordement y signale une
+    RECOLTE ABERRANTE, jeter le lot est le bon reflexe.
+  · 🐋 est un detecteur d'EVENEMENTS — un debordement n'y est qu'un compte
+    suivi actif. Il faut ETALER, pas jeter.
+Donc : on trie par montant, on publie les WHALE_MAX plus gros, ON LES MEMORISE,
+et les autres restent candidats au tour suivant. Rien n'est enterre.
 
 Construit OFF par defaut (`WHALE_ON`) : on calibre en SIMULER avant d'allumer.
 """
@@ -139,6 +159,40 @@ def _tracke(tracked, wallet, username) -> Optional[Dict]:
 
 
 # ---------------------------------------------------------------------------
+# Debordement : on etale, on n'enterre pas
+# ---------------------------------------------------------------------------
+
+def _rendre(cand, vus, ts, cle_id, poids, quoi):
+    """Applique le plafond MAX_CARTES en RENDANT le surplus au tour suivant.
+
+    Contrat, et c'est tout le correctif du 20/07 :
+      · ce qui est PUBLIE est MEMORISE (donc ne revient pas) ;
+      · ce qui n'est pas publie n'est PAS memorise (donc revient) ;
+      · on garde les plus gros d'abord, et on le DIT sur stderr.
+
+    L'ancien code faisait `return []` sans rien memoriser : le surplus revenait,
+    mais le lot restait au-dessus du plafond, donc etait rejete a nouveau. Un
+    verrou qui ne s'ouvre jamais. Ici le stock devient un debit.
+
+    `poids` : fonction de tri (montant en $, nombre de jetons…), decroissant.
+    `cle_id` : nom de la cle de dedoublonnage dans chaque candidat.
+    """
+    if len(cand) <= MAX_CARTES:
+        for c in cand:
+            vus[c[cle_id]] = ts
+        return cand
+
+    cand = sorted(cand, key=poids, reverse=True)
+    publies, rendus = cand[:MAX_CARTES], cand[MAX_CARTES:]
+    for c in publies:                      # ⭐ MEMORISER ce qu'on publie
+        vus[c[cle_id]] = ts
+    print(f"  🔇 🐋 {len(cand)} {quoi} d'un coup — on publie les "
+          f"{len(publies)} plus gros, {len(rendus)} rendus au tour suivant.",
+          file=sys.stderr)
+    return publies
+
+
+# ---------------------------------------------------------------------------
 # 🛒 / 💸 / 🏷️  Evenements de marche (flux StackR, 2 min)
 # ---------------------------------------------------------------------------
 
@@ -185,29 +239,10 @@ def detect_marche(state, listings, ventes, tracked, omi):
     for k in [k for k, t in list(vus.items()) if ts - fw._f(t) > VU_TTL]:
         vus.pop(k, None)
 
-    # ═══ 🐋 DEBORDEMENT : ON ETALE, ON NE JETTE PLUS ═══
-    # ⚠️ CORRIGE LE 20/07/2026, sur la foi d'un log de production.
-    # L'ancien code faisait `return []` SANS rien memoriser dans `vus`.
-    # Consequence : les memes evenements etaient redecouverts au tour
-    # suivant, re-comptes, re-jetes — a l'identique, indefiniment. Le log
-    # du 20/07 montre la meme ligne « ⛔ 26 evenements » repetee a CHAQUE
-    # tour : 🐋 ne publiait plus rien du tout, et le disait 25 fois par run
-    # sans que personne ne puisse deviner que c'etait un blocage et non une
-    # anomalie de marche.
-    # C'est exactement le defaut corrige le meme jour sur 📊 et 🔊 dans
-    # price_baseline.py — troisieme detecteur de la meme famille.
-    # Desormais : on publie les MAX_CARTES plus gros, on les memorise, et
-    # les autres restent candidats pour le tour suivant. Rien n'est enterre.
-    cand.sort(key=lambda c: -fw._f(c.get("usd") or 0))
-    if len(cand) > MAX_CARTES:
-        garde, reste = cand[:MAX_CARTES], cand[MAX_CARTES:]
-        print(f"  🔇 🐋 {len(cand)} evenements d'un coup : {len(garde)} publies "
-              f"(les plus gros), {len(reste)} gardes pour le tour suivant.",
-              file=sys.stderr)
-        cand = garde
-    for c in cand:
-        vus[c["cle"]] = ts
-    return cand
+    # Le plus gros d'abord : si un compte suivi s'agite, on veut ses grosses
+    # operations, pas les dix premieres du hasard de l'ordre du flux.
+    return _rendre(cand, vus, ts, "cle", lambda c: fw._f(c.get("usd")),
+                   "evenements comptes suivis")
 
 
 # ---------------------------------------------------------------------------
@@ -292,13 +327,9 @@ def detect_transferts(state, tracked):
     for k in [k for k, t in list(vus.items()) if ts - fw._f(t) > VU_TTL]:
         vus.pop(k, None)
 
-    if len(cand) > MAX_CARTES:
-        print(f"  ⛔ {len(cand)} gros transferts d'un coup — anormal. RIEN "
-              f"publie ni memorise.", file=sys.stderr)
-        return []
-    for c in cand:
-        vus[c["txh"]] = ts
-    return cand
+    # Ici le « poids » est le nombre de jetons deplaces dans la transaction.
+    return _rendre(cand, vus, ts, "txh", lambda c: fw._f(c.get("count")),
+                   "gros transferts")
 
 
 # ---------------------------------------------------------------------------
