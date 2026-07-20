@@ -185,10 +185,26 @@ def detect_marche(state, listings, ventes, tracked, omi):
     for k in [k for k, t in list(vus.items()) if ts - fw._f(t) > VU_TTL]:
         vus.pop(k, None)
 
+    # ═══ 🐋 DEBORDEMENT : ON ETALE, ON NE JETTE PLUS ═══
+    # ⚠️ CORRIGE LE 20/07/2026, sur la foi d'un log de production.
+    # L'ancien code faisait `return []` SANS rien memoriser dans `vus`.
+    # Consequence : les memes evenements etaient redecouverts au tour
+    # suivant, re-comptes, re-jetes — a l'identique, indefiniment. Le log
+    # du 20/07 montre la meme ligne « ⛔ 26 evenements » repetee a CHAQUE
+    # tour : 🐋 ne publiait plus rien du tout, et le disait 25 fois par run
+    # sans que personne ne puisse deviner que c'etait un blocage et non une
+    # anomalie de marche.
+    # C'est exactement le defaut corrige le meme jour sur 📊 et 🔊 dans
+    # price_baseline.py — troisieme detecteur de la meme famille.
+    # Desormais : on publie les MAX_CARTES plus gros, on les memorise, et
+    # les autres restent candidats pour le tour suivant. Rien n'est enterre.
+    cand.sort(key=lambda c: -fw._f(c.get("usd") or 0))
     if len(cand) > MAX_CARTES:
-        print(f"  ⛔ {len(cand)} evenements comptes suivis d'un coup — anormal. "
-              f"RIEN publie ni memorise.", file=sys.stderr)
-        return []
+        garde, reste = cand[:MAX_CARTES], cand[MAX_CARTES:]
+        print(f"  🔇 🐋 {len(cand)} evenements d'un coup : {len(garde)} publies "
+              f"(les plus gros), {len(reste)} gardes pour le tour suivant.",
+              file=sys.stderr)
+        cand = garde
     for c in cand:
         vus[c["cle"]] = ts
     return cand
