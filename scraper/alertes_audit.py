@@ -108,7 +108,13 @@ def _paires(etat, cle, i=0):
 
 def cadence(etat):
     """Ce qui a REELLEMENT tire, par signal et par jour."""
-    DET = [("alerts", "🚨 affaires (canal principal)"),
+    # ⚠️ 🎯 et 📚 n'ont PAS de registre `alerts_*` : ils utilisent
+    # `mints_vus` et `comics_vus`. Les oublier, c'est passer a cote des
+    # DEUX signaux les plus actifs — l'erreur que j'ai faite le 19/07 en
+    # concluant a tort que le canal principal etait muet.
+    DET = [("mints_vus", "🎯 numeros"),
+           ("comics_vus", "📚 comics"),
+           ("alerts", "🚨 affaires (arbitrage)"),
            ("alerts_steal", "🩸 chute du floor"),
            ("alerts_atl", "📉 plus-bas"),
            ("alerts_ath", "🆕 plus-haut"),
@@ -117,7 +123,8 @@ def cadence(etat):
            ("alerts_atl_stackr", "📉 plus-bas StackR"),
            ("alerts_histlow", "📊 bas de distribution"),
            ("alerts_vol", "🔊 anomalie d'offres")]
-    tous = [t for k, _ in DET for t in (etat.get(k) or {}).values()]
+    tous = [t for k, _ in DET for t in (etat.get(k) or {}).values()
+            if isinstance(t, (int, float))]
     if not tous:
         print("  (aucun cooldown en etat : rien n'a jamais tire)")
         return
@@ -126,8 +133,9 @@ def cadence(etat):
     print(f"  fenetre : {_j(t0)} -> {_j(t1)}  ({jours:.1f} jours)\n")
     print(f"  {'signal':<32}{'n':>5}{'/jour':>8}   dernier tir")
     for cle, nom in DET:
-        v = etat.get(cle) or {}
-        dernier = _j(max(v.values())) if v else "jamais"
+        v = [t for t in (etat.get(cle) or {}).values()
+             if isinstance(t, (int, float))]
+        dernier = _j(max(v)) if v else "jamais"
         print(f"  {nom:<32}{len(v):>5}{len(v)/jours:>8.1f}   {dernier}")
     print("\n  ⚠️ Un signal muet depuis plusieurs jours n'est pas forcement")
     print("     calme : il peut etre eteint, ou baillonne par un garde-fou.")
@@ -174,6 +182,98 @@ def balayage_atl(etat):
         print("     Le signal s'appelle « plus-bas HISTORIQUE ». S'il ne repose")
         print("     que sur quelques jours, le nom promet plus que la donnee.")
         print("     C'est exactement le trou que 📊 (multi-annees) doit combler.")
+
+
+def presence(etat):
+    """⭐ Combien de fois le collecteur a-t-il REELLEMENT tourne ?
+
+    On ne peut pas interroger GitHub Actions depuis ici. Mais
+    `hprix_emitted` garde {uuid: [floor, ts]} : le ts du moment ou ce floor
+    a ete pousse vers H-PRIX. Une emission n'a lieu qu'a un
+    rafraichissement — les timestamps distincts sont donc les empreintes
+    des runs reels.
+
+    ⚠️ UN ARTEFACT A ECARTER AVANT DE CONCLURE : seule la DERNIERE
+    emission par item est gardee. Si le tampon etait plein, il masquerait
+    les runs anciens. On verifie donc d'abord qu'il reste de la place :
+    si `total / emis_par_run` est nettement superieur au nombre de runs
+    observes, le tampon n'est pas la contrainte, et le compte est reel.
+    """
+    emis = [v[1] for v in (etat.get("hprix_emitted") or {}).values()
+            if isinstance(v, list) and len(v) > 1]
+    if len(emis) < 50:
+        print("  (pas assez d'emissions en etat pour conclure)")
+        return
+    par_run = {}
+    for t in emis:
+        cle = round(t / 60) * 60          # un run emet tout au meme instant
+        par_run[cle] = par_run.get(cle, 0) + 1
+    runs = sorted(par_run)
+    tailles = sorted(par_run.values())
+    med = tailles[len(tailles) // 2]
+    capacite = len(emis) / max(med, 1)
+    span_h = (runs[-1] - runs[0]) / 3600
+
+    print(f"  runs identifies      : {len(runs)}")
+    print(f"  fenetre couverte     : {span_h:.0f} h "
+          f"({_j(runs[0])} -> {_j(runs[-1])})")
+    print(f"  attendus sur cette fenetre (cron horaire) : {span_h:.0f}")
+    print()
+    print(f"  capacite du tampon   : ~{capacite:.0f} runs "
+          f"({len(emis)} emissions / {med} par run)")
+    if capacite > len(runs) * 1.5:
+        print("  ✅ le tampon n'est PAS la contrainte : il reste de la place,")
+        print("     donc le compte de runs est reel, pas tronque.")
+        print()
+        print(f"  ➡️  TAUX DE PRESENCE : {len(runs)/max(span_h,1)*100:.0f} % "
+              f"— un run toutes les {span_h/max(len(runs)-1,1):.1f} h "
+              "au lieu d'une heure.")
+    else:
+        print("  ⚠️ le tampon est peut-etre plein : le compte est un MINORANT,")
+        print("     seule la duree couverte est exploitable.")
+    print()
+    print("  Reserve : un run qui n'emet AUCUN changement n'apparait pas.")
+    print("  Avec ~140 floors qui bougent par run c'est peu probable, mais")
+    print("  possible la nuit — le chiffre est donc un intervalle MAXIMUM.")
+
+
+def reference_atl(etat, catalogue=None):
+    """Sur quoi 📉 s'appuie-t-il vraiment : le catalogue ou l'observation ?
+
+    `detect_atl` prend `min(atl_catalogue, atl_observe)`. L'ATL du
+    catalogue vient de `stats.allTimeLowest` — le vrai plus-bas publie par
+    VeVe. Il est donc faux de croire que le signal ne connait que quelques
+    jours d'histoire : verifions la part de chacun.
+    """
+    import csv
+    chemin = catalogue or os.environ.get("AUDIT_CATALOGUE", "_preda/data/elements.csv")
+    try:
+        with open(chemin, encoding="utf-8", errors="replace") as f:
+            cat = {}
+            for l in csv.DictReader(f):
+                u = (l.get("uuid") or l.get("veve_uuid") or "").strip()
+                try:
+                    cat[u] = float(l.get("atl") or 0)
+                except (TypeError, ValueError):
+                    pass
+    except FileNotFoundError:
+        print(f"  (catalogue introuvable : {chemin} — section sautee)")
+        return
+    vf = _paires(etat, "vfloors")
+    seen = _paires(etat, "atl_seen")
+    sains = [u for u in vf if PLANCHER < vf[u] <= PRIX_MAX and u in cat and u in seen]
+    if not sains:
+        print("  (aucun item commun)")
+        return
+    cat_gagne = sum(1 for u in sains if 0 < cat[u] < seen[u])
+    sans_cat = sum(1 for u in sains if cat[u] <= 0)
+    print(f"  items examines : {len(sains)}")
+    print(f"  reference = ATL du CATALOGUE (VeVe, multi-annees) : "
+          f"{cat_gagne} ({cat_gagne/len(sains)*100:.0f} %)")
+    print(f"  reference = plus-bas observe en direct           : "
+          f"{len(sains)-cat_gagne-sans_cat} "
+          f"({(len(sains)-cat_gagne-sans_cat)/len(sains)*100:.0f} %)")
+    print(f"  aucun ATL au catalogue                           : {sans_cat}")
 
 
 def balayage_histlow(etat, base):
@@ -248,6 +348,10 @@ def main():
         ("2. LES VALEURS ABERRANTES", lambda: aberrations(etat)),
         ("3. 📉 PLUS-BAS : MATIERE DISPONIBLE ET PROFONDEUR REELLE",
          lambda: balayage_atl(etat)),
+        ("3bis. SUR QUOI 📉 S'APPUIE-T-IL VRAIMENT ?",
+         lambda: reference_atl(etat)),
+        ("3ter. ⭐ COMBIEN DE FOIS LE COLLECTEUR A-T-IL TOURNE ?",
+         lambda: presence(etat)),
     ]
     for titre, fn in titres:
         print("\n" + "═" * 70)
