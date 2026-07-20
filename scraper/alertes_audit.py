@@ -282,34 +282,67 @@ def reference_atl(etat, catalogue=None):
 
 def balayage_histlow(etat, base):
     """📊 : combien d'items seraient « dans le bas de leur histoire », pour
-    chaque valeur de HISTLOW_PCT ?"""
+    chaque valeur de HISTLOW_PCT ?
+
+    ⚠️ BUG CORRIGE LE 20/07 : je cherchais des cles `p5`, `p25`… alors que
+    les baselines s'appellent `floor_p5`, `floor_p25`. Toutes les cles
+    etaient donc None, et le balayage rendait ZERO candidat a tous les
+    seuils — un resultat qui avait l'air d'une mesure.
+    Parade : on n'ecrit plus le calcul, on APPELLE `price_baseline.pct_rank`,
+    la fonction que le vrai detecteur utilise. Le banc ne peut plus diverger
+    du detecteur qu'il est cense mesurer.
+    """
     if not base:
         print("  (pas de baselines : section sautee)")
         return
+    try:
+        from scraper.price_baseline import pct_rank
+    except ImportError:
+        print("  ⚠️ scraper/price_baseline.py introuvable — section sautee.")
+        return
+
     vf = _paires(etat, "vfloors")
     ventes = _paires(etat, "sales")
     communs = [k for k in vf if k in base]
     print(f"  items avec une baseline multi-annees : {len(communs)} "
           f"(sur {len(vf)} suivis)\n")
+
+    # Le rang de chaque item est calcule UNE fois, par la fonction du
+    # detecteur ; les seuils ne font ensuite que decouper cette liste.
+    rangs = []
+    for k in communs:
+        if not (PLANCHER < vf[k] <= PRIX_MAX):
+            continue
+        r = pct_rank(base[k], vf[k])
+        if r is None:
+            continue
+        rangs.append((r, ventes.get(k, 0) > 0,
+                      (base[k].get("n_points") or 0) >= 30))
+    if not rangs:
+        print("  ⚠️ aucun rang calculable — les baselines n'ont pas les")
+        print("     colonnes attendues (floor_min, floor_p5, …).")
+        return
+
+    print(f"  rangs calcules : {len(rangs)}")
+    tries = sorted(r for r, _, _ in rangs)
+    print(f"  distribution des rangs : min {tries[0]:.0f} · "
+          f"p25 {tries[len(tries)//4]:.0f} · median {tries[len(tries)//2]:.0f} · "
+          f"max {tries[-1]:.0f}\n")
     print(f"  {'HISTLOW_PCT':>12} {'candidats':>10} {'avec vente':>12}"
-          f" {'>=30 points':>12}")
+          f" {'>=30 points':>12}   {'par jour*':>10}")
     for pct in (5, 10, 15, 20, 25, 30):
-        n = nv = np_ = 0
-        for k in communs:
-            b = base[k]
-            seuil = b.get(f"p{pct}") or b.get("p5")
-            if seuil is None or not (PLANCHER < vf[k] <= PRIX_MAX):
-                continue
-            if vf[k] <= seuil:
-                n += 1
-                if ventes.get(k, 0) > 0:
-                    nv += 1
-                if (b.get("n_points") or 0) >= 30:
-                    np_ += 1
-        print(f"  {pct:>11} % {n:>10} {nv:>12} {np_:>12}")
-    print("\n  Lire la colonne « avec vente » : c'est elle qui compte, le code")
-    print("  exige une preuve de vente. Vise un volume que TU accepterais de")
-    print("  lire chaque jour — pas le seuil qui produit le plus de candidats.")
+        sel = [(v, n) for r, v, n in rangs if r <= pct]
+        avec_vente = sum(1 for v, _ in sel if v)
+        assez = sum(1 for v, n in sel if v and n)
+        # * ce que tu recevrais vraiment : preuve de vente ET assez d'histoire,
+        #   etale sur le cooldown de 6 h (4 fenetres par jour au maximum).
+        print(f"  {pct:>11} % {len(sel):>10} {avec_vente:>12} {assez:>12}"
+              f"   {min(assez, 10*4):>10}")
+    print()
+    print("  * plafonne par ALERT_MAX (10) et le cooldown de 6 h : au-dela,")
+    print("    le detecteur juge son seuil trop bas et NE PUBLIE RIEN.")
+    print("  Vise la colonne « >=30 points » : c'est ce que le code retiendra")
+    print("  vraiment (preuve de vente + assez d'historique).")
 
 
 def balayage_vol(etat, base):
