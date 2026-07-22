@@ -209,7 +209,10 @@ def test_event_epoch_absent_ou_illisible_rend_none():
 def test_ligne_quand_dit_le_retard():
     ts = time.time()
     ligne = fw.ligne_quand("Listé", ts - 151 * 60, ts)   # 2 h 31
-    assert "il y a 2 h 31" in ligne and "UTC" in ligne
+    # 22/07 : l'heure affichee est celle du LECTEUR (Europe/Paris), plus UTC —
+    # Preda lisait « 11:56 UTC » sous un Discord a 13:56 et voyait 2 h de
+    # retard imaginaire.
+    assert "il y a 2 h 31" in ligne and "FR" in ligne and "UTC" not in ligne
 
 
 def test_trop_vieux_ne_filtre_que_si_le_reglage_est_pose(monkeypatch):
