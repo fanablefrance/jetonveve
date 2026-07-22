@@ -60,6 +60,7 @@ import requests
 
 from scraper import numeros as nu
 from scraper import price_baseline as pb
+from scraper import liquidity_baseline as lb
 
 # Pont vers le bot d'alertes (etape 4 du bot Discord). Volontairement
 # tolerant : si le fichier manque, floor_watch doit continuer a tourner
@@ -119,6 +120,27 @@ SALES_TYPES = ("MARKET_FIXED", "MARKET_AUCTION", "MARKET_STACKR")
 # floor VeVe » y est une FICTION. Par defaut on n'alerte donc pas sur l'ecart
 # entre marches sans preuve de vente (FLOOR_REQUIRE_SALE=false pour desactiver).
 REQUIRE_SALE = os.environ.get("FLOOR_REQUIRE_SALE", "true").lower() != "false"
+
+# 🏛️ PREUVE DE LIQUIDITE PAR L'ENTREPOT (22/07/2026). La preuve « cet item se
+# vend-il vraiment ? » exigee par REQUIRE_SALE etait reconstruite en paginant
+# getVeveTransactions (StackR) a CHAQUE run. C'est une question HISTORIQUE :
+# l'entrepot (transferts on-chain kind='market') y repond deja. On charge une
+# baseline pre-calculee hors reseau (outils/construire_liquidite.py) et on
+# l'accepte comme preuve, EN PLUS des ventes live. ADDITIF ET REVERSIBLE :
+# baseline absente -> LIQUIDE reste vide -> comportement STRICTEMENT identique.
+# ➡️ une fois la baseline confirmee, FLOOR_SALES_PAGES peut baisser (moins de
+#    requetes StackR, la source la plus sensible) — mais UNE variable a la fois.
+LIQUIDE: Dict[str, Dict] = {}
+LIQ_MIN = int(os.environ.get("FLOOR_LIQ_MIN_SALES", "1"))
+LIQ_WIN = os.environ.get("FLOOR_LIQ_WINDOW", "n_sales_90d")
+
+
+def _a_vente(uid: str, last) -> bool:
+    """Preuve de liquidite : une vente live connue OU l'entrepot atteste d'au
+    moins LIQ_MIN vente(s) reelle(s) sur la fenetre. Sans preuve -> False."""
+    if last is not None:
+        return True
+    return lb.est_liquide(LIQUIDE.get(uid), min_sales=LIQ_MIN, fenetre=LIQ_WIN)
 
 # ⚠️ MODE REGLAGE. Desserrer un seuil et decouvrir le resultat SUR LE DISCORD DE
 # LA COMMU, c'est se tromper devant tout le monde. FLOOR_SIMULER=1 : on calcule
@@ -1095,7 +1117,7 @@ def detect(state: Dict, listings: List[Dict], omi: float,
         # vente reelle connue, cette revente est une fiction. La sous-cotation
         # sur le MEME marche (floor StackR), elle, n'a pas besoin de preuve :
         # c'est une comparaison a offre egale.
-        preuve_ok = (last is not None) or not REQUIRE_SALE
+        preuve_ok = _a_vente(uid, last) or not REQUIRE_SALE
         sous_cote = d_stackr >= DROP_PCT
         if not sous_cote and not (arbitrage and preuve_ok):
             if arbitrage and not preuve_ok:
@@ -1183,9 +1205,9 @@ def detect_spread(state: Dict, veve: Dict[str, float], omi: float,
             if journal:
                 journal.rejet("profit", cand, cle=uid)
             continue
-        if REQUIRE_SALE and last is None:
-            # aucune vente depuis ~7 jours : l'item NE SE VEND PAS. Revendre au
-            # floor VeVe y est une fiction -> on se tait.
+        if REQUIRE_SALE and not _a_vente(uid, last):
+            # aucune vente live NI dans l'entrepot : l'item NE SE VEND PAS.
+            # Revendre au floor VeVe y est une fiction -> on se tait.
             state.setdefault("sans_vente", {})[uid] = ts
             if journal:
                 journal.rejet("illiquide", cand, cle=uid)
@@ -1385,7 +1407,7 @@ def detect_veve_steal(state, veve, cat=None, ts=None):
             continue
         last = (state.get("sales") or {}).get(uid)
         ls = _f(last[0]) if last else 0.0
-        if REQUIRE_SALE and ls <= 0:
+        if REQUIRE_SALE and ls <= 0 and not _a_vente(uid, None):
             # un floor qui tombe sur un item qui ne se vend jamais n'est pas une
             # affaire : c'est une vitrine sans acheteur.
             state.setdefault("sans_vente", {})[uid] = ts
@@ -2023,6 +2045,14 @@ def main() -> int:
     if baselines:
         print(f"  📊 baselines de prix chargees : {len(baselines)} items",
               flush=True)
+    if REQUIRE_SALE:
+        LIQUIDE.update(lb.load_liquidity())
+        if LIQUIDE:
+            print(f"  🏛️ liquidite (entrepot) : {len(LIQUIDE)} items avec vente "
+                  "reelle — preuve sans requete StackR.", flush=True)
+        else:
+            print("  🏛️ liquidite (entrepot) : baseline absente — repli sur "
+                  "l'historique live (fetch_history).", flush=True)
     comics = comics_petit_tirage(cat)
     dates = nu.charger_dates()
     if cat:
