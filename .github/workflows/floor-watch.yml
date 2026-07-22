@@ -113,7 +113,9 @@ on:
       whale_on:
         description: "🐋 Suivi comptes whale/team (tags 🟣C-PSEUDOS) → canal dedie"
         required: false
-        default: "false"
+        # 22/07 : « true » par defaut au lancement MANUEL aussi (demande Preda —
+        # les autres canaux actifs l'etaient deja, celui-ci avait ete oublie).
+        default: "true"
         type: choice
         options: ["false", "true"]
       pic_on:
@@ -274,6 +276,9 @@ jobs:
           HISTLOW_ON: ${{ vars.HISTLOW_ON || 'false' }}
           HISTLOW_PCT: ${{ vars.HISTLOW_PCT || '10' }}
           HISTLOW_MIN_POINTS: ${{ vars.HISTLOW_MIN_POINTS || '30' }}
+          # 🔴 22/07 : lue par le code depuis le 20/07 mais jamais posable ici —
+          # trouvee par tests/test_reglages_cables.py (rouge preexistant).
+          HISTLOW_MAX: ${{ vars.HISTLOW_MAX || '10' }}
           VOL_ON: ${{ vars.VOL_ON || 'false' }}
           VOL_RATIO: ${{ vars.VOL_RATIO || '3' }}
           # 🌉 LE PONT VEILLE → 🟠H-PRIX (collectibles). OFF par defaut : on ecrit
@@ -328,6 +333,15 @@ jobs:
           FLOOR_FEE_PCT: ${{ vars.FLOOR_FEE_PCT || '8.5' }}
           FLOOR_MIN_USD: ${{ vars.FLOOR_MIN_USD || '1' }}
           FLOOR_COOLDOWN_H: ${{ vars.FLOOR_COOLDOWN_H || '6' }}
+
+          # --- ⏱️ Fraicheur des evenements du flux (22/07) --------------------
+          # Les cartes issues du flux StackR (🎯 📚 📉-StackR 🐋) portent
+          # desormais TOUJOURS l'heure de l'evenement (« il y a 2 h 31 »).
+          # En plus, au-dela de cet age (en minutes), l'evenement est IGNORE.
+          # 0 = pas de filtre. Poser vars.FLOOR_EVENT_MAX_AGE_MIN=45 pour ne
+          # plus jamais recevoir un « rattrapage » de 2 h apres un cron saute.
+          # ⚠️ Le vrai remede du retard reste la cadence (VPS / pinger).
+          FLOOR_EVENT_MAX_AGE_MIN: ${{ vars.FLOOR_EVENT_MAX_AGE_MIN || '0' }}
 
           # --- 🛡️ Le plafond de vraisemblance --------------------------------
           # Valeur fixee par Preda : « au-dela de 50 000 $ ce n'est pas la
