@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# ⚠️ DEPOT : fanablefrance/jetonveve   ·   CHEMIN : scraper/analytics_derived.py
 """analytics_derived — couche analyse DuckDB sur transfers-full (jetonveve).
 
 Lit transfers_full.csv.gz (Release `transfers-full`) et produit des CSV
@@ -24,6 +25,9 @@ Env   : RUN_DATE=YYYY-MM-DD (defaut : aujourd'hui UTC — le workflow passe la
         date PT), DUCK_MEM (defaut 10GB), EXPECTED_MIN (defaut 35000000),
         PARQUET_OUT=chemin (publie le parquet au lieu de le jeter — consomme
         ensuite par URL via DuckDB httpfs, lecture partielle sans telecharger),
+        PARQUET_BY_ITEM=chemin (publie EN PLUS une copie TRIEE PAR uuid pour les
+        lookups par item — voir plus bas ; l'ordre chronologique reste porte par
+        la colonne seq, donc PARQUET_OUT n'est pas touche),
         KEEP_PARQUET=1 (debug).
 """
 import os
@@ -205,6 +209,21 @@ def main() -> None:
     for row in con.execute("""SELECT uuid, circulating, ghost_supply FROM corner
             ORDER BY ghost_supply DESC LIMIT 5""").fetchall():
         print("  ", row)
+    # ── asset TRIE PAR ITEM (levier de recherche) ───────────────────────────
+    # Publie EN PLUS un parquet trie par uuid : DuckDB elague alors les
+    # row-groups via leurs stats min/max, donc un lookup par item (WHERE uuid=…)
+    # lit quelques blocs au lieu de balayer les 38 M lignes (~x10 mesure).
+    # ⭐ seq est une COLONNE : trier les lignes ne change PAS sa valeur — l'ordre
+    # chronologique reste reconstructible (ORDER BY seq) et tout le calcul
+    # ci-dessus, deja fait sur le tmp chronologique, n'est pas touche.
+    # ⚠️ On lit `pq` AVANT que os.replace ne le deplace vers PARQUET_OUT.
+    by_item = os.environ.get("PARQUET_BY_ITEM")
+    if by_item:
+        con.execute(f"""COPY (SELECT * FROM read_parquet('{pq}') ORDER BY uuid)
+            TO '{by_item}' (FORMAT parquet, COMPRESSION zstd, ROW_GROUP_SIZE 122880)""")
+        print(f"parquet trie par item : {by_item} "
+              f"({os.path.getsize(by_item)/1e6:.0f} Mo)")
+
     pq_out = os.environ.get("PARQUET_OUT")
     if pq_out:
         os.replace(pq, pq_out)
