@@ -55,9 +55,10 @@ jobs:
         run: |
           export RUN_DATE=$(TZ=America/Los_Angeles date +%F)
           export PARQUET_OUT=transfers.parquet
+          export PARQUET_BY_ITEM=transfers_by_item.parquet
           echo "RUN_DATE=$RUN_DATE (PT)"
           python -m scraper.analytics_derived transfers_full.csv.gz derived
-          ls -lh derived/ transfers.parquet
+          ls -lh derived/ transfers.parquet transfers_by_item.parquet
 
       - name: "Calcul ledger derives (pulse + corner 111 + profils A VIE)"
         run: |
@@ -81,4 +82,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release upload transfers-full transfers.parquet --clobber
-          echo "✅ transfers.parquet publie — queryable par URL (DuckDB httpfs, lecture partielle)."
+          gh release upload transfers-full transfers_by_item.parquet --clobber
+          echo "✅ transfers.parquet + transfers_by_item.parquet publies — queryables par URL (DuckDB httpfs, lecture partielle)."
