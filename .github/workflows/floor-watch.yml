@@ -358,6 +358,11 @@ jobs:
           # plus jamais recevoir un « rattrapage » de 2 h apres un cron saute.
           # ⚠️ Le vrai remede du retard reste la cadence (VPS / pinger).
           FLOOR_EVENT_MAX_AGE_MIN: ${{ vars.FLOOR_EVENT_MAX_AGE_MIN || '0' }}
+          # 🇫🇷 Fuseau des heures affichees sur les cartes (22/07 : « 11:56
+          # UTC » sous un Discord a 13:56 se lisait comme 2 h de retard
+          # imaginaire). L'heure des cartes est celle du lecteur.
+          FLOOR_TZ: ${{ vars.FLOOR_TZ || 'Europe/Paris' }}
+          FLOOR_TZ_LABEL: ${{ vars.FLOOR_TZ_LABEL || 'FR' }}
 
           # --- 🛡️ Le plafond de vraisemblance --------------------------------
           # Valeur fixee par Preda : « au-dela de 50 000 $ ce n'est pas la
