@@ -298,6 +298,30 @@ ATL_STACKR_MAX = int(os.environ.get("ATL_STACKR_MAX", "10"))
 # ⚠️ Le vrai remede du retard est la CADENCE (VPS / pinger), pas ce filtre.
 EVENT_MAX_AGE_MIN = float(os.environ.get("FLOOR_EVENT_MAX_AGE_MIN", "0"))
 
+# 🏓 CADENCE PINGER (22/07, 2e lot). Preda veut du TEMPS REEL sur 🎯/📚 :
+# une affaire vieille de 15 min ne sert a rien. Le cron GitHub seul ne peut
+# pas le donner (runs sautes + 36 min d'angle mort par heure). La reponse est
+# un PINGER externe qui declenche le workflow toutes les 30 min via
+# `repository_dispatch` — et deux amenagements pour que doubler la cadence ne
+# double PAS l'empreinte ni ne perde d'evenements :
+#   1. FLOOR_REFRESH_FROM_STATE : au demarrage, si le DERNIER balayage des
+#      floors (state.last_refresh_ts) date de moins de FLOOR_REFRESH_MIN, on
+#      REPREND les floors de l'etat (`vfloors`) au lieu de re-balayer les
+#      ~76 pages du catalogue. Le balayage lourd (getElements + 120 pages
+#      d'historique + collectscan) reste donc 1x/h QUEL QUE SOIT le nombre de
+#      runs par heure. Les detecteurs de refresh (🩸🆕📉📊🔥) ne tournent que
+#      sur un VRAI balayage — rien ne change pour eux.
+#   2. FLOOR_LISTINGS_FIRST : le 1er tour d'un run demande une fenetre LARGE
+#      du flux (120 au lieu de 50) pour couvrir le trou depuis le run
+#      precedent : un evenement tombe entre deux runs est rattrape (et DATE
+#      sur la carte), plus jamais perdu. ⚠️ Sur ces API trpc un parametre
+#      inconnu est ignore EN SILENCE (lecon `page`/`cursor`) : le run LOGGE
+#      donc combien de listings le 1er tour a recus — si l'API plafonne a 50,
+#      ca se VOIT dans le log au lieu de se croire couvert.
+N_LISTINGS_FIRST = int(os.environ.get("FLOOR_LISTINGS_FIRST", "120"))
+REFRESH_FROM_STATE = os.environ.get(
+    "FLOOR_REFRESH_FROM_STATE", "true").lower() != "false"
+
 # ═══════════════════════════════════════════════════════════════════════════
 # 🌉 LE PONT VEILLE → 🟠H-PRIX (15/07)
 # ═══════════════════════════════════════════════════════════════════════════
@@ -885,6 +909,27 @@ def atl_connu(state: Dict, uid: str, cat_atl=None):
         _f(((state.get("atl_seen") or {}).get(uid) or [0])[0]),
     ) if 0 < x <= PRIX_MAX]
     return round(min(cands), 2) if cands else None
+
+
+def floors_depuis_etat(state: Dict, ts: float = None):
+    """(veve, dernier_refresh) si le dernier balayage est assez FRAIS pour
+    etre reutilise (< FLOOR_REFRESH_MIN), sinon None.
+
+    Les floors du dernier balayage vivent deja dans l'etat : `vfloors`
+    ({uuid: [floor, ts]}, ecrit par detect_veve_steal a CHAQUE balayage,
+    meme canal eteint). On ne garde que les entrees ecrites par CE
+    balayage-la (ts >= last_refresh - marge) : une entree plus vieille est
+    un item sorti du catalogue, pas un floor courant."""
+    ts = ts if ts is not None else time.time()
+    prev = _f(state.get("last_refresh_ts") or 0)
+    if prev <= 0 or ts - prev > REFRESH_MIN * 60:
+        return None
+    marge = prev - 180
+    veve = {u: _f(v[0]) for u, v in (state.get("vfloors") or {}).items()
+            if isinstance(v, list) and len(v) > 1 and _f(v[1]) >= marge}
+    if not veve:
+        return None
+    return veve, prev
 
 
 def ligne_atl(atl, prix=None, gras=False) -> str:
@@ -2242,6 +2287,17 @@ def main() -> int:
     s = requests.Session()
     veve: Dict[str, float] = {}
     dernier_refresh = 0.0
+    # 🏓 cadence pinger : si le dernier balayage est frais, on le REPREND au
+    # lieu de re-balayer — le balayage lourd reste 1x/h meme a 2 runs/h.
+    if REFRESH_FROM_STATE:
+        _repris = floors_depuis_etat(state)
+        if _repris:
+            veve, dernier_refresh = _repris
+            print(f"  ♻️ floors repris de l'etat : {len(veve)} elements, "
+                  f"balayage d'il y a "
+                  f"{(time.time() - dernier_refresh) / 60:.0f} min — pas de "
+                  f"re-balayage (FLOOR_REFRESH_FROM_STATE=false pour revenir "
+                  f"a l'ancien comportement).", flush=True)
     total = 0
     for i in range(1, POLLS + 1):
         omi = fetch_omi_price(s)
@@ -2391,7 +2447,17 @@ def main() -> int:
                           flush=True)
         ventes = fetch_sales(s)                       # ventes REELLES (OMI)
         nv = note_sales(state, ventes, omi)
-        listings = fetch_listings(s)
+        # 🏓 1er tour : fenetre LARGE pour couvrir le trou entre deux runs.
+        listings = fetch_listings(
+            s, N_LISTINGS_FIRST if i == 1 else N_LISTINGS)
+        if i == 1 and listings and N_LISTINGS_FIRST > N_LISTINGS:
+            print(f"  fenetre du 1er tour : {len(listings)} listings recus "
+                  f"pour {N_LISTINGS_FIRST} demandes"
+                  + ("" if len(listings) > N_LISTINGS
+                     else " — ⚠️ l'API semble plafonner, la fenetre reste "
+                          "etroite (les trous entre runs ne sont pas "
+                          "couverts au-dela)."),
+                  flush=True)
         if not listings:
             print(f"  [{i}/{POLLS}] aucun listing recu — on reessaiera.",
                   flush=True)
