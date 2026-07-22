@@ -60,7 +60,6 @@ import requests
 
 from scraper import numeros as nu
 from scraper import price_baseline as pb
-from scraper import liquidity_baseline as lb
 
 # Pont vers le bot d'alertes (etape 4 du bot Discord). Volontairement
 # tolerant : si le fichier manque, floor_watch doit continuer a tourner
@@ -120,27 +119,6 @@ SALES_TYPES = ("MARKET_FIXED", "MARKET_AUCTION", "MARKET_STACKR")
 # floor VeVe » y est une FICTION. Par defaut on n'alerte donc pas sur l'ecart
 # entre marches sans preuve de vente (FLOOR_REQUIRE_SALE=false pour desactiver).
 REQUIRE_SALE = os.environ.get("FLOOR_REQUIRE_SALE", "true").lower() != "false"
-
-# 🏛️ PREUVE DE LIQUIDITE PAR L'ENTREPOT (22/07/2026). La preuve « cet item se
-# vend-il vraiment ? » exigee par REQUIRE_SALE etait reconstruite en paginant
-# getVeveTransactions (StackR) a CHAQUE run. C'est une question HISTORIQUE :
-# l'entrepot (transferts on-chain kind='market') y repond deja. On charge une
-# baseline pre-calculee hors reseau (outils/construire_liquidite.py) et on
-# l'accepte comme preuve, EN PLUS des ventes live. ADDITIF ET REVERSIBLE :
-# baseline absente -> LIQUIDE reste vide -> comportement STRICTEMENT identique.
-# ➡️ une fois la baseline confirmee, FLOOR_SALES_PAGES peut baisser (moins de
-#    requetes StackR, la source la plus sensible) — mais UNE variable a la fois.
-LIQUIDE: Dict[str, Dict] = {}
-LIQ_MIN = int(os.environ.get("FLOOR_LIQ_MIN_SALES", "1"))
-LIQ_WIN = os.environ.get("FLOOR_LIQ_WINDOW", "n_sales_90d")
-
-
-def _a_vente(uid: str, last) -> bool:
-    """Preuve de liquidite : une vente live connue OU l'entrepot atteste d'au
-    moins LIQ_MIN vente(s) reelle(s) sur la fenetre. Sans preuve -> False."""
-    if last is not None:
-        return True
-    return lb.est_liquide(LIQUIDE.get(uid), min_sales=LIQ_MIN, fenetre=LIQ_WIN)
 
 # ⚠️ MODE REGLAGE. Desserrer un seuil et decouvrir le resultat SUR LE DISCORD DE
 # LA COMMU, c'est se tromper devant tout le monde. FLOOR_SIMULER=1 : on calcule
@@ -304,6 +282,22 @@ ATL_STACKR_MIN_USD = float(os.environ.get("ATL_STACKR_MIN_USD", "1"))
 ATL_STACKR_MARGIN_PCT = float(os.environ.get("ATL_STACKR_MARGIN_PCT", "5"))
 ATL_STACKR_MAX = int(os.environ.get("ATL_STACKR_MAX", "10"))
 
+# ⏱️ FRAICHEUR DES EVENEMENTS DU FLUX (audit du 22/07/2026).
+# MESURE sur l'etat de prod : des evenements listes a 10:00-10:08 UTC ont ete
+# publies a 12:34-12:36 — 2 h 30 de retard. La cause n'est PAS dans ce module :
+# GitHub SAUTE des runs planifies sous charge (ecart de refresh mesure a
+# 233 min), et le flux StackR garde ~1,7 h de listings (50 items) — le run
+# suivant "rattrape" donc des evenements vieux de 2 h et les publie comme s'ils
+# venaient d'arriver. Deux parades, cote code :
+#   1. CHAQUE carte issue du flux affiche desormais QUAND l'evenement a eu lieu
+#      ("il y a 2 h 31") — un retard visible n'est plus un mensonge ;
+#   2. FLOOR_EVENT_MAX_AGE_MIN (minutes) : au-dela de cet age, l'evenement est
+#      ignore (compte dans le log, jamais memorise — l'age ne fait que croitre,
+#      il restera filtre). 0 = pas de filtre (defaut : on prefere une alerte en
+#      retard ET DATEE a une alerte perdue ; Preda tranche).
+# ⚠️ Le vrai remede du retard est la CADENCE (VPS / pinger), pas ce filtre.
+EVENT_MAX_AGE_MIN = float(os.environ.get("FLOOR_EVENT_MAX_AGE_MIN", "0"))
+
 # ═══════════════════════════════════════════════════════════════════════════
 # 🌉 LE PONT VEILLE → 🟠H-PRIX (15/07)
 # ═══════════════════════════════════════════════════════════════════════════
@@ -455,6 +449,20 @@ def charger_elements(chemin: str = None) -> Dict[str, Dict]:
                     "ath": (lambda a: a if 0 < a < ATH_CAP else None)(
                         _f(r.get("ath"))),
                 }
+                # 🔴 GARDE DE COHERENCE (audit du 22/07/2026). Un ATL au-dessus
+                # de l'ATH est IMPOSSIBLE — et pourtant 16,9 % des lignes
+                # d'elements.csv en portaient un (3 172 sur 18 801). Cause,
+                # prouvee sur piece : des decimales FR ×100 cote Sheet — l'ATH
+                # exporte de ODDY vaut 888888 quand ce module a OBSERVE en
+                # direct 8888,88 exactement. « 3,69 » devenu 369, « 94,99 »
+                # devenu 9499… On ne peut PAS reparer ici (1499 peut etre un
+                # vrai 1 499 $ ou un 14,99 corrompu) : une paire incoherente
+                # est donc jugee INCONNUE toute entiere. La reparation, elle,
+                # se fait A LA SOURCE (Sheet/export cote scrapeur-veve).
+                fiche = out[uid]
+                if (fiche["atl"] is not None and fiche["ath"] is not None
+                        and fiche["atl"] > fiche["ath"]):
+                    fiche["atl"] = fiche["ath"] = None
     except FileNotFoundError:
         print(f"  (pas de {chemin} : catalogue inconnu — signaux comics et "
               f"numeros desactives)", file=sys.stderr)
@@ -488,8 +496,12 @@ def detect_comics(state: Dict, comics: Dict[str, Dict],
     trouve: Dict[str, Dict] = {}
     ecartes: List = []
 
-    def _garder(uid, prix, ou):
+    def _garder(uid, prix, ou, it=None):
         c = comics[uid]
+        # ⏱️ fraicheur (meme regle que 🎯) : filtre optionnel + age sur la carte.
+        quand = _event_epoch(it)
+        if trop_vieux(quand, ts):
+            return
         # ⚠️ LA PROFONDEUR DU CARNET. Huit offres au meme prix, ce n'est pas une
         # aubaine : c'est le prix du marche. On ne retient que l'offre RARE.
         n = c.get("listings")
@@ -500,11 +512,14 @@ def detect_comics(state: Dict, comics: Dict[str, Dict],
         if anc and anc["usd"] <= prix:
             return
         trouve[uid] = {"uuid": uid, "usd": round(prix, 2), "ou": ou,
+                       "quand": quand,
                        "name": c["name"], "rarity": c["rarity"],
                        "edition": c["edition"], "supply": c["supply"],
                        "serie": c["serie"], "listings": n,
                        "note": c.get("note") or "",
-                       "veve_floor": veve.get(uid, 0.0), "atl": c.get("atl")}
+                       "veve_floor": veve.get(uid, 0.0),
+                       # plus-bas RECOUPE (jamais l'ATL catalogue brut) — 22/07
+                       "atl": atl_connu(state, uid, c.get("atl"))}
 
     # SEULE SOURCE : les NOUVELLES mises en vente StackR (prix en OMI), fraiches
     # a la minute (flux interroge toutes les 2 min). Aucun balayage de
@@ -515,7 +530,7 @@ def detect_comics(state: Dict, comics: Dict[str, Dict],
             continue
         usd = _f(it.get("price")) * omi
         if 0 < usd < COMIC_MAX_USD:
-            _garder(uid, usd, "StackR")
+            _garder(uid, usd, "StackR", it)
 
     if ecartes:
         print(f"  📚 {len(ecartes)} comic(s) ecarte(s) : trop d'offres au meme "
@@ -559,16 +574,27 @@ def carte_comic(a: Dict) -> Dict:
               f"**Prix** : **{a['usd']:.2f} $** sur **{a['ou']}**"]
     n = a.get("listings")
     if n is not None:
-        lignes.append(f"**Offres en vente** : {n}"
-                      + (" — offre unique" if n <= 1 else ""))
+        # 🔴 22/07 : « Offres en vente : 0 — offre unique » est un non-sens.
+        # `listings` est le compte de la VEILLE (CSV quotidien) : il ne
+        # contient pas forcement le listing tout frais qui declenche cette
+        # carte. 0 offre connue + celle-ci = c'est CELLE-CI l'offre unique.
+        if n == 0:
+            lignes.append("**Offres en vente** : celle-ci uniquement "
+                          "(aucune autre connue)")
+        else:
+            lignes.append(f"**Offres en vente** : {n}"
+                          + (" — offre unique" if n == 1 else ""))
     if a.get("note"):
         lignes.append(f"**Classement** : {a['note']}")
     if a.get("veve_floor"):
         lignes.append(f"Floor VeVe : {a['veve_floor']:.2f} $")
     if a.get("atl"):
-        lignes.append(f"Plus-bas historique : {a['atl']:.2f} $")
+        lignes.append(ligne_atl(a["atl"], a.get("usd")))
     if a.get("rarity") or a.get("edition"):
         lignes.append(f"{a.get('rarity', '')} {a.get('edition', '')}".strip())
+    lq = ligne_quand("Listé", a.get("quand"))
+    if lq:
+        lignes.append(lq)
     if lien:
         lignes.append(f"[Voir sur StackR]({lien})")
     return {"title": f"📚 {a['name']}"[:250],
@@ -790,6 +816,88 @@ def _f(x) -> float:
         return float(str(x).replace(",", ".") or 0)
     except (TypeError, ValueError):
         return 0.0
+
+
+# ---------------------------------------------------------------------------
+# ⏱️ Fraicheur des evenements + 📉 plus-bas RECOUPE (audit du 22/07/2026)
+# ---------------------------------------------------------------------------
+
+def _event_epoch(it: Dict):
+    """L'horodatage d'un item du flux StackR ('2026-07-20T10:03:51.368Z')
+    en secondes epoch — ou None si absent/illisible. On ne devine jamais."""
+    brut = str((it or {}).get("timestamp") or "").strip()
+    if not brut:
+        return None
+    try:
+        d = _dt.datetime.fromisoformat(brut.replace("Z", "+00:00"))
+        if d.tzinfo is None:
+            d = d.replace(tzinfo=_dt.timezone.utc)
+        return d.timestamp()
+    except ValueError:
+        return None
+
+
+def age_min(epoch, ts: float = None):
+    """Age d'un evenement en minutes (>= 0), ou None si inconnu."""
+    if epoch is None:
+        return None
+    ts = ts if ts is not None else time.time()
+    return max(0.0, (ts - epoch) / 60.0)
+
+
+def trop_vieux(epoch, ts: float = None) -> bool:
+    """Vrai si le filtre FLOOR_EVENT_MAX_AGE_MIN est actif ET que l'evenement
+    est plus vieux. Un horodatage ABSENT ne filtre jamais (inconnu != vieux)."""
+    if EVENT_MAX_AGE_MIN <= 0:
+        return False
+    a = age_min(epoch, ts)
+    return a is not None and a > EVENT_MAX_AGE_MIN
+
+
+def ligne_quand(verbe: str, epoch, ts: float = None) -> str:
+    """'Listé 10:03 UTC (il y a 2 h 31)' — la carte DIT quand c'est arrive.
+    Chaine vide si l'horodatage manque (on n'affiche pas un inconnu)."""
+    a = age_min(epoch, ts)
+    if a is None:
+        return ""
+    heure = _dt.datetime.fromtimestamp(
+        epoch, _dt.timezone.utc).strftime("%H:%M UTC")
+    if a < 5:
+        return f"{verbe} {heure} (a l'instant)"
+    if a < 60:
+        return f"{verbe} {heure} (il y a {int(a)} min)"
+    return f"{verbe} {heure} (il y a {int(a // 60)} h {int(a % 60):02d})"
+
+
+def atl_connu(state: Dict, uid: str, cat_atl=None):
+    """LE plus-bas connu d'un item, RECOUPE : min(ATL catalogue, plus-bas
+    observe en direct par ce module — `atl_seen`).
+
+    POURQUOI (bug reel du 22/07) : la carte 🩸 de « Jason Naylor - OPN Heart
+    COLOR » affichait « Plus-bas historique : 369,00 $ » sous un floor a
+    8,64 $ — l'ATL du CATALOGUE etait corrompu (decimales FR ×100 : 369 = 3,69,
+    cf. charger_elements), alors que `atl_seen` connaissait 8,62 $. Les cartes
+    affichaient la reference brute du catalogue SANS la recouper avec ce que le
+    module avait VU — le detecteur 📉, lui, faisait deja ce min(). Une seule
+    regle desormais : ce qui s'affiche = ce que le detecteur croit."""
+    cands = [x for x in (
+        _f(cat_atl),
+        _f(((state.get("atl_seen") or {}).get(uid) or [0])[0]),
+    ) if 0 < x <= PRIX_MAX]
+    return round(min(cands), 2) if cands else None
+
+
+def ligne_atl(atl, prix=None, gras=False) -> str:
+    """La ligne « Plus-bas historique » des cartes — et si le prix de la carte
+    passe DESSOUS, elle le DIT. (Plainte Preda 22/07 : « Plus-bas historique :
+    6,99 $ » sur un comic affiche a 1,69 $ avait l'air d'une incoherence ; en
+    realite c'est le signal le plus fort de la carte — encore faut-il l'ecrire.)"""
+    fmt = "Plus-bas historique : **{:.2f} $**" if gras \
+        else "Plus-bas historique : {:.2f} $"
+    ligne = fmt.format(atl)
+    if prix and _f(prix) < _f(atl):
+        ligne += " — **ce prix passe dessous**"
+    return ligne
 
 
 # ---------------------------------------------------------------------------
@@ -1117,7 +1225,7 @@ def detect(state: Dict, listings: List[Dict], omi: float,
         # vente reelle connue, cette revente est une fiction. La sous-cotation
         # sur le MEME marche (floor StackR), elle, n'a pas besoin de preuve :
         # c'est une comparaison a offre egale.
-        preuve_ok = _a_vente(uid, last) or not REQUIRE_SALE
+        preuve_ok = (last is not None) or not REQUIRE_SALE
         sous_cote = d_stackr >= DROP_PCT
         if not sous_cote and not (arbitrage and preuve_ok):
             if arbitrage and not preuve_ok:
@@ -1205,9 +1313,9 @@ def detect_spread(state: Dict, veve: Dict[str, float], omi: float,
             if journal:
                 journal.rejet("profit", cand, cle=uid)
             continue
-        if REQUIRE_SALE and not _a_vente(uid, last):
-            # aucune vente live NI dans l'entrepot : l'item NE SE VEND PAS.
-            # Revendre au floor VeVe y est une fiction -> on se tait.
+        if REQUIRE_SALE and last is None:
+            # aucune vente depuis ~7 jours : l'item NE SE VEND PAS. Revendre au
+            # floor VeVe y est une fiction -> on se tait.
             state.setdefault("sans_vente", {})[uid] = ts
             if journal:
                 journal.rejet("illiquide", cand, cle=uid)
@@ -1263,6 +1371,11 @@ def detect_mints(state, cat, listings, omi, veve=None, dates=None, ts=None):
         nft = str(it.get("nft_id") or (uid + "#" + str(ed)))
         if ts - vus.get(nft, 0) < COOLDOWN_H * 3600:
             continue
+        # ⏱️ fraicheur : un listing de 2 h n'est plus une occasion (filtre
+        # optionnel), et son age est TOUJOURS porte sur la carte.
+        quand = _event_epoch(it)
+        if trop_vieux(quand, ts):
+            continue
 
         annees = nu.annees_pour([c["name"], c.get("marque", ""),
                                  c.get("licence", "")], dates)
@@ -1282,7 +1395,9 @@ def detect_mints(state, cat, listings, omi, veve=None, dates=None, ts=None):
             continue                 # le vendeur SAIT ce qu'il a : pas pour nous
 
         vus[nft] = ts
-        out.append({"uuid": uid, "nft": nft, "edition": ed, "atl": c.get("atl"),
+        out.append({"uuid": uid, "nft": nft, "edition": ed,
+                    "atl": atl_connu(state, uid, c.get("atl")),
+                    "quand": quand,
                     "usd": round(usd, 2), "prix": prix,
                     "floor": round(floor_usd, 2), "name": c["name"],
                     "rarity": c.get("rarity", ""),
@@ -1319,7 +1434,10 @@ def carte_mint(a):
     if a.get("note"):
         lignes.append("**Classement** : " + a["note"])
     if a.get("atl"):
-        lignes.append("Plus-bas historique : **{:.2f} $**".format(a["atl"]))
+        lignes.append(ligne_atl(a["atl"], a.get("usd"), gras=True))
+    lq = ligne_quand("Listé", a.get("quand"))
+    if lq:
+        lignes.append(lq)
     lignes.append("[Voir sur StackR](" + lien + ")")
     return {"title": ("🎯 " + a["name"])[:250], "color": 0xE67E22,
             "description": "\n".join(lignes), "url": lien}
@@ -1407,7 +1525,7 @@ def detect_veve_steal(state, veve, cat=None, ts=None):
             continue
         last = (state.get("sales") or {}).get(uid)
         ls = _f(last[0]) if last else 0.0
-        if REQUIRE_SALE and ls <= 0 and not _a_vente(uid, None):
+        if REQUIRE_SALE and ls <= 0:
             # un floor qui tombe sur un item qui ne se vend jamais n'est pas une
             # affaire : c'est une vitrine sans acheteur.
             state.setdefault("sans_vente", {})[uid] = ts
@@ -1421,7 +1539,8 @@ def detect_veve_steal(state, veve, cat=None, ts=None):
         out.append({"uuid": uid, "name": nom,
                     "categorie": c.get("categorie", ""),
                     "floor": round(vf, 2), "avant": round(prev, 2),
-                    "drop": round(drop, 1), "atl": c.get("atl"),
+                    "drop": round(drop, 1),
+                    "atl": atl_connu(state, uid, c.get("atl")),
                     "last": round(ls, 2) if ls > 0 else None})
     if len(out) > STEAL_MAX:
         # trop d'un coup = un seuil trop bas, pas 20 aubaines. RIEN memorise.
@@ -1475,7 +1594,7 @@ def detect_sale_spike(state, ventes, veve, omi, cat=None, ts=None):
                     "categorie": c.get("categorie", ""),
                     "vente": round(sale_usd, 2), "floor": round(floor_usd, 2),
                     "ratio": round(ratio, 1), "edition": v.get("edition"),
-                    "atl": c.get("atl")})
+                    "atl": atl_connu(state, uid, c.get("atl"))})
     for k, t in list(vues.items()):                  # 24 h de ventes vues
         if ts - t > 86400:
             vues.pop(k, None)
@@ -1562,12 +1681,20 @@ def detect_atl(state, veve, cat=None, ts=None, fresh=True):
             seen[uid] = [round(vf, 4), ts]           # on suit l'extreme bas live
         if not ATL_ON:
             continue
-        # 📉 ATL : un floor SOUS le plus-bas connu SUFFIT (demande Preda 16/07) —
-        # ni marge, ni preuve de vente. Descendre sous l'ATL est deja l'info
-        # (contrairement au 🆕 ATH, un plus-bas ne se troll pas : personne ne
-        # liste sous le marche par erreur pour tromper).
+        # 📉 ATL : ni marge NETTE ni preuve de vente (demande Preda 16/07) —
+        # descendre sous le plus-bas connu est deja l'info. MAIS la marge de
+        # DECLENCHEMENT ATL_MARGIN_PCT s'applique (demande Preda 15/07 : sans
+        # elle, 1,29 -> 1,28 notifie pour rien).
+        # 🔴 BUG REPARE LE 22/07/2026 : cette marge etait definie, cablee dans
+        # le workflow, DOCUMENTEE (« n'alerte que si le floor est au moins X %
+        # SOUS l'ATL »)… et JAMAIS LUE ici. Preuve en prod : Borg Cube alerte a
+        # 4,75 $ pour un ancien ATL de 4,80 $ (−1 %), The Awakened - Frame a
+        # 22,42 $ pour 23,90 $ (−6 %). Meme classe de panne muette que les
+        # reglages non cables — sauf que la ligne yml existait, c'est le code
+        # qui n'en faisait rien.
         if (vf <= PLANCHER_VEVE or vf > PRIX_MAX
-                or eff <= 0 or eff > PRIX_MAX or vf >= eff):
+                or eff <= 0 or eff > PRIX_MAX
+                or vf >= eff * (1 - ATL_MARGIN_PCT / 100.0)):
             continue
         # 📉 FRAICHEUR : si le refresh precedent est trop vieux (un cron a saute),
         # ce plus-bas a pu survenir il y a bien plus d'une heure -> pas
@@ -1602,7 +1729,7 @@ def carte_steal(a):
     if a.get("last"):
         lignes.append("Derniere vente reelle : **{:.2f} $**".format(a["last"]))
     if a.get("atl"):
-        lignes.append("Plus-bas historique : **{:.2f} $**".format(a["atl"]))
+        lignes.append(ligne_atl(a["atl"], a.get("floor"), gras=True))
     lignes.append("[Voir sur VeVe](" + lien + ")")
     return {"title": ("🩸 " + a["name"])[:250], "color": 0xE74C3C,
             "description": "\n".join(lignes), "url": lien}
@@ -1614,7 +1741,7 @@ def carte_spike(a):
     lignes = ["Vendu **{:.2f} $**  —  floor {:.2f} $  (**×{}**)".format(
         a["vente"], a["floor"], a["ratio"])]
     if a.get("atl"):
-        lignes.append("Plus-bas historique : **{:.2f} $**".format(a["atl"]))
+        lignes.append(ligne_atl(a["atl"], gras=True))
     lignes.append("[Voir sur StackR](" + lien + ")")
     return {"title": ("📈 " + nom)[:250], "color": 0x1ABC9C,
             "description": "\n".join(lignes), "url": lien}
@@ -1788,6 +1915,9 @@ def detect_atl_stackr(state, flux, omi, cat=None, ts=None):
             continue
         if usd >= prev * (1 - ATL_STACKR_MARGIN_PCT / 100.0):
             continue
+        quand = _event_epoch(it)
+        if trop_vieux(quand, ts):
+            continue
         if ts - alerts.get(uid, 0) < COOLDOWN_H * 3600:
             continue
         alerts[uid] = ts
@@ -1797,7 +1927,7 @@ def detect_atl_stackr(state, flux, omi, cat=None, ts=None):
             else "collectible")
         nom = c.get("name") or it.get("name") or uid[:8]
         out.append({"uuid": uid, "name": nom, "categorie": genre,
-                    "edition": it.get("edition") or "",
+                    "edition": it.get("edition") or "", "quand": quand,
                     "usd": round(usd, 2), "prev": round(prev, 2),
                     "omi": round(pr)})
     if len(out) > ATL_STACKR_MAX:
@@ -1814,8 +1944,11 @@ def carte_atl_stackr(a):
     lien = lien_stackr(a["uuid"], a.get("categorie", ""))
     nom = a["name"] + (" #{}".format(a["edition"]) if a.get("edition") else "")
     lignes = ["Prix StackR : **{:.2f} $** ({} OMI) — **plus-bas jamais vu** sur "
-              "StackR (ancien {:.2f} $)".format(a["usd"], a["omi"], a["prev"]),
-              "[Voir sur StackR](" + lien + ")"]
+              "StackR (ancien {:.2f} $)".format(a["usd"], a["omi"], a["prev"])]
+    lq = ligne_quand("Observé", a.get("quand"))
+    if lq:
+        lignes.append(lq)
+    lignes.append("[Voir sur StackR](" + lien + ")")
     return {"title": ("📉 " + nom)[:250], "color": 0x2980B9,
             "description": "\n".join(lignes), "url": lien}
 
@@ -2045,14 +2178,6 @@ def main() -> int:
     if baselines:
         print(f"  📊 baselines de prix chargees : {len(baselines)} items",
               flush=True)
-    if REQUIRE_SALE:
-        LIQUIDE.update(lb.load_liquidity())
-        if LIQUIDE:
-            print(f"  🏛️ liquidite (entrepot) : {len(LIQUIDE)} items avec vente "
-                  "reelle — preuve sans requete StackR.", flush=True)
-        else:
-            print("  🏛️ liquidite (entrepot) : baseline absente — repli sur "
-                  "l'historique live (fetch_history).", flush=True)
     comics = comics_petit_tirage(cat)
     dates = nu.charger_dates()
     if cat:
@@ -2345,7 +2470,11 @@ def main() -> int:
             # 🐋 ACHATS / VENTES / MISES EN VENTE des comptes suivis, sur le MEME
             # flux (listings + ventes) deja recupere ce tour → canal whale dedie.
             if whale_actif:
-                wm = ww.detect_marche(state, listings, ventes, wtracked, omi)
+                # 22/07 : on passe aussi floors + catalogue — les cartes 🐋
+                # portent desormais le floor actuel et le plus-bas historique
+                # de l'item (demande Preda : elles arrivaient nues).
+                wm = ww.detect_marche(state, listings, ventes, wtracked, omi,
+                                      veve=veve, cat=cat)
                 if wm:
                     print(f"  [{i}/{POLLS}] 🐋 {len(wm)} evenement(s) marche "
                           f"compte suivi.", flush=True)

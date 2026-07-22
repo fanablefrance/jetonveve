@@ -196,11 +196,23 @@ def _rendre(cand, vus, ts, cle_id, poids, quoi):
 # 🛒 / 💸 / 🏷️  Evenements de marche (flux StackR, 2 min)
 # ---------------------------------------------------------------------------
 
-def detect_marche(state, listings, ventes, tracked, omi):
+def detect_marche(state, listings, ventes, tracked, omi, veve=None, cat=None):
     """Achats, ventes et mises en vente d'un compte suivi. Chaque evenement est
-    identifie par (genre, nft_id, timestamp) et dedoublonne dans `vus`."""
+    identifie par (genre, nft_id, timestamp) et dedoublonne dans `vus`.
+
+    22/07/2026 — deux manques signales par Preda sur les cartes de prod :
+      · PAS de floor actuel ni de plus-bas historique sur la carte (« Zero
+        Ghost #1316 · 1,78 $ » tout nu : impossible de juger si c'est cher) ;
+      · des evenements publies 2 h 30 apres les faits SANS que rien ne le dise
+        (mesure : listes 10:00-10:08 UTC, publies 12:34-12:36 — des runs cron
+        sautes par GitHub, puis rattrapes via la fenetre du flux).
+    D'ou : `veve` (floors) + `cat` (catalogue) optionnels — memes donnees que
+    la boucle floor_watch, ZERO requete en plus — et l'horodatage de
+    l'evenement porte sur chaque carte + filtre fw.trop_vieux optionnel."""
     vus = state.setdefault("whale_vus", {})
     ts = time.time()
+    veve = veve or {}
+    cat = cat or {}
     cand: List[Dict] = []
     local = set()
 
@@ -210,19 +222,31 @@ def detect_marche(state, listings, ventes, tracked, omi):
         cle = genre + "|" + nft + "|" + stamp
         if not nft or cle in vus or cle in local:
             return
+        quand = fw._event_epoch(it)
+        if fw.trop_vieux(quand, ts):
+            return
         usd = fw._f(prix_omi) * omi if omi else 0.0
         if usd and usd < MIN_USD:
             return
         local.add(cle)
         uid = str(it.get("element_id") or "")
-        cat = ("comic" if str(it.get("element_type") or "") == "COMIC_COVER"
-               else "collectible")
+        genre_cat = ("comic" if str(it.get("element_type") or "") == "COMIC_COVER"
+                     else "collectible")
+        fiche_cat = cat.get(uid) or {}
+        floor_veve = fw._f(veve.get(uid))
+        last = (state.get("sales") or {}).get(uid)
         cand.append({"cle": cle, "genre": genre, "emoji": emoji,
                      "compte": fiche["username"], "type": fiche["type"],
-                     "uuid": uid, "categorie": cat,
-                     "name": it.get("name") or uid[:8],
+                     "uuid": uid, "categorie": genre_cat,
+                     "name": it.get("name") or fiche_cat.get("name") or uid[:8],
                      "edition": it.get("edition") or "",
-                     "usd": round(usd, 2), "omi": round(fw._f(prix_omi))})
+                     "usd": round(usd, 2), "omi": round(fw._f(prix_omi)),
+                     "quand": quand,
+                     # contexte de l'item — ce qui manquait aux cartes :
+                     "floor_veve": round(floor_veve, 2) if floor_veve > 0 else None,
+                     "atl": fw.atl_connu(state, uid, fiche_cat.get("atl")),
+                     "last": (lambda v: round(v, 2) if v > 0 else None)(
+                         fw._f((last or [0])[0]))})
 
     for it in listings or []:
         f = _tracke(tracked, it.get("listed_by"), it.get("listed_by_username"))
@@ -350,7 +374,20 @@ def carte(a):
         nom = a["name"] + (" #{}".format(a["edition"]) if a.get("edition") else "")
         prix = "**{:.2f} $** ({} OMI)".format(a["usd"], a["omi"]) if a["usd"] \
             else "prix inconnu"
-        desc = [nom, prix, "[Voir sur StackR](" + lien + ")"]
+        desc = [nom, prix]
+        # Le contexte qui manquait (Preda, 22/07) : sans floor ni plus-bas,
+        # « 1,78 $ » ne dit rien. Absent = inconnu, on n'affiche pas de zero.
+        if a.get("floor_veve"):
+            desc.append("Floor VeVe : **{:.2f} $**".format(a["floor_veve"]))
+        if a.get("atl"):
+            desc.append(fw.ligne_atl(a["atl"], a.get("usd")))
+        if a.get("last"):
+            desc.append("Derniere vente reelle : {:.2f} $".format(a["last"]))
+        verbe = {"achat": "Acheté", "vente": "Vendu"}.get(a["genre"], "Listé")
+        lq = fw.ligne_quand(verbe, a.get("quand"))
+        if lq:
+            desc.append(lq)
+        desc.append("[Voir sur StackR](" + lien + ")")
     return {"title": tete[:250], "color": COULEURS.get(a["genre"], 0x95A5A6),
             "description": "\n".join(desc), "url": None if a["genre"] == "gros transfert"
             else fw.lien_stackr(a["uuid"], a.get("categorie", ""))}
