@@ -416,7 +416,7 @@ def notifier(state, cartes):
               flush=True)
         return 0
     contenu = "🐋 **{} evenement(s) — comptes suivis** — {}".format(
-        len(cartes), _dt.datetime.now(_dt.timezone.utc).strftime("%H:%M UTC"))
+        len(cartes), fw.heure_cartes())
     embeds = [carte(a) for a in cartes[:10]]
     # Les evenements de genre « gros transfert » n'ont pas d'uuid : le pont
     # les ignore tout seul (sans identifiant, impossible de dedoublonner ni

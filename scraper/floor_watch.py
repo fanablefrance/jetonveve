@@ -632,7 +632,7 @@ def notify_comics(alerts: List[Dict]) -> int:
         return 0
     contenu = (f"📚 **{len(alerts)} comic(s) a petit tirage sous "
                f"{COMIC_MAX_USD:g} $** — "
-               + _dt.datetime.now(_dt.timezone.utc).strftime("%H:%M UTC"))
+               + heure_cartes())
     embeds = [carte_comic(a) for a in alerts[:10]]
     bot_alertes.pousser_lot("comics", alerts[:10], embeds, simuler=SIMULER)
     if not WEBHOOK or SIMULER:
@@ -846,6 +846,27 @@ def _f(x) -> float:
 # ⏱️ Fraicheur des evenements + 📉 plus-bas RECOUPE (audit du 22/07/2026)
 # ---------------------------------------------------------------------------
 
+# 🇫🇷 L'HEURE DES CARTES EST CELLE DE PREDA (22/07/2026). Il a lu
+# « — 11:56 UTC » sous un message Discord affiche 13:56 et compte 2 h de
+# retard… imaginaire : meme instant, deux fuseaux. L'alerte Galactus etait
+# partie 5 min apres le listing. Une heure affichee dans un fuseau que le
+# lecteur n'utilise pas est un bug d'interface, pas une information.
+try:
+    from zoneinfo import ZoneInfo as _ZoneInfo
+    TZ_CARTES = _ZoneInfo(os.environ.get("FLOOR_TZ", "Europe/Paris"))
+    _TZ_LBL = os.environ.get("FLOOR_TZ_LABEL", "FR")
+except Exception:                                          # noqa: BLE001
+    TZ_CARTES = _dt.timezone.utc                           # repli : comme avant
+    _TZ_LBL = "UTC"
+
+
+def heure_cartes(epoch=None) -> str:
+    """'13:56 FR' — maintenant, ou l'instant `epoch`, dans le fuseau du lecteur."""
+    d = (_dt.datetime.now(TZ_CARTES) if epoch is None
+         else _dt.datetime.fromtimestamp(epoch, TZ_CARTES))
+    return d.strftime("%H:%M ") + _TZ_LBL
+
+
 def _event_epoch(it: Dict):
     """L'horodatage d'un item du flux StackR ('2026-07-20T10:03:51.368Z')
     en secondes epoch — ou None si absent/illisible. On ne devine jamais."""
@@ -884,8 +905,7 @@ def ligne_quand(verbe: str, epoch, ts: float = None) -> str:
     a = age_min(epoch, ts)
     if a is None:
         return ""
-    heure = _dt.datetime.fromtimestamp(
-        epoch, _dt.timezone.utc).strftime("%H:%M UTC")
+    heure = heure_cartes(epoch)
     if a < 5:
         return f"{verbe} {heure} (a l'instant)"
     if a < 60:
@@ -1492,7 +1512,7 @@ def notify_mints(alerts):
     if not alerts:
         return 0
     contenu = ("🎯 **" + str(len(alerts)) + " numéro(s) remarquable(s)** — "
-               + _dt.datetime.now(_dt.timezone.utc).strftime("%H:%M UTC"))
+               + heure_cartes())
     embeds = [carte_mint(a) for a in alerts[:10]]
     bot_alertes.pousser_lot("mint", alerts[:10], embeds, simuler=SIMULER)
     if not WEBHOOK or SIMULER:
@@ -1798,8 +1818,7 @@ def _notify_lot1(alerts, titre, carte, ligne_sim, webhook=None, canal=None):
     wh = webhook if webhook is not None else WEBHOOK
     if not alerts:
         return 0
-    contenu = titre + " — " + _dt.datetime.now(_dt.timezone.utc).strftime(
-        "%H:%M UTC")
+    contenu = titre + " — " + heure_cartes()
     embeds = [carte(a) for a in alerts[:10]]
     bot_alertes.pousser_lot(canal, alerts[:10], embeds, simuler=SIMULER)
     if not wh or SIMULER:
@@ -2154,7 +2173,7 @@ def notify(alerts: List[Dict]) -> int:
     embeds = [_embed(a) for a in alerts[:10]]
     bot_alertes.pousser_lot("affaires", alerts[:10], embeds, simuler=SIMULER)
     contenu = (f"🚨 **{len(alerts)} affaire(s)** — "
-               + _dt.datetime.now(_dt.timezone.utc).strftime("%H:%M UTC"))
+               + heure_cartes())
     if len(alerts) > 10:
         contenu += f" (10 affichées sur {len(alerts)})"
     if not WEBHOOK or SIMULER:
