@@ -20,6 +20,16 @@ name: Alertes sous-floor
 on:
   schedule:
     - cron: "3 * * * *"
+  # 🏓 LE PINGER (22/07). GitHub saute/retarde les crons planifies (mesure :
+  # 3 runs en 8 h) ; un cron EXTERNE (cron-job.org ou le VPS) appelle ce
+  # dispatch toutes les 30 min -> GitHub execute a l'heure, et les requetes
+  # VeVe partent toujours des IP GitHub (zero exposition ajoutee).
+  # ⚠️ POURQUOI repository_dispatch et PAS workflow_dispatch : un lancement
+  # workflow_dispatch applique les DEFAUTS des champs ci-dessous (dont
+  # plusieurs "true"), qui passent DEVANT les variables de depot. Le pinger
+  # doit laisser les vars piloter -> repository_dispatch n'a pas d'inputs.
+  repository_dispatch:
+    types: [ping-floor-watch]
   workflow_dispatch:
     inputs:
       simuler:
@@ -320,6 +330,12 @@ jobs:
           # fois, sinon la mesure ne dit plus rien.
           FLOOR_ELEM_LIMIT: ${{ vars.FLOOR_ELEM_LIMIT || '100' }}
           FLOOR_LISTINGS: ${{ vars.FLOOR_LISTINGS || '50' }}
+          # 🏓 Cadence pinger (22/07) : fenetre LARGE au 1er tour (couvre le
+          # trou entre deux runs) + reprise des floors depuis l'etat quand le
+          # dernier balayage date de moins de FLOOR_REFRESH_MIN (le balayage
+          # lourd reste 1x/h meme a 2 runs par heure).
+          FLOOR_LISTINGS_FIRST: ${{ vars.FLOOR_LISTINGS_FIRST || '120' }}
+          FLOOR_REFRESH_FROM_STATE: ${{ vars.FLOOR_REFRESH_FROM_STATE || 'true' }}
           # ⚠️ NE PAS DESCENDRE SANS REFLECHIR : le floor n'est relu qu'UNE
           # fois par run. C'est la cause mesuree du baillon de 📉 (ATL_FRESH_MIN
           # = 70 min face a un ecart de refresh observe a 233 min). Le remede
