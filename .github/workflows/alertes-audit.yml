@@ -59,6 +59,22 @@ jobs:
       # C'est voulu — un outil de diagnostic qui a besoin d'etre installe est
       # un outil qu'on ne lance pas.
 
+      # ♻️ 22/07 : l'etat ne vit plus dans git — floor-watch l'ecrit dans la
+      # release `etat-floor-watch`. On le prend la ; a defaut (migration pas
+      # encore faite), la copie git sert encore.
+      - name: Etat depuis la release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p data
+          if gh release view etat-floor-watch >/dev/null 2>&1; then
+            gh release download etat-floor-watch -p floor_state.json -O data/floor_state.json --clobber \
+              && echo "etat charge depuis la release." \
+              || echo "⚠️ telechargement rate — on retombe sur la copie git (PERIMEE : l'audit mesurerait un vieil etat)."
+          else
+            echo "release absente : on lit la copie git (mode d'avant migration)."
+          fi
+
       - name: Verifier que l'etat existe
         run: |
           if [ ! -f data/floor_state.json ]; then

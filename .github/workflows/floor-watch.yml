@@ -171,6 +171,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # ♻️ L'ETAT NE VIT PLUS DANS GIT (22/07/2026). 2,5 Mo commites jusqu'a
+      # 48x/jour depuis le pinger : l'historique gonflait sans fin, et c'etait
+      # LE verrou d'une cadence plus fine. L'etat vit dans les assets de la
+      # release `etat-floor-watch`. Si la release existe mais est injoignable,
+      # on REFUSE de tourner : partir d'un etat perime = cooldowns oublies =
+      # re-alertes en masse sur le Discord de la commu. Premiere migration :
+      # release absente -> on demarre de la derniere copie commitee dans git
+      # (qui reste ensuite FIGEE, en graine de secours).
+      - name: Etat depuis la release (plus de git pour l'etat)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p data
+          if gh release view etat-floor-watch >/dev/null 2>&1; then
+            ok=""
+            for i in 1 2 3 4 5; do
+              gh release download etat-floor-watch -p floor_state.json -O data/floor_state.json --clobber && { ok=1; break; }
+              echo "telechargement rate (essai $i) — nouvel essai dans $((i * 10))s"
+              sleep $((i * 10))
+            done
+            [ -n "$ok" ] || { echo "⛔ etat injoignable : on refuse de tourner sur un etat perime."; exit 1; }
+            echo "etat charge depuis la release ($(wc -c < data/floor_state.json) octets)."
+          else
+            echo "release absente (1re migration) : on demarre de la copie git."
+          fi
+
       # 📚 Le catalogue vit dans le Sheet, donc chez preda (PRIVE) : tirage,
       # 1re edition publique, nombre d'offres, note de classement. Rien de tout
       # cela n'existe cote StackR. On va chercher le seul fichier dont on a
@@ -413,36 +439,58 @@ jobs:
           TRACKED_CSV: _preda/data/tracked_accounts.csv
         run: python -m scraper.floor_watch
 
-      # ⚠️ LA RECOLTE EST SACREE — y compris contre git.
-      # Le 14/07, un `git pull --rebase` a bute sur data/floor_state.json
-      # (« CONFLICT ») et l'etat du run n'a JAMAIS ete pousse : ventes
-      # decouvertes, floors memorises, budget de messages — tout perdu.
-      # On ne rebase donc plus cet etat : on le FUSIONNE. Les deux versions sont
-      # vraies (chaque run a vu ce que l'autre n'a pas vu) ; ecraser reviendrait
-      # a jeter la moitie de la recolte.
-      - name: Commit de l'etat (fusion, jamais d'ecrasement)
+      # ⚠️ LA RECOLTE EST SACREE — mais l'etat ne vit PLUS dans git (22/07).
+      # Les runs sont SERIALISES par la concurrency -> un seul ecrivain a la
+      # fois -> plus besoin de fusion (floor_state_merge.py RESTE dans le
+      # depot : c'est la porte de sortie, revenir a git = remettre l'ancienne
+      # etape, voir l'historique git de ce fichier).
+      # Git sauvegardait l'historique gratuitement — une release, NON : d'ou
+      # la sauvegarde quotidienne gzip, gardee 7 jours dans la meme release.
+      - name: Etat vers la release + sauvegarde quotidienne
         if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           [ -f data/floor_state.json ] || exit 0
-          cp data/floor_state.json /tmp/mien.json
-          # 🌉 Le pont : data/hprix_feed.csv n'est ecrit QUE par ce workflow
-          # (runs serialises par la concurrency) -> on reprend NOTRE version
-          # complete (deja auto-trimmee) apres le reset, qui l'effacerait sinon.
-          [ -f data/hprix_feed.csv ] && cp data/hprix_feed.csv /tmp/hprix_feed.csv
+          gh release view etat-floor-watch >/dev/null 2>&1 || \
+            gh release create etat-floor-watch --title "Etat floor-watch (vivant)" \
+              --notes "floor_state.json ecrase a chaque run + sauvegardes quotidiennes gzip (7 jours). L'etat est sorti de git le 22/07/2026 ; la copie data/floor_state.json du depot est FIGEE (graine de secours)."
+          ok=""
+          for i in 1 2 3 4 5; do
+            gh release upload etat-floor-watch data/floor_state.json --clobber && { ok=1; break; }
+            echo "upload rate (essai $i) — nouvel essai dans $((i * 10))s"
+            sleep $((i * 10))
+          done
+          [ -n "$ok" ] || { echo "⛔ ETAT NON SAUVE apres 5 essais — la recolte de ce run serait perdue."; exit 1; }
+          echo "etat pousse dans la release."
+          jour=$(date -u +%Y%m%d)
+          if ! gh release view etat-floor-watch --json assets -q '.assets[].name' | grep -qx "floor_state-$jour.json.gz"; then
+            gzip -c data/floor_state.json > "floor_state-$jour.json.gz"
+            gh release upload etat-floor-watch "floor_state-$jour.json.gz" --clobber || true
+            gh release view etat-floor-watch --json assets -q '.assets[].name' \
+              | grep '^floor_state-.*\.json\.gz$' | sort | head -n -7 \
+              | while read -r vieux; do gh release delete-asset etat-floor-watch "$vieux" -y || true; done
+          fi
+
+      # 🌉 Le pont H-PRIX, lui, RESTE dans git : petit (quelques centaines de
+      # Ko auto-trimmes a 7 jours), et l'autre depot le lit en raw. Ecrit que
+      # par ce workflow (runs serialises) -> notre version fait foi.
+      - name: Commit du pont H-PRIX (l'etat, lui, ne se commite plus)
+        if: always()
+        run: |
+          [ -f data/hprix_feed.csv ] || exit 0
+          cp data/hprix_feed.csv /tmp/hprix_feed.csv
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
           for i in 1 2 3 4 5; do
             git fetch origin main
-            git reset --hard origin/main                # on repart du depot
-            git checkout origin/main -- data/floor_state.json 2>/dev/null || true
-            python -m scraper.floor_state_merge /tmp/mien.json data/floor_state.json
-            [ -f /tmp/hprix_feed.csv ] && cp /tmp/hprix_feed.csv data/hprix_feed.csv
-            git config user.name "github-actions"
-            git config user.email "actions@github.com"
-            git add data/floor_state.json
-            [ -f data/hprix_feed.csv ] && git add data/hprix_feed.csv
+            git reset --hard origin/main
+            cp /tmp/hprix_feed.csv data/hprix_feed.csv
+            git add data/hprix_feed.csv
             git diff --cached --quiet && { echo "Rien a committer."; exit 0; }
-            git commit -m "floor_watch: etat (fusionne) + pont H-PRIX"
+            git commit -m "floor_watch: pont H-PRIX"
             git push origin main && exit 0
-            echo "push rejete — on refusionne avec l'etat du depot."
+            echo "push rejete — on reessaie."
             sleep $((i * 5))
           done
-          echo "⛔ etat NON pousse apres 5 essais." >&2
+          echo "⛔ pont H-PRIX non pousse apres 5 essais." >&2
