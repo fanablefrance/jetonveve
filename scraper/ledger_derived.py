@@ -74,7 +74,15 @@ CORNER_HEADER = (["veve_uuid", "name", "category", "circulating", "holders", "gi
     + [f"prof_pers_{s}" for s in PROFILE_ORDER] + [f"prof_sup_{s}" for s in PROFILE_ORDER]
     + [f"ws_pers_{s}" for s in QTY_ORDER] + [f"ws_sup_{s}" for s in QTY_ORDER]
     + [f"hold_pers_{s}" for s in HOLD_ORDER] + [f"hold_sup_{s}" for s in HOLD_ORDER]
-    + ["hm_prof_act", "hm_prof_ws", "hm_act_ws"])
+    + ["hm_prof_act", "hm_prof_ws", "hm_act_ws"]
+    # DROPPEURS DIAMANT (23/07) : par item, exemplaires encore chez leur droppeur
+    # d'origine sans JAMAIS avoir ete vendus (une mise en vente non conclue = OK).
+    # drop_proxy=1 -> vrai drop pre-IMX (GoChain) : le "droppeur" mesure depuis la
+    # genese IMX du 14-15/12/2021, pas depuis le drop d'origine (hors-chaine).
+    + ["drop_distribues", "drop_diamant", "drop_proxy"])
+# Jour de genese IMX (re-mint de masse du catalogue GoChain) : un item dont le
+# 1er mint on-chain tombe la est PRE-IMX -> son vrai droppeur est hors-chaine.
+DROP_GENESIS = E("DROP_GENESIS_CUTOFF", "2021-12-15")
 PROFILE_COLS = ["wallet", "holdings", "distinct_collectibles", "acquired", "sold",
                 "retention", "median_hold_days", "collectorScore", "activityStatus",
                 "engagementLevel", "value_store", "value_floor", "qty_bucket",
@@ -403,6 +411,28 @@ def step_corner(con, outdir):
             SELECT u, {d1} AS k1, {d2} AS k2, sum(c)::BIGINT AS sup
             FROM jt GROUP BY u, {d1}, {d2}""")
 
+    # DROPPEURS DIAMANT (23/07) — par edition (token) : le droppeur = 1er
+    # destinataire NON systeme ; "jamais vendu" (mise en vente non conclue OK) =
+    # le token n'a JAMAIS touche d'autre wallet reel que lui (min = max sur les
+    # dst non systeme), et n'est pas brule. Trace les DEUX eres (IMX pre-migration
+    # + CollectChain) via pqv, donc le re-mint de migration ne compte pas comme
+    # une vente. proxy = 1er mint on-chain a la genese IMX -> vrai drop pre-IMX.
+    con.execute(f"""CREATE OR REPLACE TABLE c_drop AS
+        WITH tok AS (
+          SELECT u, edition,
+            min(dst) FILTER (WHERE dst IS NOT NULL AND dst <> '' AND dst NOT IN {SYS_L}) AS ns_min,
+            max(dst) FILTER (WHERE dst IS NOT NULL AND dst <> '' AND dst NOT IN {SYS_L}) AS ns_max,
+            bool_or(dst = '{ZERO}' OR dst = '{BURN_SINK}') AS has_burn,
+            min(date_pt) FILTER (WHERE kind IN ('mint','vault_mint')) AS first_mint
+          FROM pqv WHERE u IS NOT NULL AND edition IS NOT NULL
+          GROUP BY u, edition)
+        SELECT u,
+          count(*) FILTER (WHERE ns_min IS NOT NULL)::BIGINT AS distr,
+          count(*) FILTER (WHERE ns_min IS NOT NULL AND ns_min = ns_max
+                           AND NOT has_burn)::BIGINT AS diam,
+          max(CASE WHEN first_mint <= DATE '{DROP_GENESIS}' THEN 1 ELSE 0 END)::INTEGER AS proxy
+        FROM tok GROUP BY u""")
+
     cat = {u: (nm or "", kd or "") for u, nm, kd in
            con.execute("SELECT u::VARCHAR, name, kind FROM cat").fetchall()}
     base = {u: (int(c), int(h)) for u, c, h in
@@ -428,6 +458,8 @@ def step_corner(con, outdir):
             d[u][(a, b)] = int(sup)
         return d
     h_pa, h_pw, h_aw = load3("h_pa"), load3("h_pw"), load3("h_aw")
+    drop_st = {u: (int(d), int(m), int(p)) for u, d, m, p in
+               con.execute("SELECT u::VARCHAR, distr, diam, proxy FROM c_drop").fetchall()}
 
     rows, bad = [], 0
     ac_keys = ACTIVITIES + [""]
@@ -476,6 +508,8 @@ def step_corner(con, outdir):
             bad += 1
         if sum(g_ac[u].get(k, (0, 0))[1] for k in ac_keys) != circ:
             bad += 1
+        dd, di, dp = drop_st.get(u, (0, 0, 0))
+        row += [dd, di, dp]                    # droppeurs / diamant / proxy
         rows.append(row)
     if bad:
         fail(f"corner : {bad} invariant(s) pers/sup casse(s)")
