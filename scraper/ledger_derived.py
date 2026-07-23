@@ -82,7 +82,8 @@ CORNER_HEADER = (["veve_uuid", "name", "category", "circulating", "holders", "gi
     + ["drop_distribues", "drop_diamant", "drop_proxy"])
 # Jour de genese IMX (re-mint de masse du catalogue GoChain) : un item dont le
 # 1er mint on-chain tombe la est PRE-IMX -> son vrai droppeur est hors-chaine.
-DROP_GENESIS = E("DROP_GENESIS_CUTOFF", "2021-12-15")
+# (lecture directe de l'env : `E` n'est defini que plus bas.)
+DROP_GENESIS = os.environ.get("DROP_GENESIS_CUTOFF") or "2021-12-15"
 PROFILE_COLS = ["wallet", "holdings", "distinct_collectibles", "acquired", "sold",
                 "retention", "median_hold_days", "collectorScore", "activityStatus",
                 "engagementLevel", "value_store", "value_floor", "qty_bucket",
