@@ -351,12 +351,66 @@ def test_le_journal_dit_qui_est_insuivable(tmp_path, capsys):
     assert "INSUIVABLES" in sortie.err and "Muet" in sortie.err
 
 
+def test_aucun_lecteur_ne_decompacte_tracked_en_deux():
+    """⛔ 27/07, EN PROD : `charger_tracked` est passe de 2 index a 3. J'avais
+    rendu `_tracke` tolerant… et OUBLIE `detect_transferts`, qui faisait
+    `par_wallet, _ = tracked` -> ValueError. Le run est tombe APRES avoir
+    pourtant publie ses 4 cartes 🐋 : le correctif marchait, sa mise en place
+    non.
+
+    ⭐ LA LEÇON : quand on elargit une structure PARTAGEE, il ne faut pas
+    relire la fonction qu'on modifie — il faut relire TOUS SES LECTEURS. Ce
+    test fait le `grep` que j'aurais du faire avant de livrer."""
+    import scraper.whale_watch as m
+    src = open(m.__file__, encoding="utf-8").read()
+    fautifs = re.findall(r"^\s*(\w+)\s*,\s*(\w+)\s*=\s*tracked\s*$",
+                         src, re.M)
+    assert not fautifs, (
+        f"decompactage a 2 valeurs sur un triplet : {fautifs} — utiliser "
+        f"tracked[0] / tracked[1] / tracked[2]")
+
+
+def test_tous_les_detecteurs_acceptent_le_triplet():
+    """Le contrat, verifie sur CHAQUE point d'entree qui recoit `tracked`.
+    Un seul lecteur oublie suffit a faire tomber le run entier."""
+    trois = ({}, {}, {})
+    assert ww.detect_transferts({}, trois) == []
+    assert ww.detect_veve({}, [], trois) == []
+    assert ww.detect_marche({}, [], [], trois, omi=1.0) == []
+    ww.journal_identite({}, trois)          # ne doit pas lever
+    assert ww.restaurer_wallets({}, trois) == 0
+
+
 def test_ancienne_forme_a_deux_index_toujours_acceptee():
     """Un correctif qui casse la suite de tests existante ne se deploie
     jamais : `_tracke` doit tolerer l'ancien couple (wallet, user)."""
     fiche = {"username": "n", "type": "t"}
     assert ww._tracke(({"0xaa": fiche}, {}), "0xAA", None) is fiche
     assert ww._tracke(({}, {"bob": fiche}), None, "Bob") is fiche
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 4ter. LE PLAFOND DE getElements — bombe desamorcee le 27/07
+# ═══════════════════════════════════════════════════════════════════════════
+
+def test_flooring_elem_limit_est_plafonne_a_100():
+    """⛔ Le workflow proposait FLOOR_ELEM_LIMIT=250 (« -60 % de requetes a
+    donnees identiques »). Mesure du 27/07 contre l'API : `getElements`
+    plafonne a 100, et 101 renvoie deja 400.
+
+    ⭐ CE QUI RENDAIT CA DANGEREUX : un 400 ne crie pas dans
+    `fetch_veve_floors` — `d is None`, on passe a la page suivante, les 200
+    pages echouent, la fonction renvoie {} et `if neuf:` GARDE l'ancienne
+    carte. Des floors figes pour toujours, avec un log propre."""
+    import importlib
+    import scraper.floor_watch as m
+    os.environ["FLOOR_ELEM_LIMIT"] = "250"
+    try:
+        importlib.reload(m)
+        assert m.ELEM_LIMIT == 100
+    finally:
+        os.environ.pop("FLOOR_ELEM_LIMIT", None)
+        importlib.reload(m)
 
 
 # ═══════════════════════════════════════════════════════════════════════════
