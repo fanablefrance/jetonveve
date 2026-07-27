@@ -559,7 +559,15 @@ def detect_transferts(state, tracked):
     jetons dans une meme transaction. On exclut l'escrow (marche), le zero
     (mint) et le burn sink : ne restent que les vrais transferts. Dedup par tx.
     """
-    par_wallet, _ = tracked
+    # ⛔ 27/07 — CE DECOMPACTAGE A FAIT TOMBER LE RUN. `charger_tracked` est
+    # passe de 2 index a 3 (ajout de `par_uid`) ; `_tracke` avait ete rendu
+    # tolerant, celui-ci avait ete OUBLIE : `par_wallet, _ = tracked` sur un
+    # triplet leve `ValueError: too many values to unpack`.
+    # ⭐ LA LEÇON : quand on elargit une structure partagee, ce n'est pas la
+    # fonction qu'on modifie qu'il faut relire — c'est TOUS SES LECTEURS.
+    # `grep "= tracked"` aurait suffi, et c'est ce que fait desormais
+    # `test_aucun_lecteur_ne_decompacte_tracked_en_deux`.
+    par_wallet = tracked[0]
     vus = state.setdefault("whale_tx_vus", {})
     ts = time.time()
     cand: List[Dict] = []
@@ -735,7 +743,9 @@ def main() -> int:
     t0 = time.time()
     state = load_state()
     tracked = charger_tracked()
-    n_comptes = len({id(v) for v in tracked[0].values()} | {id(v) for v in tracked[1].values()})
+    n_comptes = len({id(v) for v in tracked[0].values()}
+                    | {id(v) for v in tracked[1].values()}
+                    | {id(v) for v in tracked[2].values()})
     print("🐋 suivi comptes whale/team : "
           + ("ON" if WHALE_ON else "OFF (WHALE_ON=true pour l'allumer)")
           + (" · SIMULATION" if SIMULER else "")
@@ -745,9 +755,12 @@ def main() -> int:
     if not WHALE_ON:
         print("  (le module est eteint — rien n'est fait)", flush=True)
         return 0
-    if not tracked[0] and not tracked[1]:
+    if not tracked[0] and not tracked[1] and not tracked[2]:
         print("  aucun compte suivi : rien a faire.", flush=True)
         return 0
+    # 🧭 les wallets appris aux runs precedents redeviennent actifs ici aussi
+    # (ce module tourne aussi en autonome, pas seulement pilote par floor_watch).
+    restaurer_wallets(state, tracked)
 
     s = requests.Session()
     dernier_refresh = 0.0

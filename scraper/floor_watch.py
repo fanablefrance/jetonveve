@@ -902,7 +902,40 @@ def _marge(achat_usd: float, floor_veve_usd: float):
     net = floor_veve_usd * (1.0 - FEE_PCT / 100.0) - achat_usd
     return net, 100.0 * net / achat_usd
 COOLDOWN_H = float(os.environ.get("FLOOR_COOLDOWN_H", "6"))
+# ═══════════════════════════════════════════════════════════════════════════
+# 🚨 27/07/2026 — UNE BOMBE A RETARDEMENT DESAMORCEE
+# ═══════════════════════════════════════════════════════════════════════════
+# Le workflow porte depuis le 20/07 une « optimisation en attente » :
+# FLOOR_ELEM_LIMIT=250 au lieu de 100, annoncee comme « -60 % de requetes A
+# DONNEES IDENTIQUES ». Elle n'a jamais ete testee contre l'API.
+#
+# ⛔ ELLE EST FAUSSE, ET ELLE AURAIT CASSE LA COLLECTE EN SILENCE. Mesure du
+# 27/07 sur l'API reelle : `getElements` plafonne a 100.
+#     limit=100 -> 200, 100 lignes
+#     limit=101 -> 400 { "code": "too_big", "maximum": 100 }
+#     limit=250 -> 400  (idem)
+# Et le chemin d'erreur de fetch_veve_floors ne CRIE PAS : un 400 donne
+# `d is None`, la boucle passe a la page suivante, les 200 pages echouent, la
+# fonction renvoie {} — et `if neuf:` est faux, donc on GARDE l'ancienne carte
+# des floors. Resultat : des floors figes pour toujours, un log propre, et
+# 🎯 📚 📉 qui raisonnent sur des prix morts. Encore une panne deguisee en
+# fonctionnement normal.
+#
+# ⭐ ON NE FAIT PAS CONFIANCE A UNE VALEUR QU'ON N'A PAS ESSAYEE. Le plafond
+# est donc applique ICI, une fois pour toutes : poser 250 ne casse plus rien,
+# ca revient a 100 et le module le DIT.
+# (NB : ce plafond de 100 est propre a getElements. getVeveTransactions, lui,
+#  accepte bien 500 — mesure le meme jour. Chaque endpoint a le sien.)
+ELEM_LIMIT_MAX = 100
 ELEM_LIMIT = int(os.environ.get("FLOOR_ELEM_LIMIT", "100"))
+if ELEM_LIMIT > ELEM_LIMIT_MAX:
+    print(f"  ⚠️ FLOOR_ELEM_LIMIT={ELEM_LIMIT} refuse par l'API "
+          f"(getElements plafonne a {ELEM_LIMIT_MAX} — mesure le 27/07 : "
+          f"101 renvoie deja 400). Ramene a {ELEM_LIMIT_MAX}. Sans ce "
+          f"garde-fou, TOUTES les pages echoueraient et les floors VeVe "
+          f"resteraient figes sans qu'aucun message ne le dise.",
+          file=sys.stderr)
+    ELEM_LIMIT = ELEM_LIMIT_MAX
 RETRIES = int(os.environ.get("FLOOR_RETRIES", "6"))
 TIMEOUT = int(os.environ.get("FLOOR_TIMEOUT", "45"))
 PAUSE = float(os.environ.get("FLOOR_PAUSE", "0.2"))
