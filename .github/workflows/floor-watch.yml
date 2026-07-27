@@ -54,6 +54,14 @@ on:
   repository_dispatch:
     types: [ping-floor-watch]
   workflow_dispatch:
+    # ⛔⛔ MAXIMUM 25 CHAMPS ICI — limite dure de GitHub (« you may only define
+    # up to 25 `inputs` for a `workflow_dispatch` event »). Ce bloc est PLEIN.
+    # Le 26e ne provoque pas une erreur a l'execution : il rend le FICHIER
+    # INVALIDE, et le workflow cesse d'exister — plus de cron, plus de pinger,
+    # plus rien, en silence cote alertes. Paye le 27/07/2026.
+    # ➡️ Un nouveau reglage se pose en VARIABLE DE DEPOT (`vars.X`), pas ici.
+    #    Pour en ajouter un quand meme, il faut d'abord en RETIRER un.
+    #    tests/test_retouches_2707.py compte les champs a chaque execution.
     inputs:
       simuler:
         description: "Tourner a blanc : tout calculer, N'ENVOYER RIEN (pour regler les seuils)"
@@ -105,12 +113,6 @@ on:
         description: "📚 Comics : tirage maximal suivi (defaut 1000)"
         required: false
         default: ""
-      comic_veve:
-        description: "📚 Comics : surveiller AUSSI le floor VeVe (pas seulement StackR)"
-        required: false
-        default: "true"
-        type: choice
-        options: ["true", "false"]
       veve_steal:
         description: "🩸 Vol sur le floor VeVe : allumer ce canal (chute du floor VeVe vs sa valeur recente)"
         required: false
@@ -301,7 +303,12 @@ jobs:
           # Detecteur de TRANSITION (entree dans la fenetre au balayage
           # horaire), amorcage silencieux au 1er passage. COMIC_VEVE_ON=false
           # revient au comportement StackR-seul.
-          COMIC_VEVE_ON: ${{ github.event.inputs.comic_veve || vars.COMIC_VEVE_ON || 'true' }}
+          # ⛔ PAS de champ de lancement pour celui-ci : le bloc `inputs` du
+          # workflow_dispatch etait DEJA A 25, le maximum autorise par GitHub.
+          # Le 26e a rendu le fichier INVALIDE — donc le workflow ne tournait
+          # plus DU TOUT (27/07, run 30287522832). Il reste pilotable par
+          # variable de depot, ce qui suffit : COMIC_VEVE_ON=false l'eteint.
+          COMIC_VEVE_ON: ${{ vars.COMIC_VEVE_ON || 'true' }}
           # 🩸📈 LOT 1 (15/07) — deux canaux single-marche, ETEINTS par defaut.
           # On les allume et on les calibre UN A LA FOIS (simuler d'abord).
           VEVE_STEAL_ON: ${{ github.event.inputs.veve_steal || vars.VEVE_STEAL_ON || 'false' }}
