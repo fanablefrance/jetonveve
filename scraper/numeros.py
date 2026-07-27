@@ -8,8 +8,11 @@ exactement là qu'est l'affaire.
   * **1ʳᵉ édition publique** — VeVe retient des éditions ; la 1ʳᵉ RÉELLEMENT
     vendue au public n'est presque jamais le #1. Elle est dans le catalogue
     (`first_available_edition`) : on ne la devine pas.
-  * **bas numéros** (#1…#10) et **hauts numéros** (les 10 derniers du tirage) —
-    les extrémités d'un tirage sont recherchées.
+  * **bas numéros** (#1…#10) et **le dernier du tirage** (#supply/supply) —
+    les extrémités d'un tirage sont recherchées. ⚠️ 27/07/2026 : « seul le
+    dernier du tirage total est intéressant » (Preda) — `MINT_HAUT` passe de
+    10 à **1**. Le #10 000/10 000 est le pendant du #1 ; le #9 993 n'est qu'un
+    numéro quelconque, et il faisait dix fois le bruit pour rien.
   * **séquences** (1234, 6789, 4321) · **binaires** (1010, 1101) ·
     **angéliques** (111, 777, 1111) · **répétitions** (2222, 1212) ·
     **palindromes** (121, 1221, 12321).
@@ -34,7 +37,13 @@ from typing import Dict, List, Optional, Tuple
 
 # Les extremites du tirage
 BAS = int(os.environ.get("MINT_BAS", "10"))          # #1 .. #10
-HAUT = int(os.environ.get("MINT_HAUT", "10"))        # les 10 derniers
+# ⭐ 27/07/2026 — « pour les hauts numeros, seul le DERNIER du tirage total est
+# interessant » (Preda). MINT_HAUT valait 10 : sur un tirage de 10 000, les
+# editions 9991..10000 declenchaient toutes, soit dix fois plus de bruit pour
+# un seul numero vraiment remarquable. Le #10 000/10 000 est un jumeau du #1 —
+# le #9 993, non : c'est un numero quelconque qui a eu de la chance.
+# Defaut 1 = le seul #supply. MINT_HAUT=10 (variable de depot) revient a avant.
+HAUT = int(os.environ.get("MINT_HAUT", "1"))         # les N derniers du tirage
 
 # Poids : tous les motifs ne se valent pas. Le #1 d'un tirage, ce n'est pas un
 # 1010 parmi 10 000. Le score sert a TRIER, pas a decider seul.
@@ -42,7 +51,11 @@ POIDS = {
     "premiere_publique": 6,
     "numero_1": 6,
     "bas": 3,
-    "haut": 2,
+    # ⭐ 27/07 : « haut » ne designe plus les 10 derniers mais le SEUL dernier
+    # du tirage (MINT_HAUT=1). Un #5000/5000 est le pendant exact du #1 : il
+    # pese donc pareil. Si Preda relargit MINT_HAUT, le poids reste 6 pour
+    # toute la fourchette — a lui de remonter MINT_SCORE_MIN s'il la relargit.
+    "haut": 6,
     "sequence": 3,
     # palindrome abaisse de 3 a 1 le 15/07 : ~2 % d'un tirage, trop commun
     # pour declencher SEUL (score 1 < MINT_SCORE_MIN=2). Il compte encore
@@ -132,7 +145,9 @@ LIBELLES = {
     "premiere_publique": "1ʳᵉ édition publique",
     "numero_1": "le #1",
     "bas": "bas numéro",
-    "haut": "haut numéro",
+    # dit ce qui est VRAI quand MINT_HAUT=1 (le defaut), sans mentir si Preda
+    # relargit la fourchette.
+    "haut": ("le dernier du tirage" if HAUT <= 1 else "haut numéro"),
     "sequence": "séquence",
     "palindrome": "palindrome",
     "repetition": "répétition",

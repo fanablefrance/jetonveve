@@ -63,6 +63,39 @@ Donc : on trie par montant, on publie les WHALE_MAX plus gros, ON LES MEMORISE,
 et les autres restent candidats au tour suivant. Rien n'est enterre.
 
 Construit OFF par defaut (`WHALE_ON`) : on calibre en SIMULER avant d'allumer.
+
+═══════════════════════════════════════════════════════════════════════════
+⭐⭐ 27/07/2026 — « JE N'AI D'ALERTE QUE POUR UN SEUL COMPTE SUIVI » (Preda)
+═══════════════════════════════════════════════════════════════════════════
+Il avait raison, et le defaut etait ENTIEREMENT dans l'identification.
+
+CE QUI A ETE MESURE, pas suppose :
+  · le pont exportait 7 comptes tagues, dont **5 sans aucun wallet** ;
+  · `_tracke()` ne savait rapprocher que par WALLET ou par PSEUDO ;
+  · sonde du 27/07 sur **14 000 transactions VeVe reelles** (3 jours) :
+    Omegatron88, RaVeN100 et SwampyNumber5 y sont bien presents — mais
+    `buyer_username` / `seller_username` valent **null**. Leur seule identite
+    dans ce flux est `buyer_id` / `seller_id` = le **veve_user_id** ;
+  · aucun des 7 comptes n'apparait dans le flux StackR sur la meme fenetre.
+    Or ce module ne lisait QUE StackR.
+
+⭐ DEUX ANGLES MORTS SUPERPOSES, et aucun des deux ne produisait d'erreur :
+   1. LA CLE : la seule identite disponible (veve_user_id) n'etait ni
+      exportee par le pont, ni lue ici ;
+   2. LE MARCHE : les comptes suivis achetent/vendent sur **VeVe**, pas sur
+      StackR. On les cherchait au mauvais endroit.
+
+CE QUI CHANGE :
+  a. `charger_tracked` indexe AUSSI par veve_user_id (3e index) ;
+  b. `detect_veve` lit le flux `getVeveTransactions` — celui que floor_watch
+     pagine DEJA chaque heure pour l'historique des ventes : **zero requete
+     de plus**, on branche un rappel sur des pages deja demandees ;
+  c. MOISSON DE WALLET : quand un veve_user_id suivi est vu avec une adresse,
+     on la memorise dans l'etat (`whale_wallets`) et on la rend a l'index —
+     les gros transferts on-chain deviennent possibles pour ce compte des le
+     lendemain, sans cookie StackR et sans intervention.
+  d. le module DIT, a chaque run, quels comptes n'ont jamais rien matche et
+     POURQUOI (`journal_identite`). Un silence explique n'est plus un silence.
 """
 
 from __future__ import annotations
@@ -120,13 +153,22 @@ def _norm(w) -> str:
 # Le pont : les comptes suivis (CSV exporte par preda)
 # ---------------------------------------------------------------------------
 
-def charger_tracked(chemin: str = None) -> Tuple[Dict[str, Dict], Dict[str, Dict]]:
-    """Lit les lignes 🟣C-PSEUDOS taguees. Renvoie deux index vers la meme
-    fiche : par wallet (imx ET stackr, minuscules) et par username (minuscules).
+def charger_tracked(chemin: str = None) -> Tuple[Dict[str, Dict],
+                                                 Dict[str, Dict],
+                                                 Dict[str, Dict]]:
+    """Lit les lignes 🟣C-PSEUDOS taguees. Renvoie TROIS index vers la meme
+    fiche : par wallet (imx ET stackr), par username, et par veve_user_id.
+
+    ⭐ LE 3e INDEX EST LE CORRECTIF DU 27/07. Dans le flux VeVe, les comptes
+    suivis apparaissent avec un pseudo NULL et un `buyer_id`/`seller_id` —
+    c'est-a-dire le veve_user_id. Sans cet index, 5 comptes sur 7 etaient
+    invisibles sans qu'aucune erreur ne le signale.
+
     Une ligne SANS « type » est ignoree (seul le tag fait suivre)."""
     chemin = chemin or TRACKED_CSV
     par_wallet: Dict[str, Dict] = {}
     par_user: Dict[str, Dict] = {}
+    par_uid: Dict[str, Dict] = {}
     try:
         with open(chemin, encoding="utf-8") as f:
             for r in csv.DictReader(f):
@@ -134,6 +176,7 @@ def charger_tracked(chemin: str = None) -> Tuple[Dict[str, Dict], Dict[str, Dict
                 if not typ:
                     continue
                 user = (r.get("username") or "").strip()
+                uid = (r.get("veve_user_id") or "").strip()
                 fiche = {
                     "username": user or "(sans pseudo)",
                     "type": typ,
@@ -141,21 +184,91 @@ def charger_tracked(chemin: str = None) -> Tuple[Dict[str, Dict], Dict[str, Dict
                     "value_floor": (r.get("value_floor") or "").strip(),
                     "wallet_imx": _norm(r.get("wallet_imx")),
                     "wallet_stackr": _norm(r.get("wallet_stackr")),
+                    "veve_user_id": uid,
                 }
                 for w in (fiche["wallet_imx"], fiche["wallet_stackr"]):
                     if w:
                         par_wallet[w] = fiche
                 if user:
                     par_user[user.lower()] = fiche
+                if uid:
+                    par_uid[uid] = fiche
     except FileNotFoundError:
         print(f"  (pas de {chemin} : aucun compte suivi — preda ne l'a pas "
               f"encore exporte)", file=sys.stderr)
-    return par_wallet, par_user
+    return par_wallet, par_user, par_uid
 
 
-def _tracke(tracked, wallet, username) -> Optional[Dict]:
-    par_wallet, par_user = tracked
-    return par_wallet.get(_norm(wallet)) or par_user.get((username or "").strip().lower())
+def _tracke(tracked, wallet, username, uid=None) -> Optional[Dict]:
+    """⚠️ TOLERANT A DEUX FORMES de `tracked` : (wallet, user) — l'ancienne,
+    encore utilisee par les tests — et (wallet, user, uid) — la nouvelle. Un
+    correctif qui casse la suite de tests ne se deploie jamais."""
+    par_wallet, par_user = tracked[0], tracked[1]
+    par_uid = tracked[2] if len(tracked) > 2 else {}
+    return (par_wallet.get(_norm(wallet))
+            or par_user.get((username or "").strip().lower())
+            or (par_uid.get(str(uid).strip()) if uid else None))
+
+
+# ---------------------------------------------------------------------------
+# 🧭 MOISSON DE WALLET — un compte suivi finit toujours par se montrer
+# ---------------------------------------------------------------------------
+
+def apprendre_wallet(state, tracked, fiche, wallet) -> bool:
+    """Un compte suivi vient d'etre reconnu (par son veve_user_id) EN FACE
+    d'une adresse : on l'apprend une fois pour toutes.
+
+    POURQUOI CA COMPTE : sans wallet, `detect_transferts` ne peut rien voir
+    pour ce compte — l'explorateur on-chain s'interroge PAR ADRESSE. Resoudre
+    pseudo -> wallet cote StackR demande un cookie verifiedVeve perissable
+    (`pseudos-stackr`, hebdo, fast-skip quand le cookie est mort — il l'etait).
+    Ici c'est gratuit, sans cookie, et ca se repare tout seul.
+
+    L'adresse est ecrite dans l'etat, pas dans le Sheet : ce module ne decide
+    pas a la place de Preda. Le log lui dit quoi coller dans 🟣C-PSEUDOS."""
+    w = _norm(wallet)
+    if not w or w in SYSTEM:
+        return False
+    connus = state.setdefault("whale_wallets", {})
+    uid = fiche.get("veve_user_id") or fiche.get("username") or ""
+    if connus.get(uid) == w:
+        return False
+    if fiche.get("wallet_imx") == w or fiche.get("wallet_stackr") == w:
+        return False
+    connus[uid] = w
+    if not fiche.get("wallet_imx"):
+        fiche["wallet_imx"] = w
+    tracked[0][w] = fiche             # actif des ce run pour les transferts
+    print(f"  🧭 wallet appris : {fiche['username']} -> {w}  "
+          f"(a coller dans 🟣C-PSEUDOS, colonne wallet_imx — les gros "
+          f"transferts on-chain de ce compte deviennent visibles)", flush=True)
+    return True
+
+
+def restaurer_wallets(state, tracked) -> int:
+    """Reinjecte les wallets appris aux runs precedents. Sans ca, la moisson
+    serait a refaire a chaque run (l'etat sert a QUELQUE CHOSE)."""
+    connus = state.get("whale_wallets") or {}
+    if not connus:
+        return 0
+    par_uid = tracked[2] if len(tracked) > 2 else {}
+    n = 0
+    for uid, w in connus.items():
+        fiche = par_uid.get(uid)
+        if not fiche:
+            fiche = next((f for f in tracked[1].values()
+                          if f.get("username") == uid), None)
+        w = _norm(w)
+        if not (fiche and w) or w in tracked[0]:
+            continue
+        if not fiche.get("wallet_imx"):
+            fiche["wallet_imx"] = w
+        tracked[0][w] = fiche
+        n += 1
+    if n:
+        print(f"  🧭 {n} wallet(s) appris precedemment, reinjecte(s).",
+              flush=True)
+    return n
 
 
 # ---------------------------------------------------------------------------
@@ -236,6 +349,7 @@ def detect_marche(state, listings, ventes, tracked, omi, veve=None, cat=None):
         floor_veve = fw._f(veve.get(uid))
         last = (state.get("sales") or {}).get(uid)
         cand.append({"cle": cle, "genre": genre, "emoji": emoji,
+                     "marche": "StackR",
                      "compte": fiche["username"], "type": fiche["type"],
                      "uuid": uid, "categorie": genre_cat,
                      "name": it.get("name") or fiche_cat.get("name") or uid[:8],
@@ -267,6 +381,156 @@ def detect_marche(state, listings, ventes, tracked, omi, veve=None, cat=None):
     # operations, pas les dix premieres du hasard de l'ordre du flux.
     return _rendre(cand, vus, ts, "cle", lambda c: fw._f(c.get("usd")),
                    "evenements comptes suivis")
+
+
+# ---------------------------------------------------------------------------
+# 🛒 / 💸  Evenements du marche VEVE (flux getVeveTransactions, 1x/h)
+# ---------------------------------------------------------------------------
+
+def detect_veve(state, txs, tracked, veve=None, cat=None, ts=None):
+    """Achats et ventes d'un compte suivi SUR LE MARCHE VEVE.
+
+    ⭐ POURQUOI CE DETECTEUR EXISTE (27/07). `detect_marche` ne lit que le flux
+    StackR. Sonde du 27/07 : sur 14 000 transactions VeVe des 3 derniers jours,
+    trois comptes suivis apparaissent — et AUCUN des 7 n'apparait cote StackR
+    sur la meme fenetre. On cherchait au mauvais endroit, et un canal qui
+    cherche au mauvais endroit ressemble trait pour trait a un canal calme.
+
+    ⚠️ IDENTIFICATION PAR `buyer_id`/`seller_id` (= veve_user_id) EN PREMIER :
+    dans ce flux, le pseudo de ces comptes est **null**. C'est la seule cle qui
+    marche. L'adresse vue en face est apprise au passage (`apprendre_wallet`).
+
+    ⚠️ UNITE : `price` est DEJA en dollars dans getVeveTransactions (contrairement
+    au flux StackR, en OMI). Aucune conversion — la confondre a deja coute cher
+    (leçon des unites, v18). Pas d'`omi` en parametre, volontairement.
+
+    ZERO REQUETE : `txs` sont les pages que floor_watch pagine deja chaque heure
+    pour l'historique des ventes."""
+    ts = ts if ts is not None else time.time()
+    vus = state.setdefault("whale_vus", {})
+    veve = veve or {}
+    cat = cat or {}
+    cand: List[Dict] = []
+    local = set()
+
+    for it in txs or []:
+        if str(it.get("status") or "") != "COMPLETE":
+            continue
+        veve_id = str(it.get("veve_id") or "")
+        for role, emoji, genre, cle_id, cle_user, cle_addr in (
+                ("buyer", "🛒", "achat", "buyer_id", "buyer_username",
+                 "buyer_address"),
+                ("seller", "💸", "vente", "seller_id", "seller_username",
+                 "seller_address")):
+            fiche = _tracke(tracked, it.get(cle_addr), it.get(cle_user),
+                            it.get(cle_id))
+            if not fiche:
+                continue
+            apprendre_wallet(state, tracked, fiche, it.get(cle_addr))
+            cle = "veve|" + genre + "|" + (veve_id or str(it.get("nft_id") or ""))
+            if not veve_id or cle in vus or cle in local:
+                continue
+            usd = fw._f(it.get("price"))          # DEJA en dollars
+            if usd and usd < MIN_USD:
+                continue
+            if usd > fw.PRIX_MAX:
+                continue                          # plafond de vraisemblance
+            quand = _epoch_veve(it.get("created_at"))
+            if fw.trop_vieux(quand, ts):
+                continue
+            local.add(cle)
+            uid = str(it.get("element_id") or "")
+            fiche_cat = cat.get(uid) or {}
+            floor_veve = fw._f(veve.get(uid))
+            last = (state.get("sales") or {}).get(uid)
+            cand.append({
+                "cle": cle, "genre": genre, "emoji": emoji, "marche": "VeVe",
+                "compte": fiche["username"], "type": fiche["type"],
+                "uuid": uid,
+                "categorie": ("comic" if str(it.get("element_type") or "")
+                              == "COMIC_COVER" else "collectible"),
+                "name": it.get("name") or fiche_cat.get("name") or uid[:8],
+                "edition": it.get("nft_issue") or "",
+                "usd": round(usd, 2), "omi": 0, "quand": quand,
+                "floor_veve": round(floor_veve, 2) if floor_veve > 0 else None,
+                "atl": fw.atl_connu(state, uid, fiche_cat.get("atl")),
+                "last": (lambda v: round(v, 2) if v > 0 else None)(
+                    fw._f((last or [0])[0]))})
+
+    for k in [k for k, t in list(vus.items()) if ts - fw._f(t) > VU_TTL]:
+        vus.pop(k, None)
+    return _rendre(cand, vus, ts, "cle", lambda c: fw._f(c.get("usd")),
+                   "evenements VeVe comptes suivis")
+
+
+def _epoch_veve(brut):
+    """'2026-07-26T23:33:40.677Z' -> epoch, ou None. On ne devine jamais."""
+    brut = str(brut or "").strip()
+    if not brut:
+        return None
+    try:
+        d = _dt.datetime.fromisoformat(brut.replace("Z", "+00:00"))
+        if d.tzinfo is None:
+            d = d.replace(tzinfo=_dt.timezone.utc)
+        return d.timestamp()
+    except ValueError:
+        return None
+
+
+# ---------------------------------------------------------------------------
+# 🧾 LE JOURNAL D'IDENTITE — pourquoi un compte suivi ne dit jamais rien
+# ---------------------------------------------------------------------------
+
+def journal_identite(state, tracked) -> None:
+    """A la fin d'un run : qui, parmi les comptes suivis, n'a JAMAIS rien
+    matche, et pour quelle raison verifiable.
+
+    ⭐ C'est la parade au defaut de fond : un canal muet ne disait pas s'il
+    etait muet parce que le marche dormait ou parce que 5 comptes sur 7
+    n'avaient aucune cle exploitable. Deux causes, un seul symptome — et deux
+    remedes opposes. On les separe."""
+    fiches = {id(f): f for f in
+              list(tracked[0].values()) + list(tracked[1].values())
+              + list((tracked[2] if len(tracked) > 2 else {}).values())}
+    if not fiches:
+        return
+    vus_comptes = state.setdefault("whale_comptes_vus", {})
+    jamais, sans_cle, sans_wallet = [], [], []
+    for f in fiches.values():
+        nom = f.get("username") or "(sans pseudo)"
+        a_wallet = bool(f.get("wallet_imx") or f.get("wallet_stackr"))
+        a_cle = a_wallet or bool(f.get("veve_user_id"))
+        if not a_cle:
+            sans_cle.append(nom)
+        elif not a_wallet:
+            sans_wallet.append(nom)
+        if nom not in vus_comptes:
+            jamais.append(nom)
+    print(f"  🧾 comptes suivis : {len(fiches)} · "
+          f"{len(fiches) - len(jamais)} ont deja declenche au moins une fois.",
+          flush=True)
+    if sans_cle:
+        print(f"     ⛔ INSUIVABLES (ni wallet ni veve_user_id) : "
+              + ", ".join(sorted(sans_cle)[:8])
+              + " — completer 🟣C-PSEUDOS, sinon ils ne diront JAMAIS rien.",
+              file=sys.stderr)
+    if sans_wallet:
+        print(f"     ⚠️ sans wallet : " + ", ".join(sorted(sans_wallet)[:8])
+              + " — achats/ventes visibles (via veve_user_id), gros transferts "
+                "on-chain NON. Le wallet s'apprendra a leur 1re transaction.",
+              flush=True)
+    if jamais:
+        print(f"     💤 aucun evenement vu a ce jour : "
+              + ", ".join(sorted(jamais)[:8]), flush=True)
+
+
+def noter_compte_vu(state, cartes) -> None:
+    """Memorise qu'un compte a declenche — c'est ce qui permet au journal de
+    distinguer « jamais rien matche » de « calme en ce moment »."""
+    vus = state.setdefault("whale_comptes_vus", {})
+    for a in cartes or []:
+        if a.get("compte"):
+            vus[a["compte"]] = time.time()
 
 
 # ---------------------------------------------------------------------------
@@ -361,8 +625,9 @@ def detect_transferts(state, tracked):
 # ---------------------------------------------------------------------------
 
 def carte(a):
-    tete = "{} {} — {} ({})".format(a["emoji"], a["genre"].capitalize(),
-                                    a["compte"], a["type"])
+    ou = " sur " + a["marche"] if a.get("marche") else ""
+    tete = "{} {}{} — {} ({})".format(a["emoji"], a["genre"].capitalize(), ou,
+                                      a["compte"], a["type"])
     if a["genre"] == "gros transfert":
         lien = "https://collectscan.com/tx/" + a["txh"]
         desc = ["**{}** jeton(s) {} · contrepartie `{}`".format(
@@ -370,10 +635,20 @@ def carte(a):
                 a["name"],
                 "[Voir la transaction](" + lien + ")"]
     else:
-        lien = fw.lien_stackr(a["uuid"], a.get("categorie", ""))
+        # ⭐ 27/07 : le lien mene LA OU L'EVENEMENT A EU LIEU. Un achat conclu
+        # sur le marche VeVe pointe vers VeVe — l'envoyer sur StackR serait un
+        # lien qui s'ouvre tout en etant faux (piege deja paye sur les crafts).
+        sur_veve = a.get("marche") == "VeVe"
+        lien = (fw.lien_marche(a["uuid"], a.get("categorie", "")) if sur_veve
+                else fw.lien_stackr(a["uuid"], a.get("categorie", "")))
         nom = a["name"] + (" #{}".format(a["edition"]) if a.get("edition") else "")
-        prix = "**{:.2f} $** ({} OMI)".format(a["usd"], a["omi"]) if a["usd"] \
-            else "prix inconnu"
+        if not a["usd"]:
+            prix = "prix inconnu"
+        elif sur_veve:
+            prix = "**{:.2f} $** sur **VeVe**".format(a["usd"])
+        else:
+            prix = "**{:.2f} $** ({} OMI) sur **StackR**".format(a["usd"],
+                                                                a["omi"])
         desc = [nom, prix]
         # Le contexte qui manquait (Preda, 22/07) : sans floor ni plus-bas,
         # « 1,78 $ » ne dit rien. Absent = inconnu, on n'affiche pas de zero.
@@ -387,10 +662,11 @@ def carte(a):
         lq = fw.ligne_quand(verbe, a.get("quand"))
         if lq:
             desc.append(lq)
-        desc.append("[Voir sur StackR](" + lien + ")")
+        desc.append("[Voir sur {}]({})".format(
+            "VeVe" if sur_veve else "StackR", lien))
     return {"title": tete[:250], "color": COULEURS.get(a["genre"], 0x95A5A6),
-            "description": "\n".join(desc), "url": None if a["genre"] == "gros transfert"
-            else fw.lien_stackr(a["uuid"], a.get("categorie", ""))}
+            "description": "\n".join(desc),
+            "url": None if a["genre"] == "gros transfert" else lien}
 
 
 def _ligne_sim(a):

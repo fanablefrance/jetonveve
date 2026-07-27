@@ -164,6 +164,34 @@ COMIC_MAX_ALERTES = int(os.environ.get("COMIC_MAX_ALERTES", "25"))
 # La donnee vient du CSV (market_totalListings, collecte chaque jour par
 # comic_prices depuis my-nft-tracker). VIDE = inconnu : on n'invente pas un zero.
 COMIC_MAX_LISTINGS = int(os.environ.get("COMIC_MAX_LISTINGS", "3"))
+# ═══════════════════════════════════════════════════════════════════════════
+# 📚 LE COTE VEVE DU SIGNAL COMICS (27/07/2026, demande de Preda)
+# ═══════════════════════════════════════════════════════════════════════════
+# « Je ne veux qu'acheter des comics entre 0 et 1,99 $ SUR VEVE OU STACKR,
+#  tirage 1 000 max. » Or depuis le 15/07 ce detecteur ne lisait QUE le flux
+# des nouvelles mises en vente StackR : le marche VeVe — celui ou Preda achete
+# vraiment — n'etait plus regarde du tout. Le floor VeVe n'y servait qu'a
+# AFFICHER une reference sur la carte. La moitie du besoin etait donc muette,
+# et rien ne le disait.
+#
+# MESURE AVANT DE CODER (catalogue du 27/07) : sur 13 414 comics a tirage
+# ≤ 1 000, **66** ont aujourd'hui un floor VeVe sous 2 $ (dont 8 pile a 1,00 $).
+# Ce n'est donc pas un deluge — mais 66 cartes d'un coup depasseraient
+# COMIC_MAX_ALERTES (25), le garde-fou publierait ZERO, et comme il ne memorise
+# rien (a raison), il republierait zero a chaque tour. Un verrou qui ne s'ouvre
+# jamais — exactement le defaut paye sur 🐋 le 20/07.
+#
+# ⭐ D'OU LA REGLE : ce detecteur est un detecteur de TRANSITION, pas de STOCK.
+# Au tout premier balayage, on ENREGISTRE le stock EN SILENCE (amorcage) et on
+# ne publie rien ; ensuite on n'alerte que sur ce qui ENTRE dans la fenetre
+# (un comic qui n'y etait pas au balayage precedent, ou qui en etait sorti).
+# Preda voit donc les nouvelles occasions, pas l'inventaire.
+#
+# ⚠️ LE PLANCHER DE LA PLATEFORME reste vrai : on ne peut pas lister sous 1 $
+# sur VeVe. Un floor a 1,00 $ pile n'est donc PAS une decote, c'est le minimum
+# autorise — la carte le DIT au lieu de faire croire a une aubaine. Preda a
+# demande la fenetre « 0 a 1,99 » : on les publie donc, mais annotes.
+COMIC_VEVE_ON = os.environ.get("COMIC_VEVE_ON", "true").lower() == "true"
 # ⚠️ REGLE DE LA PLATEFORME (Preda, 14/07) : **on ne peut pas lister sous 1 $ sur
 # VeVe** ; sur StackR, si. Donc un floor VeVe a 1,00 $ n'est PAS une aubaine :
 # c'est le PLANCHER de la plateforme. L'item n'y est pas brade, il est au prix
@@ -585,6 +613,98 @@ def detect_comics(state: Dict, comics: Dict[str, Dict],
     return out
 
 
+def detect_comics_veve(state: Dict, comics: Dict[str, Dict],
+                       veve: Dict[str, float], ts: float = None) -> List[Dict]:
+    """📚 LE COTE VEVE : un comic a petit tirage dont le FLOOR VeVe est dans la
+    fenetre d'achat de Preda (0 -> COMIC_MAX_USD, soit 1,00 a 1,99 $ en
+    pratique, puisqu'on ne peut pas lister sous 1 $ sur VeVe).
+
+    ⭐ DETECTEUR DE TRANSITION, PAS DE STOCK — et c'est tout le sujet.
+    Le floor VeVe n'est lu qu'1x/h : si on alertait sur l'ETAT (« ce comic est
+    a 1,50 $ »), les memes 66 items reviendraient a chaque balayage, le
+    plafond COMIC_MAX_ALERTES sauterait, et le canal se bloquerait pour de bon.
+    On alerte donc sur l'ENTREE dans la fenetre : etait dehors au balayage
+    precedent, est dedans maintenant.
+
+    ⚠️ PREMIER BALAYAGE = AMORCAGE SILENCIEUX. Sans etat anterieur, TOUT parait
+    « entrer ». On enregistre alors le stock et on ne publie rien — une seule
+    fois, et le log le dit. Sinon le premier run apres l'upload deverserait
+    l'inventaire dans le salon.
+
+    Aucune requete : `veve` est la carte des floors deja rafraichie par la
+    boucle principale."""
+    ts = ts if ts is not None else time.time()
+    if not comics or not veve:
+        return []
+    # dedans[uid] = le floor qui l'a mis dans la fenetre, au dernier balayage
+    dedans: Dict[str, float] = state.setdefault("comics_veve_dedans", {})
+    amorce = bool(state.get("comics_veve_amorce"))
+    vus: Dict[str, float] = state.setdefault("comics_vus", {})
+    neufs: List[Dict] = []
+    encore: Dict[str, float] = {}
+    hors_carnet = 0
+
+    for uid, c in comics.items():
+        floor = _f(veve.get(uid))
+        if not (0 < floor < COMIC_MAX_USD) or floor > PRIX_MAX:
+            continue                      # hors fenetre (ou prix farfelu)
+        encore[uid] = round(floor, 2)
+        if uid in dedans:
+            continue                      # deja dedans au balayage precedent
+        # ⚠️ LA PROFONDEUR DU CARNET, comme cote StackR : huit offres au meme
+        # prix, ce n'est pas une aubaine, c'est le prix du marche.
+        n = c.get("listings")
+        if n is not None and n > COMIC_MAX_LISTINGS:
+            hors_carnet += 1
+            continue
+        if ts - _f(vus.get(uid) or 0) < COOLDOWN_H * 3600:
+            continue                      # deja alerte tout recemment
+        neufs.append({
+            "uuid": uid, "usd": round(floor, 2), "ou": "VeVe",
+            "quand": None,                # un floor n'a pas d'heure de listing
+            "plancher": abs(floor - PLANCHER_VEVE) < 0.005,
+            "name": c["name"], "rarity": c["rarity"], "edition": c["edition"],
+            "supply": c["supply"], "serie": c["serie"], "listings": n,
+            "note": c.get("note") or "", "veve_floor": round(floor, 2),
+            "atl": atl_connu(state, uid, c.get("atl")),
+        })
+
+    state["comics_veve_dedans"] = encore   # la fenetre du balayage COURANT
+
+    if not amorce:
+        state["comics_veve_amorce"] = True
+        print(f"  📚 amorcage cote VeVe : {len(encore)} comic(s) a tirage "
+              f"≤ {COMIC_SUPPLY_MAX} sont DEJA sous {COMIC_MAX_USD:g} $. "
+              f"Enregistres en silence — a partir du prochain balayage, seules "
+              f"les NOUVELLES entrees dans la fenetre seront publiees.",
+              flush=True)
+        return []
+
+    if hors_carnet:
+        print(f"  📚 {hors_carnet} comic(s) VeVe ecarte(s) : plus de "
+              f"{COMIC_MAX_LISTINGS} offres en vente — c'est le prix du "
+              f"marche, pas une aubaine.", flush=True)
+    if not neufs:
+        return []
+    if len(neufs) > COMIC_MAX_ALERTES:
+        # Meme doctrine que cote StackR : on ne memorise RIEN (`vus`), donc
+        # rien n'est enterre. Mais `comics_veve_dedans` est deja a jour : sans
+        # ca, le meme lot reviendrait a chaque balayage sans jamais passer.
+        print(f"  ⛔ {len(neufs)} comics ENTRES d'un coup sous "
+              f"{COMIC_MAX_USD:g} $ cote VeVe — anormal pour un balayage "
+              f"horaire (chute generale du marche, ou catalogue corrompu). "
+              f"RIEN publie. Regarde avant de relever COMIC_MAX_ALERTES.",
+              file=sys.stderr)
+        for a in sorted(neufs, key=lambda x: x["usd"])[:10]:
+            print(f"     {a['name'][:40]:<40} {a['usd']:>6.2f} $ · "
+                  f"{a['supply']} ex.", file=sys.stderr)
+        return []
+    for a in neufs:
+        vus[a["uuid"]] = ts
+    neufs.sort(key=lambda a: (a["supply"], a["usd"]))
+    return neufs
+
+
 # ⚠️ LE LIEN VEVE D'UN COMIC : la page marche d'une RARETE, donc l'uuid de
 # l'ELEMENT — PAS celui de la serie. (Deja paye le 14/07 sur les crafts :
 # confondre les deux uuid donne la page de QUELQU'UN D'AUTRE, et un lien qui
@@ -593,7 +713,13 @@ LIEN_COMIC = "https://www.veve.me/collectibles/en/market/comics/{uuid}"
 
 
 def carte_comic(a: Dict) -> Dict:
-    lien = lien_stackr(a["uuid"], "comic") if a.get("uuid") else ""
+    # ⭐ 27/07 : le lien doit mener LA OU L'OFFRE EST. Une occasion vue sur le
+    # floor VeVe pointee vers StackR envoyait Preda sur le mauvais marche.
+    sur_veve = a.get("ou") == "VeVe"
+    lien = ""
+    if a.get("uuid"):
+        lien = (LIEN_COMIC.format(uuid=a["uuid"]) if sur_veve
+                else lien_stackr(a["uuid"], "comic"))
     lignes = [f"**Tirage** : {a['supply']:,} exemplaires".replace(",", " "),
               f"**Prix** : **{a['usd']:.2f} $** sur **{a['ou']}**"]
     n = a.get("listings")
@@ -602,7 +728,13 @@ def carte_comic(a: Dict) -> Dict:
         # `listings` est le compte de la VEILLE (CSV quotidien) : il ne
         # contient pas forcement le listing tout frais qui declenche cette
         # carte. 0 offre connue + celle-ci = c'est CELLE-CI l'offre unique.
-        if n == 0:
+        if n == 0 and sur_veve:
+            # Cote VeVe l'offre n'est pas « celle-ci » : c'est un FLOOR, et le
+            # compte d'offres date de la veille (CSV quotidien). Dire « aucune
+            # autre connue » y serait faux — on dit ce qu'on sait, et quand.
+            lignes.append("**Offres en vente** : aucune au dernier relevé "
+                          "(la veille) — ce floor est donc récent")
+        elif n == 0:
             lignes.append("**Offres en vente** : celle-ci uniquement "
                           "(aucune autre connue)")
         else:
@@ -610,7 +742,12 @@ def carte_comic(a: Dict) -> Dict:
                           + (" — offre unique" if n == 1 else ""))
     if a.get("note"):
         lignes.append(f"**Classement** : {a['note']}")
-    if a.get("veve_floor"):
+    if a.get("plancher"):
+        # Honnetete : a 1,00 $ pile sur VeVe, l'item n'est pas brade — il est
+        # au PRIX MINIMUM que la plateforme autorise. La carte le dit.
+        lignes.append(f"⚠️ {PLANCHER_VEVE:.2f} $ est le **prix minimum "
+                      f"autorise sur VeVe** — pas une decote, un plancher.")
+    elif a.get("veve_floor") and a.get("ou") != "VeVe":
         lignes.append(f"Floor VeVe : {a['veve_floor']:.2f} $")
     if a.get("atl"):
         lignes.append(ligne_atl(a["atl"], a.get("usd")))
@@ -620,7 +757,7 @@ def carte_comic(a: Dict) -> Dict:
     if lq:
         lignes.append(lq)
     if lien:
-        lignes.append(f"[Voir sur StackR]({lien})")
+        lignes.append(f"[Voir sur {'VeVe' if sur_veve else 'StackR'}]({lien})")
     return {"title": f"📚 {a['name']}"[:250],
             "description": "\n".join(lignes),
             "color": 0x9B59B6,
@@ -1016,7 +1153,7 @@ def fetch_sales(session=None, limit: int = 50) -> List[Dict]:
 
 
 def fetch_history(session=None, pages: int = SALES_PAGES,
-                  omi: float = 0.0) -> Dict[str, list]:
+                  omi: float = 0.0, sur_page=None) -> Dict[str, list]:
     """{uuid -> [prix $ de la DERNIERE vente, jour]} depuis getVeveTransactions.
 
     ⚠️⚠️ LES DEUX FLUX N'ONT PAS LA MEME UNITE (verifie sur les donnees reelles
@@ -1051,6 +1188,17 @@ def fetch_history(session=None, pages: int = SALES_PAGES,
         d = _get("getVeveTransactions", payload, s)
         if not d:
             break
+        # ⭐ 27/07 : UN RAPPEL SUR DES PAGES DEJA DEMANDEES. Ce flux porte
+        # `buyer_id`/`seller_id` (= veve_user_id) et les adresses — la SEULE
+        # identite exploitable des comptes suivis (leur pseudo y est null).
+        # On le donne a qui veut le lire au lieu de le jeter : zero requete
+        # de plus, et le 🐋 cesse d'etre aveugle au marche VeVe.
+        if sur_page is not None:
+            try:
+                sur_page(d)
+            except Exception as e:                          # noqa: BLE001
+                # Un module d'agrement ne fait JAMAIS tomber un collecteur.
+                print(f"    (rappel historique ignore : {e})", file=sys.stderr)
         for it in d:
             if str(it.get("veve_type")) not in SALES_TYPES:
                 continue
@@ -2245,9 +2393,15 @@ def main() -> int:
     comics = comics_petit_tirage(cat)
     dates = nu.charger_dates()
     if cat:
-        print(f"📚 {len(comics)} comic(s) a tirage ≤ {COMIC_SUPPLY_MAX} — alerte "
-              f"entre {PLANCHER_VEVE:g} $ et {COMIC_MAX_USD:g} $ (on ne peut pas "
-              f"lister sous {PLANCHER_VEVE:g} $ sur VeVe).", flush=True)
+        print(f"📚 {len(comics)} comic(s) a tirage ≤ {COMIC_SUPPLY_MAX} — "
+              f"alerte sous {COMIC_MAX_USD:g} $ sur DEUX marches : "
+              f"StackR (flux des mises en vente, 2 min) "
+              + ("+ VeVe (floor, entree dans la fenetre, 1x/h)"
+                 if COMIC_VEVE_ON else "· VeVe ETEINT (COMIC_VEVE_ON=true)")
+              + f". ⚠️ sur VeVe on ne peut pas lister sous "
+                f"{PLANCHER_VEVE:g} $ : la fenetre y vaut "
+                f"{PLANCHER_VEVE:.2f}–{COMIC_MAX_USD - 0.01:.2f} $.",
+              flush=True)
         print(f"🎯 chasse aux numeros : {'ON' if MINT_ON else 'OFF'} sur "
               f"{len(cat)} elements · {len(dates)} serie(s) avec des dates cles.",
               flush=True)
@@ -2292,10 +2446,14 @@ def main() -> int:
     # floor_watch, un import en tete de fichier ferait un cycle.
     from scraper import whale_watch as ww
     ww.SIMULER = ww.SIMULER or SIMULER        # un run floor en simuler simule aussi le whale
-    wtracked = ww.charger_tracked() if ww.WHALE_ON else ({}, {})
-    whale_actif = ww.WHALE_ON and (wtracked[0] or wtracked[1])
+    wtracked = ww.charger_tracked() if ww.WHALE_ON else ({}, {}, {})
+    whale_actif = ww.WHALE_ON and (wtracked[0] or wtracked[1] or wtracked[2])
+    if whale_actif:
+        # 🧭 les wallets appris aux runs precedents redeviennent actifs
+        ww.restaurer_wallets(state, wtracked)
     n_whale = len({id(v) for v in wtracked[0].values()}
-                  | {id(v) for v in wtracked[1].values()})
+                  | {id(v) for v in wtracked[1].values()}
+                  | {id(v) for v in wtracked[2].values()})
     print("🐋 suivi whale/team : "
           + (f"ON · {n_whale} compte(s) suivi(s) → canal "
              + ("dedie" if os.environ.get("DISCORD_WEBHOOK_WHALE") else "principal")
@@ -2364,6 +2522,23 @@ def main() -> int:
                 if HPRIX_FEED_ON:
                     print(f"  🌉 pont H-PRIX : {nf} floor(s) collectible(s) "
                           f"change(s) → {HPRIX_FEED_PATH}.", flush=True)
+                # 📚 LE COTE VEVE DU SIGNAL COMICS (27/07) — un comic a
+                # petit tirage qui ENTRE dans la fenetre d'achat de Preda
+                # (< COMIC_MAX_USD) sur le marche VeVe. Zero requete : on lit
+                # la carte des floors qu'on vient de rafraichir.
+                if COMIC_VEVE_ON:
+                    cv = detect_comics_veve(state, comics, veve)
+                    if cv:
+                        if budget(state, WEBHOOK) > 0:
+                            print(f"  📚 {len(cv)} comic(s) entre(s) sous "
+                                  f"{COMIC_MAX_USD:g} $ sur VeVe !", flush=True)
+                            total += notify_comics(cv)
+                            consommer(state, WEBHOOK)
+                        else:
+                            rendre(state, cv, comics=True)
+                            print("  🔇 plafond atteint — comics VeVe gardes "
+                                  "pour plus tard (rien n'est enterre).",
+                                  flush=True)
                 # 🩸 LE VOL SUR LE FLOOR VEVE — se juge d'un rafraichissement a
                 # l'autre. detect_veve_steal enregistre TOUJOURS le floor
                 # courant, meme canal eteint (reference prete pour le jour ou
@@ -2399,7 +2574,30 @@ def main() -> int:
                             state.get(_chan, {}).pop(_a["uuid"], None)
                         print(f"  🔇 plafond atteint — {_lib} gardes pour "
                               f"plus tard.", flush=True)
-            hist, vol = fetch_history(s, SALES_PAGES, omi)
+            # 🐋 LE MARCHE VEVE (27/07) : les comptes suivis achetent/vendent
+            # ICI, pas sur StackR (sonde du 27/07 : 3 comptes vus sur 14 000 tx
+            # VeVe, 0 sur StackR). On lit donc les pages que fetch_history
+            # pagine deja — sans une requete de plus.
+            _wveve: List[Dict] = []
+
+            def _capter(page):
+                if whale_actif:
+                    _wveve.extend(page)
+
+            hist, vol = fetch_history(s, SALES_PAGES, omi,
+                                      sur_page=_capter if whale_actif else None)
+            if whale_actif and _wveve:
+                wv = ww.detect_veve(state, _wveve, wtracked, veve=veve, cat=cat)
+                if wv:
+                    print(f"  🐋 {len(wv)} evenement(s) marche VeVe "
+                          f"compte(s) suivi(s) (sur {len(_wveve)} tx lues).",
+                          flush=True)
+                    total += ww.notifier(state, wv)
+                    ww.noter_compte_vu(state, wv)
+                else:
+                    print(f"  🐋 marche VeVe : {len(_wveve)} tx lues, aucun "
+                          f"compte suivi dedans.", flush=True)
+                ww.journal_identite(state, wtracked)
             n_h = merge_history(state, hist)
             print(f"  historique : {len(hist)} elements ont une vente reelle "
                   f"({n_h} nouveaux) — les autres sont juges illiquides.",
@@ -2562,8 +2760,9 @@ def main() -> int:
                                       veve=veve, cat=cat)
                 if wm:
                     print(f"  [{i}/{POLLS}] 🐋 {len(wm)} evenement(s) marche "
-                          f"compte suivi.", flush=True)
+                          f"StackR, compte suivi.", flush=True)
                     total += ww.notifier(state, wm)
+                    ww.noter_compte_vu(state, wm)
             save_state(state)
         if i < POLLS:
             time.sleep(INTERVAL_S)
