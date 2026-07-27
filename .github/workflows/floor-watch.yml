@@ -4,6 +4,29 @@
 
 name: Alertes sous-floor
 
+# ═══════════════════════════════════════════════════════════════════════════
+# 🔇 27/07/2026 — QUATRE CANAUX ETEINTS (demande de Preda)
+# ═══════════════════════════════════════════════════════════════════════════
+#   🩸 floor(s) VeVe effondre(s)      -> veve_steal / VEVE_STEAL_ON
+#   📈 vente(s) au-dessus du floor    -> sale_spike / SALE_SPIKE_ON
+#   🆕 nouveau(x) plus-haut(s) hist.  -> ath_on     / ATH_ON
+#   📉 plus-bas historique(s)         -> atl_on     / ATL_ON
+#
+# ⭐ POURQUOI DEUX ENDROITS, ET PAS UN. Ces quatre canaux se pilotent par
+# variable de depot (`vars.X`) — MAIS les champs de lancement manuel
+# ci-dessous passent DEVANT la variable (`inputs.x || vars.X || defaut`), et
+# ils valaient « true ». Poser la variable a false eteignait donc le cron et le
+# pinger, et un simple « Run workflow » les RALLUMAIT sans que rien ne le dise.
+# Les defauts des 4 champs passent donc a « false ». Pour un allumage
+# ponctuel : choisir « true » dans le champ au lancement — c'est explicite, ca
+# ne vaut que pour ce run, et ca ne change pas l'etat par defaut.
+# ⛔ NE PAS SUPPRIMER LE CODE de ces detecteurs : ils continuent d'ENREGISTRER
+# leur reference (floor courant, ATL/ATH vus en direct) meme eteints. La couper
+# ferait re-alerter tout le catalogue le jour du rallumage.
+#
+# 🐋 et 🔥 restent a « true » : ce sont les canaux que Preda veut voir.
+# ═══════════════════════════════════════════════════════════════════════════
+
 # v13 : le module DIT pourquoi il se tait.
 #
 # Deux jours sans une seule alerte, et aucun moyen de savoir QUI serrait trop :
@@ -82,10 +105,16 @@ on:
         description: "📚 Comics : tirage maximal suivi (defaut 1000)"
         required: false
         default: ""
+      comic_veve:
+        description: "📚 Comics : surveiller AUSSI le floor VeVe (pas seulement StackR)"
+        required: false
+        default: "true"
+        type: choice
+        options: ["true", "false"]
       veve_steal:
         description: "🩸 Vol sur le floor VeVe : allumer ce canal (chute du floor VeVe vs sa valeur recente)"
         required: false
-        default: "true"
+        default: "false"
         type: choice
         options: ["false", "true"]
       steal_pct:
@@ -95,7 +124,7 @@ on:
       sale_spike:
         description: "📈 Vente au-dessus du floor : allumer ce canal (une vente reelle bien au-dessus du floor)"
         required: false
-        default: "true"
+        default: "false"
         type: choice
         options: ["false", "true"]
       spike_ratio:
@@ -105,13 +134,13 @@ on:
       ath_on:
         description: "🆕 Nouveau ATH : allumer ce canal (floor qui bat son plus-haut historique) → canal dedie"
         required: false
-        default: "true"
+        default: "false"
         type: choice
         options: ["false", "true"]
       atl_on:
         description: "📉 Plus-bas historique : allumer ce canal (floor au plus bas jamais vu) → canal principal"
         required: false
-        default: "true"
+        default: "false"
         type: choice
         options: ["false", "true"]
       atl_stackr:
@@ -267,6 +296,12 @@ jobs:
           # « 8 offres a 1,75 $, ce n'est pas une affaire » : au-dela de ce
           # nombre d'offres au meme prix, c'est le prix du MARCHE, pas une aubaine.
           COMIC_MAX_LISTINGS: ${{ github.event.inputs.comic_max_listings || vars.COMIC_MAX_LISTINGS || '3' }}
+          # 📚 27/07 : le COTE VEVE du signal comics. Preda achete « entre 0 et
+          # 1,99 $ sur VeVe OU StackR » ; depuis le 15/07 seul StackR etait lu.
+          # Detecteur de TRANSITION (entree dans la fenetre au balayage
+          # horaire), amorcage silencieux au 1er passage. COMIC_VEVE_ON=false
+          # revient au comportement StackR-seul.
+          COMIC_VEVE_ON: ${{ github.event.inputs.comic_veve || vars.COMIC_VEVE_ON || 'true' }}
           # 🩸📈 LOT 1 (15/07) — deux canaux single-marche, ETEINTS par defaut.
           # On les allume et on les calibre UN A LA FOIS (simuler d'abord).
           VEVE_STEAL_ON: ${{ github.event.inputs.veve_steal || vars.VEVE_STEAL_ON || 'false' }}
@@ -427,7 +462,10 @@ jobs:
           # 🎯 numeros — le signal LE PLUS ACTIF (8,9 tirs/jour). « Remarquable »
           # = dans les BAS premiers numeros ou les HAUT derniers du tirage.
           MINT_BAS: ${{ vars.MINT_BAS || '10' }}
-          MINT_HAUT: ${{ vars.MINT_HAUT || '10' }}
+          # ⭐ 27/07 : 10 -> 1. « Seul le dernier du tirage total est
+          # interessant » (Preda). ⚠️ Ce repli en dur PASSE DEVANT le defaut du
+          # code : le changer dans numeros.py seul n'aurait servi a RIEN ici.
+          MINT_HAUT: ${{ vars.MINT_HAUT || '1' }}
           # 📊 ou vivent les percentiles du magasin de prix. A ne changer que
           # pour pointer une release de test.
           BASELINES_SRC: ${{ vars.BASELINES_SRC || '' }}
