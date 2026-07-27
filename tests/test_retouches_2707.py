@@ -210,6 +210,38 @@ def test_le_cote_veve_est_pilotable_depuis_le_workflow():
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# 4bis. LA LIMITE DES 25 CHAMPS — payee le 27/07/2026
+# ═══════════════════════════════════════════════════════════════════════════
+
+def test_pas_plus_de_25_champs_de_lancement():
+    """⛔⛔ GitHub refuse plus de 25 `inputs` dans un workflow_dispatch.
+
+    CE QUI REND CE DEFAUT MECHANT : le 26e ne casse pas un run, il rend le
+    FICHIER INVALIDE. Le workflow cesse d'exister — plus de cron, plus de
+    pinger, plus une seule alerte — et cote Discord ca ressemble exactement a
+    un marche calme. Meme signature que le pont sans sa cle (27/07) et que la
+    recolte maigre (19/07) : une panne qui se DEGUISE en silence normal.
+
+    Le bloc etait DEJA a 25 : tout nouveau champ le casse. Un reglage neuf se
+    pose donc en VARIABLE DE DEPOT, pas en champ de lancement."""
+    bloc = _wf()
+    debut = bloc.index("    inputs:")
+    fin = bloc.index("\npermissions:")
+    champs = re.findall(r"^      ([a-z_0-9]+):$", bloc[debut:fin], re.M)
+    assert len(champs) <= 25, (
+        f"{len(champs)} champs de lancement — GitHub en refuse plus de 25 et "
+        f"rendra le fichier INVALIDE (le workflow disparaitra). En retirer "
+        f"un, ou poser le reglage en variable de depot. Champs : {champs}")
+
+
+def test_le_workflow_reste_un_yaml_valide():
+    """Un test qui aurait attrape le defaut du 27/07 avant l'upload."""
+    yaml = pytest.importorskip("yaml")
+    d = yaml.safe_load(_wf())
+    assert "jobs" in d and "watch" in d["jobs"]
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 # 4. 🐋 L'IDENTIFICATION DES COMPTES SUIVIS
 # ═══════════════════════════════════════════════════════════════════════════
 
