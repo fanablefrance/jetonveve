@@ -32,6 +32,7 @@ QUATRE DEMANDES, ET CE QUI LES PROTEGE ICI :
 
 from __future__ import annotations
 
+import datetime as _dt
 import os
 import re
 import time
@@ -256,8 +257,16 @@ def _csv(tmp_path, lignes):
 
 
 def _tx(uid_acheteur="", addr="0xaaa", prix="12.50", veve_id="tx1"):
+    # ⚠️ HORODATAGE RELATIF, ET C'EST VOLONTAIRE. Ces fixtures portaient une
+    # date FIGEE ; le jour ou la borne d'age 🐋 (WHALE_VEVE_MAX_AGE_H) est
+    # arrivee, trois tests sont passes au rouge — non parce que le code etait
+    # faux, mais parce que la fixture vieillissait toute seule. Une donnee de
+    # test datee dans le passe est une bombe a retardement : elle passe
+    # aujourd'hui et echoue dans six heures, sans qu'une ligne ait bouge.
+    recent = (_dt.datetime.now(_dt.timezone.utc)
+              - _dt.timedelta(minutes=10)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
     return {"veve_id": veve_id, "status": "COMPLETE", "veve_type":
-            "MARKET_FIXED", "created_at": "2026-07-27T10:00:00.000Z",
+            "MARKET_FIXED", "created_at": recent,
             "buyer_id": uid_acheteur, "buyer_username": None,
             "buyer_address": addr, "seller_id": "autre",
             "seller_username": None, "seller_address": "0xbbb",
@@ -411,6 +420,88 @@ def test_flooring_elem_limit_est_plafonne_a_100():
     finally:
         os.environ.pop("FLOOR_ELEM_LIMIT", None)
         importlib.reload(m)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 6. LES TROIS RETOUCHES DE FIN DE SOIREE (27/07, apres le 1er run complet)
+# ═══════════════════════════════════════════════════════════════════════════
+
+def test_le_journal_se_tait_quand_l_arbitrage_est_eteint():
+    """Il ne mesure QUE l'arbitrage. Eteint, il concluait « LE VERROU QUI
+    BLOQUE LE PLUS : FLOOR_MARGIN_PCT » sur 112 candidats — invitant a regler
+    un seuil qui n'aurait rien change. Un instrument qui designe un faux
+    coupable est pire qu'un instrument muet."""
+    import inspect
+    src = inspect.getsource(fw.main)
+    i = src.index("journal.resume()")
+    avant = src[max(0, i - 400):i]
+    assert "if ARBITRAGE_ON:" in avant, (
+        "journal.resume() doit etre conditionne a ARBITRAGE_ON")
+
+
+def test_le_journal_reste_collecte_meme_eteint():
+    """⭐ On TAIT le rapport, on ne coupe pas la MESURE : le jour du rallumage,
+    elle doit etre complete des le premier run."""
+    import inspect
+    src = inspect.getsource(fw.detect)
+    assert "journal.rejet" in src, "la collecte ne doit pas dependre du canal"
+
+
+def _tx_age(heures, uid="UID-1", veve_id="txA"):
+    import datetime as dt
+    q = dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=heures)
+    return {"veve_id": veve_id, "status": "COMPLETE", "veve_type": "MARKET_FIXED",
+            "created_at": q.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+            "buyer_id": uid, "buyer_username": None, "buyer_address": "0xaaa",
+            "seller_id": "autre", "seller_username": None,
+            "seller_address": "0xbbb", "nft_id": "n1", "nft_issue": 1,
+            "element_id": "e1", "element_type": "COMIC_COVER",
+            "name": "Un comic", "price": "12.50"}
+
+
+def _tracked_uid(tmp_path):
+    p = tmp_path / "t.csv"
+    p.write_text(CSV_ENTETE + "X,Modération,UID-1,,,,\n", encoding="utf-8")
+    return ww.charger_tracked(str(p))
+
+
+def test_un_evenement_veve_recent_passe(tmp_path):
+    tracked = _tracked_uid(tmp_path)
+    assert len(ww.detect_veve({}, [_tx_age(1)], tracked)) == 1
+
+
+def test_un_evenement_veve_trop_vieux_est_ecarte(tmp_path):
+    """⚠️ POSE AVANT QUE LE PROBLEME N'ARRIVE. La profondeur du flux depend de
+    FLOOR_SALES_PAGES (20 pages ≈ 10 h, 120 ≈ 3 j). Passer de 20 a 120 ferait
+    surgir d'un coup 3 jours d'evenements jamais vus, publies comme neufs :
+    une rafale de rattrapage prise pour de l'actualite."""
+    tracked = _tracked_uid(tmp_path)
+    assert ww.VEVE_MAX_AGE_H == 6
+    assert ww.detect_veve({}, [_tx_age(48)], tracked) == []
+
+
+def test_la_borne_d_age_est_desactivable(tmp_path):
+    """0 = l'ancien comportement, si Preda veut tout rattraper."""
+    tracked = _tracked_uid(tmp_path)
+    ancien = ww.VEVE_MAX_AGE_H
+    ww.VEVE_MAX_AGE_H = 0
+    try:
+        assert len(ww.detect_veve({}, [_tx_age(48)], tracked)) == 1
+    finally:
+        ww.VEVE_MAX_AGE_H = ancien
+
+
+def test_la_borne_d_age_est_cablee_dans_le_workflow():
+    assert "WHALE_VEVE_MAX_AGE_H" in _wf()
+
+
+def test_les_gros_transferts_disent_qu_ils_ont_cherche():
+    """Un canal muet doit dire qu'il est muet — sinon sa panne ressemble a du
+    calme. C'est justement ce detecteur qui faisait tomber le run."""
+    import inspect
+    src = inspect.getsource(fw.main)
+    i = src.index("ww.detect_transferts")
+    assert "wallet(s) sonde(s)" in src[i:i + 900]
 
 
 # ═══════════════════════════════════════════════════════════════════════════
