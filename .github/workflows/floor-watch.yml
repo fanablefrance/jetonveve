@@ -479,6 +479,14 @@ jobs:
           # 🐋 duree de memoire du dedoublonnage. ⚠️ La descendre fait
           # RE-ALERTER de vieux evenements — c'est un anti-doublon, pas un cache.
           WHALE_VU_TTL_H: ${{ vars.WHALE_VU_TTL_H || '48' }}
+          # ⏱️ 27/07 — BORNE D'AGE DU DETECTEUR 🐋 SUR LE MARCHE VEVE.
+          # Sa profondeur depend de FLOOR_SALES_PAGES (20 pages ≈ 10 h,
+          # 120 pages ≈ 3 j) : ELARGIR CE REGLAGE FERAIT PUBLIER D'UN COUP
+          # tous les evenements jamais vus de la nouvelle fenetre — une rafale
+          # de rattrapage prise pour de l'actualite. Et « un compte suivi VIENT
+          # d'acheter » n'a de sens que si c'est recent. 6 h couvrent largement
+          # un run horaire, meme apres plusieurs crons sautes. 0 = tout publier.
+          WHALE_VEVE_MAX_AGE_H: ${{ vars.WHALE_VEVE_MAX_AGE_H || '6' }}
           # 🐋 le pont : le CSV des comptes tagues, ecrit par le sparse-checkout
           # `_preda` plus haut. Absent -> le module se tait poliment.
           TRACKED_CSV: _preda/data/tracked_accounts.csv
