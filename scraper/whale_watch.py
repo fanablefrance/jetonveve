@@ -131,6 +131,29 @@ XFER_MIN = int(os.environ.get("WHALE_XFER_MIN", "5"))     # « gros » = >= N je
 MAX_CARTES = int(os.environ.get("WHALE_MAX", "10"))
 VU_TTL = float(os.environ.get("WHALE_VU_TTL_H", "48")) * 3600
 XFER_PAGES = int(os.environ.get("WHALE_XFER_PAGES", "3"))
+# ═══════════════════════════════════════════════════════════════════════════
+# ⏱️ FRAICHEUR DU FLUX VEVE — pose AVANT que le probleme n'arrive (27/07)
+# ═══════════════════════════════════════════════════════════════════════════
+# `detect_veve` lit les pages que floor_watch pagine deja pour l'historique des
+# ventes. Sa profondeur depend donc de FLOOR_SALES_PAGES, QUI N'EST PAS A MOI :
+#     20 pages  =  2 000 tx  ≈ 10 heures   (le reglage actuel de Preda)
+#    120 pages  = 12 000 tx  ≈  3 jours    (le defaut du code, qu'il va poser)
+#
+# ⚠️ LE JOUR OU CE REGLAGE PASSE DE 20 A 120, la fenetre est multipliee par ~7
+# D'UN COUP. Tous les evenements de comptes suivis des 3 derniers jours n'ont
+# JAMAIS ete vus (ils etaient hors fenetre) : ils apparaitraient donc comme
+# neufs et partiraient sur Discord — jusqu'a 10 cartes par tour, pendant
+# plusieurs tours, pour des achats vieux de trois jours.
+# ⭐ Un elargissement de fenetre ressemble a une rafale d'actualite. Ce n'en
+# est pas une : c'est du rattrapage, et personne ne l'aurait demande.
+#
+# Et editorialement c'est la meme reponse : « un compte suivi VIENT d'acheter »
+# n'a de sens que si c'est recent. A trois jours, ce n'est plus une alerte.
+# On borne donc l'age des evenements publies par ce detecteur. Le run tourne au
+# pire 1x/h : 6 h de fenetre couvrent largement, meme apres plusieurs crons
+# sautes (ecart de refresh mesure le 22/07 : 233 min).
+# 0 = pas de borne (l'ancien comportement, si Preda veut tout rattraper).
+VEVE_MAX_AGE_H = float(os.environ.get("WHALE_VEVE_MAX_AGE_H", "6"))
 SIMULER = os.environ.get("WHALE_SIMULER", "").strip().lower() in ("1", "oui", "true")
 
 # CollectChain (collectscan) — transferts NFT (ERC-721, verifie le 17/07).
@@ -412,6 +435,7 @@ def detect_veve(state, txs, tracked, veve=None, cat=None, ts=None):
     cat = cat or {}
     cand: List[Dict] = []
     local = set()
+    vieux = [0]          # compte des evenements ecartes pour cause d'age
 
     for it in txs or []:
         if str(it.get("status") or "") != "COMPLETE":
@@ -438,6 +462,12 @@ def detect_veve(state, txs, tracked, veve=None, cat=None, ts=None):
             quand = _epoch_veve(it.get("created_at"))
             if fw.trop_vieux(quand, ts):
                 continue
+            # ⏱️ borne propre a ce detecteur (voir VEVE_MAX_AGE_H) : la
+            # profondeur du flux depend de FLOOR_SALES_PAGES, pas de nous.
+            if VEVE_MAX_AGE_H > 0 and quand is not None \
+                    and (ts - quand) > VEVE_MAX_AGE_H * 3600:
+                vieux[0] += 1
+                continue
             local.add(cle)
             uid = str(it.get("element_id") or "")
             fiche_cat = cat.get(uid) or {}
@@ -459,6 +489,13 @@ def detect_veve(state, txs, tracked, veve=None, cat=None, ts=None):
 
     for k in [k for k, t in list(vus.items()) if ts - fw._f(t) > VU_TTL]:
         vus.pop(k, None)
+    if vieux[0]:
+        # ⭐ On le DIT : sans cette ligne, un elargissement de FLOOR_SALES_PAGES
+        # donnerait l'impression que le detecteur rate des evenements, alors
+        # qu'il les ecarte volontairement parce qu'ils sont vieux.
+        print(f"  🐋 {vieux[0]} evenement(s) VeVe ecarte(s) : plus de "
+              f"{VEVE_MAX_AGE_H:g} h (rattrapage, pas actualite — "
+              f"WHALE_VEVE_MAX_AGE_H=0 pour tout publier).", flush=True)
     return _rendre(cand, vus, ts, "cle", lambda c: fw._f(c.get("usd")),
                    "evenements VeVe comptes suivis")
 

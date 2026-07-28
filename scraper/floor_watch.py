@@ -2693,7 +2693,20 @@ def main() -> int:
                 wx = ww.detect_transferts(state, wtracked)
                 if wx:
                     total += ww.notifier(state, wx)
-                    print(f"  🐋 {len(wx)} gros transfert(s) compte suivi.",
+                    print(f"  🔀 {len(wx)} gros transfert(s) compte suivi.",
+                          flush=True)
+                else:
+                    # ⭐ 27/07 : ce detecteur ne laissait AUCUNE trace quand il
+                    # ne trouvait rien. Impossible de distinguer « a cherche,
+                    # rien vu » de « n'a pas tourne » — et c'est precisement
+                    # celui qui faisait tomber le run avant le correctif.
+                    # Un canal muet doit dire qu'il est muet, sinon sa panne
+                    # ressemble a du calme (la leçon qui revient a chaque fois).
+                    _nw = len(wtracked[0])
+                    print(f"  🔀 {_nw} wallet(s) sonde(s) sur CollectChain, "
+                          f"aucun transfert de ≥ {ww.XFER_MIN} jetons."
+                          + ("" if _nw else "  ⚠️ AUCUN wallet connu : "
+                             "completer wallet_imx dans 🟣C-PSEUDOS."),
                           flush=True)
         ventes = fetch_sales(s)                       # ventes REELLES (OMI)
         nv = note_sales(state, ventes, omi)
@@ -2802,7 +2815,22 @@ def main() -> int:
     print(f"Termine : {POLLS} tours, {total} alerte(s), "
           f"{time.time() - t0:.0f}s.", flush=True)
     # ZERO ALERTE N'EST PAS UNE REPONSE : le journal dit QUEL verrou a serre.
-    print(journal.resume(), flush=True)
+    # ⛔ MAIS SEULEMENT SI LE CANAL CONCERNE EST ALLUME (27/07, demande de Preda).
+    # Ce journal ne mesure QUE l'arbitrage inter-marches. Quand FLOOR_ARBITRAGE
+    # est false — c'est le cas depuis le 14/07 — il analysait 112 candidats et
+    # concluait « LE VERROU QUI BLOQUE LE PLUS : FLOOR_MARGIN_PCT », invitant a
+    # desserrer un seuil qui n'aurait RIEN change : ces alertes ne partent pas,
+    # quel que soit le seuil. Un instrument qui pointe un faux coupable est pire
+    # qu'un instrument muet — on regle dans le vide en croyant progresser.
+    # ⭐ Le journal reste COLLECTE pendant le run (zero cout) : le jour ou Preda
+    # rallume l'arbitrage, la mesure est la, complete, des le premier run.
+    if ARBITRAGE_ON:
+        print(journal.resume(), flush=True)
+    else:
+        print("(journal des recales : rien a dire — il ne mesure que "
+              "l'arbitrage inter-marches, et FLOOR_ARBITRAGE=false. La mesure "
+              "est collectee malgre tout : elle sera complete des le premier "
+              "run apres un rallumage.)", flush=True)
     return 0
 
 
