@@ -50,8 +50,13 @@ WORKFLOW = os.path.join(RACINE, ".github", "workflows", "floor-watch.yml")
 # `test_les_exemptions_sont_toutes_encore_justifiees` qui l'a signale, en
 # refusant des exemptions qui ne correspondaient a aucun module surveille.
 # Le garde-fou du garde-fou a servi avant meme d'etre depose.
+# ⭐ 29/07 : `liquidity_baseline` et `sentinelle_sources` ajoutes. Le premier
+# etait DEPOSE mais importe par personne pendant une semaine — ses reglages
+# n'etaient donc surveilles par rien. Un module qui entre en production entre
+# AUSSI dans cette liste, sinon ce garde-fou a un angle mort de la taille du
+# module.
 MODULES = ["floor_watch", "numeros", "price_baseline", "whale_watch",
-           "bot_alertes"]
+           "bot_alertes", "liquidity_baseline", "sentinelle_sources"]
 
 # ---------------------------------------------------------------------------
 # Les exemptions — chacune JUSTIFIEE, sinon elle n'a rien a faire ici
