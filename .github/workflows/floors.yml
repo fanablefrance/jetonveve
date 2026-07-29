@@ -1,0 +1,63 @@
+name: VeVe floors sync (collectibles)
+
+# Dedicated per-type script: the collectible FLOOR, once a day.
+#   priority  -> VeVe floorMarketPrice (only present once a drop is sold out)
+#   fallback  -> my-nft-tracker market_lowestOffer
+# Appended (on change) to the shared "🟠H-PRIX" history. Edition counters are a
+# separate script; this one only touches floor / listings.
+#
+# 🌉 BASCULE DU PONT (FLOORS_FLOOR_SOURCE) :
+#   "bridge" (DEFAUT depuis le 29/07) = floors.py CEDE le floor au pont
+#                       veille->🟠H-PRIX (horaire, plus frais) et n'ecrit plus
+#                       que market_totalListings, que le pont ne connait pas.
+#                       Une seule source par champ, zero course sur _DynState.
+#   "self"            = comportement historique : floors.py ecrit AUSSI le
+#                       floor. ⚠️ Les DEUX sources ecrivent alors le meme champ
+#                       et `sync_dynamic` ne porte pas de colonne de provenance
+#                       -> va-et-vient mesure x6 le 29/07. A ne rallumer que
+#                       si le pont tombe.
+#   Champ de lancement > variable de depot > defaut.
+
+on:
+  schedule:
+    - cron: "10 1 * * *"   # 05:41 UTC, offset from daily.yml (04:11) and the :17 dynamic
+  workflow_dispatch:
+    inputs:
+      max:
+        description: "Cap the number of collectibles (0 = all, for a quick test)"
+        required: false
+        default: "0"
+      floor_source:
+        description: "Source du floor collectible : self (floors.py) ou bridge (cede au pont)"
+        required: false
+        default: ""
+
+# 🟠H-PRIX : groupe PARTAGE avec comic-prices + hprix-bridge (tous ecrivent
+# _DynState, reecriture non atomique) -> GitHub serialise, jamais deux en meme
+# temps. Remplace l'ancien groupe veve-floors (17/07).
+concurrency:
+  group: veve-hprix
+  cancel-in-progress: false
+
+jobs:
+  floors:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Sync collectible floors -> 🟠H-PRIX
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          SHEET_ID: ${{ secrets.SHEET_ID }}
+          FLOORS_MAX: ${{ github.event.inputs.max || '0' }}
+          FLOORS_FLOOR_SOURCE: ${{ github.event.inputs.floor_source || vars.FLOORS_FLOOR_SOURCE || 'self' }}
+          APIFY_PROXY_PASSWORD: ${{ secrets.APIFY_PROXY_PASSWORD }}
+        run: python -m scraper.floors
