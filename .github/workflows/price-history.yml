@@ -240,3 +240,44 @@ jobs:
           else
             echo "Backfill COMPLET (ou aucun progres) -> pas de relance."
           fi
+
+      # =====================================================================
+      #  ⭐ LE 3e ET DERNIER MAILLON DE LA CHAINE CRITIQUE
+      # =====================================================================
+      #     catalogue-export (scrapeur-veve) --catalogue-pret--> ICI
+      #        ICI --prix-prets--> rebuild-daily (veve-sites)
+      #
+      #  Meme ecart de 30 minutes que le maillon precedent (07:11 -> 07:41), et
+      #  meme mode de panne : quand l'ordonnanceur derive, veve-sites reconstruit
+      #  les sites avec la release `prices-full` DE LA VEILLE. Rien ne le
+      #  signale — la release existe, le build est vert, les prix ont un jour.
+      #
+      #  ⚠️ ON NE PREVIENT QUE SI ON A VRAIMENT PRODUIT QUELQUE CHOSE. Cette
+      #     etape vit dans le job `prices`, qui ne s'execute que si la porte l'a
+      #     laisse passer. Un run arrete par la porte n'envoie donc rien : il
+      #     n'aurait rien de neuf a annoncer.
+      #  ⚠️ ET SEULEMENT EN MODE `append`. Un backfill rejoue l'historique et se
+      #     relance lui-meme en boucle ; prevenir les sites a chaque tour les
+      #     ferait reconstruire des dizaines de fois pour rien.
+      #  ⚠️ NE PEUT PAS FAIRE ECHOUER LE JOB : a ce point la release est publiee,
+      #     le travail est fait. Sortir en rouge serait un mensonge.
+      - name: "Prevenir rebuild-daily que les prix sont prets"
+        if: ${{ (github.event.inputs.mode || 'append') == 'append' }}
+        env:
+          GH_TOKEN: ${{ secrets.VEVESITE_TOKEN }}
+        run: |
+          set -u
+          if [ -z "${GH_TOKEN}" ]; then
+            echo "⚠️ VEVESITE_TOKEN absent — pas de dispatch. Le cron de 07:41 reste le filet."
+            exit 0
+          fi
+          if gh api -X POST repos/VeVePreda/veve-sites/dispatches \
+               -f event_type=prix-prets >/dev/null 2>&1; then
+            echo "✅ rebuild-daily prevenu (evenement « prix-prets »)."
+          else
+            echo "⚠️ Dispatch refuse. Cause la plus probable : VEVESITE_TOKEN n'a pas"
+            echo "   « Contents: write » sur VeVePreda/veve-sites, exige par"
+            echo "   POST /repos/{owner}/{repo}/dispatches."
+            echo "   Ce n'est PAS bloquant : le cron de 07:41 reste le filet."
+          fi
+
