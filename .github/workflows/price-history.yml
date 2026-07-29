@@ -7,7 +7,20 @@ name: price-history
 
 on:
   schedule:
-    - cron: "11 7 * * *"        # 07:11 UTC, apres catalogue-export (06:41)
+    # ⭐ CE CRON N'EST PLUS LE DECLENCHEUR PRINCIPAL, C'EST LE FILET.
+    # Le declencheur normal est desormais l'evenement `catalogue-pret`, envoye
+    # par catalogue-export (VeVePreda/scrapeur-veve) DES QUE la release
+    # `catalogue` est publiee. Ce cron ne sert plus que si le dispatch n'est
+    # pas arrive. La porte d'idempotence ci-dessous evite le double travail.
+    - cron: "11 7 * * *"        # 07:11 UTC — filet, si `catalogue-pret` n'est pas venu
+  # ⚠️ POURQUOI repository_dispatch ET PAS workflow_run : `workflow_run` ne
+  #    franchit pas la frontiere d'un depot, et catalogue-export vit dans
+  #    VeVePreda/scrapeur-veve. Meme mecanisme que le pinger de floor-watch.
+  # ⚠️ Un `repository_dispatch` n'a PAS d'inputs : le mode vaut donc `append`,
+  #    exactement comme le cron. C'est voulu — un backfill ne se declenche pas
+  #    tout seul.
+  repository_dispatch:
+    types: [catalogue-pret]
   workflow_dispatch:
     inputs:
       mode:
@@ -40,7 +53,55 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # ===========================================================================
+  #  ⭐⭐ LA PORTE — sans elle, le chainage DOUBLERAIT la collecte
+  # ===========================================================================
+  #  Depuis que catalogue-export previent ce workflow, deux declencheurs
+  #  peuvent l'allumer le meme jour : l'evenement (vers 06:45) et le cron de
+  #  07:11, garde comme filet. Sans porte, on collecterait DEUX FOIS par jour
+  #  vers les memes sources — soit exactement le contraire de ce que tout le
+  #  projet cherche a faire vis-a-vis du risque de bannissement.
+  #
+  #  ⚠️ LE MARQUEUR EST L'HORODATAGE DES *ASSETS*, PAS `publishedAt`.
+  #     La release `prices-full` est creee UNE FOIS puis ses fichiers sont
+  #     re-televerses chaque jour : son `publishedAt` reste donc bloque au jour
+  #     de sa creation. S'en servir aurait laisse la porte grande ouverte tous
+  #     les jours, et la porte aurait eu l'air de fonctionner.
+  #
+  #  ⚠️ UN LANCEMENT MANUEL PASSE TOUJOURS. Un backfill ou un publish se
+  #     declenche a la main en connaissance de cause ; une porte qui le bloque
+  #     serait une porte qui empeche de reparer.
+  porte:
+    runs-on: ubuntu-latest
+    outputs:
+      continuer: ${{ steps.v.outputs.continuer }}
+    steps:
+      - name: "Le travail du jour est-il deja fait ?"
+        id: v
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -u
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Lancement manuel — la porte ne s'applique pas."
+            echo "continuer=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          frais=$(gh release view prices-full -R "$GITHUB_REPOSITORY" \
+                    --json assets -q '[.assets[].updatedAt] | max' 2>/dev/null || echo "")
+          jour=$(date -u +%F)
+          echo "Dernier fichier de prices-full : ${frais:-aucun} · aujourd'hui : $jour"
+          case "$frais" in
+            "$jour"*)
+              echo "Deja collecte aujourd'hui (declencheur : ${{ github.event_name }}) — on s'arrete."
+              echo "continuer=false" >> "$GITHUB_OUTPUT" ;;
+            *)
+              echo "Rien pour aujourd'hui — on collecte."
+              echo "continuer=true" >> "$GITHUB_OUTPUT" ;;
+          esac
+
   prices:
+    needs: porte
+    if: needs.porte.outputs.continuer == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 350          # backfill long : reprend au run suivant (etat commite)
     steps:
