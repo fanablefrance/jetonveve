@@ -391,11 +391,12 @@ jobs:
           # (le test tests/test_reglages_cables.py le fait automatiquement)
 
           # --- Collecte : le cout en requetes ---------------------------------
-          # ⭐ L'OPTIMISATION EN ATTENTE : 250 au lieu de 100 = -60 % de
-          # requetes A DONNEES IDENTIQUES (moins d'appels, plus gros chacun).
-          # Laisse a 100 = le defaut du code : AUCUN changement de comportement
-          # tant que Preda n'a pas pose la variable. Une seule variable a la
-          # fois, sinon la mesure ne dit plus rien.
+          # ⛔ NE PAS POSER FLOOR_ELEM_LIMIT > 100. Ce bloc annoncait autrefois
+          # « 250 = -60 % de requetes a donnees identiques » : c'est FAUX, et
+          # mesure comme tel le 27/07 — `getElements` plafonne a 100 et renvoie
+          # 400 des 101. Le code applique donc le plafond lui-meme et le DIT.
+          # La vraie economie n'etait pas la : elle est en dessous, dans la
+          # pagination des VENTES, que l'entrepot remplace (FLOOR_LIQ_*).
           FLOOR_ELEM_LIMIT: ${{ vars.FLOOR_ELEM_LIMIT || '100' }}
           FLOOR_LISTINGS: ${{ vars.FLOOR_LISTINGS || '50' }}
           # 🏓 Cadence pinger (22/07) : fenetre LARGE au 1er tour (couvre le
@@ -412,6 +413,31 @@ jobs:
           FLOOR_TIMEOUT: ${{ vars.FLOOR_TIMEOUT || '45' }}
           FLOOR_RETRIES: ${{ vars.FLOOR_RETRIES || '6' }}
           FLOOR_PAUSE: ${{ vars.FLOOR_PAUSE || '0.2' }}
+
+          # 🏭 PREUVE DE VENTE DEPUIS L'ENTREPOT (recablage du 29/07)
+          # `liquidity_baseline` repond « cet item se vend-il ? » depuis les
+          # transferts on-chain, hors reseau. Quand il charge, la pagination des
+          # ventes StackR tombe de FLOOR_SALES_PAGES a FLOOR_SALES_PAGES_LIQ
+          # (120 -> 5 = ~2 880 requetes/jour en moins). Quand il ne charge pas,
+          # le code REVIENT tout seul a 120 : on ne perd jamais la preuve.
+          # ⚠️ CES 4 REGLAGES SONT DES `vars`, PAS DES `inputs` : le bloc
+          # `inputs` est PLEIN (25/25) et le 26e rend le workflow INEXISTANT,
+          # tests verts compris. Ne jamais les y ajouter.
+          FLOOR_LIQ_ON: ${{ vars.FLOOR_LIQ_ON || 'true' }}
+          FLOOR_SALES_PAGES_LIQ: ${{ vars.FLOOR_SALES_PAGES_LIQ || '5' }}
+          FLOOR_LIQ_MIN_SALES: ${{ vars.FLOOR_LIQ_MIN_SALES || '1' }}
+          FLOOR_LIQ_FENETRE: ${{ vars.FLOOR_LIQ_FENETRE || 'n_sales_90d' }}
+          LIQUIDITY_SRC: ${{ vars.LIQUIDITY_SRC || '' }}
+
+          # 🩺 SENTINELLE DES SOURCES (29/07) — l'audit empirique qui manquait
+          # depuis le 22/07. Elle COMPTE les reponses par source et crie quand
+          # une source nous repousse ; elle n'arrete jamais un run.
+          # MIN_OBS evite le verdict sur 3 requetes (une sentinelle qui crie
+          # faux est pire qu'une sentinelle muette).
+          SENTINELLE_MIN_OBS: ${{ vars.SENTINELLE_MIN_OBS || '30' }}
+          SENTINELLE_FERME_PCT: ${{ vars.SENTINELLE_FERME_PCT || '5' }}
+          SENTINELLE_LENTE_PCT: ${{ vars.SENTINELLE_LENTE_PCT || '20' }}
+          SENTINELLE_PAUSE_MAX_S: ${{ vars.SENTINELLE_PAUSE_MAX_S || '30' }}
 
           # --- Seuils economiques --------------------------------------------
           FLOOR_FEE_PCT: ${{ vars.FLOOR_FEE_PCT || '8.5' }}
