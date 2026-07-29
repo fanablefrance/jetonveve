@@ -60,6 +60,8 @@ import requests
 
 from scraper import numeros as nu
 from scraper import price_baseline as pb
+from scraper import liquidity_baseline as lb
+from scraper import sentinelle_sources as ss
 
 # Pont vers le bot d'alertes (etape 4 du bot Discord). Volontairement
 # tolerant : si le fichier manque, floor_watch doit continuer a tourner
@@ -80,6 +82,9 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
 
 STATE_PATH = os.environ.get("FLOOR_STATE", "data/floor_state.json")
 WEBHOOK = os.environ.get("DISCORD_WEBHOOK", "").strip()
+# 🩺 La sentinelle compte ce que les sources repondent. Une par run.
+# Elle ne coupe RIEN : elle mesure, elle conseille une pause, elle crie.
+SENTINELLE = ss.Sentinelle()
 DROP_PCT = float(os.environ.get("FLOOR_DROP_PCT", "10"))
 POLLS = int(os.environ.get("FLOOR_POLLS", "25"))
 INTERVAL_S = int(os.environ.get("FLOOR_INTERVAL_S", "120"))
@@ -114,6 +119,59 @@ MIN_PROFIT = float(os.environ.get("FLOOR_MIN_PROFIT", "5"))
 # getVeveTransactions (celui du backfill : il pagine loin, 100 tx/page).
 # FLOOR_SALES_PAGES=120 -> ~12 000 tx -> ~7 jours de ventes, 1 fois par run.
 SALES_PAGES = int(os.environ.get("FLOOR_SALES_PAGES", "120"))
+# ═══════════════════════════════════════════════════════════════════════════
+# 🏭 LA PREUVE DE VENTE VIENT D'ABORD DE L'ENTREPOT (recablage du 29/07)
+# ═══════════════════════════════════════════════════════════════════════════
+# `liquidity_baseline` a ete ecrit et DEPOSE le 22/07 pour repondre a
+# « cet item s'est-il vendu pour de vrai ? » depuis l'entrepot (transferts
+# on-chain kind='market'), au lieu de re-paginer StackR a chaque run.
+# 🔴 IL N'A JAMAIS ETE IMPORTE ICI : un rebase de ce fichier a emporte le
+# cablage, et rien ne l'a signale — le module etait present, teste, inerte.
+# Cout mesure le 29/07 : 120 pages x 24 runs ≈ 2 880 requetes/jour vers la
+# source la plus susceptible de remarquer un martelement, pour une preuve
+# qu'on avait deja hors reseau.
+#
+# ⭐ LA REDUCTION EST CONDITIONNELLE, JAMAIS ACQUISE. Si la baseline ne charge
+# pas (release injoignable, reseau coupe), on REVIENT a SALES_PAGES : perdre la
+# preuve ET les pages ferait taire les alertes en silence — exactement la panne
+# qu'on repare. `pages_de_ventes()` est le seul endroit qui tranche.
+LIQ_ON = os.environ.get("FLOOR_LIQ_ON", "true").lower() != "false"
+# Pages encore paginees QUAND la baseline est chargee : on garde une petite
+# fenetre live parce que l'entrepot ne porte PAS de prix — le prix de revente
+# continue de venir d'ici. 5 pages ≈ 500 tx ≈ les ventes du jour.
+SALES_PAGES_LIQ = int(os.environ.get("FLOOR_SALES_PAGES_LIQ", "5"))
+# Nombre de ventes exigees dans la fenetre entrepot pour dire « ca se vend ».
+LIQ_MIN_SALES = int(os.environ.get("FLOOR_LIQ_MIN_SALES", "1"))
+LIQ_FENETRE = os.environ.get("FLOOR_LIQ_FENETRE", "n_sales_90d")
+# {uuid -> ligne de liquidite}. Rempli une fois par run, dans main().
+LIQUIDITE: Dict[str, Dict] = {}
+# Compteurs de provenance de la preuve (affiches en fin de run).
+PREUVE = {"live": 0, "entrepot": 0}
+
+
+def pages_de_ventes() -> int:
+    """Combien de pages StackR paginer ce run. L'entrepot ne remplace la
+    pagination QUE s'il a vraiment charge."""
+    return SALES_PAGES_LIQ if LIQUIDITE else SALES_PAGES
+
+
+def _a_vente(uid: str, last) -> bool:
+    """« Cet item se vend-il pour de vrai ? » — la preuve exigee par
+    REQUIRE_SALE. Vente live d'abord, entrepot ensuite.
+
+    ⚠️ PREUVE, JAMAIS PRIX. L'entrepot sait QU'une vente a eu lieu, pas a
+    combien (la chaine ne grave aucun prix). Le prix de revente continue donc
+    de sortir de `state["sales"]` ; un item prouve par l'entrepot affiche
+    « derniere vente : inconnue » plutot qu'un chiffre invente."""
+    if last is not None:
+        PREUVE["live"] += 1
+        return True
+    if not LIQUIDITE:
+        return False
+    if lb.est_liquide(LIQUIDITE.get(uid), LIQ_MIN_SALES, LIQ_FENETRE):
+        PREUVE["entrepot"] += 1
+        return True
+    return False
 SALES_TYPES = ("MARKET_FIXED", "MARKET_AUCTION", "MARKET_STACKR")
 # Un item SANS AUCUNE VENTE dans cette fenetre est illiquide : « revendre au
 # floor VeVe » y est une FICTION. Par defaut on n'alerte donc pas sur l'ecart
@@ -879,8 +937,15 @@ class Journal:
             if pire == "illiquide":
                 l.append("    ⚠️ Ce n'est PAS un seuil de rentabilite : ces items "
                          "ne se vendent pas (ou pas dans notre fenetre de ~7 j).")
-                l.append("    Elargir FLOOR_SALES_PAGES donnerait plus de preuves ; "
-                         "baisser les marges ne servirait a RIEN.")
+                if LIQUIDITE:
+                    l.append("    La baseline d'entrepot est CHARGEE : ces items "
+                             "n'ont vraiment aucune vente connue, ni live ni "
+                             "on-chain. Elargir la pagination ne changerait rien.")
+                else:
+                    l.append("    ⚠️ La baseline d'entrepot n'a PAS charge — la "
+                             "preuve repose sur les seules pages live. Verifier "
+                             "la release `liquidity-full` AVANT de toucher aux "
+                             "marges : baisser les marges ne servirait a RIEN.")
         if self.presque:
             self.presque.sort(key=lambda c: -c.get("net", 0))
             l += ["", "  CEUX QUI ONT MANQUE DE PEU (par benefice) :"]
@@ -950,21 +1015,37 @@ def _get(proc: str, payload: Optional[Dict], session=None, meta=None):
         json.dumps(inp, separators=(",", ":")))
     s = session or requests
     for attempt in range(RETRIES):
+        # 🩺 Une tentative = UNE observation, jamais deux. Sans ce drapeau, un
+        # 429 etait compte par le statut PUIS recompte par l'exception qu'il
+        # declenche — le taux de refus doublait, et la sentinelle criait sur
+        # son propre double comptage. Un instrument qui se mesure lui-meme est
+        # exactement le defaut qu'on essaie de supprimer ailleurs.
+        note = False
         try:
             r = s.get(url, headers={"User-Agent": UA,
                                     "Accept": "application/json"},
                       timeout=TIMEOUT)
+            # On note le statut AVANT d'en decider quoi que ce soit : un 429
+            # renseigne meme quand le reessai finit par reussir. C'est le TAUX
+            # de refus qui compte, pas l'echec final.
+            SENTINELLE.noter("stackr", r.status_code)
+            note = True
             if r.status_code >= 500:
                 raise RuntimeError(f"HTTP {r.status_code}")
             r.raise_for_status()
             return (r.json().get("result", {}).get("data", {})
                     .get("json"))
         except Exception as e:
+            if not note:        # la requete n'a meme pas abouti (timeout, DNS)
+                SENTINELLE.noter("stackr", None, str(e))
             if attempt == RETRIES - 1:
                 print(f"    {proc} abandonne : {e}", flush=True)
                 return None
-            wait = min(60, 3 * (2 ** attempt))
-            print(f"    {proc} : {e} — nouvel essai dans {wait} s", flush=True)
+            # La pause normale est un backoff exponentiel. La sentinelle
+            # l'ALLONGE quand la source nous repousse vraiment — c'est la
+            # seule action automatique qu'elle s'autorise.
+            wait = min(60, 3 * (2 ** attempt)) + SENTINELLE.pause_conseillee("stackr")
+            print(f"    {proc} : {e} — nouvel essai dans {wait:g} s", flush=True)
             time.sleep(wait)
     return None
 
@@ -1471,7 +1552,7 @@ def detect(state: Dict, listings: List[Dict], omi: float,
         # vente reelle connue, cette revente est une fiction. La sous-cotation
         # sur le MEME marche (floor StackR), elle, n'a pas besoin de preuve :
         # c'est une comparaison a offre egale.
-        preuve_ok = (last is not None) or not REQUIRE_SALE
+        preuve_ok = _a_vente(uid, last) or not REQUIRE_SALE
         sous_cote = d_stackr >= DROP_PCT
         if not sous_cote and not (arbitrage and preuve_ok):
             if arbitrage and not preuve_ok:
@@ -1559,9 +1640,9 @@ def detect_spread(state: Dict, veve: Dict[str, float], omi: float,
             if journal:
                 journal.rejet("profit", cand, cle=uid)
             continue
-        if REQUIRE_SALE and last is None:
-            # aucune vente depuis ~7 jours : l'item NE SE VEND PAS. Revendre au
-            # floor VeVe y est une fiction -> on se tait.
+        if REQUIRE_SALE and not _a_vente(uid, last):
+            # aucune vente vue en direct NI dans l'entrepot : l'item NE SE VEND
+            # PAS. Revendre au floor VeVe y est une fiction -> on se tait.
             state.setdefault("sans_vente", {})[uid] = ts
             if journal:
                 journal.rejet("illiquide", cand, cle=uid)
@@ -1771,7 +1852,11 @@ def detect_veve_steal(state, veve, cat=None, ts=None):
             continue
         last = (state.get("sales") or {}).get(uid)
         ls = _f(last[0]) if last else 0.0
-        if REQUIRE_SALE and ls <= 0:
+        # ⚠️ DEUX CHOSES DISTINCTES ICI : `ls` est un PRIX (affiche plus bas,
+        # peut rester 0 = inconnu), `_a_vente` est une PREUVE (live ou
+        # entrepot). Les confondre reviendrait a exiger un prix la ou on ne
+        # demande qu'une existence — et a taire tout ce que l'entrepot prouve.
+        if REQUIRE_SALE and not _a_vente(uid, last if ls > 0 else None):
             # un floor qui tombe sur un item qui ne se vend jamais n'est pas une
             # affaire : c'est une vitrine sans acheteur.
             state.setdefault("sans_vente", {})[uid] = ts
@@ -2423,6 +2508,26 @@ def main() -> int:
     if baselines:
         print(f"  📊 baselines de prix chargees : {len(baselines)} items",
               flush=True)
+    # 🏭 La preuve de vente vient de l'entrepot quand elle le peut. Le repli
+    # est SILENCIEUX cote donnee mais BRUYANT cote log : une baseline absente
+    # ne doit jamais ressembler a un run normal (c'est comme ca qu'on a perdu
+    # ce cablage une premiere fois).
+    global LIQUIDITE
+    LIQUIDITE = lb.load_liquidity() if LIQ_ON else {}
+    if LIQUIDITE:
+        print(f"  🏭 liquidite d'entrepot chargee : {len(LIQUIDITE)} items "
+              f"vendus au moins une fois — pagination des ventes ramenee a "
+              f"{SALES_PAGES_LIQ} page(s) (au lieu de {SALES_PAGES}).",
+              flush=True)
+    elif LIQ_ON:
+        print(f"  ⚠️ liquidite d'entrepot INDISPONIBLE (release "
+              f"`liquidity-full` injoignable ?) — on REVIENT a "
+              f"{SALES_PAGES} pages StackR pour ne pas perdre la preuve. "
+              f"Le run reste correct, il coute juste ce qu'il coutait avant.",
+              file=sys.stderr, flush=True)
+    else:
+        print("  🏭 liquidite d'entrepot DESACTIVEE (FLOOR_LIQ_ON=false).",
+              flush=True)
     comics = comics_petit_tirage(cat)
     dates = nu.charger_dates()
     if cat:
@@ -2617,7 +2722,7 @@ def main() -> int:
                 if whale_actif:
                     _wveve.extend(page)
 
-            hist, vol = fetch_history(s, SALES_PAGES, omi,
+            hist, vol = fetch_history(s, pages_de_ventes(), omi,
                                       sur_page=_capter if whale_actif else None)
             if whale_actif and _wveve:
                 wv = ww.detect_veve(state, _wveve, wtracked, veve=veve, cat=cat)
@@ -2814,6 +2919,24 @@ def main() -> int:
             time.sleep(INTERVAL_S)
     print(f"Termine : {POLLS} tours, {total} alerte(s), "
           f"{time.time() - t0:.0f}s.", flush=True)
+    # D'ou vient la preuve de vente : le seul chiffre qui dise si le recablage
+    # SERT vraiment. Ce sont des VERIFICATIONS, pas des items distincts (un
+    # meme item est verifie par plusieurs detecteurs).
+    # 🩺 Le releve par source, a chaque run, gratuitement. C'est l'audit
+    # empirique qui manquait depuis le 22/07 : il ne demande plus un chantier,
+    # il est deja la, dans le log.
+    print(SENTINELLE.resume(), flush=True)
+    _crier_source, _texte_source = SENTINELLE.doit_crier()
+    if _crier_source and WEBHOOK and not SIMULER:
+        _crier(_texte_source)
+    elif _crier_source:
+        print(_texte_source, file=sys.stderr, flush=True)
+    if PREUVE["live"] or PREUVE["entrepot"]:
+        _tot = PREUVE["live"] + PREUVE["entrepot"]
+        print(f"  🧾 preuve de vente : {PREUVE['live']} en direct + "
+              f"{PREUVE['entrepot']} depuis l'entrepot "
+              f"({100.0 * PREUVE['entrepot'] / _tot:.0f} % hors reseau) "
+              f"sur {_tot} verification(s).", flush=True)
     # ZERO ALERTE N'EST PAS UNE REPONSE : le journal dit QUEL verrou a serre.
     # ⛔ MAIS SEULEMENT SI LE CANAL CONCERNE EST ALLUME (27/07, demande de Preda).
     # Ce journal ne mesure QUE l'arbitrage inter-marches. Quand FLOOR_ARBITRAGE
