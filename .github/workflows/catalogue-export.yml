@@ -1,0 +1,135 @@
+name: catalogue-export
+
+# Publie le catalogue (uuid -> nom, rarete, serie, tirage, store, floor du
+# jour) en Release `catalogue` sur jetonveve (public). Rend l'entrepot
+# AUTOSUFFISANT : alertes/chatbot/tracking joignent les noms par uuid sans
+# acces Google. Tourne sur PREDA (les donnees viennent du Sheet) apres le
+# daily. Secret requis : JETONVEVE_TOKEN (PAT fine-grained du compte
+# fanablefrance, contents read/write sur le seul repo jetonveve).
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "41 6 * * *"        # 06:41 UTC, apres le daily (02:15 UTC)
+    # ⚠️ Le commentaire disait « apres le daily de 04:11 ». Le daily tourne a
+    #    02:15 depuis un moment : un commentaire qui donne une heure fausse sur
+    #    la chaine critique est pire que pas de commentaire. Corrige le 29/07/2026.
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Dependances
+        run: pip install -r requirements.txt
+
+      # 🪪 IDENTITE CHAINE — INACTIVE tant que la variable de depot
+      # CATALOG_IDENTITE_CHAINE != '1'. Sans elle, `catalog_export` est
+      # rigoureusement identique a la veille (meme en-tete, meme contenu) et le
+      # telechargement ci-dessous n'a meme pas lieu.
+      # REVENIR : remettre la variable a 0 — le catalogue est RECONSTRUIT depuis
+      # le Sheet a chaque run, donc zero residu des le lendemain.
+      # Garde-fous cote code : elements_v3 absent, ou SANS colonne `source`
+      # -> identite chaine ignoree, catalogue 100 % Sheet ; churn plafonne par
+      # colonne ; volumetrie verifiee PAR FAMILLE.
+      - name: "Exporter le catalogue depuis le Sheet"
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          SHEET_ID: ${{ secrets.SHEET_ID }}
+          ELEMENTS_V3: data/elements_v3.csv
+          CATALOG_IDENTITE_CHAINE: ${{ vars.CATALOG_IDENTITE_CHAINE }}
+          CATALOG_CHURN_AUTORISE: ${{ vars.CATALOG_CHURN_AUTORISE }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${CATALOG_IDENTITE_CHAINE}" = "1" ]; then
+            mkdir -p data
+            gh release download elements-v3 --pattern elements_v3.csv --dir data --clobber 2>/dev/null \
+              || echo "catalogue chaine indisponible — catalogue 100 % Sheet."
+          fi
+          python -m scraper.catalog_export
+          ls -lh catalogue.csv.gz
+
+      - name: "Secours N-1 puis publication (Release catalogue, jetonveve)"
+        env:
+          GH_TOKEN: ${{ secrets.JETONVEVE_TOKEN }}
+        run: |
+          R="fanablefrance/jetonveve"
+          if [ -z "$GH_TOKEN" ]; then
+            echo "ERREUR : secret JETONVEVE_TOKEN absent." && exit 1
+          fi
+          if gh release view catalogue -R $R >/dev/null 2>&1; then
+            mkdir -p prev
+            gh release download catalogue -R $R -D prev --clobber || true
+            if [ -n "$(ls -A prev 2>/dev/null)" ]; then
+              gh release view catalogue-prev -R $R >/dev/null 2>&1 || \
+                gh release create catalogue-prev -R $R \
+                  -t "Catalogue — veille (secours N-1)" \
+                  -n "Copie automatique de la release catalogue AVANT sa derniere mise a jour."
+              gh release upload catalogue-prev -R $R prev/* --clobber
+              echo "✅ N-1 sauvegarde."
+            fi
+          else
+            gh release create catalogue -R $R \
+              -t "Catalogue VeVe (uuid -> nom, rarete, serie, tirage, store, floor)" \
+              -n "1 CSV.gz quotidien : le referentiel des ~19k items pour joindre analytics-derived et transfers.parquet par uuid, sans acces au Sheet. Colonnes : uuid, kind, name, edition_type, rarity, release_date, series, brand, licensor, tirage, store_price, floor, listings, ath, atl."
+          fi
+          gh release upload catalogue -R $R catalogue.csv.gz --clobber
+          echo "✅ Release catalogue mise a jour."
+
+      # =====================================================================
+      #  ⭐⭐ LE MAILLON LE PLUS SERRE DE LA CHAINE CRITIQUE
+      # =====================================================================
+      #  Chaine reelle des donnees :
+      #     daily (02:15, scrapeur-veve)  ecrit le Sheet
+      #       -> catalogue-export (06:41, ICI)  publie la release `catalogue`
+      #          -> price-history (07:11, jetonveve)  LA TELECHARGE
+      #             -> rebuild-daily (07:41, veve-sites)  construit les sites
+      #
+      #  Entre cette etape et price-history il n'y avait QUE 30 MINUTES d'ecart,
+      #  sur un ordonnanceur GitHub qui derive couramment de 2 a 3 heures. Quand
+      #  la derive depasse l'ecart, price-history telecharge le catalogue DE LA
+      #  VEILLE — et rien ne le signale : le fichier existe, le run est vert,
+      #  les prix sont simplement rattaches a un referentiel d'hier.
+      #
+      #  ⚠️ POURQUOI UN `repository_dispatch` ET PAS UN `workflow_run` :
+      #     `workflow_run` ne franchit PAS la frontiere d'un depot. Ce maillon
+      #     va de VeVePreda/scrapeur-veve a fanablefrance/jetonveve. Le seul
+      #     mecanisme inter-depots est le dispatch — celui-la meme que le pinger
+      #     du VPS utilise deja pour floor-watch.
+      #
+      #  ⭐ LE CRON DE 07:11 RESTE EN PLACE, ET C'EST VOULU. Il devient un FILET
+      #     TARDIF : si ce dispatch echoue (jeton expire, GitHub indisponible),
+      #     price-history tournera quand meme a son heure. Une porte
+      #     d'idempotence, de son cote, l'empeche de refaire le travail deja
+      #     fait — sans quoi on aurait deux collectes par jour vers les memes
+      #     sources, exactement ce qu'on cherche a eviter.
+      #
+      #  ⚠️ CETTE ETAPE NE DOIT JAMAIS FAIRE ECHOUER LE JOB. A ce point, la
+      #     release `catalogue` est DEJA publiee : le travail de ce workflow est
+      #     fait. Sortir en rouge ferait croire que le catalogue a echoue.
+      - name: "Prevenir price-history que le catalogue est pret"
+        env:
+          GH_TOKEN: ${{ secrets.JETONVEVE_TOKEN }}
+        run: |
+          set -u
+          if [ -z "${GH_TOKEN}" ]; then
+            echo "⚠️ JETONVEVE_TOKEN absent — pas de dispatch. Le cron de 07:11 reste le filet."
+            exit 0
+          fi
+          if gh api -X POST repos/fanablefrance/jetonveve/dispatches \
+               -f event_type=catalogue-pret >/dev/null 2>&1; then
+            echo "✅ price-history prevenu (evenement « catalogue-pret »)."
+          else
+            echo "⚠️ Dispatch refuse. Cause la plus probable : le jeton fine-grained"
+            echo "   n'a pas la permission « Contents: write » sur jetonveve, exigee"
+            echo "   par POST /repos/{owner}/{repo}/dispatches."
+            echo "   Ce n'est PAS bloquant : le cron de 07:11 reste le filet."
+          fi
