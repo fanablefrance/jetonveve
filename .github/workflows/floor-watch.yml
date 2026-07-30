@@ -436,6 +436,10 @@ jobs:
           # faux est pire qu'une sentinelle muette).
           SENTINELLE_MIN_OBS: ${{ vars.SENTINELLE_MIN_OBS || '30' }}
           SENTINELLE_FERME_PCT: ${{ vars.SENTINELLE_FERME_PCT || '5' }}
+          # A4 bis : un refus TOTAL sur au moins ce nombre de requetes vaut
+          # verdict, sans passer par MIN_OBS — sinon une source appelee 6
+          # fois par run (stackr) ne serait JAMAIS jugee.
+          SENTINELLE_REFUS_ABSOLU: ${{ vars.SENTINELLE_REFUS_ABSOLU || '5' }}
           SENTINELLE_LENTE_PCT: ${{ vars.SENTINELLE_LENTE_PCT || '20' }}
           SENTINELLE_PAUSE_MAX_S: ${{ vars.SENTINELLE_PAUSE_MAX_S || '30' }}
 
