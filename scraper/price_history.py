@@ -631,8 +631,47 @@ def run_publish(store: str, parquet_out: str, csv_out: str) -> int:
         os.remove(clean)
     except OSError:
         pass
-    print(f"publish : {n_in} lignes lues ({bad} ecartees) -> {n_out} distinctes "
+
+    # ⭐⭐ LE COMPTE DOIT SE REFERMER (corrige le 30/07/2026).
+    #
+    # Le releve disait : `2378013 lignes lues (0 ecartees) -> 2365129 distinctes`.
+    # 12 884 lignes disparaissaient entre les deux, et le SEUL compteur qui
+    # pouvait l'expliquer affichait ZERO. `bad` ne compte que les lignes CSV
+    # malformees ; deux autres pertes n'etaient comptees par personne :
+    #   · les DOUBLONS, retires par le dedup ;
+    #   · les lignes dont le `floor` ne se convertit pas, retirees par le
+    #     `WHERE TRY_CAST(floor AS DOUBLE) IS NOT NULL` de la requete — qui,
+    #     etant du SQL, ne rend aucun compte.
+    #
+    # 🔴 Pourquoi ce n'etait pas cosmetique : `prices.csv.gz` republie ICI
+    # DEVIENT LE STORE DU RUN SUIVANT. Ce que le `WHERE` laisse tomber quitte le
+    # magasin DEFINITIVEMENT — sur un magasin dont l'en-tete dit
+    # « IMPERISSABLE ». Une perte silencieuse et irreversible.
+    #
+    # ⭐ On ne change AUCUN comportement ici : on nomme les quatre destins
+    # possibles d'une ligne lue et on verifie que leur somme fait le total. Un
+    # compte qui se referme est verifiable ; un compte qui ne se referme pas
+    # est une invitation a ouvrir le code — c'est ce qui a permis de trouver.
+    doublons = (n_in - bad) - len(seen)
+    sans_floor = len(seen) - n_out
+    print(f"publish : {n_in} lignes lues -> {n_out} ecrites "
           f"sur {n_items} items. Ecrits : {parquet_out} + {csv_out}.", flush=True)
+    print(f"  detail : {bad} malformee(s) · {doublons} doublon(s) · "
+          f"{sans_floor} sans floor exploitable · {n_out} conservee(s)"
+          f"   [somme = {bad + doublons + sans_floor + n_out} / {n_in}]",
+          flush=True)
+    if bad + doublons + sans_floor + n_out != n_in:
+        # ⭐ Un garde-fou sur le garde-fou : si l'identite ne tient pas, c'est
+        # ce compteur-ci qui est faux, et il vaut mieux le dire que rassurer.
+        print("  ⚠️ LE COMPTE NE SE REFERME PAS — ce releve est a corriger "
+              "avant d'etre cru.", flush=True)
+    if sans_floor:
+        # ⚠️ Non fatal : ces lignes n'ont jamais eu de floor lisible, les
+        # ecarter est le comportement voulu. Mais elles sortent du magasin pour
+        # de bon, donc ca se dit a voix haute.
+        print(f"  ⚠️ {sans_floor} ligne(s) quittent le magasin DEFINITIVEMENT "
+              f"(floor non convertible). Le fichier republie ici est le store "
+              f"du prochain run : ce qui sort ne revient pas.", flush=True)
     return 0
 
 
