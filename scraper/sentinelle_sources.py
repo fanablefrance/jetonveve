@@ -52,6 +52,28 @@ from typing import Dict, List, Optional, Tuple
 # MINIMUM d'observations avant de prononcer un verdict, sinon la sentinelle
 # devient elle-meme une source de fausses alertes.
 MIN_OBS = int(os.environ.get("SENTINELLE_MIN_OBS", "30"))
+# ⭐⭐ A4 BIS (30/07/2026) — MIN_OBS COMPTE LES REQUETES DE CE RUN, PAS D'UNE
+# HISTOIRE. `self.obs` vit en memoire et rien ne le persiste : une source
+# appelee moins de MIN_OBS fois dans un processus n'atteint JAMAIS son verdict.
+# Ce n'est pas un rodage de quelques jours, c'est un etat permanent.
+# Mesure du 30/07 sur `daily` #122 : `stackr` 6 requetes/run, `tracker` 13 dans
+# `scraper.run` -> deux sources durablement injugeables, affichees 🟢.
+#
+# ⛔ ON NE BAISSE PAS MIN_OBS : le raisonnement d'origine est juste, un
+#    POURCENTAGE sur 6 requetes ne veut rien dire.
+# ✅ ON SEPARE « je ne sais pas » de « tout va bien », et on ajoute la seule
+#    regle qui n'a pas besoin d'echantillon : un refus TOTAL est un FAIT.
+#    6 requetes sur 6 refusees, ce n'est pas un echantillon insuffisant, c'est
+#    une source fermee.
+#
+# ⚠️ POURQUOI 5 ET PAS 3. Un banc existant (`test_sous_le_minimum_d_observations`)
+# fige une lecon PAYEE : « 3 requetes refusees ne valent pas un verdict, on a
+# deja paye trois fausses alertes en un jour ». Un seuil a 3 aurait contredit
+# cette lecon. 5 laisse passer les hoquets courts ET attrape `stackr`, qui fait
+# 6 requetes par run. ⭐ Le seuil s'accompagne d'une condition BEAUCOUP plus
+# stricte qu'un pourcentage : le refus doit etre TOTAL. Un seul succes suffit a
+# retomber en angle mort.
+REFUS_ABSOLU = int(os.environ.get("SENTINELLE_REFUS_ABSOLU", "5"))
 SEUIL_FERME_PCT = float(os.environ.get("SENTINELLE_FERME_PCT", "5"))
 SEUIL_LENTE_PCT = float(os.environ.get("SENTINELLE_LENTE_PCT", "20"))
 # Pause additionnelle conseillee quand une source nous repousse (secondes).
@@ -96,9 +118,24 @@ class Sentinelle:
 
     # --------------------------------------------------------------- verdict
     def verdict(self, source: str) -> str:
+        """« ouverte » | « lente » | « se_ferme » | « angle_mort ».
+
+        ⭐⭐ `angle_mort` est ne d'A4 bis : avant, un echantillon trop petit
+        rendait « ouverte », c'est-a-dire que **l'ignorance se lisait comme une
+        bonne nouvelle**. C'est exactement le defaut que ce module dit combattre
+        — un canal muet pris pour un marche calme — reproduit a l'interieur du
+        garde-fou lui-meme.
+        """
         d = self.obs.get(source)
-        if not d or d["total"] < MIN_OBS:
-            return "ouverte"
+        if not d or not d["total"]:
+            return "angle_mort"
+        # ⭐ Un refus TOTAL ne demande pas d'echantillon : c'est un fait, pas un
+        # taux. Sans cette ligne, `stackr` (6 requetes/run) pouvait etre refuse
+        # 6 fois sur 6 et rester 🟢, pour toujours.
+        if d["repousse"] >= REFUS_ABSOLU and d["repousse"] == d["total"]:
+            return "se_ferme"
+        if d["total"] < MIN_OBS:
+            return "angle_mort"
         if 100.0 * d["repousse"] / d["total"] >= SEUIL_FERME_PCT:
             return "se_ferme"
         if 100.0 * (d["serveur"] + d["reseau"]) / d["total"] >= SEUIL_LENTE_PCT:
@@ -114,7 +151,12 @@ class Sentinelle:
         change rien non plus a notre exposition — et allonger un run pour rien
         a un cout reel (le suivant chevauche)."""
         d = self.obs.get(source)
-        if not d or d["total"] < MIN_OBS or not d["repousse"]:
+        if not d or not d["repousse"]:
+            return 0.0
+        # ⭐ A4 bis : sous MIN_OBS on ne calculait AUCUNE pause — donc une source
+        # qui nous refusait tout en 6 requetes etait martelee au meme rythme.
+        # Le refus total vaut desormais ralentissement, sans passer par un taux.
+        if d["total"] < MIN_OBS and self.verdict(source) != "se_ferme":
             return 0.0
         taux = d["repousse"] / d["total"]
         return round(min(PAUSE_MAX_S, PAUSE_MAX_S * taux * 4), 1)
@@ -144,7 +186,11 @@ class Sentinelle:
         manquait : il se lit dans le log de CHAQUE run, gratuitement."""
         if not self.obs:
             return "🩺 sentinelle : aucune requete observee."
-        icone = {"ouverte": "🟢", "lente": "🟠", "se_ferme": "🔴"}
+        # ⚪ = angle mort. ⭐ Une icone inconnue ne doit pas faire tomber le
+        # releve : il est imprime par un `atexit`, un KeyError y sortirait une
+        # trace de pile a la place du bilan.
+        icone = {"ouverte": "🟢", "lente": "🟠", "se_ferme": "🔴",
+                 "angle_mort": "⚪"}
         l: List[str] = ["🩺 SANTE DES SOURCES (ce run) :"]
         for s in sorted(self.obs):
             d, v = self.obs[s], self.verdict(s)
@@ -155,10 +201,19 @@ class Sentinelle:
                 detail.append(f"{d['serveur']} 5xx")
             if d["reseau"]:
                 detail.append(f"{d['reseau']} reseau")
-            if d["total"] < MIN_OBS:
-                detail.append(f"< {MIN_OBS} obs : verdict suspendu")
-            l.append(f"  {icone[v]} {s:<14} {d['total']:>5} requete(s)"
+            if v == "angle_mort":
+                # ⭐⭐ Ne JAMAIS ecrire « RAS » ici. « verdict suspendu » se
+                # lisait comme « ca va, patience » alors que ca ne mûrira pas :
+                # les observations ne s'accumulent pas d'un run a l'autre.
+                detail.append(f"ANGLE MORT — {d['total']} obs < {MIN_OBS} dans "
+                              f"CE run, et rien ne s'accumule entre les runs")
+            l.append(f"  {icone.get(v, '⚪')} {s:<14} {d['total']:>5} requete(s)"
                      + ("  — " + ", ".join(detail) if detail else "  — RAS"))
+        aveugles = [s for s in self.obs if self.verdict(s) == "angle_mort"]
+        if aveugles:
+            l.append(f"  ⚪ {len(aveugles)} source(s) hors de portee du verdict : "
+                     f"{', '.join(sorted(aveugles))}. Un refus TOTAL les ferait "
+                     f"crier malgre tout ; un refus PARTIEL passera inapercu.")
         return "\n".join(l)
 
 

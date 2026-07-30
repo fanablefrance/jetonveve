@@ -19,7 +19,7 @@ RACINE = pathlib.Path(__file__).resolve().parents[1]
 MODULE = RACINE / "scraper" / "sentinelle_sources.py"
 
 # Empreinte du fichier partage, au 29/07/2026.
-EMPREINTE = "0ce0324def5dd003d2002ba1d288e2e7697f50a3e48310de5890e28c9ea61b44"
+EMPREINTE = "c7d72b0a904fc1c3430e0ffabbc408f8bb109d22d70017e1cecafb490466c26d"
 
 
 def test_le_module_partage_n_a_pas_bouge():
@@ -76,7 +76,10 @@ def test_sous_le_minimum_d_observations_aucun_verdict():
     s = ss.Sentinelle()
     for _ in range(3):
         s.noter("src", 429)
-    assert s.verdict("src") == "ouverte"
+    # A4 bis : 3 refus ne valent toujours PAS un verdict — la lecon est
+    # intacte, REFUS_ABSOLU vaut 5 pour cela. Seule l'etiquette change :
+    # « angle_mort » dit qu'on ne sait pas, « ouverte » disait que ca allait.
+    assert s.verdict("src") == "angle_mort"
     crier, _ = s.doit_crier()
     assert crier is False
 

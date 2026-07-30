@@ -27,16 +27,24 @@ def _remplir(sent, source, n, code):
 
 def test_pas_de_verdict_sous_le_minimum_d_observations(s):
     """Le piege classique : 2 refus sur 3 requetes = 66 %, et pourtant on ne
-    sait RIEN. Un pourcentage sans denominateur n'est pas une mesure."""
+    sait RIEN. Un pourcentage sans denominateur n'est pas une mesure.
+
+    ⭐ A4 bis (30/07/2026) : l'INTENTION de ce test est « ne pas crier, ne pas
+    ralentir » — les deux assertions du bas. Elle est INTACTE. Seule l'etiquette
+    change : sous le seuil le verdict vaut desormais « angle_mort » et non
+    « ouverte », parce que rendre « ouverte » faisait lire l'ignorance comme une
+    bonne nouvelle. C'est le defaut que ce module combat, applique a lui-meme."""
     _remplir(s, "stackr", 2, 429)
     s.noter("stackr", 200)
-    assert s.verdict("stackr") == "ouverte"
+    assert s.verdict("stackr") == "angle_mort"
     assert s.doit_crier()[0] is False
     assert s.pause_conseillee("stackr") == 0.0
 
 
-def test_source_inconnue_est_ouverte(s):
-    assert s.verdict("jamais_vue") == "ouverte"
+def test_source_inconnue_est_un_angle_mort(s):
+    """A4 bis : jamais interrogee = rien a dire. Aucun effet de bord (elle
+    n'apparait pas dans le releve, qui n'itere que les sources observees)."""
+    assert s.verdict("jamais_vue") == "angle_mort"
     assert s.pause_conseillee("jamais_vue") == 0.0
 
 
@@ -117,7 +125,9 @@ def test_pas_de_cri_quand_tout_va_bien(s):
 def test_le_releve_dit_quand_il_ne_sait_pas(s):
     """Un releve qui affiche 🟢 sur 5 observations ment par omission."""
     _remplir(s, "stackr", 5, 200)
-    assert "verdict suspendu" in s.resume()
+    # A4 bis : « verdict suspendu » se lisait « ca va, patience » alors que
+    # rien ne mûrit — les observations ne s'accumulent pas entre les runs.
+    assert "ANGLE MORT" in s.resume()
 
 
 def test_le_releve_liste_chaque_source(s):
