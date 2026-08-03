@@ -1537,8 +1537,23 @@ def detect(state: Dict, listings: List[Dict], omi: float,
         img = it.get("image_url") or ""
         if uid and sf > 0:
             # on memorise le floor StackR de l'item (pour le signal 3)
+            # ⏱️ POSITION 4 = QUAND ON L'A VU (03/08/2026). Le tuple n'avait
+            # aucune date, et `sfloors` n'a NI purge NI TTL : un floor apercu
+            # une seule fois en juillet y reste pour toujours, et rien ne le
+            # distingue d'un floor vu il y a dix minutes.
+            # ⭐ TANT QUE CE CHAMP N'EXISTAIT PAS, LA VALEUR N'ETAIT
+            # EXPLOITABLE QU'ICI. Le signal 3 s'en sert dans la seconde qui
+            # suit, donc l'age ne le genait pas ; publier la meme valeur sur
+            # une fiche, c'est afficher une cote dont on ignore l'age. La
+            # date n'est pas un confort, c'est ce qui rend le chiffre
+            # PUBLIABLE.
+            # ⛔ AJOUTE EN FIN, JAMAIS INSERE. Les sept lecteurs de `sfloors`
+            # indexent 0, 1, 2 et 3 (ce dernier deja garde par un `len()`).
+            # Un etat ecrit par la version d'avant reste donc lu sans erreur,
+            # et cette version relit le sien : la migration est un NO-OP, il
+            # n'y a rien a convertir et rien a redeployer dans l'ordre.
             state.setdefault("sfloors", {})[uid] = [
-                sf, it.get("name") or uid[:8], it.get("rarity") or "", img]
+                sf, it.get("name") or uid[:8], it.get("rarity") or "", img, ts]
         vf = veve.get(uid, 0.0)
         d_stackr = (100.0 * (sf - price) / sf) if sf > 0 else 0.0
         d_veve = (100.0 * (vf - usd) / vf) if (vf > 0 and usd > 0) else 0.0
@@ -1611,6 +1626,16 @@ def detect_spread(state: Dict, veve: Dict[str, float], omi: float,
     for uid, infos in list(sfloors.items()):
         sf, name, rarity = infos[0], infos[1], infos[2]
         img = infos[3] if len(infos) > 3 else ""
+        # ⏱️ `infos[4]` = l'instant ou ce floor a ete vu (03/08/2026), ABSENT
+        # sur les entrees ecrites avant cette version. ⛔ ON NE LE REMPLACE
+        # PAS par `ts` quand il manque : dater d'aujourd'hui un floor vu en
+        # juillet ne comble pas le trou, il le MAQUILLE. Une entree sans date
+        # doit rester lisible comme « age inconnu ».
+        # ⚠️ CE DETECTEUR NE FILTRE PAS SUR L'AGE, volontairement : il
+        # compare deux floors du meme instant de lecture et se comportait
+        # deja ainsi. Ajouter un seuil ici changerait les alertes, ce qui
+        # n'est pas le sujet de ce lot. Le seul lecteur de `infos[4]` est
+        # donc `_releve_sfloors`, l'instrument de mesure en fin de run.
         if journal:
             journal.items.add(uid)
         vf = veve.get(uid, 0.0)
@@ -2494,6 +2519,43 @@ def save_state(st: Dict) -> None:
         json.dump(st, f)
 
 
+def _releve_sfloors(state: Dict) -> None:
+    """⏱️ Combien de floors StackR memorises portent une date, et depuis quand.
+
+    ⭐ UN CHAMP AJOUTE NE SE REMPLIT PAS TOUT SEUL. Les entrees ecrites avant
+    le 03/08/2026 resteront sans date jusqu'a ce que l'item soit RE-LISTE sur
+    StackR — ce qui, pour un item qui ne bouge pas, peut ne jamais arriver.
+    Sans ce releve, on croirait la colonne pleine le lendemain du deploiement.
+    ⛔ C'est donc ce chiffre, pas la date du deploiement, qui dit quand le
+    floor StackR devient publiable sur une fiche.
+
+    ⚠️ Ne juge RIEN et ne jette RIEN : il compte, il imprime, il s'arrete.
+    """
+    sf = state.get("sfloors") or {}
+    if not sf:
+        print("⏱️ floors StackR memorises : aucun.", flush=True)
+        return
+    now = time.time()
+    ages = [v[4] for v in sf.values()
+            if isinstance(v, list) and len(v) > 4 and isinstance(v[4], (int, float))]
+    total, dates = len(sf), len(ages)
+    pct = 100.0 * dates / total if total else 0.0
+    msg = (f"⏱️ floors StackR memorises : {total} item(s), "
+           f"{dates} date(s) ({pct:.1f} %) — {total - dates} d'age INCONNU")
+    if ages:
+        vieux = (now - min(ages)) / 3600.0
+        recent = (now - max(ages)) / 3600.0
+        msg += (f" · le plus ancien date remonte a {vieux:.1f} h, "
+                f"le plus frais a {recent:.1f} h")
+    msg += "."
+    print(msg, flush=True)
+    if dates < total:
+        print(f"   ⚠️ {total - dates} entree(s) sans date : ecrites avant le "
+              f"03/08/2026. Elles se dateront quand l'item sera RE-LISTE sur "
+              f"StackR, jamais avant. ⛔ Ne pas publier un floor sans date.",
+              file=sys.stderr, flush=True)
+
+
 def main() -> int:
     t0 = time.time()
     state = load_state()
@@ -2919,6 +2981,7 @@ def main() -> int:
             time.sleep(INTERVAL_S)
     print(f"Termine : {POLLS} tours, {total} alerte(s), "
           f"{time.time() - t0:.0f}s.", flush=True)
+    _releve_sfloors(state)
     # D'ou vient la preuve de vente : le seul chiffre qui dise si le recablage
     # SERT vraiment. Ce sont des VERIFICATIONS, pas des items distincts (un
     # meme item est verifie par plusieurs detecteurs).
