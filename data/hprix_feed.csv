@@ -1,15 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-5e8f7e71-3285-4977-9f11-77fa35c2dda3,Spider-Man: Miles Morales - Ultimate Spider-Man,collectible,525,2026-07-28 12:07:32
-1faf6762-b397-4ea7-881d-6f9b24776f2c,#79 Jim Lee Nightwing,collectible,199,2026-07-28 12:07:32
-3a24545f-3e4d-45d7-916f-817a50c7f1b2,No Time To Die  - Triumph Motorcycle,collectible,5.5,2026-07-28 12:07:32
-8283c167-a79d-4308-853a-bdb08368eb5a,Fastball Special,collectible,54.99,2026-07-28 12:07:32
-24624bd2-2ea0-4754-9b6e-1497803316ad,Ron English Collectors Reward,collectible,24.6,2026-07-28 12:07:32
-7c6ae06f-0c37-4d39-9129-4ae99b28d93d,Magik - Uncanny X-Men 2013,collectible,27.89,2026-07-28 12:07:32
-c85f636d-05bf-4cb2-983c-22ae671ee6b4,Record #9 - Everyone is Jealous of Me - Platinum,collectible,28,2026-07-28 12:07:32
-418dcebb-67d5-4216-9fc2-09f66901422e,Record #5 - Ronnnie Rabbbit - Platinum,collectible,19,2026-07-28 12:07:32
-65828683-2a2f-4260-83eb-e86bbfbf11a8,Acrobatic Surfing - Gold,collectible,46.99,2026-07-28 12:07:32
-47bc3ff2-0185-4ae6-9ce8-94c0c5c56195,Record #7 - Bunnny's Rap - Gold,collectible,5.9,2026-07-28 12:07:32
-f108a1b1-62eb-473c-88d0-3d340255f4d7,Beach Prank,collectible,1.99,2026-07-28 12:07:32
 900388bb-8847-4334-8d1a-508de81c4a4d,Superman,collectible,190,2026-07-28 13:10:27
 a605b45c-c809-40d4-a98b-b5daa200a696,Black Panther – Ultimate Animated,collectible,400,2026-07-28 13:10:27
 9954145f-e85c-462e-b84b-2b50a3e3fbe9,Elsa,collectible,88,2026-07-28 13:10:27
@@ -4892,3 +4881,32 @@ fbf48c5c-39c1-4b77-9b49-6932f42acae0,Mater,collectible,28,2026-08-04 11:51:23
 faa51bbb-63ce-4280-91bd-b3573e1293a2,Jackson Storm,collectible,28,2026-08-04 11:51:23
 c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,6.25,2026-08-04 11:51:23
 aa8ace2b-3356-421c-8bfc-d77fb68b703b,Blue Noggles,collectible,24.5,2026-08-04 11:51:23
+af02ad4f-100c-4995-810f-376c6854b00e,Disney D,collectible,16,2026-08-04 12:53:32
+4dc2db11-350d-4c3b-82c9-84fbcaa9d138,Timon and Pumbaa,collectible,10.55,2026-08-04 12:53:32
+f64f5581-0640-4c33-873d-1d798c086e24,Stormtrooper,collectible,9,2026-08-04 12:53:32
+15a5f28b-8cc8-4838-aaee-8beb67e17313,Predator - Unseen Edge,collectible,1999,2026-08-04 12:53:32
+2a293f70-73ed-4c93-8095-ae0341f912a4,Goofy,collectible,285,2026-08-04 12:53:32
+ab6bd913-cd52-44ec-ac88-94225f960723,Stitch,collectible,99,2026-08-04 12:53:32
+3e628ba1-7c41-4d53-8ae7-ecc2aa09512a,Michelangelo - IncogNinja,collectible,88,2026-08-04 12:53:32
+a60477fd-6e2e-4482-bab5-02a3ee36be28,‍Gasgano’s Podracer,collectible,39,2026-08-04 12:53:32
+a11a8cdb-2ed2-483e-bdea-7f657ff0b82a,The Rise of Ultraman #1 - Adi Granov,collectible,7.5,2026-08-04 12:53:32
+e4f7a1c5-0150-4429-8d22-b45d152c238b,Evil Chucky,collectible,9.7,2026-08-04 12:53:32
+0433455f-ebd3-447d-bb00-347564d5f6a4,Guile Story,collectible,93,2026-08-04 12:53:32
+fbf48c5c-39c1-4b77-9b49-6932f42acae0,Mater,collectible,17,2026-08-04 12:53:32
+c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,6.8,2026-08-04 12:53:32
+92635283-99b4-4597-ba69-01e39ccba334,Master Splinter - Father Figure,collectible,6,2026-08-04 12:53:32
+5d80846e-6d59-45d1-8a1d-03492e5134db,Darth Vader Samurai - Shadow of the Shogun,collectible,8.88,2026-08-04 12:53:32
+aa8ace2b-3356-421c-8bfc-d77fb68b703b,Blue Noggles,collectible,46,2026-08-04 12:53:32
+faa51bbb-63ce-4280-91bd-b3573e1293a2,Jackson Storm,collectible,17,2026-08-04 12:53:32
+a709645b-62df-490d-b74a-16a90c358d50,Master Splinter - Combat Training,collectible,21.9,2026-08-04 12:53:32
+3a104aa7-b5ba-4bd1-8197-dd402dbd46bf,Night Trooper,collectible,2.2,2026-08-04 12:53:32
+7a50712b-8a87-4d4c-9e0b-90e23cfd7441,Night Trooper Exposed,collectible,2.2,2026-08-04 12:53:32
+f675174d-d5da-42a1-9db1-7fb59a20fb91,Doctor Octopus,collectible,22.99,2026-08-04 12:53:32
+499c8aca-e5c2-45f8-a330-2f773ce0d67e,BLACKPINK NEON LIGHT - ROSÉ,collectible,75,2026-08-04 12:53:32
+e7c08aaa-eb11-4af2-8d7e-488bb3df87dc,Spring,collectible,8.55,2026-08-04 12:53:32
+f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,5.9,2026-08-04 12:53:32
+8c33d824-cf0e-4db8-848e-9231be25c2e3,Death Trooper E-11D - Running,collectible,3,2026-08-04 12:53:32
+1e686588-d7fe-40bc-81be-15d2ca5be3fb,Mysterio,collectible,6.99,2026-08-04 12:53:32
+2253cf7f-d6e4-4c1b-9ada-fc10d4c3379f,Death Trooper Pistol - Running,collectible,2.2,2026-08-04 12:53:32
+d324d199-8532-4449-b67b-fdad373da71a,Stormtrooper - Running,collectible,2.2,2026-08-04 12:53:32
+c453fdaf-e57f-4a45-88a6-487d999916b9,Fall,collectible,8,2026-08-04 12:53:32
