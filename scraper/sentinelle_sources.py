@@ -102,7 +102,9 @@ class Sentinelle:
         porte le texte. Ne leve jamais."""
         with self._verrou:
             d = self.obs.setdefault(source, {"total": 0, "ok": 0, "repousse": 0,
-                                             "serveur": 0, "reseau": 0})
+                                             "serveur": 0, "reseau": 0,
+                                             "invalide": 0})
+            d.setdefault("invalide", 0)     # etats plus anciens en memoire
             d["total"] += 1
             if code is None:
                 d["reseau"] += 1
@@ -112,9 +114,32 @@ class Sentinelle:
                 d["serveur"] += 1
             elif code < 400:
                 d["ok"] += 1
-            else:                   # 4xx qui ne sont pas un refus de nous
-                d["serveur"] += 0   # ni bon ni mauvais signe : on ne compte
-                d["ok"] += 0        # que dans le total (vu par difference)
+            else:
+                # 🔴🔴 LES 4xx QUI NE SONT PAS UN REFUS DE NOUS (05/08/2026)
+                #
+                # CE QU'IL Y AVAIT ICI : `d["serveur"] += 0` et `d["ok"] += 0`,
+                # avec le commentaire « ni bon ni mauvais signe : on ne compte
+                # que dans le total ». Deux additions de zero — donc RIEN.
+                # Le raisonnement etait bon (un 400 n'est pas la source qui se
+                # ferme) ; sa consequence ne l'etait pas : ces reponses
+                # n'apparaissaient NULLE PART, et `resume()` affichait « RAS ».
+                #
+                # Mesure du 05/08 : le run `ENRICH_MODE=all` a essuye des
+                # HTTP 400 sur `publicComicType`, et la sentinelle a imprime
+                #     🟢 veve_graphql  7130 requete(s) — RAS
+                # ⭐⭐⭐ **UN COMPTEUR QUI N'INCREMENTE RIEN N'EST PAS NEUTRE :
+                # IL EST MUET.** Et un garde-fou muet se lit comme un
+                # garde-fou rassurant.
+                #
+                # ⛔ ON NE LES RANGE PAS AVEC LES REFUS, ET C'EST LE POINT.
+                # Un 429 dit « la source nous REPOUSSE » -> ralentir aide.
+                # Un 400 dit « NOTRE REQUETE est fausse » -> ralentir n'aide
+                # pas, il faut corriger le code. Ce sont deux problemes
+                # opposes ; les additionner ferait ralentir un run qui n'a
+                # aucun probleme de debit, et masquerait le vrai defaut.
+                # C'est la meme distinction que le module fait deja entre
+                # « se_ferme » (429) et « lente » (5xx).
+                d["invalide"] += 1
 
     # --------------------------------------------------------------- verdict
     def verdict(self, source: str) -> str:
@@ -201,6 +226,13 @@ class Sentinelle:
                 detail.append(f"{d['serveur']} 5xx")
             if d["reseau"]:
                 detail.append(f"{d['reseau']} reseau")
+            # ⭐⭐ CE QUI REND « RAS » IMPOSSIBLE QUAND ON DEMANDE MAL.
+            # `detail` non vide => la ligne ne peut plus finir par « RAS ».
+            # On nomme la cause dans le message : un 400 n'appelle pas une
+            # pause, il appelle une relecture de la requete.
+            if d.get("invalide"):
+                detail.append(f"🔧 {d['invalide']} requete(s) REFUSEE(S) "
+                              f"(4xx) — c'est NOTRE requete, pas la source")
             if v == "angle_mort":
                 # ⭐⭐ Ne JAMAIS ecrire « RAS » ici. « verdict suspendu » se
                 # lisait comme « ca va, patience » alors que ca ne mûrira pas :
@@ -214,6 +246,19 @@ class Sentinelle:
             l.append(f"  ⚪ {len(aveugles)} source(s) hors de portee du verdict : "
                      f"{', '.join(sorted(aveugles))}. Un refus TOTAL les ferait "
                      f"crier malgre tout ; un refus PARTIEL passera inapercu.")
+        # 🔧 LE VERDICT NE PARLE QUE DE LA SOURCE — cette ligne parle de NOUS.
+        # ⚠️ Necessaire parce qu'une source qui refuse 100 % de nos requetes
+        # pour cause de requete invalide reste, elle, parfaitement « ouverte » :
+        # l'icone serait 🟢 et elle aurait raison. ⭐⭐ *Le bon verdict sur la
+        # mauvaise question rassure autant qu'un faux verdict.*
+        mal = {s: d["invalide"] for s, d in self.obs.items() if d.get("invalide")}
+        if mal:
+            detail = ", ".join(f"{s} ({n}/{self.obs[s]['total']})"
+                               for s, n in sorted(mal.items()))
+            l.append(f"  🔧 {sum(mal.values())} requete(s) refusee(s) pour "
+                     f"REQUETE INVALIDE (4xx hors 401/403/429) : {detail}.")
+            l.append("     ⛔ Ralentir n'y changera rien — c'est un champ, un "
+                     "identifiant ou un parametre a corriger DANS LE CODE.")
         return "\n".join(l)
 
 

@@ -1,4 +1,4 @@
-# ⚠️ DEPOT : fanablefrance/jetonveve   ·   CHEMIN : tests/test_sentinelle_partagee.py
+# ⚠️ DEPOT : VeVePreda/scrapeur-veve   ·   CHEMIN : tests/test_sentinelle_partagee.py
 """A4 — la sentinelle etendue aux sources irremplacables (29/07/2026).
 
 ⛔⛔ CE BANC GARDE UN FICHIER QUI VIT EN DOUBLE.
@@ -19,7 +19,7 @@ RACINE = pathlib.Path(__file__).resolve().parents[1]
 MODULE = RACINE / "scraper" / "sentinelle_sources.py"
 
 # Empreinte du fichier partage, au 29/07/2026.
-EMPREINTE = "c7d72b0a904fc1c3430e0ffabbc408f8bb109d22d70017e1cecafb490466c26d"
+EMPREINTE = "a20fcb1564dda208f2838e7ffdb6d931287227cf4a5be098db24b1b1c2c75c48"
 
 
 def test_le_module_partage_n_a_pas_bouge():
