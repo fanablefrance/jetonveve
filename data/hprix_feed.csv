@@ -1,33 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-a64c22fa-268e-4153-b31f-2b93d8c877eb,1:1 DeLorean Time Machine - Static,collectible,22,2026-07-30 03:31:09
-53ffd4dc-2ac7-4c1f-bca1-78c4316201a0,Rogue - X-Treme Force,collectible,199,2026-07-30 03:31:09
-e5e72300-7ace-4fad-a3d4-a7551b632fec,Heihei,collectible,25,2026-07-30 03:31:09
-8e561f57-6f16-49d2-b6f1-06fa9576feec,Gaze,collectible,349,2026-07-30 03:31:09
-a11a8cdb-2ed2-483e-bdea-7f657ff0b82a,The Rise of Ultraman #1 - Adi Granov,collectible,7.99,2026-07-30 03:31:09
-0b014c03-97ab-4bb8-ab5b-2d7cd60f1b4c,Flying Balloons Girl (Concrete Edition),collectible,28,2026-07-30 03:31:09
-1d259322-4273-4319-b20a-c1a8be22a2c6,WDAS Animation Desk,collectible,20.25,2026-07-30 03:31:09
-4ecac144-fa6a-4d23-9b8d-36e6f2092499,Darth Vader Samurai - Blade of the Empire,collectible,120,2026-07-30 03:31:09
-8283c167-a79d-4308-853a-bdb08368eb5a,Fastball Special,collectible,59.99,2026-07-30 03:31:09
-7aefc64f-2a8f-4412-800d-25f1e3699c90,Aang - Airbender,collectible,14.69,2026-07-30 03:31:09
-5dad6c76-0208-4bf4-ba8f-d8f98ef67d79,Star Wars: Episode V The Empire Strikes Back - Re-release Poster,collectible,50,2026-07-30 03:31:09
-967c8539-9bcc-4390-a094-a1d4d1006fa0,Welcome to Element City,collectible,17,2026-07-30 03:31:09
-6002eebd-fe45-402e-89a9-c3eab1233ae1,Larry the Lobster Box,collectible,3.3,2026-07-30 03:31:09
-c3f8ef28-201b-4e53-a0e8-69dedc782de4,Blue the Leader,collectible,3,2026-07-30 03:31:09
-5d80846e-6d59-45d1-8a1d-03492e5134db,Darth Vader Samurai - Shadow of the Shogun,collectible,8.88,2026-07-30 03:31:09
-11fffaef-6dc8-4982-b7a3-c68d27a307b8,Dilophosaurus,collectible,8.8,2026-07-30 03:31:09
-f3d92fbc-8d5f-431a-a042-3e8bc1effc0a,Year of the Ox,collectible,9.99,2026-07-30 03:31:09
-816a9cc5-5125-4cde-9b8e-af25dcab4862,The Punisher - Fists of Vengeance,collectible,4.44,2026-07-30 03:31:09
-4da97803-e2dd-459d-ba70-a44b51aaa9a7,Exitar the Exterminator,collectible,8,2026-07-30 03:31:09
-52ba30bf-11d9-43b9-85e3-5dc6a7a53e51,Werewolf By Night,collectible,6,2026-07-30 03:31:09
-174c2635-5716-46fa-a5f1-6a4eb9f31bfb,Kassandra Base,collectible,11,2026-07-30 03:31:09
-6b2703b5-0e05-4f2c-8ac7-14a8b1cae24c,Holiday Elves - Elf with Package,collectible,1.1,2026-07-30 03:31:09
-d37184af-298d-4b47-ae13-819fb234b80d,Episode 12 - Arise,collectible,2.35,2026-07-30 03:31:09
-42883b04-d4ae-43da-81ea-b80fc7075234,Drop Incoming!,collectible,1.98,2026-07-30 03:31:09
-38df9c4a-4da8-4271-a861-9f9dcfde2e1a,Single 1d 'Lake Taupo' gummed stamp,collectible,1,2026-07-30 03:31:09
-ff142570-e43a-4f7e-8a15-4668b0e4d332,ZAP!,collectible,4,2026-07-30 03:31:09
-f108a1b1-62eb-473c-88d0-3d340255f4d7,Beach Prank,collectible,1.99,2026-07-30 03:31:09
-ee2cc7c4-19c2-4b7f-818c-ed5e3c2d8713,Don’t Use Me as a Prop! (6 of 7),collectible,36.95,2026-07-30 03:31:09
-df4040f2-18a2-42d7-b67b-ede12c684102,BLAM!,collectible,1,2026-07-30 03:31:09
 a64c22fa-268e-4153-b31f-2b93d8c877eb,1:1 DeLorean Time Machine - Static,collectible,20,2026-07-30 04:34:13
 c898af60-be8a-490a-ac2b-537869c1892a,1:1 DeLorean Time Machine - Interactive,collectible,39.99,2026-07-30 04:34:13
 fbc02c5d-22e6-4138-a608-c2929be9d141,Cosmic Cthulhu,collectible,44,2026-07-30 04:34:13
@@ -4722,3 +4693,10 @@ a9f17552-12a7-4ada-937d-e1c91ee023c4,Monovader - Shadow Drop,collectible,123,202
 1e686588-d7fe-40bc-81be-15d2ca5be3fb,Mysterio,collectible,6.14,2026-08-06 03:05:22
 4630596f-7c97-4356-a89c-ab458a3f0fca,Groot Thor,collectible,1.99,2026-08-06 03:05:22
 b776491b-5416-4d8e-9e82-794e83704b7a,Potball X-1,collectible,14.99,2026-08-06 03:05:22
+53ffd4dc-2ac7-4c1f-bca1-78c4316201a0,Rogue - X-Treme Force,collectible,300,2026-08-06 04:07:31
+86ad416a-57ac-491a-b31a-f587acdc0894,Sweet Release,collectible,88,2026-08-06 04:07:31
+fcaf92c1-1f34-4042-87ee-b5cc02345977,Chris Robots Will Kill - Landscape,collectible,44.69,2026-08-06 04:07:31
+1bacdd79-a711-4a24-9bfa-c0927e871e9a,Chris Robots Will Kill - SUYE Special Sky Blue,collectible,34,2026-08-06 04:07:31
+7c6ae06f-0c37-4d39-9129-4ae99b28d93d,Magik - Uncanny X-Men 2013,collectible,20,2026-08-06 04:07:31
+9d9643bc-a33f-4a4b-a397-7162e4cff142,Nijiko,collectible,10.99,2026-08-06 04:07:31
+5595c5a8-ccfd-416d-8808-8788d69a40f9,Maserati MC12 - Nero Daytona,collectible,40,2026-08-06 04:07:31
