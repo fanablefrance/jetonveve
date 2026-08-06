@@ -442,6 +442,12 @@ jobs:
           SENTINELLE_REFUS_ABSOLU: ${{ vars.SENTINELLE_REFUS_ABSOLU || '5' }}
           SENTINELLE_LENTE_PCT: ${{ vars.SENTINELLE_LENTE_PCT || '20' }}
           SENTINELLE_PAUSE_MAX_S: ${{ vars.SENTINELLE_PAUSE_MAX_S || '30' }}
+          # 🕳️ Lot 81 (06/08) : la reponse qui ARRIVE en HTTP 200 et ne porte
+          # aucun objet (GraphQL rend `errors[]` dans le CORPS, pas dans le
+          # code). Seuil plus haut que celui du refus : quelques items retires
+          # du store sont la vie normale d'un catalogue. Reference mesuree le
+          # 06/08 sur l'API VeVe : 0 absence sur 300 identifiants valides.
+          SENTINELLE_ABSENT_PCT: ${{ vars.SENTINELLE_ABSENT_PCT || '10' }}
 
           # --- Seuils economiques --------------------------------------------
           FLOOR_FEE_PCT: ${{ vars.FLOOR_FEE_PCT || '8.5' }}
