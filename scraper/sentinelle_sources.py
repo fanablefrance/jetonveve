@@ -40,6 +40,21 @@ LE VOCABULAIRE DES VERDICTS
   · `se_ferme`  : 429 / 403 au-dessus du seuil. C'est NOUS qu'elle repousse.
                   ⚠️ Ne pas confondre les deux : la reponse n'est pas la meme.
                   Ralentir face a un 5xx ne sert a rien ; face a un 429, si.
+
+⭐⭐⭐ ET UN QUATRIEME CAS, QUI N'EST PAS UN VERDICT (06/08/2026) : LA REPONSE
+QUI ARRIVE, EN HTTP 200, ET QUI NE PORTE AUCUNE DONNEE. GraphQL ne se sert
+PAS du code HTTP pour dire « je n'ai pas cet objet » : il rend 200 et met
+`errors: [{message: "Entity not found"}]` dans le CORPS. Mesure du 06/08 sur
+l'API VeVe :
+    id inconnu  -> HTTP 200 + errors[] « Entity not found »
+    champ faux  -> HTTP 400 « Invalid request. »
+Le second etait deja compte (`invalide`, lot 76). Le premier tombait dans
+`ok`, et c'est ainsi qu'un run pouvait perdre des items en imprimant
+    🟢 veve_graphql 7130 requete(s) — RAS
+⛔ CE N'EST NI UN REFUS NI UNE REQUETE FAUSSE, et l'y ranger serait refaire
+l'erreur que ce module existe pour eviter : ralentir n'y change rien, et
+corriger la requete non plus — l'objet n'est plus la, ou notre identifiant a
+derive. C'est un compteur A LUI, avec son propre conseil.
 """
 
 from __future__ import annotations
@@ -75,6 +90,12 @@ MIN_OBS = int(os.environ.get("SENTINELLE_MIN_OBS", "30"))
 # retomber en angle mort.
 REFUS_ABSOLU = int(os.environ.get("SENTINELLE_REFUS_ABSOLU", "5"))
 SEUIL_FERME_PCT = float(os.environ.get("SENTINELLE_FERME_PCT", "5"))
+# ⭐ Le seuil de l'ABSENCE (06/08/2026). Il est volontairement plus haut que
+# celui du refus : quelques items retires du store, c'est la vie normale d'un
+# catalogue. C'est la PROPORTION qui parle — 10 % des reponses sans objet, ce
+# n'est plus du churn, c'est un identifiant qui a derive ou un pan de
+# catalogue qui a disparu. Mesure de reference du 06/08 : 0 sur 300.
+SEUIL_ABSENT_PCT = float(os.environ.get("SENTINELLE_ABSENT_PCT", "10"))
 SEUIL_LENTE_PCT = float(os.environ.get("SENTINELLE_LENTE_PCT", "20"))
 # Pause additionnelle conseillee quand une source nous repousse (secondes).
 PAUSE_MAX_S = float(os.environ.get("SENTINELLE_PAUSE_MAX_S", "30"))
@@ -96,15 +117,23 @@ class Sentinelle:
 
     # ---------------------------------------------------------------- mesure
     def noter(self, source: str, code: Optional[int] = None,
-              erreur: Optional[str] = None) -> None:
+              erreur: Optional[str] = None, absent: bool = False) -> None:
         """Une reponse observee. `code` = statut HTTP, ou None si la requete
         n'a meme pas abouti (timeout, DNS, connexion) — auquel cas `erreur`
-        porte le texte. Ne leve jamais."""
+        porte le texte. Ne leve jamais.
+
+        `absent=True` : la reponse est ARRIVEE et son code dit « tout va
+        bien », mais son corps dit qu'il n'y a pas d'objet (GraphQL 200 +
+        `errors[]`). ⛔ C'est a l'APPELANT de le dire, pas a ce module : lui
+        seul connait la forme du corps, et ce fichier n'a le droit d'importer
+        ni `requests` ni un format de reponse — c'est ce qui le garde
+        testable hors reseau, donc fiable."""
         with self._verrou:
             d = self.obs.setdefault(source, {"total": 0, "ok": 0, "repousse": 0,
                                              "serveur": 0, "reseau": 0,
-                                             "invalide": 0})
+                                             "invalide": 0, "absent": 0})
             d.setdefault("invalide", 0)     # etats plus anciens en memoire
+            d.setdefault("absent", 0)
             d["total"] += 1
             if code is None:
                 d["reseau"] += 1
@@ -113,7 +142,13 @@ class Sentinelle:
             elif code >= 500:
                 d["serveur"] += 1
             elif code < 400:
-                d["ok"] += 1
+                # ⭐ Un 200 qui ne porte pas d'objet n'est PAS un succes. On ne
+                # le compte pas non plus comme une faute de la source : elle a
+                # repondu, et correctement. Il a son propre seau.
+                if absent:
+                    d["absent"] += 1
+                else:
+                    d["ok"] += 1
             else:
                 # 🔴🔴 LES 4xx QUI NE SONT PAS UN REFUS DE NOUS (05/08/2026)
                 #
@@ -186,23 +221,62 @@ class Sentinelle:
         taux = d["repousse"] / d["total"]
         return round(min(PAUSE_MAX_S, PAUSE_MAX_S * taux * 4), 1)
 
+    def absence_criante(self, source: str) -> bool:
+        """La source repond bien, et ne rend AUCUN objet — assez souvent pour
+        que ce ne soit plus du churn de catalogue.
+
+        ⭐ DEUX REGLES, ET LA PREMIERE NE DEMANDE PAS D'ECHANTILLON. C'est le
+        meme raisonnement que `REFUS_ABSOLU` : une absence TOTALE est un FAIT,
+        pas un taux. 6 requetes sur 6 sans objet, ce n'est pas un echantillon
+        insuffisant, c'est qu'on demande les mauvais identifiants."""
+        d = self.obs.get(source)
+        if not d or not d.get("absent"):
+            return False
+        if d["absent"] >= REFUS_ABSOLU and d["absent"] == d["total"]:
+            return True
+        if d["total"] < MIN_OBS:
+            return False
+        return 100.0 * d["absent"] / d["total"] >= SEUIL_ABSENT_PCT
+
     def doit_crier(self) -> Tuple[bool, str]:
         """(faut-il prevenir un humain, quoi lui dire).
 
         ⭐ UNE SOURCE MUETTE N'EST PAS UN MARCHE CALME. C'est la lecon qui a
         coute trois semaines de silence : sans ce message, un blocage se lit
-        comme « rien a signaler »."""
+        comme « rien a signaler ».
+
+        ⭐⭐ DEUX CAUSES, DEUX PARAGRAPHES, JAMAIS FONDUS (06/08/2026). « on
+        nous repousse » et « la source n'a pas l'objet » demandent des gestes
+        opposes. Un seul message qui melange les deux ferait chercher un
+        blocage la ou il y a un item retire — et le prochain vrai blocage
+        serait lu comme du bruit."""
+        lignes: List[str] = []
         fermees = [s for s in self.obs if self.verdict(s) == "se_ferme"]
-        if not fermees:
+        if fermees:
+            lignes.append("🚨 **Une source nous repousse** — ce n'est pas un marche calme.")
+            for s in sorted(fermees):
+                d = self.obs[s]
+                lignes.append(
+                    f"· **{s}** : {d['repousse']} refus (429/403) sur {d['total']} "
+                    f"requetes ({100.0 * d['repousse'] / d['total']:.0f} %).")
+            lignes.append("Les alertes qui dependent de cette source sont "
+                          "peut-etre incompletes SANS que rien d'autre le dise.")
+        vides = [s for s in self.obs if self.absence_criante(s)]
+        if vides:
+            if lignes:
+                lignes.append("")
+            lignes.append("🕳️ **Une source repond sans rendre d'objet** — "
+                          "HTTP 200, corps vide de donnees.")
+            for s in sorted(vides):
+                d = self.obs[s]
+                lignes.append(
+                    f"· **{s}** : {d['absent']} reponse(s) sans objet sur "
+                    f"{d['total']} ({100.0 * d['absent'] / d['total']:.0f} %).")
+            lignes.append("⛔ Ne pas ralentir et ne pas relire la requete : "
+                          "l'une et l'autre vont bien. Verifier que les "
+                          "identifiants demandes existent encore.")
+        if not lignes:
             return False, ""
-        lignes = ["🚨 **Une source nous repousse** — ce n'est pas un marche calme."]
-        for s in sorted(fermees):
-            d = self.obs[s]
-            lignes.append(
-                f"· **{s}** : {d['repousse']} refus (429/403) sur {d['total']} "
-                f"requetes ({100.0 * d['repousse'] / d['total']:.0f} %).")
-        lignes.append("Les alertes qui dependent de cette source sont "
-                      "peut-etre incompletes SANS que rien d'autre le dise.")
         return True, "\n".join(lignes)
 
     # ---------------------------------------------------------------- releve
@@ -233,6 +307,14 @@ class Sentinelle:
             if d.get("invalide"):
                 detail.append(f"🔧 {d['invalide']} requete(s) REFUSEE(S) "
                               f"(4xx) — c'est NOTRE requete, pas la source")
+            # ⭐⭐ MEME RAISON, AUTRE CAUSE : `detail` non vide => plus de « RAS ».
+            # Une reponse en 200 qui ne porte pas d'objet ne doit pas pouvoir
+            # se lire comme un succes, sinon un catalogue peut fondre en
+            # silence sous une ligne verte.
+            if d.get("absent"):
+                detail.append(f"🕳️ {d['absent']} reponse(s) SANS OBJET "
+                              f"(HTTP 200 + errors[]) — la source va bien, "
+                              f"l'objet n'y est pas")
             if v == "angle_mort":
                 # ⭐⭐ Ne JAMAIS ecrire « RAS » ici. « verdict suspendu » se
                 # lisait comme « ca va, patience » alors que ca ne mûrira pas :
@@ -259,6 +341,20 @@ class Sentinelle:
                      f"REQUETE INVALIDE (4xx hors 401/403/429) : {detail}.")
             l.append("     ⛔ Ralentir n'y changera rien — c'est un champ, un "
                      "identifiant ou un parametre a corriger DANS LE CODE.")
+        # 🕳️ L'ABSENCE — ni la source, ni la requete, ni nous. L'objet.
+        # ⭐⭐ Elle merite sa propre ligne parce que sa REPONSE est differente
+        # des deux autres : on ne ralentit pas, on ne corrige pas la requete,
+        # on va voir si l'item existe encore. Un conseil faux vaut moins
+        # qu'aucun conseil : il envoie chercher au mauvais endroit.
+        vide = {s: d["absent"] for s, d in self.obs.items() if d.get("absent")}
+        if vide:
+            detail = ", ".join(f"{s} ({n}/{self.obs[s]['total']})"
+                               for s, n in sorted(vide.items()))
+            l.append(f"  🕳️ {sum(vide.values())} reponse(s) SANS OBJET "
+                     f"(HTTP 200 + errors[], ex. « Entity not found ») : {detail}.")
+            l.append("     ⛔ Ni un refus, ni une requete fausse : la source a "
+                     "repondu qu'elle n'a pas cet objet. Item retire du store, "
+                     "ou identifiant qui a derive — ca se verifie au catalogue.")
         return "\n".join(l)
 
 
@@ -285,7 +381,8 @@ class Sentinelle:
 SENTINELLE = Sentinelle()
 
 
-def noter_reponse(source: str, reponse=None, erreur=None) -> None:
+def noter_reponse(source: str, reponse=None, erreur=None,
+                  absent: bool = False) -> None:
     """Noter une reponse HTTP sur la sentinelle de ce processus.
 
     ⭐⭐ LE GESTE QUI COMPTE : appeler ceci AVANT `raise_for_status()`.
@@ -308,9 +405,15 @@ def noter_reponse(source: str, reponse=None, erreur=None) -> None:
     ⚠️ `reponse` est volontairement DUCK-TYPE : tout objet portant
     `.status_code` convient. Ce module n'importe pas `requests` et ne doit
     jamais le faire — c'est ce qui le rend testable sans reseau.
+
+    ⭐ `absent` se PASSE, il ne se DEVINE pas ici. Reconnaitre un corps
+    GraphQL vide demanderait de le lire — donc de connaitre son format, donc
+    de le parser pour TOUTES les sources, y compris celles qui n'en ont pas.
+    Le collecteur, lui, sait deja ce qu'il vient de recevoir.
     """
     code = getattr(reponse, "status_code", None) if reponse is not None else None
-    SENTINELLE.noter(source, code, None if erreur is None else str(erreur))
+    SENTINELLE.noter(source, code, None if erreur is None else str(erreur),
+                     absent=absent)
 
 
 def resume() -> str:
@@ -354,7 +457,11 @@ def _releve_de_fin() -> None:
         crier, texte = SENTINELLE.doit_crier()
         if crier:
             plat = texte.replace("\n", " · ")
-            print(f"::warning title=Une source nous repousse::{plat}", flush=True)
+            # ⭐ Le titre ne peut plus nommer UNE cause : depuis le 06/08 le
+            # cri couvre aussi « la source repond sans objet ». Un titre qui
+            # annonce un blocage devant un message d'absence enverrait
+            # chercher au mauvais endroit — le texte, lui, nomme la cause.
+            print(f"::warning title=Sentinelle des sources::{plat}", flush=True)
     except Exception:               # un releve ne fait jamais tomber un run
         pass
 

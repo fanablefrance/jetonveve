@@ -18,8 +18,12 @@ import pathlib
 RACINE = pathlib.Path(__file__).resolve().parents[1]
 MODULE = RACINE / "scraper" / "sentinelle_sources.py"
 
-# Empreinte du fichier partage, au 29/07/2026.
-EMPREINTE = "a20fcb1564dda208f2838e7ffdb6d931287227cf4a5be098db24b1b1c2c75c48"
+# Empreinte du fichier partage. ⚠️ LA DATE SE MET A JOUR AVEC L'EMPREINTE :
+# le 06/08/2026 elle disait encore « au 29/07 » alors que le fichier avait
+# bouge au lot 76 — un commentaire perime a cote d'un chiffre juste se relit
+# comme une preuve que rien n'a change. Derniere mise a jour : 06/08/2026,
+# lot 81 (le seau `absent` : HTTP 200 + errors[]).
+EMPREINTE = "7da777643e5fe3cefafe54e7b606ec7c8468de17b931fe56d45e76ad68637315"
 
 
 def test_le_module_partage_n_a_pas_bouge():
