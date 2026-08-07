@@ -1,7 +1,31 @@
 name: analytics-derived
 
 on:
+  # 🔴🔴 CRON AJOUTÉ LE 07/08/2026 — CE WORKFLOW ÉTAIT `workflow_dispatch` SEUL.
+  #
+  # ⭐⭐⭐ UN CONSOMMATEUR PROGRAMMÉ BRANCHÉ SUR UN PRODUCTEUR MANUEL EST UN
+  # CIRCUIT OUVERT QUI NE SE REFERME QUE QUAND QUELQU'UN Y PENSE.
+  # `ledger-writer.yml` (scrapeur-veve) tourne par cron HEBDO (jeudi 22:00 UTC)
+  # et refuse d'écrire si ces dérivés ont plus de MAX_AGE_DAYS (7 j). Dernier
+  # lancement manuel : 23/07/2026 ⇒ les writers du 31/07 et du 07/08 sont
+  # tombés, et TOUS les jeudis suivants seraient tombés. Pendant ce temps les
+  # onglets 🐋 / 🎯 / pulse du Sheet gelaient SANS QUE RIEN NE LE DISE.
+  #
+  # ⏰ MERCREDI 06:00 UTC, pas jeudi 18:00 : GitHub retarde les crons de
+  # +2 h 20 à +3 h 15 (mesuré) et ce run dure jusqu'à 60 min. Un départ la
+  # veille laisse ~40 h de marge avant le writer au lieu de ~1 h — la marge
+  # est le correctif, pas la précision de l'heure.
+  schedule:
+    - cron: "0 6 * * 3"
   workflow_dispatch:
+    inputs:
+      ignorer_fraicheur_source:
+        description: "Calculer même si transfers-full est périmé (en connaissance de cause)"
+        type: boolean
+        default: false
+      max_age_source:
+        description: "Âge maximum toléré pour transfers-full (jours)"
+        default: "10"
 
 permissions:
   contents: write
@@ -31,6 +55,41 @@ jobs:
           gh release download transfers-full -p transfers_full.csv.gz -D .
           gh release download catalogue -p catalogue.csv.gz -D .
           ls -lh transfers_full.csv.gz catalogue.csv.gz
+
+      # 🔴 GARDE-FOU AJOUTÉ LE 07/08/2026 — L'ÂGE SE PROPAGE, IL NE SE RECRÉE PAS.
+      #
+      # ⭐⭐⭐ CE RUN RÉ-HORODATE CE QU'IL CALCULE : `meta_ledger.csv` porte la
+      # date du CALCUL, pas celle de la DONNÉE. Un run frais sur un
+      # `transfers-full` de trois semaines produit donc des dérivés qui se
+      # DÉCLARENT frais — et le garde-fou d'âge du writer, en aval, les laisse
+      # passer. ⛔ Le contrôle aval ne peut pas rattraper un mensonge fabriqué
+      # en amont : il faut le refuser ICI, à l'entrée.
+      - name: "Fraîcheur de la source (transfers-full)"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          IGNORER: ${{ github.event.inputs.ignorer_fraicheur_source || 'false' }}
+          MAX_AGE: ${{ github.event.inputs.max_age_source || '10' }}
+        run: |
+          MAJ=$(gh release view transfers-full --json assets \
+                --jq '.assets[] | select(.name=="transfers_full.csv.gz") | .updatedAt')
+          if [ -z "$MAJ" ]; then
+            echo "⛔ transfers_full.csv.gz introuvable dans la Release transfers-full."
+            exit 1
+          fi
+          AGE=$(( ( $(date -u +%s) - $(date -u -d "$MAJ" +%s) ) / 86400 ))
+          echo "transfers-full mis a jour le $MAJ — age $AGE j (max $MAX_AGE)."
+          if [ "$AGE" -le "$MAX_AGE" ]; then echo "✅ Source fraiche."; exit 0; fi
+          if [ "$IGNORER" = "true" ]; then
+            echo "⚠️ Source perimee de $AGE j — POURSUITE DEMANDEE explicitement."
+            echo "   Les derives publies porteront la date d'aujourd'hui sur des"
+            echo "   donnees de $AGE j. Le writer en aval ne le verra PAS."
+            exit 0
+          fi
+          echo "⛔ Source perimee ($AGE j > $MAX_AGE j) — on ne fabrique pas de"
+          echo "   derives 'frais' a partir d'une archive vieille."
+          echo "   -> relancer merge-transfers, ou rejouer avec"
+          echo "      ignorer_fraicheur_source=true en connaissance de cause."
+          exit 1
 
       - name: "Secours N-1 (copie de la release actuelle AVANT ecrasement)"
         env:
@@ -84,3 +143,25 @@ jobs:
           gh release upload transfers-full transfers.parquet --clobber
           gh release upload transfers-full transfers_by_item.parquet --clobber
           echo "✅ transfers.parquet + transfers_by_item.parquet publies — queryables par URL (DuckDB httpfs, lecture partielle)."
+
+      # 🔊 AJOUTÉ LE 07/08/2026 — UN RUN ROUGE PARMI VINGT VERTS N'EST PAS UNE
+      # ALERTE, C'EST UNE ARCHIVE. Deux semaines de ledger gelé sont passées
+      # inaperçues exactement comme ça. ⭐⭐ Une panne ne compte que si elle
+      # ARRIVE quelque part.
+      # ⚠️ Le secret DISCORD_RETOUR_WEBHOOK doit être ajouté à CE dépôt
+      # (Settings -> Secrets -> Actions). Absent, l'étape se contente de le dire.
+      - name: "Alerte Discord si echec"
+        if: ${{ failure() }}
+        env:
+          HOOK: ${{ secrets.DISCORD_RETOUR_WEBHOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "⚠️ DISCORD_RETOUR_WEBHOOK absent de ce depot — pas d'alerte envoyee."
+            echo "   L'echec reste donc SILENCIEUX : ajouter le secret."
+            exit 0
+          fi
+          URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          MSG="🔴 **analytics-derived a echoue** (jetonveve)\\nLe ledger-writer de scrapeur-veve tombera jeudi si ce n'est pas repare.\\n${URL}"
+          curl -s -H "Content-Type: application/json" \
+               -d "{\"content\": \"${MSG}\"}" "$HOOK" >/dev/null \
+            && echo "✅ Alerte envoyee." || echo "⚠️ Envoi de l'alerte en echec."
