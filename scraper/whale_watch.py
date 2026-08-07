@@ -518,19 +518,36 @@ def _epoch_veve(brut):
 # 🧾 LE JOURNAL D'IDENTITE — pourquoi un compte suivi ne dit jamais rien
 # ---------------------------------------------------------------------------
 
-def journal_identite(state, tracked) -> None:
+def journal_identite(state, tracked) -> Dict[str, int]:
     """A la fin d'un run : qui, parmi les comptes suivis, n'a JAMAIS rien
     matche, et pour quelle raison verifiable.
 
     ⭐ C'est la parade au defaut de fond : un canal muet ne disait pas s'il
     etait muet parce que le marche dormait ou parce que 5 comptes sur 7
     n'avaient aucune cle exploitable. Deux causes, un seul symptome — et deux
-    remedes opposes. On les separe."""
+    remedes opposes. On les separe.
+
+    🔥 LOT 109 — ELLE REND MAINTENANT SES COMPTAGES.
+    ⭐⭐⭐ CE QUE SON SILENCE A COUTE, MESURE LE 07/08 : ces lignes sont
+    imprimees a chaque run depuis le 27/07 et **personne ne les a jamais
+    relues**. La memoire du projet portait « 4 comptes muets sur 7 » depuis le
+    03/08 ; la realite etait **6 sur 7 ont declenche**. Le diagnostic etait
+    juste, complet, et sans consommateur.
+    ⭐⭐ *Un canal muet doit dire qu'il est muet* — il le disait. Ce qui
+    manquait n'etait pas la mesure, c'etait un ENDROIT OU ELLE RESTE : le
+    journal d'un run defile et demande un jeton pour etre relu (403 sans).
+    ⇒ On rend les comptages, `floor_watch.diagnostic()` les ECRIT dans l'etat,
+    et l'etat est une Release publique lisible sans rien.
+    ⛔ ON COMPTE, ON NE NOMME PAS (arbitrage Preda 07/08) : cette Release est
+    PUBLIQUE, et la liste des comptes surveilles est une strategie de veille.
+    Les noms restent dans le journal du run, qui est prive.
+    """
     fiches = {id(f): f for f in
               list(tracked[0].values()) + list(tracked[1].values())
               + list((tracked[2] if len(tracked) > 2 else {}).values())}
     if not fiches:
-        return
+        return {"total": 0, "ont_declenche": 0, "sans_cle": 0,
+                "sans_wallet": 0, "jamais": 0}
     vus_comptes = state.setdefault("whale_comptes_vus", {})
     jamais, sans_cle, sans_wallet = [], [], []
     for f in fiches.values():
@@ -559,6 +576,11 @@ def journal_identite(state, tracked) -> None:
     if jamais:
         print(f"     💤 aucun evenement vu a ce jour : "
               + ", ".join(sorted(jamais)[:8]), flush=True)
+    return {"total": len(fiches),
+            "ont_declenche": len(fiches) - len(jamais),
+            "sans_cle": len(sans_cle),
+            "sans_wallet": len(sans_wallet),
+            "jamais": len(jamais)}
 
 
 def noter_compte_vu(state, cartes) -> None:

@@ -2519,6 +2519,161 @@ def save_state(st: Dict) -> None:
         json.dump(st, f)
 
 
+# ---------------------------------------------------------------------------
+# 🔥 LOT 109 — LE DIAGNOSTIC : « QUI A TIRE, QUAND », DECLARE PAR LE MODULE
+# ---------------------------------------------------------------------------
+# 🔴🔴🔴 CE QUE SON ABSENCE A COUTE, MESURE LE 07/08/2026.
+#
+# La memoire du projet portait, depuis le 03/08 : « ALERTES FLOOR, 4 muettes
+# sur 7 — LE produit ». Pour savoir si c'etait vrai il a fallu telecharger
+# l'etat de la Release, DEVINER la structure de chaque cle `alerts_*` et
+# reconstruire les dates a l'heuristique. Verdict reel : **6 comptes sur 7
+# avaient declenche**, les quatre canaux « silencieux » s'etaient arretes le
+# 27/07 a 16:14 — la minute ou Preda les avait ETEINTS. Rien n'etait casse.
+#
+# ⭐⭐⭐ ET LA RECONSTRUCTION A L'EXTERIEUR EST FAUSSE PAR CONSTRUCTION.
+# `comics_veve_dedans` ressemble aux autres index — sauf que ses valeurs sont
+# des PRIX (1.95), pas des horodatages. Un lecteur du dehors ne peut pas le
+# savoir : il lit « aucune date » et comprend « ce canal n'a jamais tire ».
+# **Deux cas qui se ressemblent et qui sont l'inverse.** Seul le module sait.
+# ⇒ Il le DIT, au lieu de laisser deviner.
+#
+# ⭐⭐ POURQUOI DANS L'ETAT ET PAS DANS LE JOURNAL. Tout ceci est deja imprime
+# a chaque run depuis le 27/07 — et n'a jamais ete relu, parce qu'un journal
+# de run defile et demande un jeton (403 sans). L'etat, lui, est publie en
+# Release : lisible par n'importe qui, n'importe quand, sans secret.
+# *Un log est un evenement, une ligne d'etat est un etat.* (meme lecon que le
+# journal de migration de veveid, le meme jour)
+#
+# ⛔ ON COMPTE, ON NE NOMME PAS (arbitrage Preda, 07/08). La Release est
+# PUBLIQUE ; la liste des comptes surveilles est une strategie de veille. Les
+# pseudos restent dans le journal du run, qui est prive.
+#
+# ⭐ TROIS VERDICTS, JAMAIS DEUX. Pour chaque canal on distingue :
+#   · `dernier` = un horodatage        -> il a tire, on sait quand ;
+#   · `dernier: null` + `horodate:true` -> il n'a JAMAIS tire ;
+#   · `horodate: false`                 -> cette cle ne porte pas de date,
+#                                          le canal est INDECIDABLE d'ici.
+# Sans le troisieme, « je ne sais pas » emprunterait la sortie de « rien a
+# signaler » — le defaut paye le 29/07 sur les zips.
+
+# (cle d'etat, libelle, drapeau ON/OFF)  ⭐ LE DRAPEAU EST INDISPENSABLE :
+# « zero parce que casse » et « zero parce qu'eteint » se ressemblent sur le
+# disque et sont l'inverse. Un canal sort sur une DECLARATION.
+def _canaux():
+    # ⚠️ Import LOCAL, comme dans main() : `whale_watch` lit son propre
+    #    environnement a l'import et le reste du module ne doit pas en
+    #    dependre. Le mettre en haut ferait payer cet import a tout le monde.
+    from scraper import whale_watch as ww
+    return [
+        ("mints_vus",          "🎯 numeros",         MINT_ON),
+        ("comics_vus",         "📚 comics StackR",   True),
+        ("comics_veve_dedans", "📚 comics VeVe",     COMIC_VEVE_ON),
+        ("whale_vus",          "🐋 comptes suivis",  ww.WHALE_ON),
+        ("whale_tx_vus",       "🔀 transferts",      ww.WHALE_ON),
+        ("alerts_steal",       "🩸 vol floor",       STEAL_ON),
+        ("alerts_ath",         "🆕 ATH",             ATH_ON),
+        ("alerts_atl",         "📉 ATL",             ATL_ON),
+        ("alerts_atl_stackr",  "📉 ATL StackR",      ATL_STACKR_ON),
+        ("alerts",             "💤 arbitrage",       ARBITRAGE_ON),
+        ("alerts_histlow",     "📊 histlow",         HISTLOW_ON),
+        ("alerts_vol",         "🔊 volume",          VOL_ON),
+        ("alerts_pic",         "🔥 pic hors drop",   PIC_ON),
+        ("alerts_spike",       "📈 vente au-dessus", SPIKE_ON),
+    ]
+
+
+# 🔴 LE SEUIL EST LE SEUL GARDE-FOU DE `_dernier` — il est nomme pour qu'un
+# banc puisse le lire et refuser qu'on le baisse. 1 500 000 000 = 14/07/2017 :
+# au-dessus, aucun prix, aucun comptage, aucun numero d'edition, aucun booleen.
+SEUIL_EPOCH = 1_500_000_000
+
+
+def _dernier(d):
+    """(horodatage le plus recent, cette cle porte-t-elle des dates ?).
+
+    ⚠️ On n'accepte QUE des epochs plausibles. Un prix (1.95) ou un booleen ne
+    doit jamais etre pris pour une date : c'est exactement la confusion qui
+    ferait declarer un canal mort.
+
+    ⭐⭐⭐ CE QUI PROTEGE ICI, C'EST LE SEUIL, ET RIEN D'AUTRE. J'avais d'abord
+    ecrit `not isinstance(v, bool)` en plus — ca avait l'air d'un soin. En le
+    DESARMANT, le banc est reste VERT : `True` vaut 1, il ne franchit jamais
+    1 500 000 000. La ligne ne gardait rien.
+    ⇒ Retiree. **Une regle qu'on ne peut pas faire rougir est une regle sans
+    emetteur** — elle donne l'illusion d'une protection et masque celle qui
+    travaille vraiment.
+    ⛔ NE PAS BAISSER LE SEUIL : c'est LUI qui ecarte prix, booleens, comptages
+    et editions. Un banc le verifie."""
+    if not isinstance(d, dict) or not d:
+        return None, True          # vide : jamais tire (la cle est connue)
+    ts = [v for v in d.values()
+          if isinstance(v, (int, float)) and v > SEUIL_EPOCH]
+    if not ts:
+        return None, False         # des valeurs, mais pas des dates
+    return max(ts), True
+
+
+def diagnostic(state: Dict, comptes: Optional[Dict] = None,
+               wallets_sondes: Optional[int] = None,
+               maintenant: Optional[float] = None) -> Dict:
+    """Ecrit `state['diagnostic']` — remplace a chaque run, ne s'empile pas.
+
+    ⚠️ NE LEVE JAMAIS : un diagnostic qui tue le run qu'il observe est pire
+    que pas de diagnostic. Il est appele juste avant `save_state`.
+    ⭐ ECRIT MEME QUAND RIEN NE S'EST PASSE — sinon son absence ressemblerait
+    a « tout va bien » (la lecon des sentinelles, transposee ici).
+    """
+    now = maintenant if maintenant is not None else time.time()
+    canaux = {}
+    for cle, libelle, actif in _canaux():
+        d = state.get(cle)
+        dern, horodate = _dernier(d)
+        canaux[cle] = {
+            "libelle": libelle,
+            "actif": bool(actif),
+            "entrees": len(d) if isinstance(d, dict) else 0,
+            "dernier": dern,
+            "age_h": round((now - dern) / 3600, 1) if dern else None,
+            "horodate": horodate,
+        }
+    state["diagnostic"] = {
+        "ts": now,
+        "iso": _dt.datetime.fromtimestamp(now, _dt.timezone.utc)
+                          .strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "canaux": canaux,
+        # ⛔ des COMPTAGES, aucun pseudo.
+        "comptes_suivis": comptes,
+        # ⚠️ None = « on n'a pas cherche » (module whale eteint), 0 = « on a
+        #    cherche et il n'y a aucun wallet connu ». Inconnu != zero.
+        "wallets_sondes": wallets_sondes,
+    }
+    return state["diagnostic"]
+
+
+def imprimer_diagnostic(diag: Dict) -> None:
+    """Le meme diagnostic, en clair, a la fin du run.
+    ⭐ Le journal reste la source LISIBLE ; l'etat est la source RELISIBLE."""
+    c = diag.get("comptes_suivis") or {}
+    if c.get("total"):
+        print(f"🧭 diagnostic — comptes suivis {c['ont_declenche']}/{c['total']}"
+              f" ont deja declenche · {c['sans_wallet']} sans wallet"
+              + (f" · {c['sans_cle']} INSUIVABLES" if c.get("sans_cle") else ""),
+              flush=True)
+    muets = [v["libelle"] for v in diag["canaux"].values()
+             if v["actif"] and v["horodate"] and
+             (v["dernier"] is None or (v["age_h"] or 0) > 168)]
+    if muets:
+        print("   💤 canaux ALLUMES sans tir depuis 7 j : " + ", ".join(muets)
+              + "  ⚠️ rare par nature ou en panne : ce releve ne tranche pas.",
+              flush=True)
+    aveugles = [v["libelle"] for v in diag["canaux"].values()
+                if v["actif"] and not v["horodate"]]
+    if aveugles:
+        print("   ❔ canaux sans horodatage (indecidables d'ici) : "
+              + ", ".join(aveugles), flush=True)
+
+
 def _releve_sfloors(state: Dict) -> None:
     """⏱️ Combien de floors StackR memorises portent une date, et depuis quand.
 
@@ -2648,6 +2803,14 @@ def main() -> int:
     ww.SIMULER = ww.SIMULER or SIMULER        # un run floor en simuler simule aussi le whale
     wtracked = ww.charger_tracked() if ww.WHALE_ON else ({}, {}, {})
     whale_actif = ww.WHALE_ON and (wtracked[0] or wtracked[1] or wtracked[2])
+    # 🔥 LOT 109 — initialises AVANT la boucle, et a None, pas a zero.
+    # ⭐ `None` veut dire « on n'a pas cherche » (module whale eteint) ; `0`
+    #   voudrait dire « on a cherche et il n'y a rien ». Les deux se
+    #   ressemblent dans un rapport et sont l'inverse. Sans cette ligne, un run
+    #   qui n'entre jamais dans la branche whale leverait un NameError a la fin
+    #   — apres le travail, donc au pire moment.
+    _diag_comptes = None
+    _diag_wallets = None
     if whale_actif:
         # 🧭 les wallets appris aux runs precedents redeviennent actifs
         ww.restaurer_wallets(state, wtracked)
@@ -2797,7 +2960,7 @@ def main() -> int:
                 else:
                     print(f"  🐋 marche VeVe : {len(_wveve)} tx lues, aucun "
                           f"compte suivi dedans.", flush=True)
-                ww.journal_identite(state, wtracked)
+                _diag_comptes = ww.journal_identite(state, wtracked)
             n_h = merge_history(state, hist)
             print(f"  historique : {len(hist)} elements ont une vente reelle "
                   f"({n_h} nouveaux) — les autres sont juges illiquides.",
@@ -2857,6 +3020,7 @@ def main() -> int:
             # meme cadence horaire que le refresh (collectscan est public, on
             # reste poli). → canal whale dedie.
             if whale_actif:
+                _diag_wallets = len(wtracked[0])
                 wx = ww.detect_transferts(state, wtracked)
                 if wx:
                     total += ww.notifier(state, wx)
@@ -2869,7 +3033,7 @@ def main() -> int:
                     # celui qui faisait tomber le run avant le correctif.
                     # Un canal muet doit dire qu'il est muet, sinon sa panne
                     # ressemble a du calme (la leçon qui revient a chaque fois).
-                    _nw = len(wtracked[0])
+                    _nw = _diag_wallets = len(wtracked[0])
                     print(f"  🔀 {_nw} wallet(s) sonde(s) sur CollectChain, "
                           f"aucun transfert de ≥ {ww.XFER_MIN} jetons."
                           + ("" if _nw else "  ⚠️ AUCUN wallet connu : "
@@ -2981,6 +3145,19 @@ def main() -> int:
             time.sleep(INTERVAL_S)
     print(f"Termine : {POLLS} tours, {total} alerte(s), "
           f"{time.time() - t0:.0f}s.", flush=True)
+    # 🔥 LOT 109 — LE DIAGNOSTIC, ECRIT DANS L'ETAT PUIS SAUVE.
+    # ⚠️ `save_state` vit a l'interieur de la boucle : sans ce second appel, le
+    #    diagnostic serait calcule et JAMAIS ECRIT — un releve parfait qui
+    #    n'atteint pas son lecteur, c'est-a-dire exactement le defaut que ce
+    #    lot corrige. (Verifie par un banc.)
+    # ⚠️ Il ne doit pas empecher la fin du run : ce qui suit sont des releves,
+    #    ils ont autant de valeur que lui.
+    try:
+        _diag = diagnostic(state, _diag_comptes, _diag_wallets)
+        imprimer_diagnostic(_diag)
+        save_state(state)
+    except Exception as _e:                                     # noqa: BLE001
+        print(f"  ⚠️ diagnostic impossible : {_e}", file=sys.stderr, flush=True)
     _releve_sfloors(state)
     # D'ou vient la preuve de vente : le seul chiffre qui dise si le recablage
     # SERT vraiment. Ce sont des VERIFICATIONS, pas des items distincts (un
