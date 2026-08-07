@@ -148,15 +148,15 @@ jobs:
       # ALERTE, C'EST UNE ARCHIVE. Deux semaines de ledger gelé sont passées
       # inaperçues exactement comme ça. ⭐⭐ Une panne ne compte que si elle
       # ARRIVE quelque part.
-      # ⚠️ Le secret DISCORD_RETOUR_WEBHOOK doit être ajouté à CE dépôt
+      # ⚠️ Le secret DISCORD_ALERTE_TECH_WEBHOOK doit être ajouté à CE dépôt
       # (Settings -> Secrets -> Actions). Absent, l'étape se contente de le dire.
       - name: "Alerte Discord si echec"
         if: ${{ failure() }}
         env:
-          HOOK: ${{ secrets.DISCORD_RETOUR_WEBHOOK }}
+          HOOK: ${{ secrets.DISCORD_ALERTE_TECH_WEBHOOK }}
         run: |
           if [ -z "$HOOK" ]; then
-            echo "⚠️ DISCORD_RETOUR_WEBHOOK absent de ce depot — pas d'alerte envoyee."
+            echo "⚠️ DISCORD_ALERTE_TECH_WEBHOOK absent de ce depot — pas d'alerte envoyee."
             echo "   L'echec reste donc SILENCIEUX : ajouter le secret."
             exit 0
           fi
