@@ -1,26 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-2e87137d-51b3-41ee-93e1-80e0e799d6ba,Spider-Man – Hangin’ Out,collectible,29.95,2026-07-31 07:31:26
-4d1972b6-b15f-4c98-ab98-cec603aa58de,Ritmo,collectible,117,2026-07-31 07:31:26
-b633e43b-a4ce-458a-9fba-ae023f2f2bfd,Mickey Mouse,collectible,9.95,2026-07-31 07:31:26
-3ba00608-759f-4b4f-9984-2c6b3e6da842,No Time To Die — Aston Martin DB5,collectible,39,2026-07-31 07:31:26
-6b921b0c-6764-4e2f-afd8-75deb784e77e,AT-AT - March of the Empire,collectible,25.5,2026-07-31 07:31:26
-31e89ed2-c694-41cb-944d-e0636dece312,Belle,collectible,39.95,2026-07-31 07:31:26
-426396ef-3b30-4c84-aa70-06e932ddde6c,Finn Mertens,collectible,6,2026-07-31 07:31:26
-9d25ee7b-bf59-4d56-a391-f7329bfe8973,Rocket,collectible,53.99,2026-07-31 07:31:26
-440badb6-242f-414a-bc86-db6f15f2cc8b,Jake the Dog,collectible,6.95,2026-07-31 07:31:26
-0684af31-6a9e-4b97-9013-8edcaa587c85,Aratech 74-Z Speeder Bike – Patrol Division (Brown),collectible,68,2026-07-31 07:31:26
-a494f556-ebcd-4252-b4ec-ccd52c331c5c,Mickey,collectible,14.5,2026-07-31 07:31:26
-32f655e8-3376-411e-8c6d-feedce03890c,Stormtrooper - Shooting,collectible,303,2026-07-31 07:31:26
-205f1c9a-35f5-4a86-acc6-c968b286398f,MYO - Pink,collectible,52.9,2026-07-31 07:31:26
-24624bd2-2ea0-4754-9b6e-1497803316ad,Ron English Collectors Reward,collectible,26.69,2026-07-31 07:31:26
-9f7d75e4-ccad-4428-95fa-018904c9bb9b,Blue Eye,collectible,249,2026-07-31 07:31:26
-8cd9530d-6ea9-436c-bdc0-ee73e43c0abe,Magik - Phoenix,collectible,6.56,2026-07-31 07:31:26
-7c6ae06f-0c37-4d39-9129-4ae99b28d93d,Magik - Uncanny X-Men 2013,collectible,19.98,2026-07-31 07:31:26
-247ed551-4606-4497-bec5-9742019e8f95,Look to the Surface,collectible,37,2026-07-31 07:31:26
-2803a97f-8cc5-482a-9f99-3e594271b863,Happy Happy Joy Joy,collectible,5.5,2026-07-31 07:31:26
-dc0e0865-ed0d-4421-8bcd-2d9007d9c73a,VeVe Uncommon General Admission Ticket - NYCC 2024,collectible,3.89,2026-07-31 07:31:26
-9d4e2fb1-1088-45dd-95d8-fdbbdd731b92,Ezio Auditore da Firenze Special Edition,collectible,30,2026-07-31 07:31:26
-a67aa0d3-7e99-4e1d-9fc0-780c2cafe8f9,Diamond Emma Frost - Marauders #21 (2021),collectible,30,2026-07-31 07:31:26
 b33424b2-ea2b-45c0-9f5b-05748c064554,Spider-Man: Miles Morales - Hoodie Season,collectible,239,2026-07-31 09:34:13
 85c100df-a1e0-42e7-91b2-cb953340fef6,C-3PO,collectible,555,2026-07-31 09:34:13
 2b0b5138-1455-4924-96f1-879d7be7bca3,#57 Jae Lee Batman,collectible,44,2026-07-31 09:34:13
@@ -4436,3 +4414,39 @@ ec460953-de8a-4649-8a68-666bb2f2168b,Weakest Hunter - Frame,collectible,1.95,202
 56d5409c-3c30-40ba-888e-2987749734c1,Record #8 - Duck Luck - Gold,collectible,6.5,2026-08-07 06:18:51
 fec6128b-b0f8-4f18-9077-1f63aad3bc3c,Beach Prank - Gold,collectible,66,2026-08-07 06:18:51
 d37184af-298d-4b47-ae13-819fb234b80d,Episode 12 - Arise,collectible,1.58,2026-08-07 06:18:51
+31586ead-75c1-49b0-b315-1d95f3928583,Magnolia,collectible,1000000,2026-08-07 08:20:36
+1def2f37-8043-4aa8-a490-b4024db216ff,Dragon Girl - Gold / Pink,collectible,85,2026-08-07 08:20:36
+20578f42-c47c-454a-bb1a-7f2d78b56905,Death,collectible,41.1,2026-08-07 08:20:36
+4ed1e5d8-7808-4900-8c4f-e5e89da1838d,Diablo - Gold,collectible,123,2026-08-07 08:20:36
+538b85be-ef8d-4874-a7d5-916be105f292,That Cat Bronson,collectible,88,2026-08-07 08:20:36
+6acfb7ff-9530-41a3-8cc1-fa145da1786d,Yurameki,collectible,70,2026-08-07 08:20:36
+3ba00608-759f-4b4f-9984-2c6b3e6da842,No Time To Die — Aston Martin DB5,collectible,29.98,2026-08-07 08:20:36
+f79a401a-0f4b-4379-a5bf-3132c5750539,ECOMI Logo Red White,collectible,18.99,2026-08-07 08:20:36
+8648d886-ed81-4ea1-bae7-cb1a0bc975bd,MYO - OG Gold,collectible,475,2026-08-07 08:20:36
+bbaa7ca7-7861-4f23-be96-6e771c65e2f9,Metropolis II,collectible,399,2026-08-07 08:20:36
+62cbbb56-6c35-4d7f-8dcf-4e4f301ffc73,Harley Quinn,collectible,10,2026-08-07 08:20:36
+8e561f57-6f16-49d2-b6f1-06fa9576feec,Gaze,collectible,390.75,2026-08-07 08:20:36
+c0fd5575-0a5f-4625-a271-bf050842057c,Sakura Dragon Girl,collectible,40,2026-08-07 08:20:36
+aa36484b-4931-42fa-a3aa-c91d10981542,J. Jonah Jameson,collectible,155,2026-08-07 08:20:36
+99c8e9ab-7ea7-4ef8-aa34-f5df2891d65b,Sabretooth - Vengeful Escape,collectible,79,2026-08-07 08:20:36
+bf7ad828-6417-487e-81a5-4614d4d01fdf,Wasp,collectible,26,2026-08-07 08:20:36
+68649d9c-b610-4ac0-a07a-f14a1fca6585,Raphael - Classic,collectible,6.2,2026-08-07 08:20:36
+c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,5.95,2026-08-07 08:20:36
+d4ec084d-812b-4a3c-958f-d691f0060ff9,Master Splinter - Battle Ready,collectible,61.9,2026-08-07 08:20:36
+92635283-99b4-4597-ba69-01e39ccba334,Master Splinter - Father Figure,collectible,5.25,2026-08-07 08:20:36
+3f9c5d51-2619-4add-8f8f-f5520f99754b,MyCollectables - Blue Metallic,collectible,168.61,2026-08-07 08:20:36
+455c863a-8802-447c-a952-24462371b732,Big Trouble (Original Colourway),collectible,15,2026-08-07 08:20:36
+6b5ad16b-3a3f-4b9e-8e28-1c96175e1463,Potball - 2025 HK DCon Edition Poster,collectible,99.9,2026-08-07 08:20:36
+2b48b395-615a-4af3-a2c8-5cf88d7010c1,Death Trooper Pistol - Crouching,collectible,14.99,2026-08-07 08:20:36
+f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,6.6,2026-08-07 08:20:36
+0592ffac-7963-4fe1-8528-7797260823fe,Episode 1 - I'm Used to It,collectible,2.99,2026-08-07 08:20:36
+9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,4.99,2026-08-07 08:20:36
+2b165606-c201-4f80-b10f-b0d7e7d49908,Crimson Trooper - Running,collectible,2.63,2026-08-07 08:20:36
+ca3678e8-3ed8-4db0-ac03-da39f94d2c99,Turtle,collectible,2.5,2026-08-07 08:20:36
+77857a70-edf2-4401-9798-93f63b941d60,Vulture,collectible,3.99,2026-08-07 08:20:36
+1e686588-d7fe-40bc-81be-15d2ca5be3fb,Mysterio,collectible,5.99,2026-08-07 08:20:36
+4836f896-a3b1-4539-a79f-1b0a26bd5a25,Rat,collectible,2,2026-08-07 08:20:36
+182d55b2-23c7-4270-8f44-16682cc07eec,Record #2 - Fame Finds The Village Idiot - Original,collectible,2.99,2026-08-07 08:20:36
+bd273292-2dd8-49f1-9199-f8dbfe7cd62d,Small Generator,collectible,1.5,2026-08-07 08:20:36
+16e0d43f-4821-4e27-b2d6-09e48466ab3e,WHAM!,collectible,1,2026-08-07 08:20:36
+df4040f2-18a2-42d7-b67b-ede12c684102,BLAM!,collectible,1.2,2026-08-07 08:20:36
