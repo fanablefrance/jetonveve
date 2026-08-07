@@ -1,0 +1,167 @@
+name: analytics-derived
+
+on:
+  # 🔴🔴 CRON AJOUTÉ LE 07/08/2026 — CE WORKFLOW ÉTAIT `workflow_dispatch` SEUL.
+  #
+  # ⭐⭐⭐ UN CONSOMMATEUR PROGRAMMÉ BRANCHÉ SUR UN PRODUCTEUR MANUEL EST UN
+  # CIRCUIT OUVERT QUI NE SE REFERME QUE QUAND QUELQU'UN Y PENSE.
+  # `ledger-writer.yml` (scrapeur-veve) tourne par cron HEBDO (jeudi 22:00 UTC)
+  # et refuse d'écrire si ces dérivés ont plus de MAX_AGE_DAYS (7 j). Dernier
+  # lancement manuel : 23/07/2026 ⇒ les writers du 31/07 et du 07/08 sont
+  # tombés, et TOUS les jeudis suivants seraient tombés. Pendant ce temps les
+  # onglets 🐋 / 🎯 / pulse du Sheet gelaient SANS QUE RIEN NE LE DISE.
+  #
+  # ⏰ MERCREDI 06:00 UTC, pas jeudi 18:00 : GitHub retarde les crons de
+  # +2 h 20 à +3 h 15 (mesuré) et ce run dure jusqu'à 60 min. Un départ la
+  # veille laisse ~40 h de marge avant le writer au lieu de ~1 h — la marge
+  # est le correctif, pas la précision de l'heure.
+  schedule:
+    - cron: "0 6 * * 3"
+  workflow_dispatch:
+    inputs:
+      ignorer_fraicheur_source:
+        description: "Calculer même si transfers-full est périmé (en connaissance de cause)"
+        type: boolean
+        default: false
+      max_age_source:
+        description: "Âge maximum toléré pour transfers-full (jours)"
+        default: "10"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: analytics-derived
+  cancel-in-progress: false
+
+jobs:
+  analytics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Dependances
+        run: pip install duckdb
+
+      - name: "Telecharger transfers-full + catalogue"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download transfers-full -p transfers_full.csv.gz -D .
+          gh release download catalogue -p catalogue.csv.gz -D .
+          ls -lh transfers_full.csv.gz catalogue.csv.gz
+
+      # 🔴 GARDE-FOU AJOUTÉ LE 07/08/2026 — L'ÂGE SE PROPAGE, IL NE SE RECRÉE PAS.
+      #
+      # ⭐⭐⭐ CE RUN RÉ-HORODATE CE QU'IL CALCULE : `meta_ledger.csv` porte la
+      # date du CALCUL, pas celle de la DONNÉE. Un run frais sur un
+      # `transfers-full` de trois semaines produit donc des dérivés qui se
+      # DÉCLARENT frais — et le garde-fou d'âge du writer, en aval, les laisse
+      # passer. ⛔ Le contrôle aval ne peut pas rattraper un mensonge fabriqué
+      # en amont : il faut le refuser ICI, à l'entrée.
+      - name: "Fraîcheur de la source (transfers-full)"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          IGNORER: ${{ github.event.inputs.ignorer_fraicheur_source || 'false' }}
+          MAX_AGE: ${{ github.event.inputs.max_age_source || '10' }}
+        run: |
+          MAJ=$(gh release view transfers-full --json assets \
+                --jq '.assets[] | select(.name=="transfers_full.csv.gz") | .updatedAt')
+          if [ -z "$MAJ" ]; then
+            echo "⛔ transfers_full.csv.gz introuvable dans la Release transfers-full."
+            exit 1
+          fi
+          AGE=$(( ( $(date -u +%s) - $(date -u -d "$MAJ" +%s) ) / 86400 ))
+          echo "transfers-full mis a jour le $MAJ — age $AGE j (max $MAX_AGE)."
+          if [ "$AGE" -le "$MAX_AGE" ]; then echo "✅ Source fraiche."; exit 0; fi
+          if [ "$IGNORER" = "true" ]; then
+            echo "⚠️ Source perimee de $AGE j — POURSUITE DEMANDEE explicitement."
+            echo "   Les derives publies porteront la date d'aujourd'hui sur des"
+            echo "   donnees de $AGE j. Le writer en aval ne le verra PAS."
+            exit 0
+          fi
+          echo "⛔ Source perimee ($AGE j > $MAX_AGE j) — on ne fabrique pas de"
+          echo "   derives 'frais' a partir d'une archive vieille."
+          echo "   -> relancer merge-transfers, ou rejouer avec"
+          echo "      ignorer_fraicheur_source=true en connaissance de cause."
+          exit 1
+
+      - name: "Secours N-1 (copie de la release actuelle AVANT ecrasement)"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view analytics-derived >/dev/null 2>&1; then
+            mkdir -p prev
+            gh release download analytics-derived -D prev --clobber || true
+            if [ -n "$(ls -A prev 2>/dev/null)" ]; then
+              gh release view analytics-derived-prev >/dev/null 2>&1 || \
+                gh release create analytics-derived-prev \
+                  -t "Analytics derives — veille (secours N-1)" \
+                  -n "Copie automatique de la release analytics-derived AVANT sa derniere mise a jour. Retombee pour les consommateurs si un run produit un fichier corrompu."
+              gh release upload analytics-derived-prev prev/* --clobber
+              echo "✅ N-1 sauvegarde ($(ls prev | wc -l) fichiers)."
+            fi
+          else
+            echo "ℹ️ Premiere publication — pas de N-1."
+          fi
+
+      - name: "Calcul des derives (DuckDB)"
+        run: |
+          export RUN_DATE=$(TZ=America/Los_Angeles date +%F)
+          export PARQUET_OUT=transfers.parquet
+          export PARQUET_BY_ITEM=transfers_by_item.parquet
+          echo "RUN_DATE=$RUN_DATE (PT)"
+          python -m scraper.analytics_derived transfers_full.csv.gz derived
+          ls -lh derived/ transfers.parquet transfers_by_item.parquet
+
+      - name: "Calcul ledger derives (pulse + corner 111 + profils A VIE)"
+        run: |
+          export RUN_DATE=$(TZ=America/Los_Angeles date +%F)
+          python -m scraper.ledger_derived transfers.parquet catalogue.csv.gz derived
+          ls -lh derived/
+
+      - name: "Publier la Release analytics-derived"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view analytics-derived >/dev/null 2>&1 || \
+            gh release create analytics-derived \
+              -t "Analytics derives" \
+              -n "CSV derives de transfers-full : grand livre, profils wallets, cornérisation, supply fantome, pulse, corner 111, profils complets."
+          gh release upload analytics-derived derived/* --clobber
+          echo "✅ Release analytics-derived mise a jour."
+
+      - name: "Publier transfers.parquet (Release transfers-full)"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload transfers-full transfers.parquet --clobber
+          gh release upload transfers-full transfers_by_item.parquet --clobber
+          echo "✅ transfers.parquet + transfers_by_item.parquet publies — queryables par URL (DuckDB httpfs, lecture partielle)."
+
+      # 🔊 AJOUTÉ LE 07/08/2026 — UN RUN ROUGE PARMI VINGT VERTS N'EST PAS UNE
+      # ALERTE, C'EST UNE ARCHIVE. Deux semaines de ledger gelé sont passées
+      # inaperçues exactement comme ça. ⭐⭐ Une panne ne compte que si elle
+      # ARRIVE quelque part.
+      # ⚠️ Le secret DISCORD_ALERTE_TECH_WEBHOOK doit être ajouté à CE dépôt
+      # (Settings -> Secrets -> Actions). Absent, l'étape se contente de le dire.
+      - name: "Alerte Discord si echec"
+        if: ${{ failure() }}
+        env:
+          HOOK: ${{ secrets.DISCORD_ALERTE_TECH_WEBHOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "⚠️ DISCORD_ALERTE_TECH_WEBHOOK absent de ce depot — pas d'alerte envoyee."
+            echo "   L'echec reste donc SILENCIEUX : ajouter le secret."
+            exit 0
+          fi
+          URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          MSG="🔴 **analytics-derived a echoue** (jetonveve)\\nLe ledger-writer de scrapeur-veve tombera jeudi si ce n'est pas repare.\\n${URL}"
+          curl -s -H "Content-Type: application/json" \
+               -d "{\"content\": \"${MSG}\"}" "$HOOK" >/dev/null \
+            && echo "✅ Alerte envoyee." || echo "⚠️ Envoi de l'alerte en echec."
