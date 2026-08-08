@@ -1,4 +1,38 @@
 uuid,name,categorie,floor_usd,ts
+5ab59120-1b5b-473c-9c80-3144d9a6e1d5,"All Together, Now!",collectible,169,2026-08-01 14:24:56
+3433ffd5-0721-4346-b556-8ff18d545c27,Mickey Sorcerer's Hat,collectible,139,2026-08-01 14:24:56
+883f2d9e-0fd7-4454-be5d-839e8b56bbd3,John F. Walker - On Guard,collectible,75,2026-08-01 14:24:56
+65dab55c-40a4-4117-9a0e-96888f9028de,Ben Reilly - Beyond Spider-Man,collectible,599,2026-08-01 14:24:56
+b33424b2-ea2b-45c0-9f5b-05748c064554,Spider-Man: Miles Morales - Hoodie Season,collectible,199,2026-08-01 14:24:56
+2e9c41f0-2ea7-4618-b0e8-d39f59f12081,TMNT - Born Below Gold Diorama,collectible,2555,2026-08-01 14:24:56
+6d8ffc87-c8c7-4d76-8a21-144dcd199a8f,Bad Robot,collectible,390,2026-08-01 14:24:56
+a1273f2c-934d-4c2a-a17f-3d1be7278c6a,On the Prinsengracht in Amsterdam,collectible,345,2026-08-01 14:24:56
+bbaa7ca7-7861-4f23-be96-6e771c65e2f9,Metropolis II,collectible,390,2026-08-01 14:24:56
+3c2149c7-0415-47f9-b5e8-c6f6d473951a,The Rise of Ultraman #1 - Skottie Young,collectible,9,2026-08-01 14:24:56
+4ecac144-fa6a-4d23-9b8d-36e6f2092499,Darth Vader Samurai - Blade of the Empire,collectible,139.99,2026-08-01 14:24:56
+4e65766e-d432-40a3-8465-f8a0a0270a2f,Ultraman Rising Poster,collectible,69,2026-08-01 14:24:56
+f6449165-c84d-4d58-8931-05f103b80d91,Sakura - Battle,collectible,189,2026-08-01 14:24:56
+47cd772d-3707-437c-beec-d4f62e61ba41,You Only Live Twice - UK Quad Poster,collectible,15,2026-08-01 14:24:56
+22331401-5e57-4de1-9cc3-6571d63c6f86,The Amazing Stan Lee,collectible,9.39,2026-08-01 14:24:56
+c9d59609-5b77-4acc-a73d-8a78141e7089,Cap'n Cornstarch,collectible,8,2026-08-01 14:24:56
+e913c1f9-9578-4077-b90b-94b0b0cde315,The Golden Lad,collectible,299,2026-08-01 14:24:56
+68649d9c-b610-4ac0-a07a-f14a1fca6585,Raphael - Classic,collectible,7.9,2026-08-01 14:24:56
+708816f9-0027-4e0c-b5b8-48eaf06df734,DJ Big Bot - Gold Rust,collectible,111,2026-08-01 14:24:56
+043ed720-aa2c-49fa-8dd2-9607de31a386,Ken Story,collectible,49.99,2026-08-01 14:24:56
+e3c58965-57b1-40a7-b091-2ba227c4c284,ROSÉ - Animated,collectible,39,2026-08-01 14:24:56
+24624bd2-2ea0-4754-9b6e-1497803316ad,Ron English Collectors Reward,collectible,26.15,2026-08-01 14:24:56
+05bfaa01-9847-43e5-82ee-8c7999c26aa7,IG-11 - Protector,collectible,7.76,2026-08-01 14:24:56
+0f8752da-6035-4717-884b-84dc10995f4f,Octo-Cart,collectible,22,2026-08-01 14:24:56
+ec04c6de-1ef4-436b-bb1a-8a9109a95bb6,Colossus - Phoenix,collectible,6.99,2026-08-01 14:24:56
+e1c2cc4c-9097-4aa1-b503-aa311b80f19f,Crush,collectible,8.9,2026-08-01 14:24:56
+aa52510d-86cb-4071-bc49-3418e4bd64b1,En Garde! - Gold,collectible,499,2026-08-01 14:24:56
+0caa25d4-204a-41ef-94ee-22d69b96e2d7,JISOO Pink Venom 4,collectible,8.5,2026-08-01 14:24:56
+2e35addb-4f9c-4011-be50-aa850270d5f4,Miura - Verde Miura,collectible,70,2026-08-01 14:24:56
+121be6df-6a3a-4e64-9978-92fc5acb77ca,Record #7 - Bunnny's Rap - Original,collectible,3.4,2026-08-01 14:24:56
+ec460953-de8a-4649-8a68-666bb2f2168b,Weakest Hunter - Frame,collectible,1.99,2026-08-01 14:24:56
+47bc3ff2-0185-4ae6-9ce8-94c0c5c56195,Record #7 - Bunnny's Rap - Gold,collectible,5.7,2026-08-01 14:24:56
+c99e3fba-dfdd-4753-82f2-408f461e606c,BAM! - Gold,collectible,37,2026-08-01 14:24:56
+514922bc-dbf7-45f2-b928-ed81cfe8d1df,Death Trooper Pistol - Prone,collectible,10,2026-08-01 14:24:56
 ee27ac13-2e51-4cda-925f-595060735022,ECOMI Logo Red Silver,collectible,4899,2026-08-01 15:32:49
 2d319882-cb74-4383-8d91-31ff8fca91c4,Avengers Logo,collectible,57,2026-08-01 15:32:49
 0bfb1239-b03a-4084-bafe-770796eece82,Wolverine - Blue and Yellow suit,collectible,50,2026-08-01 15:32:49
@@ -4489,72 +4523,25 @@ d4ec084d-812b-4a3c-958f-d691f0060ff9,Master Splinter - Battle Ready,collectible,
 9ec3912b-737f-4396-b83f-96d488cb2ffb,Darth Vader Samurai - Wrath of the Dragon,collectible,50,2026-08-08 13:21:32
 d031f29a-3b9f-4316-b78f-36ba56192bc3,Happy Lunar New Year! - White,collectible,1.5,2026-08-08 13:21:32
 383b2411-0ef9-4ec9-8b7a-2825ebeab4c6,Year of the Horse Medallion,collectible,1.39,2026-08-08 13:21:32
-2e31455d-8c38-405d-b2f6-50b2e5d27ea0,Iron Man,collectible,40,2026-08-08 15:27:07
-4b3b200b-8469-43a2-aa68-114a4d9e0306,Spider-Man – Jump into Action,collectible,53,2026-08-08 15:27:07
-75bffbf5-3527-4c34-a73d-06252becd47f,Skateboard,collectible,55,2026-08-08 15:27:07
-03fe42ae-a098-4215-b3e1-a014aabddadf,Venom,collectible,135,2026-08-08 15:27:07
-df101af2-42fe-4af4-bc51-f8826a6022aa,I Have You In My Sights,collectible,24.99,2026-08-08 15:27:07
-3c2149c7-0415-47f9-b5e8-c6f6d473951a,The Rise of Ultraman #1 - Skottie Young,collectible,24.99,2026-08-08 15:27:07
-d8bf15a2-5c6c-46ea-97d4-1cbf112c35b5,Captain America – Charging Into Battle,collectible,12.49,2026-08-08 15:27:07
-cccc8176-f806-490d-be7a-5fe3e7ea0e4b,Green Goblin,collectible,35,2026-08-08 15:27:07
-f7b41c83-6975-482c-ad53-1a3e86dea877,Pet Owner,collectible,150,2026-08-08 15:27:07
-8c984d73-0718-427e-870e-f558b01a653f,Spider-Man: Symbiote Suit,collectible,41,2026-08-08 15:27:07
-df0af6e7-a1e6-4565-9e50-9b34b922a553,Metallo,collectible,37,2026-08-08 15:27:07
-6eff407c-b40c-4a35-944d-f4bf410001ec,Rocket to the Moon,collectible,47,2026-08-08 15:27:07
-68b32df0-5f80-4e31-8a4d-d0d5e8b3c436,1:1 Glider - Animated,collectible,29.99,2026-08-08 15:27:07
-5be986cb-ce39-4d19-9f99-9b9c7dfbb15a,Hear More Evil Monkey - Gold,collectible,165,2026-08-08 15:27:07
-f35e3e0b-dc86-462d-b06b-9c0abe74b924,ECOMI Logo Red Circle,collectible,5.75,2026-08-08 15:27:07
-a0c50208-f32c-4e7e-9664-c28555a9f523,Yoda,collectible,37.95,2026-08-08 15:27:07
-a6ff5d76-94cf-4f57-9045-a2538dbf41b3,Sung Jinwoo - E-Rank Hunter,collectible,1280,2026-08-08 15:27:07
-ed1bdbf0-17f4-470e-b85a-494194f71b94,Master Splinter - Black & White Variant,collectible,849,2026-08-08 15:27:07
-3facefe2-427f-48ec-a954-e5892b8c3b20,Yoda - Focus,collectible,66,2026-08-08 15:27:07
-d6012097-18c4-488b-8133-44b575447270,Mr. Mischief the Monkey Grin - Gold,collectible,115,2026-08-08 15:27:07
-def65f71-6b97-4cff-a72d-e346d091c582,Sam Wilson,collectible,1.99,2026-08-08 15:27:07
-bff6c07d-832d-4d1a-82aa-be214645deb0,Raphael - Tune-Up Workshop,collectible,11,2026-08-08 15:27:07
-f510df1a-7aec-47fe-8125-d9871701c550,Reva,collectible,40,2026-08-08 15:27:07
-5073ba5e-ca2b-472d-be6e-21d306878469,1:1 Glider - Static,collectible,8.5,2026-08-08 15:27:07
-ba556949-a241-4a1f-b340-882319aa5b10,Gambit,collectible,17.89,2026-08-08 15:27:07
-42910818-f5f7-4e55-8b42-78a98ef4f471,"""Batter Up!""",collectible,19.99,2026-08-08 15:27:07
-e89c9a52-2ea0-4b70-a5da-0781b07776c6,Flounder,collectible,91.95,2026-08-08 15:27:07
-a67aa0d3-7e99-4e1d-9fc0-780c2cafe8f9,Diamond Emma Frost - Marauders #21 (2021),collectible,1111,2026-08-08 15:27:07
-0cc92d82-9a02-4e3d-90b4-bb82965877fa,Night Trooper Helmet,collectible,60,2026-08-08 15:27:07
-7aeb6394-97db-4268-85ac-7f2cc504687e,With Love and Kisses,collectible,5,2026-08-08 15:27:07
-aa36484b-4931-42fa-a3aa-c91d10981542,J. Jonah Jameson,collectible,145,2026-08-08 15:27:07
-61a84d22-d05c-446d-a41a-ca17ffb242b1,The Addiction #2 - Ryan Brown Exclusive Framed Artwork,collectible,795,2026-08-08 15:27:07
-45b19b53-65fd-45a3-aca6-dadae852983f,Shadow Trooper Helmet,collectible,10.99,2026-08-08 15:27:07
-cb193c14-f7ff-4530-82f4-69d9ee5f8604,Mothman,collectible,4.5,2026-08-08 15:27:07
-ced96cf7-496b-49f5-8ad7-d4963127a980,Keith - Red Lion,collectible,30,2026-08-08 15:27:07
-4da97803-e2dd-459d-ba70-a44b51aaa9a7,Exitar the Exterminator,collectible,14.99,2026-08-08 15:27:07
-5af1a0a3-e761-408a-b9cf-3a66f63540bd,H.E.R.B.I.E.,collectible,89,2026-08-08 15:27:07
-932f2c05-f2fc-4e81-8ed7-659d2c6748ce,Emcee Claws Box,collectible,129.99,2026-08-08 15:27:07
-7b01a6a0-fae5-4700-8632-8131c7b2c839,Donald,collectible,31.99,2026-08-08 15:27:07
-c26e57d3-9613-470f-a2d8-6f448d76ec57,Crimson Trooper Helmet,collectible,12.99,2026-08-08 15:27:07
-757f2c07-4143-4c27-a43d-0014e054ea22,Exploiter,collectible,7,2026-08-08 15:27:07
-3a104aa7-b5ba-4bd1-8197-dd402dbd46bf,Night Trooper,collectible,3.99,2026-08-08 15:27:07
-c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,6,2026-08-08 15:27:07
-875f46f0-0430-4bf0-855c-e632d869f32a,Death Trooper - SE-14r Blaster Elite,collectible,34.99,2026-08-08 15:27:07
-e26ca080-631b-4aaf-a292-91ee915efd0a,Stormtrooper Helmet,collectible,4.99,2026-08-08 15:27:07
-7a50712b-8a87-4d4c-9e0b-90e23cfd7441,Night Trooper Exposed,collectible,3.8,2026-08-08 15:27:07
-fb126fc0-85cd-4363-aded-425205ec8d62,Stabbed Trooper Helmet,collectible,34,2026-08-08 15:27:07
-d4ec084d-812b-4a3c-958f-d691f0060ff9,Master Splinter - Battle Ready,collectible,59,2026-08-08 15:27:07
-6ad91db7-f2d6-4381-8072-cc495342cdf1,Fashionista,collectible,5,2026-08-08 15:27:07
-d6966b3e-9691-470e-ab59-446dce21f7f8,Cut Stormtrooper Helmet,collectible,29,2026-08-08 15:27:07
-582a6663-a706-4bc9-9078-b594acc896a8,Gouki Nostalgic,collectible,46,2026-08-08 15:27:07
-59123bd4-c092-4fe7-9c72-0a0d748cb6fd,Title IX - Gymnast,collectible,1.63,2026-08-08 15:27:07
-8cd9530d-6ea9-436c-bdc0-ee73e43c0abe,Magik - Phoenix,collectible,5.5,2026-08-08 15:27:07
-2ce987c8-0ec3-4773-b6d6-d3c5516fba89,The Coal Mining Miner,collectible,12.75,2026-08-08 15:27:07
-f675174d-d5da-42a1-9db1-7fb59a20fb91,Doctor Octopus,collectible,21.9,2026-08-08 15:27:07
-899aa947-87ce-44ac-93b3-201ee1d977a2,C-25 Fragmentation Grenade,collectible,7.99,2026-08-08 15:27:07
-f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,7.25,2026-08-08 15:27:07
-8a50b96b-5408-4e5e-bb40-23961d9ed8d8,Magik - Hellfire Gala #1 (2022),collectible,7,2026-08-08 15:27:07
-2b48b395-615a-4af3-a2c8-5cf88d7010c1,Death Trooper Pistol - Crouching,collectible,13,2026-08-08 15:27:07
-2344a6ff-eb4b-4798-91eb-b32e459da048,Basim,collectible,6,2026-08-08 15:27:07
-9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,4.5,2026-08-08 15:27:07
-2253cf7f-d6e4-4c1b-9ada-fc10d4c3379f,Death Trooper Pistol - Running,collectible,2.3,2026-08-08 15:27:07
-c8a76df1-5979-4917-8189-5ecb4a2e4225,KABOOM,collectible,12,2026-08-08 15:27:07
-e726f943-62a1-4ba7-9d8f-d21684a77c38,Paddle Ball,collectible,17.9,2026-08-08 15:27:07
-6f5d6b03-da4c-4121-9024-74221436f214,Shadow Trooper - Crouching,collectible,6.8,2026-08-08 15:27:07
-87d9b23d-cb71-468f-a8bf-020b1899321d,WHAM! - Gold,collectible,49.95,2026-08-08 15:27:07
-087f1d36-ca76-4674-88a9-e182acbe0a4a,BLAM! - Gold,collectible,58,2026-08-08 15:27:07
-c99e3fba-dfdd-4753-82f2-408f461e606c,BAM! - Gold,collectible,32,2026-08-08 15:27:07
-71e624e1-3660-49d6-a6a8-707dd61803da,POW! - Gold,collectible,30,2026-08-08 15:27:07
+30a9f14d-f5ef-4047-bf97-c2b047190f83,1:6 DeLorean Time Machine - Interactive,collectible,14.99,2026-08-08 14:23:40
+bc637552-5c39-4cf4-a5ae-164043df435b,Ride the Lightning Board,collectible,2500,2026-08-08 14:23:40
+ae29242b-05c3-4ddd-a03e-1f8da4f404f3,The Genesis Key,collectible,449,2026-08-08 14:23:40
+041684b3-6516-4b47-878e-491604b36b26,Millennium Falcon Holodisk,collectible,3699,2026-08-08 14:23:40
+3a867661-d468-4559-884f-777a86ec8eda,Pluto,collectible,20,2026-08-08 14:23:40
+2bb0e18a-bfe1-4cd8-a0d0-d1c8a38c8ef6,Miguel Poster,collectible,63,2026-08-08 14:23:40
+42727e5d-945e-419f-800d-381d6046c087,Ariel,collectible,86.32,2026-08-08 14:23:40
+d4a983b5-07d5-4b85-afbf-23df999abe11,You Ain't Seen Nothin' Yet!,collectible,87.2,2026-08-08 14:23:40
+d40158c7-c456-4377-980a-9c5cc6f99bc1,Ryu,collectible,38.95,2026-08-08 14:23:40
+3a24545f-3e4d-45d7-916f-817a50c7f1b2,No Time To Die  - Triumph Motorcycle,collectible,5.99,2026-08-08 14:23:40
+5695db59-33ae-4ce5-a751-0f17d26265e4,Dante,collectible,58.4,2026-08-08 14:23:40
+043ed720-aa2c-49fa-8dd2-9607de31a386,Ken Story,collectible,44.99,2026-08-08 14:23:40
+336b962c-792c-487d-bf8b-f8868302f8d6,MYO - Blue,collectible,50.81,2026-08-08 14:23:40
+47803fa0-69bb-4934-9a09-7370a0faa981,Graffi ver. Night,collectible,77.57,2026-08-08 14:23:40
+fcaf92c1-1f34-4042-87ee-b5cc02345977,Chris Robots Will Kill - Landscape,collectible,40,2026-08-08 14:23:40
+f6e15150-641b-4d8e-b7cc-19027a019d1f,Chris Robots Will Kill - OG,collectible,38,2026-08-08 14:23:40
+205f1c9a-35f5-4a86-acc6-c968b286398f,MYO - Pink,collectible,31.33,2026-08-08 14:23:40
+de494d7c-4df4-4695-a189-a28f88a80550,M.Bison - Battle,collectible,52.99,2026-08-08 14:23:40
+1bacdd79-a711-4a24-9bfa-c0927e871e9a,Chris Robots Will Kill - SUYE Special Sky Blue,collectible,25,2026-08-08 14:23:40
+631b1b44-11b1-4151-abe0-7d91805057c4,1938 John Quincy Adams,collectible,1.5,2026-08-08 14:23:40
+f1bb37cc-7350-403f-9e06-5942bc3765ec,Master Splinter - Weapon Training,collectible,7.99,2026-08-08 14:23:40
+79f49f24-d6f3-4ba0-9253-599d05699a35,Single 1s 'Kea and Kaka' gummed stamp,collectible,8,2026-08-08 14:23:40
