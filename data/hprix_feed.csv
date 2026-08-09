@@ -1,29 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-fc943f7c-7e87-4f6e-b38e-8bc02c6cf7a6,Spider-Man – The Amazing Spider-Man,collectible,29,2026-08-02 01:49:39
-4b3b200b-8469-43a2-aa68-114a4d9e0306,Spider-Man – Jump into Action,collectible,44,2026-08-02 01:49:39
-d8a1dc4b-e648-4227-8392-1d8974b32fd1,Baby Velociraptor in egg,collectible,180,2026-08-02 01:49:39
-98522b53-091c-40a4-9340-6ba27bb61913,Rising Through the Cracks,collectible,5500,2026-08-02 01:49:39
-160a236e-b8bd-4f20-ba0e-9d875310b5cf,Marty’s Hoverboard,collectible,19.5,2026-08-02 01:49:39
-15399c5e-7cd8-46c3-9240-9db5794ceea3,Human Torch,collectible,7.76,2026-08-02 01:49:39
-a0c50208-f32c-4e7e-9664-c28555a9f523,Yoda,collectible,42,2026-08-02 01:49:39
-a69e1596-8d25-4556-a8b7-9122c2f5ad18,Maserati GT2,collectible,35,2026-08-02 01:49:39
-a9ae0af3-8c76-45eb-9ef0-cd314ebc4e20,Carnage,collectible,65,2026-08-02 01:49:39
-8e9682fc-9d88-4dad-a61e-74d743da57e7,#71 Batman,collectible,10.5,2026-08-02 01:49:39
-6edf0436-e37c-4e2f-a811-22e5df176765,Edna Mode: Bold! Dramatic! Heroic!,collectible,10,2026-08-02 01:49:39
-307d71a8-fe8b-41a4-ba69-798ddba7ff76,Juggernaut,collectible,42,2026-08-02 01:49:39
-aa36484b-4931-42fa-a3aa-c91d10981542,J. Jonah Jameson,collectible,155,2026-08-02 01:49:39
-3164f5e3-044d-477d-8022-0a99dead294d,Leonardo - Classic,collectible,9.36,2026-08-02 01:49:39
-a494f556-ebcd-4252-b4ec-ccd52c331c5c,Mickey,collectible,12.34,2026-08-02 01:49:39
-f675174d-d5da-42a1-9db1-7fb59a20fb91,Dr. Octopus,collectible,26,2026-08-02 01:49:39
-77857a70-edf2-4401-9798-93f63b941d60,Vulture,collectible,7,2026-08-02 01:49:39
-f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,6.6,2026-08-02 01:49:39
-1e686588-d7fe-40bc-81be-15d2ca5be3fb,Mysterio,collectible,9.99,2026-08-02 01:49:39
-9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,6,2026-08-02 01:49:39
-df1940af-34c5-4599-a190-d5f80ba6875f,Green Noggles,collectible,12.86,2026-08-02 01:49:39
-288b12b5-89ed-4fa0-83cd-ec757334d4dc,Record #1 - Frankenstein - Original,collectible,2,2026-08-02 01:49:39
-ff142570-e43a-4f7e-8a15-4668b0e4d332,ZAP!,collectible,4.9,2026-08-02 01:49:39
-a738176f-3b62-4024-bcaf-222086173831,MOUSE Season One Movie Poster,collectible,15,2026-08-02 01:49:39
-c574d86b-b2cd-4f50-9a83-880d74348d52,Yolanda Styles,collectible,2.79,2026-08-02 01:49:39
 2e87137d-51b3-41ee-93e1-80e0e799d6ba,Spider-Man – Hangin’ Out,collectible,28,2026-08-02 02:51:58
 13cd77cf-6f37-4299-b384-810b31bed42b,Grundo,collectible,300.3,2026-08-02 02:51:58
 79070efd-447e-4e64-9060-e92e30e8a048,Spider-Man,collectible,8.99,2026-08-02 02:51:58
@@ -4399,3 +4374,23 @@ f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,5.75,2026-08-09 01:45:1
 c99e3fba-dfdd-4753-82f2-408f461e606c,BAM! - Gold,collectible,29,2026-08-09 01:45:17
 a9bd25e9-7deb-403f-9710-15314e0bc689,Acrobatic Surfing,collectible,1.03,2026-08-09 01:45:17
 f108a1b1-62eb-473c-88d0-3d340255f4d7,Beach Prank,collectible,1.49,2026-08-09 01:45:17
+d042924f-2db9-4180-8d16-38bf4c9e5b9d,R2-D2,collectible,149.99,2026-08-09 02:47:27
+bc637552-5c39-4cf4-a5ae-164043df435b,Ride the Lightning Board,collectible,2000,2026-08-09 02:47:27
+30a9f14d-f5ef-4047-bf97-c2b047190f83,1:6 DeLorean Time Machine - Interactive,collectible,9.99,2026-08-09 02:47:27
+2e87137d-51b3-41ee-93e1-80e0e799d6ba,Spider-Man – Hangin’ Out,collectible,30,2026-08-09 02:47:27
+4b3b200b-8469-43a2-aa68-114a4d9e0306,Spider-Man – Jump into Action,collectible,49.99,2026-08-09 02:47:27
+d8bf15a2-5c6c-46ea-97d4-1cbf112c35b5,Captain America – Charging Into Battle,collectible,12.49,2026-08-09 02:47:27
+aadb24d5-07a5-4630-a937-60af8a8ef08e,Edo,collectible,64,2026-08-09 02:47:27
+4335c686-74e9-4ce2-91ca-7de7e40bb70f,Mayor of Townsville,collectible,63,2026-08-09 02:47:27
+9948817c-98d0-4272-98e7-5b769b40cb4d,Robocop - Animated,collectible,39,2026-08-09 02:47:27
+107f52b8-4494-4251-9193-ae32264f76fc,Ready For Action,collectible,4.5,2026-08-09 02:47:27
+e89c9a52-2ea0-4b70-a5da-0781b07776c6,Flounder,collectible,91.95,2026-08-09 02:47:27
+999ddcd6-4167-4c3e-8dd5-5454961925a1,Ronin,collectible,48,2026-08-09 02:47:27
+6002eebd-fe45-402e-89a9-c3eab1233ae1,Larry the Lobster Box,collectible,3.69,2026-08-09 02:47:27
+7b01a6a0-fae5-4700-8632-8131c7b2c839,Donald,collectible,38,2026-08-09 02:47:27
+8cd9530d-6ea9-436c-bdc0-ee73e43c0abe,Magik - Phoenix,collectible,9.6,2026-08-09 02:47:27
+f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,6,2026-08-09 02:47:27
+d53f3d33-19f8-4ba7-86c2-1309a7470af9,Episode 11 - A Knight Who Defends an Empty Throne,collectible,2.9,2026-08-09 02:47:27
+180c9444-99fb-41ec-b15c-f6b1f9be8054,RUNNING MON ver. NATURE,collectible,2,2026-08-09 02:47:27
+a9bd25e9-7deb-403f-9710-15314e0bc689,Acrobatic Surfing,collectible,1,2026-08-09 02:47:27
+f108a1b1-62eb-473c-88d0-3d340255f4d7,Beach Prank,collectible,1.45,2026-08-09 02:47:27
