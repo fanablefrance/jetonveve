@@ -1,24 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-c03741ec-cdd4-4725-81ce-a595bc03c1ca,JENNIE - These Are Mine!,collectible,4899,2026-08-02 09:04:33
-5c20a964-f305-4297-a8f0-2ced4d52dc46,Stan Lee Fine Art Collectible - Burton Morris,collectible,199.99,2026-08-02 09:04:33
-606b52d3-4562-4e3f-b217-e1b60efd6f7d,Chip n’ Dale,collectible,31.5,2026-08-02 09:04:33
-a659bbc2-45cd-4f72-9ca2-7e92a245d05f,#97 Joe Madureira Batman,collectible,35,2026-08-02 09:04:33
-ab17502b-9e6d-4e72-8fdd-6ffa6c9ef22c,Slimer,collectible,29.99,2026-08-02 09:04:33
-0c73f790-245c-47be-a7f2-ec1678beb0e9,Galactus - Ruler of the Universe,collectible,354.31,2026-08-02 09:04:33
-a02ad735-fc15-4d82-9f93-a5b80630b7ec,Emma Frost - Uncanny 2013,collectible,1000,2026-08-02 09:04:33
-a60477fd-6e2e-4482-bab5-02a3ee36be28,‍Gasgano’s Podracer,collectible,55,2026-08-02 09:04:33
-3facefe2-427f-48ec-a954-e5892b8c3b20,Yoda - Focus,collectible,60,2026-08-02 09:04:33
-418dcebb-67d5-4216-9fc2-09f66901422e,Record #5 - Ronnnie Rabbbit - Platinum,collectible,235,2026-08-02 09:04:33
-a67aa0d3-7e99-4e1d-9fc0-780c2cafe8f9,Diamond Emma Frost - Marauders #21 (2021),collectible,950,2026-08-02 09:04:33
-24624bd2-2ea0-4754-9b6e-1497803316ad,Ron English Collectors Reward,collectible,30.9,2026-08-02 09:04:33
-af494590-5225-4a94-b610-eb9ee550da94,Brian Rood Variant,collectible,49.99,2026-08-02 09:04:33
-c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,5.4,2026-08-02 09:04:33
-eda50111-815e-42c0-8748-1f34b35c5c36,Emma Frost - Hellfire Gala #1 (2022),collectible,8.45,2026-08-02 09:04:33
-c2a7851e-d121-4ea2-aa23-72dd58346fb3,Jubilee - Sparkstrike,collectible,9.99,2026-08-02 09:04:33
-61aa6bcb-373b-4d02-8df4-dfd511fa6805,Episode 6 - The Real Hunt Begins,collectible,4.27,2026-08-02 09:04:33
-1e686588-d7fe-40bc-81be-15d2ca5be3fb,Mysterio,collectible,10.44,2026-08-02 09:04:33
-f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,6.3,2026-08-02 09:04:33
-77857a70-edf2-4401-9798-93f63b941d60,Vulture,collectible,4.9,2026-08-02 09:04:33
 9954145f-e85c-462e-b84b-2b50a3e3fbe9,Elsa,collectible,81,2026-08-02 10:06:40
 e4efce12-66ce-43f3-9507-6bf2545cf0a8,Year of the Rat,collectible,3.75,2026-08-02 10:06:40
 49c0b910-3dea-4425-bc85-4b11618fc3f9,AMC Blue and Beta,collectible,4,2026-08-02 10:06:40
@@ -4442,3 +4422,46 @@ f1335136-3692-4038-925d-330c7a92d231,The Sweet Lips Feesh #384 By KMNDZ,collecti
 c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,5.29,2026-08-09 07:01:31
 a709645b-62df-490d-b74a-16a90c358d50,Master Splinter - Combat Training,collectible,19.99,2026-08-09 07:01:31
 3d890e1f-f5d6-4797-bde9-4eb455a31928,Flerkitten 4,collectible,9,2026-08-09 07:01:31
+d042924f-2db9-4180-8d16-38bf4c9e5b9d,R2-D2,collectible,124,2026-08-09 10:05:53
+46fa7ca5-848f-497b-8991-56e547e1acb8,Licence To Kill - UK quad,collectible,500,2026-08-09 10:05:53
+65dab55c-40a4-4117-9a0e-96888f9028de,Ben Reilly - Beyond Spider-Man,collectible,490,2026-08-09 10:05:53
+89b6d074-36ca-4b72-af67-3ac2e5648581,Blossom,collectible,28,2026-08-09 10:05:53
+7c472cd2-cab6-46f0-b837-d4ac17410860,The Assassin,collectible,55.55,2026-08-09 10:05:53
+4e358881-d6e6-41a0-ad3c-8b3021128af0,Luke Skywalker: Jedi,collectible,89.99,2026-08-09 10:05:53
+e913c1f9-9578-4077-b90b-94b0b0cde315,The Golden Lad,collectible,996,2026-08-09 10:05:53
+d4a983b5-07d5-4b85-afbf-23df999abe11,You Ain't Seen Nothin' Yet!,collectible,85.99,2026-08-09 10:05:53
+ef25573e-0032-4a64-91cd-d4c6938f5f10,Cerulean,collectible,9,2026-08-09 10:05:53
+0183c5a4-0480-4d6b-a9db-7e1228124f50,Po,collectible,18,2026-08-09 10:05:53
+24a2244f-2c0c-40f4-9294-b68fd45acdd7,Mr. DNA,collectible,49,2026-08-09 10:05:53
+ed1bdbf0-17f4-470e-b85a-494194f71b94,Master Splinter - Black & White Variant,collectible,775,2026-08-09 10:05:53
+1748a526-6473-45d1-8c60-3812e1571ca8,it's a small world,collectible,55,2026-08-09 10:05:53
+7a11cc10-fff8-41b7-8f22-2e6f5552736d,The Little Prince on the Moon,collectible,15.99,2026-08-09 10:05:53
+f37c5bb1-5803-49d1-b4ef-3e6958c031fb,Hunk - Yellow Lion,collectible,70,2026-08-09 10:05:53
+8b5c020d-d2a7-4784-933d-2c00406a8208,Radiator Springs Sunset,collectible,150,2026-08-09 10:05:53
+b6d21cbe-d479-4daf-b6a6-fcb3188ec9fc,Bellina,collectible,19.99,2026-08-09 10:05:53
+d2f4cb16-5993-4aeb-9016-7003bf41f0f0,Vanellope,collectible,49,2026-08-09 10:05:53
+c2a7851e-d121-4ea2-aa23-72dd58346fb3,Jubilee - Sparkstrike,collectible,49.9,2026-08-09 10:05:53
+9d3783e8-05f7-4e20-b1f7-2c3b520ab3ee,Mr. Toad's Wild Ride,collectible,35,2026-08-09 10:05:53
+820e6050-8dce-4bd3-ba7f-a711b8d74c23,GoldenEye - Japanese One Sheet,collectible,40,2026-08-09 10:05:53
+6e742a1c-ba66-4442-8ba8-e04850d1414e,For Your Eyes Only - Japanese Poster,collectible,40,2026-08-09 10:05:53
+bae75064-118f-468f-bc53-e13060e20a15,Octopussy - US One Sheet,collectible,40,2026-08-09 10:05:53
+025a320d-8bce-4fad-9cb2-4b41d6a2f727,Sung Jinwoo - Weakest Hunter,collectible,16.25,2026-08-09 10:05:53
+f3b77b3f-5e76-4210-9b20-85e4f2524e25,Live and Let Die - US One Sheet Poster,collectible,36,2026-08-09 10:05:53
+6ce1c832-7253-4dd3-b0e9-d8292fcb4462,Always Somewhere Else - Roji,collectible,50,2026-08-09 10:05:53
+99bf64df-202a-418f-9ad3-82fe2b7637ae,UCI Germany Blue and Beta,collectible,44,2026-08-09 10:05:53
+b9dcae36-107b-4b39-97da-51055bc72c8b,Dr. No - UK Quad Poster,collectible,15,2026-08-09 10:05:53
+99ef7ea3-9f79-45f1-9152-42837ad5282b,MARBLE LORD - Tristan Eaton,collectible,49.99,2026-08-09 10:05:53
+19016c85-350f-4b18-8a93-45a58961a6e9,Battlestar Galactica Logo,collectible,48.09,2026-08-09 10:05:53
+c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,6.85,2026-08-09 10:05:53
+e8af31a7-9403-4a31-89a5-65570fcb814b,Altar - Becoming a Player,collectible,8.99,2026-08-09 10:05:53
+32f655e8-3376-411e-8c6d-feedce03890c,Stormtrooper - Shooting,collectible,249,2026-08-09 10:05:53
+59f12148-7812-4565-a181-2d6cf0def697,Nebula,collectible,5.85,2026-08-09 10:05:53
+3ef7e3a8-12fa-47b5-afed-6bac8384c137,Flaky,collectible,15.99,2026-08-09 10:05:53
+6ad91db7-f2d6-4381-8072-cc495342cdf1,Fashionista,collectible,4.4,2026-08-09 10:05:53
+1d499ece-1016-4f5a-9140-d029d840146f,Mantis,collectible,5,2026-08-09 10:05:53
+7c5e7611-0e0f-4000-b5ed-0134ee7279f5,Coca-Cola – 1899 Empty Bottle,collectible,99,2026-08-09 10:05:53
+55b3451d-c845-4c98-80b8-28d92c5f8231,1938 Martin Van Buren,collectible,2.5,2026-08-09 10:05:53
+a960db3d-46f9-4176-9712-4b2402c2edf0,$6.90 Festive Fireworks Stamp,collectible,10,2026-08-09 10:05:53
+0162a16e-1cfc-4008-a461-68e55a1cee84,Female Eivor - Oathbound Silence,collectible,45,2026-08-09 10:05:53
+f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,5.35,2026-08-09 10:05:53
+1e686588-d7fe-40bc-81be-15d2ca5be3fb,Mysterio,collectible,6.5,2026-08-09 10:05:53
