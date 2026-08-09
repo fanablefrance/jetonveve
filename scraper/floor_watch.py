@@ -2616,7 +2616,8 @@ def _dernier(d):
 
 def diagnostic(state: Dict, comptes: Optional[Dict] = None,
                wallets_sondes: Optional[int] = None,
-               maintenant: Optional[float] = None) -> Dict:
+               maintenant: Optional[float] = None,
+               wallets_connus: Optional[int] = None) -> Dict:
     """Ecrit `state['diagnostic']` — remplace a chaque run, ne s'empile pas.
 
     ⚠️ NE LEVE JAMAIS : un diagnostic qui tue le run qu'il observe est pire
@@ -2647,6 +2648,21 @@ def diagnostic(state: Dict, comptes: Optional[Dict] = None,
         # ⚠️ None = « on n'a pas cherche » (module whale eteint), 0 = « on a
         #    cherche et il n'y a aucun wallet connu ». Inconnu != zero.
         "wallets_sondes": wallets_sondes,
+        # 🔴🔴 LOT 110 — DEUX CHAMPS, PARCE QU'IL Y A TROIS VERDICTS.
+        # Le 09/08, `wallets_sondes` etait absent la plupart du temps : le bloc
+        # qui le posait est sous le rafraichissement HORAIRE, et un run dure
+        # ~50 min pour un refresh a 60 — la plupart des runs ne le croisent
+        # jamais. La correction evidente etait de poser le champ des le
+        # chargement. ⛔ Elle aurait CHANGE SON SENS sans rien casser :
+        # « sondes » aurait voulu dire « connus », et un 7 aurait ete lu
+        # « ces comptes ne font pas de gros transferts » alors que le
+        # detecteur n'avait pas tourne. Le meme nombre, deux causes opposees.
+        # ⇒ `wallets_connus` est pose au chargement (hors de toute branche),
+        #   `wallets_sondes` reste ce que le detecteur a REELLEMENT sonde.
+        #   connus=0            → completer wallet_imx dans 🟣C-PSEUDOS
+        #   connus>0, sondes=None → le detecteur n'a pas tourne ce run
+        #   connus>0, sondes>0  → il a cherche, ces comptes sont calmes
+        "wallets_connus": wallets_connus,
     }
     return state["diagnostic"]
 
@@ -2672,6 +2688,20 @@ def imprimer_diagnostic(diag: Dict) -> None:
     if aveugles:
         print("   ❔ canaux sans horodatage (indecidables d'ici) : "
               + ", ".join(aveugles), flush=True)
+    # 🔀 LOT 110 — le verdict des gros transferts, en TROIS etats, jamais deux.
+    co, so = diag.get("wallets_connus"), diag.get("wallets_sondes")
+    if co is None:
+        pass                                   # module whale eteint : rien a dire
+    elif co == 0:
+        print("   🔀 aucun wallet connu — completer `wallet_imx` dans "
+              "🟣C-PSEUDOS, sinon ce canal ne dira JAMAIS rien.", flush=True)
+    elif so is None:
+        print(f"   ❔ 🔀 {co} wallet(s) connu(s), mais le detecteur n'a pas "
+              "tourne ce run (il est sous le rafraichissement horaire) — "
+              "indecidable, ce n'est PAS « rien a signaler ».", flush=True)
+    else:
+        print(f"   🔀 {so}/{co} wallet(s) sonde(s), aucun gros transfert : "
+              "ces comptes sont calmes.", flush=True)
 
 
 def _releve_sfloors(state: Dict) -> None:
@@ -2811,6 +2841,9 @@ def main() -> int:
     #   — apres le travail, donc au pire moment.
     _diag_comptes = None
     _diag_wallets = None
+    # 🔥 LOT 110 — pose ICI, hors de toute branche : c'est un COMPTAGE de ce
+    # qu'on vient de charger, il ne depend d'aucun reseau ni d'aucun tour.
+    _diag_connus = len(wtracked[0]) if whale_actif else None
     if whale_actif:
         # 🧭 les wallets appris aux runs precedents redeviennent actifs
         ww.restaurer_wallets(state, wtracked)
@@ -2960,7 +2993,6 @@ def main() -> int:
                 else:
                     print(f"  🐋 marche VeVe : {len(_wveve)} tx lues, aucun "
                           f"compte suivi dedans.", flush=True)
-                _diag_comptes = ww.journal_identite(state, wtracked)
             n_h = merge_history(state, hist)
             print(f"  historique : {len(hist)} elements ont une vente reelle "
                   f"({n_h} nouveaux) — les autres sont juges illiquides.",
@@ -3153,7 +3185,22 @@ def main() -> int:
     # ⚠️ Il ne doit pas empecher la fin du run : ce qui suit sont des releves,
     #    ils ont autant de valeur que lui.
     try:
-        _diag = diagnostic(state, _diag_comptes, _diag_wallets)
+        # 🔥🔥 LOT 110 — `journal_identite` est appelee ICI, EN FIN DE RUN, hors
+        # de toute branche. Elle etait TROIS branches trop bas : dans la
+        # boucle, dans le bloc du rafraichissement horaire, et sous
+        # `whale_actif and _wveve`. Un run fait 25 tours x 120 s ~= 50 min pour
+        # un refresh a 60 min ⇒ la plupart des runs ne croisaient jamais ce
+        # bloc, et `comptes_suivis` sortait a `None` — le champ le plus utile,
+        # absent la plupart du temps.
+        # ⭐⭐⭐ C'EST LE DESIGN QUI L'A ATTRAPE : `None` dit « on n'a pas
+        # cherche », et c'est exactement ce qui se passait. Initialise a 0, il
+        # aurait annonce « 0 compte suivi » — un mensonge plausible.
+        # ⭐ Elle ne fait AUCUN reseau : elle lit `state` et `wtracked`. La
+        # placer ici ne coute rien et la rend inconditionnelle.
+        if whale_actif and _diag_comptes is None:
+            _diag_comptes = ww.journal_identite(state, wtracked)
+        _diag = diagnostic(state, _diag_comptes, _diag_wallets,
+                           wallets_connus=_diag_connus)
         imprimer_diagnostic(_diag)
         save_state(state)
     except Exception as _e:                                     # noqa: BLE001
