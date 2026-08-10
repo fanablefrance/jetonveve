@@ -1,38 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-3433ffd5-0721-4346-b556-8ff18d545c27,Mickey Sorcerer's Hat,collectible,109.29,2026-08-03 13:01:25
-01d0a2d6-acf0-457d-9382-2705811f68d8,#21 Jim Lee The Joker,collectible,48.95,2026-08-03 13:01:25
-66bf871d-a8d4-474e-a0f2-b1ceb28c7b94,Millennium Falcon,collectible,99,2026-08-03 13:01:25
-9cccbffd-e907-44b4-9e2e-b285f090292d,Zombie Hunter Spider-Man #1,collectible,9.75,2026-08-03 13:01:25
-07c1d5c1-e0c4-4e6a-9ad7-553e9a854f5f,Flounder and Sebastian,collectible,18.5,2026-08-03 13:01:25
-8e9682fc-9d88-4dad-a61e-74d743da57e7,#71 Batman,collectible,15,2026-08-03 13:01:25
-4248d6fd-caca-4a26-91ad-7c8d9ddf4eca,Mace Windu,collectible,9,2026-08-03 13:01:25
-785c098f-b182-4056-a5cf-cc7ca15237ab,Snow Globes - Block of Four,collectible,175,2026-08-03 13:01:25
-768e3b9d-2b74-420e-be62-2a375fbd911f,Crowd Favorite,collectible,6.5,2026-08-03 13:01:25
-3facefe2-427f-48ec-a954-e5892b8c3b20,Yoda - Focus,collectible,60,2026-08-03 13:01:25
-3fc07801-dfee-4865-b7a5-3a7f372e77ec,Galactus and Silver Surfer,collectible,94,2026-08-03 13:01:25
-a8e88f46-106f-4792-a9be-b511c776084a,Atlas Ready,collectible,7,2026-08-03 13:01:25
-ff4f925c-6495-4ec3-b8fc-c08aaff142a3,Single 2 1/2d 'Lake Wakatipu' gummed stamp,collectible,65,2026-08-03 13:01:25
-4ecac144-fa6a-4d23-9b8d-36e6f2092499,Darth Vader Samurai - Blade of the Empire,collectible,137.77,2026-08-03 13:01:25
-e955dcc5-43e2-4cdd-a978-c8b66ddd6c96,Miura - Arancio Miura,collectible,19,2026-08-03 13:01:25
-623d2c10-c843-4de5-9beb-2c74cf5460df,Gambit - Trenchcoat Tactician Special Edition,collectible,266,2026-08-03 13:01:25
-bb8e1812-e8d4-4107-8e29-cb2dcad0348c,The Punisher - Fists of Vengeance Special Edition,collectible,165,2026-08-03 13:01:25
-d8d99355-5b95-4f3a-b229-fe29f8be5001,Leonardo - IncogNinja,collectible,40,2026-08-03 13:01:25
-92635283-99b4-4597-ba69-01e39ccba334,Master Splinter - Father Figure,collectible,5.45,2026-08-03 13:01:25
-a709645b-62df-490d-b74a-16a90c358d50,Master Splinter - Combat Training,collectible,27.98,2026-08-03 13:01:25
-2c9dc59b-6eed-4755-89ff-05e47a1c5423,Drax,collectible,9,2026-08-03 13:01:25
-c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,4.5,2026-08-03 13:01:25
-31572cb5-b90f-47cc-82e9-c8751ccf0a70,Buzz Lightyear – Galactic Guardian,collectible,6.5,2026-08-03 13:01:25
-2e75b438-b763-4b0d-9b36-8f3edecb6614,Buzz Lightyear – Mission Ready,collectible,8.95,2026-08-03 13:01:25
-26bd35f6-583b-44d5-944c-47903e120b49,Pop and Cub,collectible,105,2026-08-03 13:01:25
-f1bb37cc-7350-403f-9e06-5942bc3765ec,Master Splinter - Weapon Training,collectible,8.85,2026-08-03 13:01:25
-f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,6.4,2026-08-03 13:01:25
-1e686588-d7fe-40bc-81be-15d2ca5be3fb,Mysterio,collectible,7.99,2026-08-03 13:01:25
-9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,4.89,2026-08-03 13:01:25
-09db976a-224c-4288-a903-dd0246eb200b,Thor - Action,collectible,13,2026-08-03 13:01:25
-5a407cb0-e0fb-44a4-aa2c-e37133e01823,Coca-Cola Neon Sign - Ice Cold Refreshment,collectible,10.5,2026-08-03 13:01:25
-77857a70-edf2-4401-9798-93f63b941d60,Vulture,collectible,4.25,2026-08-03 13:01:25
-40f03ab2-65d1-445b-a66c-1fb1ec751621,Aquatic Plant - Big Bronze 2,collectible,3.3,2026-08-03 13:01:25
-930556b0-3566-4301-95c3-1f50bbf059a2,Decorative Rock 1,collectible,3,2026-08-03 13:01:25
 e2cb56f8-d2c6-49a5-b152-9dd2a59445af,Black Panther – Animated,collectible,55,2026-08-03 14:04:55
 ba6c92e5-c8a0-406c-ad7c-9087858c1bb2,Infinity Gauntlet - Animated,collectible,59,2026-08-03 14:04:55
 819b66c7-04fa-4354-bb32-ba9c9722c68d,VeVe Level 100 Logo,collectible,1600,2026-08-03 14:04:55
@@ -4511,3 +4477,33 @@ bd273292-2dd8-49f1-9199-f8dbfe7cd62d,Small Generator,collectible,1.6,2026-08-10 
 af9d158d-2149-4212-afd4-d66e6e98721f,Anakin’s Podracer Base,collectible,6,2026-08-10 12:54:06
 ba2e8d06-c0f8-40dd-ba0d-594001238a1a,Graffi ver. Black,collectible,1.8,2026-08-10 12:54:06
 a017670a-cfa3-480d-900a-c8355d4a3a27,RUNNING MON ver. SASQUATCH,collectible,2.99,2026-08-10 12:54:06
+66bf871d-a8d4-474e-a0f2-b1ceb28c7b94,Millennium Falcon,collectible,89,2026-08-10 14:02:51
+f37c5bb1-5803-49d1-b4ef-3e6958c031fb,Hunk - Yellow Lion,collectible,199,2026-08-10 14:02:51
+da7f15db-60fa-48db-ac21-f7be7cf6917f,Batgirl,collectible,9.99,2026-08-10 14:02:51
+4df7e05f-0ae4-416c-91e1-d5a2af686a01,1866 Abraham Lincoln (originally 15 cents),collectible,30,2026-08-10 14:02:51
+53c4a149-6786-4946-a052-7267e8eb7feb,#06 Mike Mignola Batman - Blue & Yellow Variant,collectible,65.55,2026-08-10 14:02:51
+565e7106-f8a4-475a-a5c3-b99564cdbe60,Star Wars: Episode VI Return of the Jedi - Exploding Vader Helmet (Poland),collectible,103.59,2026-08-10 14:02:51
+71daa6f7-8da5-4a89-8b3d-b9863105937b,VeVe Search Party Pattern - Lincoln Design Co.,collectible,177,2026-08-10 14:02:51
+a74f1cdf-2a37-41a5-adeb-ac975ac647b1,Soul Stone,collectible,2.19,2026-08-10 14:02:51
+de4a7aac-7b16-48d4-a6f2-3aaa3ea90bdb,Bombed Ting - Sket One,collectible,65.43,2026-08-10 14:02:51
+3f1ea2f1-7e0d-487a-8fe2-b441a7b19431,Black Widow,collectible,15.74,2026-08-10 14:02:51
+3164f5e3-044d-477d-8022-0a99dead294d,Leonardo - Classic,collectible,8.95,2026-08-10 14:02:51
+fbd0d0a9-b03c-4132-938e-1669d1d35a15,Alligator Loki,collectible,2.59,2026-08-10 14:02:51
+7ed317cf-5b82-47fa-94ca-69d85591d1e8,Hapjeong Dungeon Key,collectible,22,2026-08-10 14:02:51
+c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,6,2026-08-10 14:02:51
+bfefe48f-8fd8-4c5d-973c-c9bd5013ae18,Espresso Bobo,collectible,199.99,2026-08-10 14:02:51
+a494f556-ebcd-4252-b4ec-ccd52c331c5c,Mickey,collectible,9,2026-08-10 14:02:51
+cfbc5159-b5ef-4a33-adb6-0e31e2cea1f6,JISOO Pink Venom Card,collectible,11,2026-08-10 14:02:51
+205f1c9a-35f5-4a86-acc6-c968b286398f,MYO - Pink,collectible,36,2026-08-10 14:02:51
+fcaf92c1-1f34-4042-87ee-b5cc02345977,Chris Robots Will Kill - Landscape,collectible,31,2026-08-10 14:02:51
+885c33eb-4869-412b-9015-56039e798c14,IG-11,collectible,49,2026-08-10 14:02:51
+1bacdd79-a711-4a24-9bfa-c0927e871e9a,Chris Robots Will Kill - SUYE Special Sky Blue,collectible,24,2026-08-10 14:02:51
+9cbc1801-d809-4146-9a8f-35281ed59d74,1841 Penny Red CH-DI,collectible,1.9,2026-08-10 14:02:51
+c9686525-dfa5-41dc-9b81-ebf195f50ec5,Bluegrass,collectible,2.35,2026-08-10 14:02:51
+e8ac58ab-783e-4b9d-9845-054a86e41b69,Gouki Default,collectible,31,2026-08-10 14:02:51
+c18cdf3e-ef2e-4806-80e9-a410d8186a22,Diver’s Helmet,collectible,12,2026-08-10 14:02:51
+5a407cb0-e0fb-44a4-aa2c-e37133e01823,Coca-Cola Neon Sign - Ice Cold Refreshment,collectible,10.5,2026-08-10 14:02:51
+2b165606-c201-4f80-b10f-b0d7e7d49908,Crimson Trooper - Running,collectible,2.5,2026-08-10 14:02:51
+6f5d6b03-da4c-4121-9024-74221436f214,Shadow Trooper - Crouching,collectible,7,2026-08-10 14:02:51
+f6717b76-db8d-48af-bffd-d7016ac4a83d,C-Rank Essence Stone,collectible,1,2026-08-10 14:02:51
+16e0d43f-4821-4e27-b2d6-09e48466ab3e,WHAM!,collectible,1,2026-08-10 14:02:51
