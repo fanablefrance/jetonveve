@@ -1,17 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-da4f0ab8-00be-498e-8784-bde7d0d105e2,#56 Bruce Timm Harley Quinn,collectible,42.95,2026-08-04 09:47:24
-258379d9-b2e1-48c4-8641-6c98771a6ebe,Master Splinter - Zen Pose,collectible,3999,2026-08-04 09:47:24
-616429e9-1288-45a4-b7ac-ea8af9431c19,Beta the New Kid in Town,collectible,5.99,2026-08-04 09:47:24
-59f12148-7812-4565-a181-2d6cf0def697,Nebula,collectible,6.75,2026-08-04 09:47:24
-cac60134-17f8-40d5-988f-f911652e1a12,VeVe Common General Admission Ticket - NYCC 2024,collectible,7.8,2026-08-04 09:47:24
-6e755ce2-7a00-4477-b04a-9884ec9f3857,Head Over Heels Toby,collectible,2.6,2026-08-04 09:47:24
-c139b711-1f35-40ba-885e-e302c5ea7b66,RUNNING MON ver. VEVE BLUE,collectible,109,2026-08-04 09:47:24
-23722ec2-08d7-4f4f-9ffb-54ebb2226b42,Winter Whimsy - Navy,collectible,5,2026-08-04 09:47:24
-462fc423-9563-415e-aa1c-77c19f7a0650,Shadow Trooper - Running,collectible,2.9,2026-08-04 09:47:24
-1d76ad1d-e54f-41ac-b83b-eebc714493bc,Love: Puppy (1986),collectible,5,2026-08-04 09:47:24
-d4e0ace6-0b6a-45d6-9111-2aca93480185,SAM,collectible,38.99,2026-08-04 09:47:24
-f809385e-d6fc-452c-9c0c-f7f9fb6cc019,CIARA ver. Ready to Paint,collectible,2.6,2026-08-04 09:47:24
-c889a878-bc2b-4afe-a9c1-a02ffbe80231,Single 4d 'White Terraces' gummed stamp,collectible,2.6,2026-08-04 09:47:24
 900388bb-8847-4334-8d1a-508de81c4a4d,Superman,collectible,189,2026-08-04 10:50:36
 da4f0ab8-00be-498e-8784-bde7d0d105e2,#56 Bruce Timm Harley Quinn,collectible,39.99,2026-08-04 10:50:36
 4dc2db11-350d-4c3b-82c9-84fbcaa9d138,Timon and Pumbaa,collectible,13.8,2026-08-04 10:50:36
@@ -4481,3 +4468,21 @@ f675174d-d5da-42a1-9db1-7fb59a20fb91,Doctor Octopus,collectible,22.99,2026-08-11
 bd273292-2dd8-49f1-9199-f8dbfe7cd62d,Small Generator,collectible,1.65,2026-08-11 09:45:23
 edd220d2-6a16-41df-98c9-9c65ceae9077,Record #5 - Ronnnie Rabbbit - Original,collectible,1.7,2026-08-11 09:45:23
 0c0023fa-0f61-4b7e-9fe3-e6e38ee93f9d,Record #1 - Living In Delusionville - Original,collectible,1.49,2026-08-11 09:45:23
+3a592c07-aca1-43c8-9788-632462579e7b,The Emperor's Fist,collectible,168,2026-08-11 10:47:26
+aae6ca8f-ecdb-47e6-9ce9-d6ae87c82507,#86 - Becky Cloonan Batman,collectible,89.99,2026-08-11 10:47:26
+9ab7ce3a-cdc7-4d0c-bd6c-9063a85f8271,Stay Puft Marshmallow Man,collectible,67.95,2026-08-11 10:47:26
+ca53cfe6-6753-4f74-a62e-26b1eee26c79,Robocop: Jetpack,collectible,120,2026-08-11 10:47:26
+9f428e38-ab8d-446b-8037-f58c1a4af078,The London Police x SUYE Utility Coin,collectible,26,2026-08-11 10:47:26
+38240a36-10d1-4653-ba38-61bd524e3ef3,Jean Grey - Phoenix,collectible,33,2026-08-11 10:47:26
+bd16e6f6-1138-4083-8c0f-8e312c3c9450,Santa Comes Down the Chimney,collectible,8.9,2026-08-11 10:47:26
+24a2244f-2c0c-40f4-9294-b68fd45acdd7,Mr. DNA,collectible,18,2026-08-11 10:47:26
+ebb7de05-9267-43e8-a01d-0ab08ed05e29,Maserati Alfieri - Silver,collectible,11,2026-08-11 10:47:26
+527a3b5d-28c0-430c-bd5b-06c0bbbf8a10,Wet Head,collectible,125,2026-08-11 10:47:26
+59f12148-7812-4565-a181-2d6cf0def697,Nebula,collectible,5.5,2026-08-11 10:47:26
+f675174d-d5da-42a1-9db1-7fb59a20fb91,Doctor Octopus,collectible,22,2026-08-11 10:47:26
+a9f17552-12a7-4ada-937d-e1c91ee023c4,Monovader - Shadow Drop,collectible,109,2026-08-11 10:47:26
+9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,4,2026-08-11 10:47:26
+edd220d2-6a16-41df-98c9-9c65ceae9077,Record #5 - Ronnnie Rabbbit - Original,collectible,3,2026-08-11 10:47:26
+0c0023fa-0f61-4b7e-9fe3-e6e38ee93f9d,Record #1 - Living In Delusionville - Original,collectible,1.9,2026-08-11 10:47:26
+bd273292-2dd8-49f1-9199-f8dbfe7cd62d,Small Generator,collectible,1.5,2026-08-11 10:47:26
+4ed97266-f181-4637-949c-6ea763f2dfe6,Record #4 - I Am Nothing - Platinum,collectible,6.99,2026-08-11 10:47:26
