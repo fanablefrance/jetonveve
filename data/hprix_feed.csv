@@ -1,4 +1,12 @@
 uuid,name,categorie,floor_usd,ts
+15a5f28b-8cc8-4838-aaee-8beb67e17313,Predator - Unseen Edge,collectible,3000,2026-08-04 11:51:23
+3f233a1f-fe67-4d15-b796-f60845ee3d35,Lightning McQueen: Ka-chow!,collectible,9.99,2026-08-04 11:51:23
+3e628ba1-7c41-4d53-8ae7-ecc2aa09512a,Michelangelo - IncogNinja,collectible,85,2026-08-04 11:51:23
+fbf48c5c-39c1-4b77-9b49-6932f42acae0,Mater,collectible,28,2026-08-04 11:51:23
+0433455f-ebd3-447d-bb00-347564d5f6a4,Guile Story,collectible,99,2026-08-04 11:51:23
+faa51bbb-63ce-4280-91bd-b3573e1293a2,Jackson Storm,collectible,28,2026-08-04 11:51:23
+c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,6.25,2026-08-04 11:51:23
+aa8ace2b-3356-421c-8bfc-d77fb68b703b,Blue Noggles,collectible,24.5,2026-08-04 11:51:23
 af02ad4f-100c-4995-810f-376c6854b00e,Disney D,collectible,16,2026-08-04 12:53:32
 4dc2db11-350d-4c3b-82c9-84fbcaa9d138,Timon and Pumbaa,collectible,10.55,2026-08-04 12:53:32
 f64f5581-0640-4c33-873d-1d798c086e24,Stormtrooper,collectible,9,2026-08-04 12:53:32
@@ -4412,69 +4420,24 @@ edd220d2-6a16-41df-98c9-9c65ceae9077,Record #5 - Ronnnie Rabbbit - Original,coll
 0c0023fa-0f61-4b7e-9fe3-e6e38ee93f9d,Record #1 - Living In Delusionville - Original,collectible,1.9,2026-08-11 10:47:26
 bd273292-2dd8-49f1-9199-f8dbfe7cd62d,Small Generator,collectible,1.5,2026-08-11 10:47:26
 4ed97266-f181-4637-949c-6ea763f2dfe6,Record #4 - I Am Nothing - Platinum,collectible,6.99,2026-08-11 10:47:26
-29df76ed-368e-4415-be9f-34e87b751d3d,I'll Take Those Odds,collectible,6000000,2026-08-11 12:51:04
-c3df7496-e8e7-4507-b80a-5c2b5d996645,#100 Todd McFarlane Batman,collectible,389.98,2026-08-11 12:51:04
-2e31455d-8c38-405d-b2f6-50b2e5d27ea0,Iron Man,collectible,49.98,2026-08-11 12:51:04
-2e87137d-51b3-41ee-93e1-80e0e799d6ba,Spider-Man – Hangin’ Out,collectible,29.99,2026-08-11 12:51:04
-65dab55c-40a4-4117-9a0e-96888f9028de,Ben Reilly - Beyond Spider-Man,collectible,750,2026-08-11 12:51:04
-aae6ca8f-ecdb-47e6-9ce9-d6ae87c82507,#86 - Becky Cloonan Batman,collectible,99.5,2026-08-11 12:51:04
-5fd09e1f-58f8-467f-9e78-d64f6e3a69b9,R2-D2,collectible,150,2026-08-11 12:51:04
-e7735bff-6de9-45b5-8b33-98a2816ccaf3,CHOICES (Ultraviolet),collectible,1500,2026-08-11 12:51:04
-4dc2db11-350d-4c3b-82c9-84fbcaa9d138,Timon and Pumbaa,collectible,15.7,2026-08-11 12:51:04
-9f428e38-ab8d-446b-8037-f58c1a4af078,The London Police x SUYE Utility Coin,collectible,33.33,2026-08-11 12:51:04
-4d1972b6-b15f-4c98-ab98-cec603aa58de,Ritmo,collectible,116,2026-08-11 12:51:04
-107572e7-d947-4cc0-b8dc-af5e16233566,Bucky Barnes - On Guard,collectible,20,2026-08-11 12:51:04
-101b30a5-9ace-4261-b419-fc3e0518e384,Human Torch - Flame On,collectible,335,2026-08-11 12:51:04
-924d7c50-71d1-4f66-a510-3d037c7d2353,Olaf,collectible,44,2026-08-11 12:51:04
-37353ee5-47b8-4498-a220-7851c6dd0923,Michelangelo - Classic,collectible,16.75,2026-08-11 12:51:04
-88076df3-4a65-4675-836d-19bc361e0ab5,Failure of Control,collectible,9.99,2026-08-11 12:51:04
-e0f54705-754e-4973-92a6-56a6194ef000,With Love and Kisses: Booklet of 20,collectible,80,2026-08-11 12:51:04
-bfbb5341-6a35-4ecb-b3a7-896bf6eb870c,Year of the Horse - Pane of 20,collectible,39.99,2026-08-11 12:51:04
-23855e1f-f678-4831-8e58-ecfd53c4fb53,Cruz,collectible,26,2026-08-11 12:51:04
-e5998489-e9c7-4862-9c52-12e1a1acf5a3,Nee Chee,collectible,69.99,2026-08-11 12:51:04
-9eabb48a-d7c8-40ca-abf6-076bf8a1c379,Star Wars Episode IV: A New Hope - Rebels,collectible,40,2026-08-11 12:51:04
-768d33a2-7e9a-4fea-bb2c-696f5ab94579,Baymax 2.0,collectible,11,2026-08-11 12:51:04
-d6033d14-4af7-4aee-a38f-080e4cd98fd1,Gouged Stormtrooper Helmet,collectible,119.77,2026-08-11 12:51:04
-1a1387d3-e99f-45bd-8463-58de6f1afb73,The Punisher - Skull Reaper,collectible,38,2026-08-11 12:51:04
-8a23cfee-33f5-4a13-8cff-504d63681262,Trilad,collectible,35,2026-08-11 12:51:04
-533c2c8e-1269-45dc-bd48-65a3ad541231,Mogul Grin - Black Tie,collectible,17,2026-08-11 12:51:04
-e8064631-1c9d-408a-ada4-7534693c8c12,Sentinel,collectible,5.95,2026-08-11 12:51:04
-5c4c9abf-3fd5-4ddd-85fa-2b02fbe8dfdb,Spider-Mobile,collectible,15.97,2026-08-11 12:51:04
-8d14679c-ef72-4a0d-ab39-617170e2e2e5,Quaritch's Banshee,collectible,29,2026-08-11 12:51:04
-2362b172-d532-4d1f-8145-2b27f5207df5,Sabbath,collectible,16.99,2026-08-11 12:51:04
-bf7ad828-6417-487e-81a5-4614d4d01fdf,Wasp,collectible,25,2026-08-11 12:51:04
-7aeb6394-97db-4268-85ac-7f2cc504687e,With Love and Kisses,collectible,2.99,2026-08-11 12:51:04
-4fa83d2a-09a2-47a9-a476-79ae00362be4,Star Wars Episode IV: A New Hope - Luke and Vader,collectible,21.99,2026-08-11 12:51:04
-527a3b5d-28c0-430c-bd5b-06c0bbbf8a10,Wet Head,collectible,130,2026-08-11 12:51:04
-c25b31a3-3c1a-4df2-ae11-67b55e881380,Gouki Story,collectible,83.99,2026-08-11 12:51:04
-0433455f-ebd3-447d-bb00-347564d5f6a4,Guile Story,collectible,62,2026-08-11 12:51:04
-6c589db7-e673-4a1a-b87a-af1d0e7da650,Haunted Mansion Poster,collectible,16,2026-08-11 12:51:04
-bb7c9e52-5efe-4a11-b8de-56c41c66ae7b,kozyndan - Gray Hares,collectible,9.99,2026-08-11 12:51:04
-f6e15150-641b-4d8e-b7cc-19027a019d1f,Chris Robots Will Kill - OG,collectible,33,2026-08-11 12:51:04
-3e5cb4ae-ab83-494c-87d6-2b4373cad416,Edward - Dual Stance,collectible,5.99,2026-08-11 12:51:04
-ed419393-e574-48fb-8130-48941992e2b0,Altaïr - Crouching,collectible,6,2026-08-11 12:51:04
-04494b1c-d7a1-45c1-bca6-bf8ccce8407d,Horus Guards - Horus,collectible,15,2026-08-11 12:51:04
-0a126e9f-b830-4a77-8733-09a15ef897df,Sabretooth - Imprisoned Predator,collectible,19.99,2026-08-11 12:51:04
-b8e9332e-cd45-45a2-9638-7fb3783b835e,Butterfly - Gray,collectible,128.99,2026-08-11 12:51:04
-bd9f38e8-78b4-4eb1-84ed-a6e3ed560d63,Sam Wilson - Heart of a Hero,collectible,5.5,2026-08-11 12:51:04
-15a83e17-250c-4063-ae84-6aeea8660af6,Jackson Storm Base,collectible,25,2026-08-11 12:51:04
-fe8b6115-0f8f-4ecf-b957-f36a24b0759a,Moon Knight,collectible,5.95,2026-08-11 12:51:04
-450206ba-7c6b-46a3-8d48-9f24b64b7aed,Falling,collectible,97,2026-08-11 12:51:04
-60ff5dbc-dd2d-4c72-95d3-9b8bb7f122ec,Nicoletta Baldari Variant,collectible,9.95,2026-08-11 12:51:04
-f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,6,2026-08-11 12:51:04
-e6df8654-5245-4b6d-83b0-f5f80f1a6f61,ILLAZILLAZ (Earth Element) - TNES,collectible,6.95,2026-08-11 12:51:04
-2253cf7f-d6e4-4c1b-9ada-fc10d4c3379f,Death Trooper Pistol - Running,collectible,2.95,2026-08-11 12:51:04
-4ed97266-f181-4637-949c-6ea763f2dfe6,Record #4 - I Am Nothing - Platinum,collectible,29,2026-08-11 12:51:04
-77857a70-edf2-4401-9798-93f63b941d60,Vulture,collectible,5,2026-08-11 12:51:04
-2b165606-c201-4f80-b10f-b0d7e7d49908,Crimson Trooper - Running,collectible,2.64,2026-08-11 12:51:04
-93552b5b-3ead-4e6e-8f20-8e24b90357c7,Flerkitten 2,collectible,8.5,2026-08-11 12:51:04
-c85f636d-05bf-4cb2-983c-22ae671ee6b4,Record #9 - Everyone is Jealous of Me - Platinum,collectible,22,2026-08-11 12:51:04
-7e4821ed-7ad2-4a08-9dd2-2d5c04261446,ROSÉ,collectible,7,2026-08-11 12:51:04
-418dcebb-67d5-4216-9fc2-09f66901422e,Record #5 - Ronnnie Rabbbit - Platinum,collectible,17.7,2026-08-11 12:51:04
-d913a319-3a18-4250-a949-07f42a19424f,Record #8 - Duck Luck - Original,collectible,2.9,2026-08-11 12:51:04
-d37184af-298d-4b47-ae13-819fb234b80d,Episode 12 - Arise,collectible,1.6,2026-08-11 12:51:04
-9c3d7ce4-b2cf-42cb-9c61-af108f145068,Matt Murdock - The Daredevil's Focus,collectible,11,2026-08-11 12:51:04
-56d5409c-3c30-40ba-888e-2987749734c1,Record #8 - Duck Luck - Gold,collectible,4.4,2026-08-11 12:51:04
-bd273292-2dd8-49f1-9199-f8dbfe7cd62d,Small Generator,collectible,1.7,2026-08-11 12:51:04
-dc95f612-2180-42fe-bb03-e955a6644aa0,Delusionville Record S6 “Last Place is First Place” - Original,collectible,1.99,2026-08-11 12:51:04
-9981470b-b00a-421d-b89d-5492fc1e170d,Aquatic Plant - Big Bronze 1,collectible,2.4,2026-08-11 12:51:04
+3a592c07-aca1-43c8-9788-632462579e7b,The Emperor's Fist,collectible,170,2026-08-11 11:49:24
+3433ffd5-0721-4346-b556-8ff18d545c27,Mickey Sorcerer's Hat,collectible,125,2026-08-11 11:49:24
+20578f42-c47c-454a-bb1a-7f2d78b56905,Death,collectible,49,2026-08-11 11:49:24
+ca53cfe6-6753-4f74-a62e-26b1eee26c79,Robocop: Jetpack,collectible,97,2026-08-11 11:49:24
+de9963c9-bf18-4b0c-bb4a-6646b116ef47,Rafael Grampá Batman,collectible,29,2026-08-11 11:49:24
+a6ff5d76-94cf-4f57-9045-a2538dbf41b3,Sung Jinwoo - E-Rank Hunter,collectible,1500,2026-08-11 11:49:24
+ff13b7ac-7bfe-4bfb-9efa-1902fdc9a4ba,Kenneth Rocafort Batman,collectible,8.65,2026-08-11 11:49:24
+a60477fd-6e2e-4482-bab5-02a3ee36be28,‍Gasgano’s Podracer,collectible,38,2026-08-11 11:49:24
+8a23cfee-33f5-4a13-8cff-504d63681262,Trilad,collectible,48,2026-08-11 11:49:24
+69a6f0f0-60c4-4e24-97b6-7faee35532c9,Death Trooper E-11D - Prone,collectible,500,2026-08-11 11:49:24
+98f7d0b0-8373-4037-a49f-2db41b24f168,Sokka,collectible,13.98,2026-08-11 11:49:24
+e4f3eeae-2c16-4aeb-8c80-2f9413f13dfd,Specimen #04,collectible,23.84,2026-08-11 11:49:24
+d4ec084d-812b-4a3c-958f-d691f0060ff9,Master Splinter - Battle Ready,collectible,62.99,2026-08-11 11:49:24
+885c33eb-4869-412b-9015-56039e798c14,IG-11,collectible,73.7,2026-08-11 11:49:24
+cf3ca5a8-b881-4a67-bb13-53f33d9d4b14,ODDY ver. BLUESNAKE,collectible,66,2026-08-11 11:49:24
+b8e9332e-cd45-45a2-9638-7fb3783b835e,Butterfly - Gray,collectible,130,2026-08-11 11:49:24
+2344a6ff-eb4b-4798-91eb-b32e459da048,Basim,collectible,7,2026-08-11 11:49:24
+77857a70-edf2-4401-9798-93f63b941d60,Vulture,collectible,4.9,2026-08-11 11:49:24
+6911b24f-2fd5-4d43-8ae9-8f7d978b6285,Felix  - Golden Light,collectible,11.77,2026-08-11 11:49:24
+2ab60547-aaf6-4120-828d-cc6372ac3335,Sewer Manhole - Silver,collectible,2,2026-08-11 11:49:24
+bd273292-2dd8-49f1-9199-f8dbfe7cd62d,Small Generator,collectible,1.65,2026-08-11 11:49:24
