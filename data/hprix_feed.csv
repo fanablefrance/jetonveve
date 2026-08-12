@@ -4349,37 +4349,78 @@ c139b711-1f35-40ba-885e-e302c5ea7b66,RUNNING MON ver. VEVE BLUE,collectible,95,2
 605f6a4f-c222-492c-ba90-0412cbb11b93,The Barracuda Blast!,collectible,15.99,2026-08-12 06:25:01
 f1bb37cc-7350-403f-9e06-5942bc3765ec,Master Splinter - Weapon Training,collectible,5.99,2026-08-12 06:25:01
 3834eaf3-879e-49aa-8102-78f9a7dceeb8,Ben Quadinaros’ Podracer Base,collectible,24.9,2026-08-12 06:25:01
-bf64cec0-ae64-43fe-b2a9-f1466f6aeb42,Alice in Wonderland,collectible,49.99,2026-08-12 10:33:11
-bd16e6f6-1138-4083-8c0f-8e312c3c9450,Santa Comes Down the Chimney,collectible,8.99,2026-08-12 10:33:11
-d920d7d1-8fb4-4f36-b291-e85b09ecebf6,Amazing Nighttime Spectacular,collectible,33.99,2026-08-12 10:33:11
-37353ee5-47b8-4498-a220-7851c6dd0923,Michelangelo - Classic,collectible,13.5,2026-08-12 10:33:11
-dc04b2f6-c77b-4997-845d-2a0107c83f21,Gambit - Kinetic Combat Master,collectible,13,2026-08-12 10:33:11
-1c2c833d-3e70-4e7e-b589-0c24832a58cd,Katara,collectible,18,2026-08-12 10:33:11
-ad11c67d-5365-48b9-80e9-00c4a0e67f91,"""It Wasn't Me!""",collectible,9.5,2026-08-12 10:33:11
-4ea0fb53-99ca-4d63-93dd-663524732899,Bambi,collectible,39.85,2026-08-12 10:33:11
-3164f5e3-044d-477d-8022-0a99dead294d,Leonardo - Classic,collectible,9.5,2026-08-12 10:33:11
-98f7d0b0-8373-4037-a49f-2db41b24f168,Sokka,collectible,13,2026-08-12 10:33:11
-39ceaffc-298a-481a-ac53-074fe1843ddd,Hapjeong Station,collectible,23.99,2026-08-12 10:33:11
-527a3b5d-28c0-430c-bd5b-06c0bbbf8a10,Wet Head,collectible,159,2026-08-12 10:33:11
-ac35ac09-cbf8-48a8-82b5-e0604ffe5021,VeVe VIP Ticket - NYCC 2024,collectible,20,2026-08-12 10:33:11
-68649d9c-b610-4ac0-a07a-f14a1fca6585,Raphael - Classic,collectible,5.9,2026-08-12 10:33:11
-c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,5.5,2026-08-12 10:33:11
-d013f2b2-b1f8-40fa-a38d-95b152cb4373,Gold Noggles,collectible,12.75,2026-08-12 10:33:11
-24624bd2-2ea0-4754-9b6e-1497803316ad,Ron English Collectors Reward,collectible,31,2026-08-12 10:33:11
-f1bb37cc-7350-403f-9e06-5942bc3765ec,Master Splinter - Weapon Training,collectible,6.3,2026-08-12 10:33:11
-418dcebb-67d5-4216-9fc2-09f66901422e,Record #5 - Ronnnie Rabbbit - Platinum,collectible,25,2026-08-12 10:33:11
-1e686588-d7fe-40bc-81be-15d2ca5be3fb,Mysterio,collectible,6,2026-08-12 10:33:11
-d23fe8eb-7882-40fc-8e4d-16a0f81e1847,B-Rank Essence Stone,collectible,1.8,2026-08-12 10:33:11
-d913a319-3a18-4250-a949-07f42a19424f,Record #8 - Duck Luck - Original,collectible,2,2026-08-12 10:33:11
-538d7c66-16e6-46ac-9678-f2a60c0772f0,Record #4 - I Am Nothing - Original,collectible,1.9,2026-08-12 10:33:11
-16e0d43f-4821-4e27-b2d6-09e48466ab3e,WHAM!,collectible,1.05,2026-08-12 10:33:11
-5d8c0b3d-ab81-4906-926f-b00dc3cc5fb0,VeVe Heart Logo - Red,collectible,28200,2026-08-12 13:37:21
-e5481692-b3a2-4bb4-80ca-414235571a48,Hangar Bay 327 - Animated,collectible,125,2026-08-12 13:37:21
-15399c5e-7cd8-46c3-9240-9db5794ceea3,Human Torch,collectible,5,2026-08-12 13:37:21
-258379d9-b2e1-48c4-8641-6c98771a6ebe,Master Splinter - Zen Pose,collectible,2499,2026-08-12 13:37:21
-577a23d0-6417-4930-b5ac-092174aee57b,Running Keith (Modern) - XLARGE,collectible,50,2026-08-12 13:37:21
-39ceaffc-298a-481a-ac53-074fe1843ddd,Hapjeong Station,collectible,30,2026-08-12 13:37:21
-24c168f7-d4ef-4fa0-b9a6-21cf30a2625d,Rabbid Knightmare,collectible,12.99,2026-08-12 13:37:21
-92635283-99b4-4597-ba69-01e39ccba334,Master Splinter - Father Figure,collectible,4,2026-08-12 13:37:21
-a00ad2e9-37fe-4ca2-b2df-5fea2e0131d0,"""Read Me A Story!""",collectible,2.2,2026-08-12 13:37:21
-a709645b-62df-490d-b74a-16a90c358d50,Master Splinter - Combat Training,collectible,15,2026-08-12 13:37:21
+c3df7496-e8e7-4507-b80a-5c2b5d996645,#100 Todd McFarlane Batman,collectible,402,2026-08-12 12:35:11
+9954145f-e85c-462e-b84b-2b50a3e3fbe9,Elsa,collectible,69.9,2026-08-12 12:35:11
+2cf09235-f140-422e-a800-d0b049fbaff0,C-3PO,collectible,69.9,2026-08-12 12:35:11
+6a772acf-4006-4dd2-b325-882f6b2fca2e,WALL•E,collectible,35,2026-08-12 12:35:11
+4d1972b6-b15f-4c98-ab98-cec603aa58de,Ritmo,collectible,118,2026-08-12 12:35:11
+2db7508c-bd14-4598-b6e3-108619c46c80,Ghostbusters I Logo,collectible,63,2026-08-12 12:35:11
+09671fc1-7831-4ed5-812e-f78612774a56,Yoskay Yamamoto x Munkyking - Moonflower,collectible,29.95,2026-08-12 12:35:11
+1d259322-4273-4319-b20a-c1a8be22a2c6,WDAS Animation Desk,collectible,34.9,2026-08-12 12:35:11
+49bb3164-c4b0-4970-b6b2-740d7829e185,Avengers Tower,collectible,27.95,2026-08-12 12:35:11
+38240a36-10d1-4653-ba38-61bd524e3ef3,Jean Grey - Phoenix,collectible,26,2026-08-12 12:35:11
+3facefe2-427f-48ec-a954-e5892b8c3b20,Yoda - Focus,collectible,55,2026-08-12 12:35:11
+6ce1c832-7253-4dd3-b0e9-d8292fcb4462,Always Somewhere Else - Roji,collectible,65,2026-08-12 12:35:11
+e89c9a52-2ea0-4b70-a5da-0781b07776c6,Flounder,collectible,92,2026-08-12 12:35:11
+bd16e6f6-1138-4083-8c0f-8e312c3c9450,Santa Comes Down the Chimney,collectible,5.5,2026-08-12 12:35:11
+cd610d2e-dd02-44af-9809-f13df08fe04a,Bert & Ernie,collectible,86.5,2026-08-12 12:35:11
+24c168f7-d4ef-4fa0-b9a6-21cf30a2625d,Rabbid Knightmare,collectible,19.99,2026-08-12 12:35:11
+77a41d39-aab6-4dfb-bfba-f20643615121,Jubilee,collectible,16.5,2026-08-12 12:35:11
+349d2928-d6b8-4b90-aa46-c49d76bd4038,Aesthetic (2020),collectible,26.68,2026-08-12 12:35:11
+527a3b5d-28c0-430c-bd5b-06c0bbbf8a10,Wet Head,collectible,157,2026-08-12 12:35:11
+7c5e7611-0e0f-4000-b5ed-0134ee7279f5,Coca-Cola – 1899 Empty Bottle,collectible,200,2026-08-12 12:35:11
+d4ec084d-812b-4a3c-958f-d691f0060ff9,Master Splinter - Battle Ready,collectible,54.99,2026-08-12 12:35:11
+582a6663-a706-4bc9-9078-b594acc896a8,Gouki Nostalgic,collectible,45.95,2026-08-12 12:35:11
+daf4feec-b2f7-4489-84a3-8bf4de83d9d2,Nose Goblins,collectible,4.8,2026-08-12 12:35:11
+cbe24b8c-1830-473d-b535-06648b654f65,Jason Naylor - OPN Heart BLACKOUT,collectible,14.99,2026-08-12 12:35:11
+69227665-8301-4c3b-a2ad-35729f1c3479,Stormtrooper - Crouching,collectible,15,2026-08-12 12:35:11
+c85f636d-05bf-4cb2-983c-22ae671ee6b4,Record #9 - Everyone is Jealous of Me - Platinum,collectible,28.1,2026-08-12 12:35:11
+2cf09235-f140-422e-a800-d0b049fbaff0,C-3PO,collectible,79,2026-08-12 14:40:59
+577a23d0-6417-4930-b5ac-092174aee57b,Running Keith (Modern) - XLARGE,collectible,754,2026-08-12 14:40:59
+9954145f-e85c-462e-b84b-2b50a3e3fbe9,Elsa,collectible,66,2026-08-12 14:40:59
+ae9b4b16-bc4e-4457-9c69-a3306c976ed7,Supergirl,collectible,69,2026-08-12 14:40:59
+4d1972b6-b15f-4c98-ab98-cec603aa58de,Ritmo,collectible,116,2026-08-12 14:40:59
+66bf871d-a8d4-474e-a0f2-b1ceb28c7b94,Millennium Falcon,collectible,85,2026-08-12 14:40:59
+0bfb1239-b03a-4084-bafe-770796eece82,Wolverine - Blue and Yellow suit,collectible,42,2026-08-12 14:40:59
+888a8bb0-f0e5-41ed-8414-09fedf371226,Sound of the Strange,collectible,345,2026-08-12 14:40:59
+4134563c-f023-4c74-992c-58d8ca7bcf44,Ecomi Coin,collectible,179,2026-08-12 14:40:59
+40f0f126-d43a-42b5-b7f1-9401b8722678,Gallardo - Nero Noctis,collectible,90,2026-08-12 14:40:59
+0988f04a-e678-4797-9652-0142e3a37f8b,Just-Us (color),collectible,90,2026-08-12 14:40:59
+ac35ac09-cbf8-48a8-82b5-e0604ffe5021,VeVe VIP Ticket - NYCC 2024,collectible,49,2026-08-12 14:40:59
+4f41756b-fc06-49d4-89de-27a6a27bed12,IG-11 - Assassin Droid,collectible,2500,2026-08-12 14:40:59
+3cb992e6-72eb-4d10-9eb0-38f285a73df9,Male Eivor - Wrath Unleashed,collectible,1499,2026-08-12 14:40:59
+842f5443-b6d0-4fec-a3cb-a17b91d9287b,Dream from Day to Night,collectible,19.99,2026-08-12 14:40:59
+73e1e322-b59c-4a65-983d-9d58c7b10434,Coca-Cola Holiday Caravan,collectible,10,2026-08-12 14:40:59
+efce0615-f0e6-43ba-8e30-e3eb8f56d37f,Sam Wilson - Marvel Metallic Red,collectible,65,2026-08-12 14:40:59
+a1273f2c-934d-4c2a-a17f-3d1be7278c6a,On the Prinsengracht in Amsterdam,collectible,219.9,2026-08-12 14:40:59
+62cf5e24-1fea-432c-aec0-a0c4a71bed9b,Phastos,collectible,1.8,2026-08-12 14:40:59
+1b85ed24-8f74-4e91-b467-5024b04e0749,Galactus - Devourer of Worlds,collectible,55.1,2026-08-12 14:40:59
+399cf35d-73a6-4156-b17c-6ca2adea7e04,Sersi,collectible,1.75,2026-08-12 14:40:59
+6de7f3f5-f2fd-44a5-b9bd-931fe237b02e,Creeping DERO,collectible,24.95,2026-08-12 14:40:59
+349d2928-d6b8-4b90-aa46-c49d76bd4038,Aesthetic (2020),collectible,31.45,2026-08-12 14:40:59
+c03b2444-bd47-4778-b0c1-d6e26429217a,Silver Surfer,collectible,18,2026-08-12 14:40:59
+c26e57d3-9613-470f-a2d8-6f448d76ec57,Crimson Trooper Helmet,collectible,15,2026-08-12 14:40:59
+c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,5.89,2026-08-12 14:40:59
+a494f556-ebcd-4252-b4ec-ccd52c331c5c,Mickey,collectible,8.99,2026-08-12 14:40:59
+92635283-99b4-4597-ba69-01e39ccba334,Master Splinter - Father Figure,collectible,5.55,2026-08-12 14:40:59
+cce3a323-94cb-44e3-b87b-c37cc9a34429,Beta Ray Bill - Action,collectible,84,2026-08-12 14:40:59
+205f1c9a-35f5-4a86-acc6-c968b286398f,MYO - Pink,collectible,42,2026-08-12 14:40:59
+e04d5ee6-b10d-4a4e-b1d7-0e875b59e221,Happy Lunar New Year! - Black,collectible,500,2026-08-12 14:40:59
+c376d32b-f61a-41de-85e7-fb3808546287,Tatooine,collectible,18,2026-08-12 14:40:59
+f6e15150-641b-4d8e-b7cc-19027a019d1f,Chris Robots Will Kill - OG,collectible,33,2026-08-12 14:40:59
+1d499ece-1016-4f5a-9140-d029d840146f,Mantis,collectible,5,2026-08-12 14:40:59
+24624bd2-2ea0-4754-9b6e-1497803316ad,Ron English Collectors Reward,collectible,43.93,2026-08-12 14:40:59
+1bacdd79-a711-4a24-9bfa-c0927e871e9a,Chris Robots Will Kill - SUYE Special Sky Blue,collectible,31,2026-08-12 14:40:59
+b8e9332e-cd45-45a2-9638-7fb3783b835e,Butterfly - Gray,collectible,133.35,2026-08-12 14:40:59
+c139b711-1f35-40ba-885e-e302c5ea7b66,RUNNING MON ver. VEVE BLUE,collectible,99,2026-08-12 14:40:59
+a709645b-62df-490d-b74a-16a90c358d50,Master Splinter - Combat Training,collectible,17.8,2026-08-12 14:40:59
+418dcebb-67d5-4216-9fc2-09f66901422e,Record #5 - Ronnnie Rabbbit - Platinum,collectible,39,2026-08-12 14:40:59
+158cf956-dbe3-48f4-9d41-68fa97acf97e,Kaiju Tokimon,collectible,2.8,2026-08-12 14:40:59
+4630596f-7c97-4356-a89c-ab458a3f0fca,Groot Thor,collectible,4,2026-08-12 14:40:59
+aeefbf50-3d0b-47cb-accb-86128d4398ed,DLT-19D Heavy Blaster,collectible,22.7,2026-08-12 14:40:59
+f210cd03-99a2-4a22-af3b-dc544ac84b4d,Rogue - 90’s X-Men,collectible,10,2026-08-12 14:40:59
+6dfe3789-1ad9-4232-a6cd-b657eb90efdd,Pizza Boxes,collectible,2,2026-08-12 14:40:59
+47bc3ff2-0185-4ae6-9ce8-94c0c5c56195,Record #7 - Bunnny's Rap - Gold,collectible,6,2026-08-12 14:40:59
+f6717b76-db8d-48af-bffd-d7016ac4a83d,C-Rank Essence Stone,collectible,1,2026-08-12 14:40:59
+eef9e3ab-a2bd-44ef-b10f-bc58be804cbd,On the Way to Work,collectible,20,2026-08-12 14:40:59
+2a576f3c-561a-4a5c-89ea-9863944ee329,The Public Image (5 of 7),collectible,43,2026-08-12 14:40:59
