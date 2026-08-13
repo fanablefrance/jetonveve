@@ -1,655 +1,83 @@
-# ⚠️ DEPOT : fanablefrance/jetonveve   ·   CHEMIN : .github/workflows/floor-watch.yml
-# Le projet vit sur 6 depots et DEUX comptes GitHub. Un fichier
-# depose au mauvais endroit ne provoque aucune erreur : il dort.
-
-name: Alertes sous-floor
-
-# ═══════════════════════════════════════════════════════════════════════════
-# 🔇 27/07/2026 — QUATRE CANAUX ETEINTS (demande de Preda)
-# ═══════════════════════════════════════════════════════════════════════════
-#   🩸 floor(s) VeVe effondre(s)      -> veve_steal / VEVE_STEAL_ON
-#   📈 vente(s) au-dessus du floor    -> sale_spike / SALE_SPIKE_ON
-#   🆕 nouveau(x) plus-haut(s) hist.  -> ath_on     / ATH_ON
-#   📉 plus-bas historique(s)         -> atl_on     / ATL_ON
-#
-# ⭐ POURQUOI DEUX ENDROITS, ET PAS UN. Ces quatre canaux se pilotent par
-# variable de depot (`vars.X`) — MAIS les champs de lancement manuel
-# ci-dessous passent DEVANT la variable (`inputs.x || vars.X || defaut`), et
-# ils valaient « true ». Poser la variable a false eteignait donc le cron et le
-# pinger, et un simple « Run workflow » les RALLUMAIT sans que rien ne le dise.
-# Les defauts des 4 champs passent donc a « false ». Pour un allumage
-# ponctuel : choisir « true » dans le champ au lancement — c'est explicite, ca
-# ne vaut que pour ce run, et ca ne change pas l'etat par defaut.
-# ⛔ NE PAS SUPPRIMER LE CODE de ces detecteurs : ils continuent d'ENREGISTRER
-# leur reference (floor courant, ATL/ATH vus en direct) meme eteints. La couper
-# ferait re-alerter tout le catalogue le jour du rallumage.
-#
-# 🐋 et 🔥 restent a « true » : ce sont les canaux que Preda veut voir.
-# ═══════════════════════════════════════════════════════════════════════════
-
-# v13 : le module DIT pourquoi il se tait.
-#
-# Deux jours sans une seule alerte, et aucun moyen de savoir QUI serrait trop :
-# la marge ? le benefice minimum ? l'ecart entre marches ? la preuve de vente ?
-# Desserrer au hasard, c'est deviner — et si deux verrous cedent en meme temps,
-# on ne saura toujours pas lequel bloquait. Le JOURNAL DES RECALES compte chaque
-# candidat ecarte, par motif, et garde ceux qui ont manque de peu AVEC LEURS
-# CHIFFRES. Un run, et on sait quel cran tourner, et de combien.
-#
-# TOUS LES SEUILS SONT DESORMAIS PILOTABLES SANS TOUCHER AU CODE (repo variables
-# ou champs de lancement). Et `simuler = oui` calcule tout SANS RIEN ENVOYER :
-# on ne regle pas un seuil en public, sur le Discord de la commu.
-
-on:
-  schedule:
-    - cron: "3 * * * *"
-  # 🏓 LE PINGER (22/07). GitHub saute/retarde les crons planifies (mesure :
-  # 3 runs en 8 h) ; un cron EXTERNE (cron-job.org ou le VPS) appelle ce
-  # dispatch toutes les 30 min -> GitHub execute a l'heure, et les requetes
-  # VeVe partent toujours des IP GitHub (zero exposition ajoutee).
-  # ⚠️ POURQUOI repository_dispatch et PAS workflow_dispatch : un lancement
-  # workflow_dispatch applique les DEFAUTS des champs ci-dessous (dont
-  # plusieurs "true"), qui passent DEVANT les variables de depot. Le pinger
-  # doit laisser les vars piloter -> repository_dispatch n'a pas d'inputs.
-  repository_dispatch:
-    types: [ping-floor-watch]
-  workflow_dispatch:
-    # ⛔⛔ MAXIMUM 25 CHAMPS ICI — limite dure de GitHub (« you may only define
-    # up to 25 `inputs` for a `workflow_dispatch` event »). Ce bloc est PLEIN.
-    # Le 26e ne provoque pas une erreur a l'execution : il rend le FICHIER
-    # INVALIDE, et le workflow cesse d'exister — plus de cron, plus de pinger,
-    # plus rien, en silence cote alertes. Paye le 27/07/2026.
-    # ➡️ Un nouveau reglage se pose en VARIABLE DE DEPOT (`vars.X`), pas ici.
-    #    Pour en ajouter un quand meme, il faut d'abord en RETIRER un.
-    #    tests/test_retouches_2707.py compte les champs a chaque execution.
-    inputs:
-      simuler:
-        description: "Tourner a blanc : tout calculer, N'ENVOYER RIEN (pour regler les seuils)"
-        required: false
-        default: "non"
-        type: choice
-        options: ["non", "oui"]
-      polls:
-        description: "Nombre de tours (2 min chacun)"
-        required: false
-        default: "25"
-      margin_pct:
-        description: "Marge nette minimale, en % (defaut 20)"
-        required: false
-        default: ""
-      min_profit:
-        description: "Benefice minimal, en $ (defaut 5)"
-        required: false
-        default: ""
-      spread_pct:
-        description: "Ecart minimal entre marches, en % (defaut 40)"
-        required: false
-        default: ""
-      drop_pct:
-        description: "Decote minimale sous le floor StackR, en % (defaut 10)"
-        required: false
-        default: ""
-      sales_pages:
-        description: "Pages d'historique de ventes (defaut 120 = ~7 j). L'elargir donne plus de PREUVES."
-        required: false
-        default: ""
-      comic_max_usd:
-        description: "📚 Comics : prix maximal pour alerter, en $ (defaut 2)"
-        required: false
-        default: ""
-      mint_marge:
-        description: "🎯 Numéros : écart max au floor pour dire « le vendeur ne l'a pas vu » (défaut 20 %)"
-        required: false
-        default: ""
-      mint_score:
-        description: "🎯 Numéros : score minimal (défaut 2 — 6 = seulement le #1 et la 1re édition publique)"
-        required: false
-        default: ""
-      comic_max_listings:
-        description: "📚 Comics : nb max d'offres en vente (defaut 3 — au-dela c'est le prix du marche)"
-        required: false
-        default: ""
-      comic_supply:
-        description: "📚 Comics : tirage maximal suivi (defaut 1000)"
-        required: false
-        default: ""
-      veve_steal:
-        description: "🩸 Vol sur le floor VeVe : allumer ce canal (chute du floor VeVe vs sa valeur recente)"
-        required: false
-        default: "false"
-        type: choice
-        options: ["false", "true"]
-      steal_pct:
-        description: "🩸 Chute minimale du floor VeVe pour alerter, en % (defaut 25)"
-        required: false
-        default: ""
-      sale_spike:
-        description: "📈 Vente au-dessus du floor : allumer ce canal (une vente reelle bien au-dessus du floor)"
-        required: false
-        default: "false"
-        type: choice
-        options: ["false", "true"]
-      spike_ratio:
-        description: "📈 Multiple du floor a partir duquel une vente est notable (defaut 3 = ×3)"
-        required: false
-        default: ""
-      ath_on:
-        description: "🆕 Nouveau ATH : allumer ce canal (floor qui bat son plus-haut historique) → canal dedie"
-        required: false
-        default: "false"
-        type: choice
-        options: ["false", "true"]
-      atl_on:
-        description: "📉 Plus-bas historique : allumer ce canal (floor au plus bas jamais vu) → canal principal"
-        required: false
-        default: "false"
-        type: choice
-        options: ["false", "true"]
-      atl_stackr:
-        description: "📉 Plus-bas StackR FRAIS (flux 2 min, instantane) : allumer ce canal → canal principal"
-        required: false
-        default: "false"
-        type: choice
-        options: ["false", "true"]
-      whale_on:
-        description: "🐋 Suivi comptes whale/team (tags 🟣C-PSEUDOS) → canal dedie"
-        required: false
-        # 22/07 : « true » par defaut au lancement MANUEL aussi (demande Preda —
-        # les autres canaux actifs l'etaient deja, celui-ci avait ete oublie).
-        default: "true"
-        type: choice
-        options: ["false", "true"]
-      pic_on:
-        description: "🔥 Pic d'activité hors drop : allumer ce canal (ventes du jour d'un item qui explosent vs sa moyenne) → canal dedie"
-        required: false
-        default: "true"
-        type: choice
-        options: ["false", "true"]
-      pic_ratio:
-        description: "🔥 Pic : multiple de la moyenne des jours actifs pour alerter (defaut 3 = ×3)"
-        required: false
-        default: ""
-      hprix_feed:
-        description: "🌉 Pont → 🟠H-PRIX : ecrire les floors collectibles qui changent dans data/hprix_feed.csv (preda l'ingere)"
-        required: false
-        default: "true"
-        type: choice
-        options: ["false", "true"]
-      purger_ventes:
-        description: "🧹 JETER l'historique des ventes (a faire UNE fois : il a ete collecte avec la mauvaise unite)"
-        required: false
-        default: "non"
-        type: choice
-        options: ["non", "oui"]
-      require_sale:
-        description: "Exiger une vente reelle avant d'alerter (garde-fou : 71 % des items ne se vendent JAMAIS)"
-        required: false
-        default: "true"
-        type: choice
-        options: ["true", "false"]
-
-permissions:
-  contents: write
-
-concurrency:
-  group: floor-watch
-  cancel-in-progress: false
-
-jobs:
-  watch:
-    runs-on: ubuntu-latest
-    timeout-minutes: 70
-    steps:
-      - uses: actions/checkout@v4
-
-      # ♻️ L'ETAT NE VIT PLUS DANS GIT (22/07/2026). 2,5 Mo commites jusqu'a
-      # 48x/jour depuis le pinger : l'historique gonflait sans fin, et c'etait
-      # LE verrou d'une cadence plus fine. L'etat vit dans les assets de la
-      # release `etat-floor-watch`. Si la release existe mais est injoignable,
-      # on REFUSE de tourner : partir d'un etat perime = cooldowns oublies =
-      # re-alertes en masse sur le Discord de la commu. Premiere migration :
-      # release absente -> on demarre de la derniere copie commitee dans git
-      # (qui reste ensuite FIGEE, en graine de secours).
-      - name: Etat depuis la release (plus de git pour l'etat)
+# ═══════════════════════════════════════════════════════════════════════
+      # 📓 LOT 147 — LE JOURNAL DES PRIX : 1 POINT PAR PIÈCE ET PAR JOUR
+      # ═══════════════════════════════════════════════════════════════════════
+      # Preda, 13/08 : « je veux un suivi quotidien une fois par jour des prix ».
+      # ⭐⭐⭐ RIEN A COLLECTER DE PLUS : cette etape observe deja 6 229 pieces
+      # cote VeVe et ~900 cote StackR a CHAQUE run horaire, et `releves.csv`
+      # ecrase la photo precedente. 24 observations par jour partaient a la
+      # poubelle. Ce bloc ARRETE DE JETER — il n'ajoute AUCUN appel reseau vers
+      # VeVe ou StackR, seulement un aller-retour de release.
+      #
+      # ⛔ IL NE ROUGIT PAS LE RUN. Les alertes sont le produit ; le journal est
+      # un passager. Un KO ici ecrit une ANNOTATION `::warning::` (lisible par
+      # `api.github.com/.../runs/<id>/annotations`) et poste sur Discord si le
+      # webhook est la. ⭐ « Poser ≠ brancher » : le `if` verifie le webhook.
+      #
+      # ⏱️ Cout mesure sur l'etat reel (4,1 Mo) : 0,21 s de calcul, 180 Ko de
+      # journal le 1er jour, ~5,2 Mo gzip au bout d'un mois plein.
+      - name: "📓 Journal des prix (lot 147)"
+        if: always()
         env:
           GH_TOKEN: ${{ github.token }}
+          DISCORD_ALERTE_TECH_WEBHOOK: ${{ secrets.DISCORD_ALERTE_TECH_WEBHOOK }}
         run: |
-          mkdir -p data
-          if gh release view etat-floor-watch >/dev/null 2>&1; then
+          set -u
+          [ -f data/floor_state.json ] || { echo "etat absent — rien a journaliser."; exit 0; }
+
+          alerte() {
+            echo "::warning title=Journal des prix::$1"
+            [ -n "${DISCORD_ALERTE_TECH_WEBHOOK:-}" ] && \
+              curl -s -H "Content-Type: application/json" \
+                   -d "{\"content\": \"📓 **Journal des prix** — $1\"}" \
+                   "$DISCORD_ALERTE_TECH_WEBHOOK" >/dev/null || true
+            exit 0
+          }
+
+          # 1️⃣ LE BANC D'ABORD. jetonveve n'a AUCUN workflow de tests : un banc
+          #    pose dans `tests/` y serait MUET (zero run, zero rouge, et le
+          #    silence ressemble a un succes). Il tourne donc ICI, avant
+          #    d'ecrire quoi que ce soit. 47 controles, < 1 s.
+          python3 tests/test_journal_prix.py || alerte "BANC ROUGE — le journal n'a pas ete touche."
+
+          # 2️⃣ Les mois qu'on peut toucher : le mois courant, et le precedent
+          #    pendant les 25 premieres heures du mois (la fenetre de fraicheur
+          #    enjambe la bascule). ⛔ PAS `--pattern "prix-*"` : au bout d'un
+          #    an ce serait 60 Mo telecharges toutes les heures pour rien.
+          mkdir -p /tmp/journal
+          M1=$(date -u +%Y-%m)
+          M0=$(date -u -d '25 hours ago' +%Y-%m)
+          gh release view journal-prix >/dev/null 2>&1 || \
+            gh release create journal-prix --title "Journal des prix (1 point/piece/jour)" \
+              --notes "Un fichier par mois : prix-AAAA-MM.csv.gz · colonnes veve_uuid,jour,ts_obs,source,floor,unite · le jour est celui de l'OBSERVATION, jamais du run · ⛔ deux marches : source=veve en USD, source=stackr en OMI, aucune conversion."
+          DISTANTS=$(gh release view journal-prix --json assets -q '.assets[].name' 2>/dev/null || echo "")
+          for M in $M1 $M0; do
+            [ -f "/tmp/journal/prix-$M.csv.gz" ] && continue
+            gh release download journal-prix --pattern "prix-$M.csv.gz" --dir /tmp/journal --clobber 2>/dev/null || true
+            # ⭐⭐⭐ LE GARDE-FOU QUI COMPTE. Un telechargement rate rend un
+            #   dossier VIDE — indistinguable d'un mois qui commence. Le mois
+            #   repartirait alors de zero et ECRASERAIT la release avec un
+            #   fichier d'un jour, EN SORTANT VERT. On ne compare donc pas au
+            #   dossier local : on compare a la LISTE DISTANTE.
+            if echo "$DISTANTS" | grep -qx "prix-$M.csv.gz" && [ ! -f "/tmp/journal/prix-$M.csv.gz" ]; then
+              alerte "prix-$M.csv.gz EXISTE dans la release mais n'a pas pu etre telecharge — on n'ecrit rien (sinon le mois repartirait de zero)."
+            fi
+          done
+
+          # 3️⃣ Le calcul. Le module refuse d'ecrire un journal qui retrecit,
+          #    qui perd une cle, ou dont l'horloge derape (seuil : plus de 1 %
+          #    d'observations hors tolerance).
+          python3 -m scraper.journal_prix --etat data/floor_state.json --dossier /tmp/journal \
+            || alerte "le module a refuse d'ecrire (voir le journal du run) — la release est INTACTE."
+
+          # 4️⃣ Le televersement, mois par mois, avec la meme reprise que l'etat.
+          for f in /tmp/journal/prix-*.csv.gz; do
+            [ -e "$f" ] || continue
+            [ -s "$f" ] || { alerte "$(basename "$f") est vide — non televerse."; }
             ok=""
-            for i in 1 2 3 4 5; do
-              gh release download etat-floor-watch -p floor_state.json -O data/floor_state.json --clobber && { ok=1; break; }
-              echo "telechargement rate (essai $i) — nouvel essai dans $((i * 10))s"
+            for i in 1 2 3; do
+              gh release upload journal-prix "$f" --clobber && { ok=1; break; }
               sleep $((i * 10))
             done
-            [ -n "$ok" ] || { echo "⛔ etat injoignable : on refuse de tourner sur un etat perime."; exit 1; }
-            echo "etat charge depuis la release ($(wc -c < data/floor_state.json) octets)."
-          else
-            echo "release absente (1re migration) : on demarre de la copie git."
-          fi
-
-      # 📚 Le catalogue vit dans le Sheet, donc chez preda (PRIVE) : tirage,
-      # 1re edition publique, nombre d'offres, note de classement. Rien de tout
-      # cela n'existe cote StackR. On va chercher le seul fichier dont on a
-      # besoin, en lecture seule. Si ce checkout echoue, les signaux comics et
-      # numeros s'eteignent tout seuls — le reste continue.
-      - name: "Catalogue (CSV exporte par preda : tirage, 1re edition publique, offres, note)"
-        continue-on-error: true
-        uses: actions/checkout@v4
-        with:
-          repository: VeVePreda/scrapeur-veve
-          token: ${{ secrets.PREDA_TOKEN }}
-          path: _preda
-          sparse-checkout: |
-            data/elements.csv
-            data/tracked_accounts.csv
-          sparse-checkout-cone-mode: false
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: pip
-      - run: pip install -r requirements.txt
-
-      - name: Veille des listings
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          # Canal dedie (🆕 ATH + 📈 x3 + pic). Absent -> repli sur le principal.
-          DISCORD_WEBHOOK_ATH: ${{ secrets.DISCORD_WEBHOOK_ATH }}
-          FLOOR_SIMULER: ${{ github.event.inputs.simuler == 'oui' && '1' || '' }}
-          # 🔴 CORRIGE LE 20/07 — CETTE LIGNE N'AVAIT PAS DE `vars.`
-          # Consequence : poser la variable de depot FLOOR_POLLS=12 n'avait
-          # AUCUN effet. L'experience lancee le 20/07 a tourne a 25 tours
-          # ([1/25] dans le log) et l'aurait fait jusqu'au 22/07 pour rien.
-          # ⭐ REFLEXE A PRENDRE : avant de recommander une variable, verifier
-          # qu'elle est cablee jusqu'au bout — `vars.X` ICI **ET**
-          # `os.environ.get("X")` dans le code. Les deux, sinon rien.
-          FLOOR_POLLS: ${{ github.event.inputs.polls || vars.FLOOR_POLLS || '12' }}
-          FLOOR_INTERVAL_S: ${{ vars.FLOOR_INTERVAL_S || '120' }}
-          # Un reglage vaut pour TOUS les runs suivants (repo variable), un champ
-          # de lancement ne vaut que pour CE run. L'ordre : champ > variable > defaut.
-          FLOOR_MARGIN_PCT: ${{ github.event.inputs.margin_pct || vars.FLOOR_MARGIN_PCT || '20' }}
-          FLOOR_MIN_PROFIT: ${{ github.event.inputs.min_profit || vars.FLOOR_MIN_PROFIT || '5' }}
-          FLOOR_SPREAD_PCT: ${{ github.event.inputs.spread_pct || vars.FLOOR_SPREAD_PCT || '40' }}
-          FLOOR_DROP_PCT: ${{ github.event.inputs.drop_pct || vars.FLOOR_DROP_PCT || '10' }}
-          FLOOR_VEVE_PCT: ${{ vars.FLOOR_VEVE_PCT || '35' }}
-          FLOOR_SALES_PAGES: ${{ github.event.inputs.sales_pages || vars.FLOOR_SALES_PAGES || '120' }}
-          FLOOR_PURGER_VENTES: ${{ github.event.inputs.purger_ventes == 'oui' && '1' || '' }}
-          FLOOR_REQUIRE_SALE: ${{ github.event.inputs.require_sale || vars.FLOOR_REQUIRE_SALE || 'true' }}
-          # 📚 Signal 4 : le comic a petit tirage brade (ni preuve de vente, ni
-          # promesse de revente : un PRIX D'ENTREE absurde au regard de la rarete)
-          ELEMENTS_CSV: _preda/data/elements.csv
-          DATES_CSV: data/dates_cles.csv
-          # 💤 Les ecarts de prix sont ETEINTS (demande de Preda). Le code reste :
-          # mettre FLOOR_ARBITRAGE=true (variable de depot) le rallume.
-          FLOOR_ARBITRAGE: ${{ vars.FLOOR_ARBITRAGE || 'false' }}
-          FLOOR_SPREAD: ${{ vars.FLOOR_SPREAD || 'false' }}
-          # ⚠️ On ne peut pas lister sous 1 $ sur VeVe : un floor a 1,00 $ est le
-          # PLANCHER de la plateforme, pas une aubaine.
-          VEVE_PRIX_PLANCHER: ${{ vars.VEVE_PRIX_PLANCHER || '1' }}
-          # 🎯 La chasse aux numeros
-          MINT_ON: ${{ vars.MINT_ON || 'true' }}
-          MINT_MARGE_PCT: ${{ github.event.inputs.mint_marge || vars.MINT_MARGE_PCT || '20' }}
-          MINT_SCORE_MIN: ${{ github.event.inputs.mint_score || vars.MINT_SCORE_MIN || '2' }}
-          MINT_MAX_ALERTES: ${{ vars.MINT_MAX_ALERTES || '25' }}
-          COMIC_SUPPLY_MAX: ${{ github.event.inputs.comic_supply || vars.COMIC_SUPPLY_MAX || '1000' }}
-          COMIC_MAX_USD: ${{ github.event.inputs.comic_max_usd || vars.COMIC_MAX_USD || '2' }}
-          COMIC_MAX_ALERTES: ${{ vars.COMIC_MAX_ALERTES || '25' }}
-          # « 8 offres a 1,75 $, ce n'est pas une affaire » : au-dela de ce
-          # nombre d'offres au meme prix, c'est le prix du MARCHE, pas une aubaine.
-          COMIC_MAX_LISTINGS: ${{ github.event.inputs.comic_max_listings || vars.COMIC_MAX_LISTINGS || '3' }}
-          # 📚 27/07 : le COTE VEVE du signal comics. Preda achete « entre 0 et
-          # 1,99 $ sur VeVe OU StackR » ; depuis le 15/07 seul StackR etait lu.
-          # Detecteur de TRANSITION (entree dans la fenetre au balayage
-          # horaire), amorcage silencieux au 1er passage. COMIC_VEVE_ON=false
-          # revient au comportement StackR-seul.
-          # ⛔ PAS de champ de lancement pour celui-ci : le bloc `inputs` du
-          # workflow_dispatch etait DEJA A 25, le maximum autorise par GitHub.
-          # Le 26e a rendu le fichier INVALIDE — donc le workflow ne tournait
-          # plus DU TOUT (27/07, run 30287522832). Il reste pilotable par
-          # variable de depot, ce qui suffit : COMIC_VEVE_ON=false l'eteint.
-          COMIC_VEVE_ON: ${{ vars.COMIC_VEVE_ON || 'true' }}
-          # 🩸📈 LOT 1 (15/07) — deux canaux single-marche, ETEINTS par defaut.
-          # On les allume et on les calibre UN A LA FOIS (simuler d'abord).
-          VEVE_STEAL_ON: ${{ github.event.inputs.veve_steal || vars.VEVE_STEAL_ON || 'false' }}
-          VEVE_STEAL_PCT: ${{ github.event.inputs.steal_pct || vars.VEVE_STEAL_PCT || '25' }}
-          VEVE_STEAL_MIN_USD: ${{ vars.VEVE_STEAL_MIN_USD || '1' }}
-          VEVE_STEAL_MAX: ${{ vars.VEVE_STEAL_MAX || '10' }}
-          SALE_SPIKE_ON: ${{ github.event.inputs.sale_spike || vars.SALE_SPIKE_ON || 'false' }}
-          SALE_SPIKE_RATIO: ${{ github.event.inputs.spike_ratio || vars.SALE_SPIKE_RATIO || '3' }}
-          SALE_SPIKE_MIN_USD: ${{ vars.SALE_SPIKE_MIN_USD || '5' }}
-          SALE_SPIKE_MAX: ${{ vars.SALE_SPIKE_MAX || '10' }}
-          # 🆕 ATH (canal dedie) · 📉 plus-bas (canal principal). ETEINTS par defaut.
-          ATH_ON: ${{ github.event.inputs.ath_on || vars.ATH_ON || 'false' }}
-          ATL_ON: ${{ github.event.inputs.atl_on || vars.ATL_ON || 'false' }}
-          ATH_MAX: ${{ vars.ATH_MAX || '10' }}
-          ATL_MAX: ${{ vars.ATL_MAX || '10' }}
-          # 📉 n'alerte que si le floor est au moins X % SOUS l'ATL (defaut 25).
-          ATL_MARGIN_PCT: ${{ vars.ATL_MARGIN_PCT || '25' }}
-          ATL_FRESH_MIN: ${{ vars.ATL_FRESH_MIN || '70' }}
-          ATL_STACKR_ON: ${{ github.event.inputs.atl_stackr || vars.ATL_STACKR_ON || 'false' }}
-          ATL_STACKR_MIN_USD: ${{ vars.ATL_STACKR_MIN_USD || '1' }}
-          ATL_STACKR_MARGIN_PCT: ${{ vars.ATL_STACKR_MARGIN_PCT || '5' }}
-          ATL_STACKR_MAX: ${{ vars.ATL_STACKR_MAX || '10' }}
-          # 🐋 suivi whale/team (fusionne ici : meme flux StackR)
-          DISCORD_WEBHOOK_WHALE: ${{ secrets.DISCORD_WEBHOOK_WHALE }}
-          WHALE_ON: ${{ github.event.inputs.whale_on || vars.WHALE_ON || 'false' }}
-          WHALE_XFER_MIN: ${{ vars.WHALE_XFER_MIN || '5' }}
-          WHALE_MIN_USD: ${{ vars.WHALE_MIN_USD || '1' }}
-          WHALE_MAX: ${{ vars.WHALE_MAX || '10' }}
-          WHALE_XFER_PAGES: ${{ vars.WHALE_XFER_PAGES || '3' }}
-          # 🆕 n'alerte que si le floor depasse l'ATH d'au moins X % (defaut 25).
-          ATH_MARGIN_PCT: ${{ vars.ATH_MARGIN_PCT || '25' }}
-          # 🔥 PIC D'ACTIVITE HORS DROP (canal dedie WEBHOOK_ATH). ETEINT par
-          # defaut : on calibre en simuler avant d'allumer, comme les autres. La
-          # baseline vient des ~7 j de ventes deja charges (zero requete en plus) ;
-          # un item qui vient de dropper n'a pas d'historique -> ecarte tout seul.
-          PIC_ON: ${{ github.event.inputs.pic_on || vars.PIC_ON || 'false' }}
-          PIC_RATIO: ${{ github.event.inputs.pic_ratio || vars.PIC_RATIO || '3' }}
-          PIC_MIN_COUNT: ${{ vars.PIC_MIN_COUNT || '4' }}
-          PIC_MIN_JOURS: ${{ vars.PIC_MIN_JOURS || '2' }}
-          PIC_MIN_BASE: ${{ vars.PIC_MIN_BASE || '1' }}
-          PIC_MAX: ${{ vars.PIC_MAX || '10' }}
-          # 📊🔊 SIGNAUX BASELINES (magasin de prix prices-full). ETEINTS par defaut.
-          HISTLOW_ON: ${{ vars.HISTLOW_ON || 'false' }}
-          HISTLOW_PCT: ${{ vars.HISTLOW_PCT || '10' }}
-          HISTLOW_MIN_POINTS: ${{ vars.HISTLOW_MIN_POINTS || '30' }}
-          # 🔴 22/07 : lue par le code depuis le 20/07 mais jamais posable ici —
-          # trouvee par tests/test_reglages_cables.py (rouge preexistant).
-          HISTLOW_MAX: ${{ vars.HISTLOW_MAX || '10' }}
-          VOL_ON: ${{ vars.VOL_ON || 'false' }}
-          VOL_RATIO: ${{ vars.VOL_RATIO || '3' }}
-          # 🌉 LE PONT VEILLE → 🟠H-PRIX (collectibles). OFF par defaut : on ecrit
-          # dans data/hprix_feed.csv, preda l'ingere. Champ > variable > defaut.
-          # La reference des floors est tenue a jour meme OFF (rien a cracher au
-          # 1er allumage). Meme unite que H-PRIX (gems ~ $), zero conversion.
-          HPRIX_FEED_ON: ${{ github.event.inputs.hprix_feed || vars.HPRIX_FEED_ON || 'false' }}
-          HPRIX_FEED_DAYS: ${{ vars.HPRIX_FEED_DAYS || '7' }}
-          HPRIX_FEED_CAP: ${{ vars.HPRIX_FEED_CAP || '1000000000' }}
-          # 🔇 LE SPAM EST STRUCTURELLEMENT IMPOSSIBLE : plafond de messages par
-          # run ET par jour, tous signaux confondus. Au-dela, on se TAIT — et on
-          # ne memorise rien, donc rien n'est perdu.
-          # Plafond anti-ban : 20 messages/min PAR webhook (fenetre glissante).
-          FLOOR_MAX_MSG_MIN: ${{ vars.FLOOR_MAX_MSG_MIN || '20' }}
-          FLOOR_PAUSE_MSG_S: ${{ vars.FLOOR_PAUSE_MSG_S || '3' }}
-
-          # ═══════════════════════════════════════════════════════════════
-          # 🔴 20/07 — LES 15 REGLAGES QUE LE CODE LISAIT SANS QUE PERSONNE
-          #            NE PUISSE LES POSER
-          # ═══════════════════════════════════════════════════════════════
-          # Controle systematique : 76 reglages lus par floor_watch.py, 67
-          # poses ici, 15 absents. Un `os.environ.get("X", defaut)` sans ligne
-          # correspondante ne casse RIEN et ne dit RIEN — il applique
-          # silencieusement son defaut. C'est la pire des pannes : muette.
-          # Trois recommandations etaient donc inapplicables sans qu'aucun
-          # message ne le signale (l'optimisation -60 %, le plafond de
-          # vraisemblance, la sentinelle anti-blocage).
-          #
-          # Commande de controle, a relancer apres toute modification du code :
-          #   comparer  re.findall(r'os\.environ\.get\(\s*"([A-Z_0-9]+)"', code)
-          #        a    re.findall(r'^\s+([A-Z_0-9]+):', workflow)
-          # (le test tests/test_reglages_cables.py le fait automatiquement)
-
-          # --- Collecte : le cout en requetes ---------------------------------
-          # ⛔ NE PAS POSER FLOOR_ELEM_LIMIT > 100. Ce bloc annoncait autrefois
-          # « 250 = -60 % de requetes a donnees identiques » : c'est FAUX, et
-          # mesure comme tel le 27/07 — `getElements` plafonne a 100 et renvoie
-          # 400 des 101. Le code applique donc le plafond lui-meme et le DIT.
-          # La vraie economie n'etait pas la : elle est en dessous, dans la
-          # pagination des VENTES, que l'entrepot remplace (FLOOR_LIQ_*).
-          FLOOR_ELEM_LIMIT: ${{ vars.FLOOR_ELEM_LIMIT || '100' }}
-          FLOOR_LISTINGS: ${{ vars.FLOOR_LISTINGS || '50' }}
-          # 🏓 Cadence pinger (22/07) : fenetre LARGE au 1er tour (couvre le
-          # trou entre deux runs) + reprise des floors depuis l'etat quand le
-          # dernier balayage date de moins de FLOOR_REFRESH_MIN (le balayage
-          # lourd reste 1x/h meme a 2 runs par heure).
-          FLOOR_LISTINGS_FIRST: ${{ vars.FLOOR_LISTINGS_FIRST || '120' }}
-          FLOOR_REFRESH_FROM_STATE: ${{ vars.FLOOR_REFRESH_FROM_STATE || 'true' }}
-          # ⚠️ NE PAS DESCENDRE SANS REFLECHIR : le floor n'est relu qu'UNE
-          # fois par run. C'est la cause mesuree du baillon de 📉 (ATL_FRESH_MIN
-          # = 70 min face a un ecart de refresh observe a 233 min). Le remede
-          # est le cron/VPS, pas ce chiffre.
-          FLOOR_REFRESH_MIN: ${{ vars.FLOOR_REFRESH_MIN || '60' }}
-          FLOOR_TIMEOUT: ${{ vars.FLOOR_TIMEOUT || '45' }}
-          FLOOR_RETRIES: ${{ vars.FLOOR_RETRIES || '6' }}
-          FLOOR_PAUSE: ${{ vars.FLOOR_PAUSE || '0.2' }}
-
-          # 🏭 PREUVE DE VENTE DEPUIS L'ENTREPOT (recablage du 29/07)
-          # `liquidity_baseline` repond « cet item se vend-il ? » depuis les
-          # transferts on-chain, hors reseau. Quand il charge, la pagination des
-          # ventes StackR tombe de FLOOR_SALES_PAGES a FLOOR_SALES_PAGES_LIQ
-          # (120 -> 5 = ~2 880 requetes/jour en moins). Quand il ne charge pas,
-          # le code REVIENT tout seul a 120 : on ne perd jamais la preuve.
-          # ⚠️ CES 4 REGLAGES SONT DES `vars`, PAS DES `inputs` : le bloc
-          # `inputs` est PLEIN (25/25) et le 26e rend le workflow INEXISTANT,
-          # tests verts compris. Ne jamais les y ajouter.
-          FLOOR_LIQ_ON: ${{ vars.FLOOR_LIQ_ON || 'true' }}
-          FLOOR_SALES_PAGES_LIQ: ${{ vars.FLOOR_SALES_PAGES_LIQ || '5' }}
-          FLOOR_LIQ_MIN_SALES: ${{ vars.FLOOR_LIQ_MIN_SALES || '1' }}
-          FLOOR_LIQ_FENETRE: ${{ vars.FLOOR_LIQ_FENETRE || 'n_sales_90d' }}
-          LIQUIDITY_SRC: ${{ vars.LIQUIDITY_SRC || '' }}
-
-          # 🩺 SENTINELLE DES SOURCES (29/07) — l'audit empirique qui manquait
-          # depuis le 22/07. Elle COMPTE les reponses par source et crie quand
-          # une source nous repousse ; elle n'arrete jamais un run.
-          # MIN_OBS evite le verdict sur 3 requetes (une sentinelle qui crie
-          # faux est pire qu'une sentinelle muette).
-          SENTINELLE_MIN_OBS: ${{ vars.SENTINELLE_MIN_OBS || '30' }}
-          SENTINELLE_FERME_PCT: ${{ vars.SENTINELLE_FERME_PCT || '5' }}
-          # A4 bis : un refus TOTAL sur au moins ce nombre de requetes vaut
-          # verdict, sans passer par MIN_OBS — sinon une source appelee 6
-          # fois par run (stackr) ne serait JAMAIS jugee.
-          SENTINELLE_REFUS_ABSOLU: ${{ vars.SENTINELLE_REFUS_ABSOLU || '5' }}
-          SENTINELLE_LENTE_PCT: ${{ vars.SENTINELLE_LENTE_PCT || '20' }}
-          SENTINELLE_PAUSE_MAX_S: ${{ vars.SENTINELLE_PAUSE_MAX_S || '30' }}
-          # 🕳️ Lot 81 (06/08) : la reponse qui ARRIVE en HTTP 200 et ne porte
-          # aucun objet (GraphQL rend `errors[]` dans le CORPS, pas dans le
-          # code). Seuil plus haut que celui du refus : quelques items retires
-          # du store sont la vie normale d'un catalogue. Reference mesuree le
-          # 06/08 sur l'API VeVe : 0 absence sur 300 identifiants valides.
-          SENTINELLE_ABSENT_PCT: ${{ vars.SENTINELLE_ABSENT_PCT || '10' }}
-
-          # --- Seuils economiques --------------------------------------------
-          FLOOR_FEE_PCT: ${{ vars.FLOOR_FEE_PCT || '8.5' }}
-          FLOOR_MIN_USD: ${{ vars.FLOOR_MIN_USD || '1' }}
-          FLOOR_COOLDOWN_H: ${{ vars.FLOOR_COOLDOWN_H || '6' }}
-
-          # --- ⏱️ Fraicheur des evenements du flux (22/07) --------------------
-          # Les cartes issues du flux StackR (🎯 📚 📉-StackR 🐋) portent
-          # desormais TOUJOURS l'heure de l'evenement (« il y a 2 h 31 »).
-          # En plus, au-dela de cet age (en minutes), l'evenement est IGNORE.
-          # 0 = pas de filtre. Poser vars.FLOOR_EVENT_MAX_AGE_MIN=45 pour ne
-          # plus jamais recevoir un « rattrapage » de 2 h apres un cron saute.
-          # ⚠️ Le vrai remede du retard reste la cadence (VPS / pinger).
-          FLOOR_EVENT_MAX_AGE_MIN: ${{ vars.FLOOR_EVENT_MAX_AGE_MIN || '0' }}
-          # 🇫🇷 Fuseau des heures affichees sur les cartes (22/07 : « 11:56
-          # UTC » sous un Discord a 13:56 se lisait comme 2 h de retard
-          # imaginaire). L'heure des cartes est celle du lecteur.
-          FLOOR_TZ: ${{ vars.FLOOR_TZ || 'Europe/Paris' }}
-          FLOOR_TZ_LABEL: ${{ vars.FLOOR_TZ_LABEL || 'FR' }}
-
-          # --- 🛡️ Le plafond de vraisemblance --------------------------------
-          # Valeur fixee par Preda : « au-dela de 50 000 $ ce n'est pas la
-          # peine, meme les grails du marche ne depassent pas 15 k ». Releve :
-          # 20 items a floor > 100 000 $ (dont un a 42 420 420 420 420 $) et
-          # une vente a 18 666 667 $. Le sujet n'est pas le volume — c'est rare
-          # — mais la CREDIBILITE : une seule carte « vendu 18 666 667 $ »
-          # decredibilise un canal payant entier.
-          FLOOR_PRIX_MAX: ${{ vars.FLOOR_PRIX_MAX || '50000' }}
-          ATH_CAP: ${{ vars.ATH_CAP || '1000000000' }}
-
-          # --- 🚨 La sentinelle anti-blocage ---------------------------------
-          # Si la recolte tombe sous MIN_RATIO de la precedente, on crie au lieu
-          # de conclure au calme plat. Une recolte maigre et un marche calme se
-          # ressemblent dans un log — pas dans les chiffres.
-          FLOOR_MIN_RATIO: ${{ vars.FLOOR_MIN_RATIO || '0.8' }}
-          FLOOR_MAIGRE_ALERTE: ${{ vars.FLOOR_MAIGRE_ALERTE || '3' }}
-
-          # --- Chemins : POSES EN DUR, ET C'EST VOLONTAIRE -------------------
-          # ⛔ Ces deux-la ne prennent PAS de `vars.`, contrairement aux 13
-          # autres. L'etape de commit plus bas teste `data/floor_state.json` et
-          # `data/hprix_feed.csv` en dur : une variable mal saisie ferait ecrire
-          # le run ailleurs, le commit ne trouverait rien, et LA RECOLTE DU RUN
-          # SERAIT PERDUE EN SILENCE. « Pilotable » ne vaut pas le risque quand
-          # la seule raison de changer un chemin est un test.
-          FLOOR_STATE: data/floor_state.json
-          HPRIX_FEED: data/hprix_feed.csv
-
-          # --- ⭐ 5 DE PLUS, TROUVES EN ELARGISSANT LE CONTROLE ---------------
-          # Le workflow ne lance qu'un module (`python -m scraper.floor_watch`),
-          # mais celui-ci en PILOTE trois autres : numeros, price_baseline et
-          # whale_watch. Leurs reglages se lisent dans le meme environnement et
-          # personne ne les posait non plus. Tous laisses au defaut du code :
-          # aucun changement de comportement, juste la main rendue.
-          #
-          # 🎯 numeros — le signal LE PLUS ACTIF (8,9 tirs/jour). « Remarquable »
-          # = dans les BAS premiers numeros ou les HAUT derniers du tirage.
-          MINT_BAS: ${{ vars.MINT_BAS || '10' }}
-          # ⭐ 27/07 : 10 -> 1. « Seul le dernier du tirage total est
-          # interessant » (Preda). ⚠️ Ce repli en dur PASSE DEVANT le defaut du
-          # code : le changer dans numeros.py seul n'aurait servi a RIEN ici.
-          MINT_HAUT: ${{ vars.MINT_HAUT || '1' }}
-          # 📊 ou vivent les percentiles du magasin de prix. A ne changer que
-          # pour pointer une release de test.
-          BASELINES_SRC: ${{ vars.BASELINES_SRC || '' }}
-          # 🐋 duree de memoire du dedoublonnage. ⚠️ La descendre fait
-          # RE-ALERTER de vieux evenements — c'est un anti-doublon, pas un cache.
-          WHALE_VU_TTL_H: ${{ vars.WHALE_VU_TTL_H || '48' }}
-          # ⏱️ 27/07 — BORNE D'AGE DU DETECTEUR 🐋 SUR LE MARCHE VEVE.
-          # Sa profondeur depend de FLOOR_SALES_PAGES (20 pages ≈ 10 h,
-          # 120 pages ≈ 3 j) : ELARGIR CE REGLAGE FERAIT PUBLIER D'UN COUP
-          # tous les evenements jamais vus de la nouvelle fenetre — une rafale
-          # de rattrapage prise pour de l'actualite. Et « un compte suivi VIENT
-          # d'acheter » n'a de sens que si c'est recent. 6 h couvrent largement
-          # un run horaire, meme apres plusieurs crons sautes. 0 = tout publier.
-          WHALE_VEVE_MAX_AGE_H: ${{ vars.WHALE_VEVE_MAX_AGE_H || '6' }}
-          # 🐋 le pont : le CSV des comptes tagues, ecrit par le sparse-checkout
-          # `_preda` plus haut. Absent -> le module se tait poliment.
-          TRACKED_CSV: _preda/data/tracked_accounts.csv
-        run: python -m scraper.floor_watch
-
-      # 🕐 LES DEUX HORLOGES DE RELEVE, PUBLIEES POUR LE SITE (lot 144-A).
-      #
-      # ⭐⭐⭐ MESURE DU 13/08 QUI A CORRIGE LE PLAN. Le plan ne derivait que
-      # `sfloors`. Mesure sur les 1 200 fiches SERVIES, uuid par uuid :
-      #   sfloors seul .................. 658/1200 datees
-      #   sfloors + vfloors ............. 943/1200 datees   (+285)
-      # Le recensement du matin annonce 943 : il comptait DEJA les deux canaux.
-      # ⇒ le lot ecrit tel quel aurait livre 658 en promettant 943.
-      # ⭐ Le nombre de lignes attendu le disait deja : « 10 834 » ne peut pas
-      # sortir de sfloors seul (4 110 dates) — c'est 4 110 + 6 764.
-      # ⛔ NE PAS retirer `vfloors` : il porte 3 516 comics, et le trou du lot
-      # est a 63 % dans les comics.
-      #
-      # ⚠️ DEUX MARCHES, PAS DEUX UNITES. `sfloors` = floor StackR en OMI,
-      # `vfloors` = floor VeVe en USD. La colonne `unite` le DIT. ⛔ Ne jamais
-      # convertir l'un dans l'autre : rapport non constant (mediane 4 423,
-      # p10 2 273, p90 8 520 sur 1 306 items communs).
-      #
-      # ⚠️ FICHIER NON TRIME, contrairement au pont H-PRIX. Une fiche dont le
-      # floor n'a pas bouge depuis six mois doit pouvoir dire « releve ce
-      # matin » : un flux de CHANGEMENTS ne repond pas a une question de
-      # RELEVEMENT. C'est la confusion qui a produit ce lot.
-      - name: "Releves horodates -> releves.csv (les deux horloges)"
-        if: always()
-        run: |
-          [ -f data/floor_state.json ] || exit 0
-          python3 - <<'PY'
-          import csv, json
-
-          st = json.load(open("data/floor_state.json"))
-          lignes = []
-          # sfloors : [floor_omi, nom, rarete, image, ts]  -> ts en position 4,
-          # ajoutee le 03/08 EN FIN de tuple pour ne pas casser les 7 lecteurs
-          # qui indexent 0-3. Les entrees ecrites avant cette date n'en ont
-          # pas et ne s'en verront JAMAIS poser une sans etre re-listees.
-          for u, v in (st.get("sfloors") or {}).items():
-              if isinstance(v, list) and len(v) > 4 and isinstance(v[4], (int, float)):
-                  lignes.append((u, "%.0f" % v[4], "stackr", v[0], "OMI"))
-          # vfloors : [floor_usd, ts] -> enregistre a CHAQUE run, canal eteint
-          # compris (cf. `detect_veve_steal`). D'ou 100 % d'horodates.
-          for u, v in (st.get("vfloors") or {}).items():
-              if isinstance(v, list) and len(v) > 1 and isinstance(v[1], (int, float)):
-                  lignes.append((u, "%.0f" % v[1], "veve", v[0], "USD"))
-
-          with open("data/releves.csv", "w", newline="", encoding="utf-8") as f:
-              w = csv.writer(f)
-              w.writerow(["veve_uuid", "ts_releve", "source", "floor", "unite"])
-              w.writerows(sorted(lignes))
-
-          # ⭐ IL COMPTE, IL NE DEDUIT PAS — et il compte ce qui a ETE ECRIT,
-          # pas ce qu'on croit avoir lu. Un « apport net » a zero est le signe
-          # que `vfloors` a disparu de l'etat : ca se voit dans le log.
-          us = {l[0] for l in lignes if l[2] == "stackr"}
-          uv = {l[0] for l in lignes if l[2] == "veve"}
-          print("releves.csv : %d ligne(s) ecrite(s) · stackr %d item(s) · "
-                "veve %d · distincts %d · apport net de vfloors %d"
-                % (len(lignes), len(us), len(uv), len(us | uv), len(uv - us)),
-                flush=True)
-          PY
-
-      # ⚠️ LA RECOLTE EST SACREE — mais l'etat ne vit PLUS dans git (22/07).
-      # Les runs sont SERIALISES par la concurrency -> un seul ecrivain a la
-      # fois -> plus besoin de fusion (floor_state_merge.py RESTE dans le
-      # depot : c'est la porte de sortie, revenir a git = remettre l'ancienne
-      # etape, voir l'historique git de ce fichier).
-      # Git sauvegardait l'historique gratuitement — une release, NON : d'ou
-      # la sauvegarde quotidienne gzip, gardee 7 jours dans la meme release.
-      - name: Etat vers la release + sauvegarde quotidienne
-        if: always()
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          [ -f data/floor_state.json ] || exit 0
-          gh release view etat-floor-watch >/dev/null 2>&1 || \
-            gh release create etat-floor-watch --title "Etat floor-watch (vivant)" \
-              --notes "floor_state.json ecrase a chaque run + sauvegardes quotidiennes gzip (7 jours). L'etat est sorti de git le 22/07/2026 ; la copie data/floor_state.json du depot est FIGEE (graine de secours)."
-          ok=""
-          for i in 1 2 3 4 5; do
-            gh release upload etat-floor-watch data/floor_state.json --clobber && { ok=1; break; }
-            echo "upload rate (essai $i) — nouvel essai dans $((i * 10))s"
-            sleep $((i * 10))
+            [ -n "$ok" ] || alerte "$(basename "$f") non televerse apres 3 essais."
+            echo "  ↑ $(basename "$f") ($(stat -c%s "$f") o)"
           done
-          [ -n "$ok" ] || { echo "⛔ ETAT NON SAUVE apres 5 essais — la recolte de ce run serait perdue."; exit 1; }
-          echo "etat pousse dans la release."
-          # 🕐 Lot 144-A. ⛔ N'ECHOUE PAS LE RUN : la recolte est deja sauvee
-          # au-dessus, et le site lit ce fichier SANS L'EXIGER. ⭐ Un fichier
-          # reduit a son en-tete n'ECRASE PAS celui de la release — sinon un
-          # seul run degrade effacerait la date de 943 fiches d'un coup.
-          if [ -s data/releves.csv ] && [ "$(wc -l < data/releves.csv)" -gt 1 ]; then
-            gh release upload etat-floor-watch data/releves.csv --clobber \
-              || echo "⚠️ releves.csv non pousse : le site garde la version precedente."
-          else
-            echo "⚠️ releves.csv vide ou absent — on NE remplace PAS celui de la release."
-          fi
-          jour=$(date -u +%Y%m%d)
-          if ! gh release view etat-floor-watch --json assets -q '.assets[].name' | grep -qx "floor_state-$jour.json.gz"; then
-            gzip -c data/floor_state.json > "floor_state-$jour.json.gz"
-            gh release upload etat-floor-watch "floor_state-$jour.json.gz" --clobber || true
-            gh release view etat-floor-watch --json assets -q '.assets[].name' \
-              | grep '^floor_state-.*\.json\.gz$' | sort | head -n -7 \
-              | while read -r vieux; do gh release delete-asset etat-floor-watch "$vieux" -y || true; done
-          fi
-
-      # 🌉 Le pont H-PRIX, lui, RESTE dans git : petit (quelques centaines de
-      # Ko auto-trimmes a 7 jours), et l'autre depot le lit en raw. Ecrit que
-      # par ce workflow (runs serialises) -> notre version fait foi.
-      - name: Commit du pont H-PRIX (l'etat, lui, ne se commite plus)
-        if: always()
-        run: |
-          [ -f data/hprix_feed.csv ] || exit 0
-          cp data/hprix_feed.csv /tmp/hprix_feed.csv
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          for i in 1 2 3 4 5; do
-            git fetch origin main
-            git reset --hard origin/main
-            cp /tmp/hprix_feed.csv data/hprix_feed.csv
-            git add data/hprix_feed.csv
-            git diff --cached --quiet && { echo "Rien a committer."; exit 0; }
-            git commit -m "floor_watch: pont H-PRIX"
-            git push origin main && exit 0
-            echo "push rejete — on reessaie."
-            sleep $((i * 5))
-          done
-          echo "⛔ pont H-PRIX non pousse apres 5 essais." >&2
