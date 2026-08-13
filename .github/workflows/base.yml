@@ -36,14 +36,49 @@ jobs:
       - name: Install duckdb
         run: pip install duckdb
 
-      - name: Cache archives immuables (chain-archive + imx-archive)
+      # 🔴🔴 AJOUTÉ LE 13/08/2026 — CE CACHE A PUBLIÉ UNE BASE AMPUTÉE.
+      # La clé était `archives-immuables-v1`, FIXE. Le nom portait l'hypothèse :
+      # « une archive publiée ne change plus ». Elle a changé — une tranche de
+      # 400 000 transferts a été ajoutée à `chain-archive` pour réparer un trou.
+      # Le run suivant a fait `cache hit`, n'a rien re-téléchargé, et a construit
+      # `veve.duckdb` sur 96 fichiers au lieu de 97. Aucune erreur, aucun log.
+      # ⭐⭐⭐ UNE CLÉ DE CACHE QUI NE DÉPEND PAS DE CE QU'ELLE CACHE NE PEUT PAS
+      # SE PÉRIMER — ET LE `-v1` NE FAIT QUE REPOUSSER LE PROBLÈME D'UN CRAN.
+      # ⇒ la clé est maintenant DÉRIVÉE du contenu réel des deux Releases :
+      # toute tranche ajoutée, retirée ou de taille différente la change.
+      - name: "Empreinte des archives amont (la clé du cache)"
+        id: empreinte
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          A=$(gh release view chain-archive -R astronemagame-maker/astronema \
+                --json assets --jq '[.assets[]|select(.name|endswith(".csv.gz"))
+                                    |"\(.name):\(.size)"]|sort|join(",")')
+          B=$(gh release view imx-archive -R lepaolo/paolo \
+                --json assets --jq '[.assets[]|select(.name|endswith(".csv.gz"))
+                                    |"\(.name):\(.size)"]|sort|join(",")')
+          # ⛔ Un amont injoignable ne doit PAS produire une empreinte stable :
+          # ce serait un cache hit sur du vide, donc une base construite sur le
+          # cache d'hier sans que rien ne le dise.
+          if [ -z "$A" ] || [ -z "$B" ]; then
+            echo "⛔ Impossible de lire les Releases amont — on ne devine pas."
+            exit 1
+          fi
+          NA=$(printf '%s' "$A" | tr ',' '\n' | grep -c .)
+          NB=$(printf '%s' "$B" | tr ',' '\n' | grep -c .)
+          H=$(printf '%s|%s' "$A" "$B" | sha256sum | cut -c1-16)
+          echo "cle=archives-$H" >> "$GITHUB_OUTPUT"
+          echo "nb_cc=$NA" >> "$GITHUB_OUTPUT"
+          echo "amont : $NA tranches CC + $NB IMX -> cle archives-$H"
+
+      - name: Cache archives amont (chain-archive + imx-archive)
         id: cache-static
         uses: actions/cache/restore@v4
         with:
           path: |
             dl_static
             dl_imx
-          key: archives-immuables-v1
+          key: ${{ steps.empreinte.outputs.cle }}
 
       - name: Telecharger l'archive transferts (si cache absent)
         if: ${{ steps.cache-static.outputs.cache-hit != 'true' }}
@@ -61,7 +96,23 @@ jobs:
           path: |
             dl_static
             dl_imx
-          key: archives-immuables-v1
+          key: ${{ steps.empreinte.outputs.cle }}
+
+      # 🔴 IL COMPTE, IL NE DÉDUIT PAS : le nombre de tranches réellement
+      # présentes sur le disque doit égaler celui annoncé par la Release.
+      # Vrai que le cache ait servi ou non — c'est justement le cas où il a
+      # servi qui a produit la base amputée du 13/08.
+      - name: "🔴 INVARIANT : autant de tranches sur le disque qu'en Release"
+        run: |
+          N=$(ls dl_static/*.csv.gz 2>/dev/null | wc -l)
+          A=${{ steps.empreinte.outputs.nb_cc }}
+          echo "tranches CC : disque=$N · Release=$A (cache-hit=${{ steps.cache-static.outputs.cache-hit }})"
+          if [ "$N" -ne "$A" ]; then
+            echo "⛔ La base serait construite sur $N tranches alors que la Release en"
+            echo "   publie $A. Un cache perime, ou un telechargement incomplet."
+            exit 1
+          fi
+          echo "✅ Toutes les tranches publiees sont la."
 
       - name: Sources publiques (snapshot holders)
         env:
