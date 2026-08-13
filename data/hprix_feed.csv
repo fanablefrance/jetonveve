@@ -1,94 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-bf64cec0-ae64-43fe-b2a9-f1466f6aeb42,Alice in Wonderland,collectible,10000,2026-08-06 01:02:25
-237b4deb-ea74-4bcb-950c-6c4a4f2b3325,Star Wars Episode IV: A New Hope - The Star Wars,collectible,3199,2026-08-06 01:02:25
-900388bb-8847-4334-8d1a-508de81c4a4d,Superman,collectible,177,2026-08-06 01:02:25
-d042924f-2db9-4180-8d16-38bf4c9e5b9d,R2-D2,collectible,155,2026-08-06 01:02:25
-ee27ac13-2e51-4cda-925f-595060735022,ECOMI Logo Red Silver,collectible,1888,2026-08-06 01:02:25
-c7aa15e5-d6e1-4246-bbd9-c8b2e908b01f,Stan Lee Fine Art Collectible - Rob Prior,collectible,300,2026-08-06 01:02:25
-6211625a-9004-4b34-9a45-fbdb0eaa8cbb,#72 Carmine Infantino Robin,collectible,185.99,2026-08-06 01:02:25
-370fff46-9ed2-402c-a981-955b3b0202e1,Donald Duck and Daisy Duck,collectible,21.88,2026-08-06 01:02:25
-ae9b4b16-bc4e-4457-9c69-a3306c976ed7,Supergirl,collectible,45.99,2026-08-06 01:02:25
-e6fe7bb8-ecf0-4dbe-a9d5-2f24451a0a16,"Laser Gun from Moonraker, 1979",collectible,150,2026-08-06 01:02:25
-cf266769-b956-47bb-868c-076bd13d62c3,Ryu Blue,collectible,490,2026-08-06 01:02:25
-8d6308a3-feaa-492d-b308-ef82ac4bed3a,Electric Lola,collectible,188,2026-08-06 01:02:25
-d00d9c0d-e1b1-49b8-b5b6-1a85baca88c1,The Triggerfeesh #393 By Mumbot,collectible,104,2026-08-06 01:02:25
-c844b748-f9f8-41d4-98c1-ed3178f379ba,Donald Duck,collectible,8.8,2026-08-06 01:02:25
-0b129e4e-3a34-464d-8f6f-6ec4334909dc,Black Panther – Vibranium Warrior,collectible,10,2026-08-06 01:02:25
-d6033d14-4af7-4aee-a38f-080e4cd98fd1,Gouged Stormtrooper Helmet,collectible,80,2026-08-06 01:02:25
-806c58f2-0af1-4ebe-860d-a41d6cc4c13d,Time of Your Life,collectible,33.45,2026-08-06 01:02:25
-f79a401a-0f4b-4379-a5bf-3132c5750539,ECOMI Logo Red White,collectible,20,2026-08-06 01:02:25
-f037f161-585a-4e62-b28b-1f9d4f9198ef,Invisible Woman – Psionic Defender,collectible,9.99,2026-08-06 01:02:25
-87370af9-d59a-4c19-8c2e-3ff9acfcfc71,Season To Be Jolly It Is,collectible,63,2026-08-06 01:02:25
-77a41d39-aab6-4dfb-bfba-f20643615121,Jubilee,collectible,39,2026-08-06 01:02:25
-f768b31c-dcef-4122-ad4e-ca3837071108,The Golden MYO,collectible,550,2026-08-06 01:02:25
-36d4a1e9-2398-4262-ad35-251d5a868865,Kingpin,collectible,61.4,2026-08-06 01:02:25
-cdce3d25-b015-4565-8097-81bbfc524e54,Daredevil,collectible,20,2026-08-06 01:02:25
-de9e5e5c-5e00-4db1-be89-69281e8907ae,Peter Pan,collectible,29,2026-08-06 01:02:25
-18d56bc0-d416-4d8b-b8d1-0df800a45f72,Day of the Dead: Child,collectible,4.76,2026-08-06 01:02:25
-8854d1aa-b535-4a8d-9a7f-1392b8581136,John F. Walker,collectible,1.99,2026-08-06 01:02:25
-8d14679c-ef72-4a0d-ab39-617170e2e2e5,Quaritch's Banshee,collectible,46,2026-08-06 01:02:25
-aa36484b-4931-42fa-a3aa-c91d10981542,J. Jonah Jameson,collectible,160,2026-08-06 01:02:25
-7aefc64f-2a8f-4412-800d-25f1e3699c90,Aang - Airbender,collectible,14.99,2026-08-06 01:02:25
-6c589db7-e673-4a1a-b87a-af1d0e7da650,Haunted Mansion Poster,collectible,33,2026-08-06 01:02:25
-8f2e4472-e04f-4113-ab71-106112df43cb,Wolverine - Old Man Logan,collectible,39.99,2026-08-06 01:02:25
-dd3e18ed-b702-4173-81a9-85534f4003d4,Redrum,collectible,14,2026-08-06 01:02:25
-056eec82-cd43-44a2-90ea-22bc734606da,Bucky Barnes - Action,collectible,18,2026-08-06 01:02:25
-c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,7.45,2026-08-06 01:02:25
-68649d9c-b610-4ac0-a07a-f14a1fca6585,Raphael - Classic,collectible,7.45,2026-08-06 01:02:25
-0f59caec-a042-484c-a314-e2185ae2bc77,DEADBEATS - Dysfunctional Family StreetPrint,collectible,19,2026-08-06 01:02:25
-d4ec084d-812b-4a3c-958f-d691f0060ff9,Master Splinter - Battle Ready,collectible,69,2026-08-06 01:02:25
-d4af21d2-86cd-430c-877b-501b6cbc3cff,Darth Vader Bust - Original,collectible,10,2026-08-06 01:02:25
-00c0c87d-7510-417b-92c3-26c6e86b94ac,JENNIE - Animated,collectible,40,2026-08-06 01:02:25
-92635283-99b4-4597-ba69-01e39ccba334,Master Splinter - Father Figure,collectible,6.2,2026-08-06 01:02:25
-87e77339-f586-48ca-9f2c-d197f0b644d1,BLACKPINK Stage,collectible,75,2026-08-06 01:02:25
-2a1c126f-df51-4957-8f5c-db0b9375ecf8,Shadow Trooper - Squad Leader,collectible,2.8,2026-08-06 01:02:25
-16e8e300-1fa4-4459-9484-a486807cc883,Connor - Assassin's Resolve,collectible,40,2026-08-06 01:02:25
-d6966b3e-9691-470e-ab59-446dce21f7f8,Cut Stormtrooper Helmet,collectible,28.95,2026-08-06 01:02:25
-885c33eb-4869-412b-9015-56039e798c14,IG-11,collectible,66,2026-08-06 01:02:25
-fcaf92c1-1f34-4042-87ee-b5cc02345977,Chris Robots Will Kill - Landscape,collectible,39,2026-08-06 01:02:25
-262ca5c3-d806-421d-aa0a-05207e5ea59c,Donatello - IncogNinja,collectible,28.9,2026-08-06 01:02:25
-a709645b-62df-490d-b74a-16a90c358d50,Master Splinter - Combat Training,collectible,22,2026-08-06 01:02:25
-193323d3-79fe-4b42-b144-ef1c227aaca1,Death Trooper - E-11D Blaster Rifle,collectible,2.85,2026-08-06 01:02:25
-a35a6323-40ba-4c70-b65c-99c166f6c507,Dog,collectible,10,2026-08-06 01:02:25
-eda50111-815e-42c0-8748-1f34b35c5c36,Emma Frost - Hellfire Gala #1 (2022),collectible,6.89,2026-08-06 01:02:25
-3ecd1c9c-dd05-4e9e-80b9-7b8574a095bb,Mickey & Friends Logo,collectible,5.42,2026-08-06 01:02:25
-49f3c491-5c0e-4976-bef3-076a16e0e54b,Jason Naylor - OPN Heart ANIMATED,collectible,26,2026-08-06 01:02:25
-37f58ebb-50aa-4ef6-b702-1e1857c33fa6,Record #2 - Fame Finds The Village Idiot - Platinum,collectible,45,2026-08-06 01:02:25
-cd45acb6-98af-407c-9159-5e7cb17522fa,My Toy - Chocolate Mousse,collectible,5.82,2026-08-06 01:02:25
-5df2f9ab-f9d0-4aff-af42-f468a8e0c2bb,Emma Frost - Marauders #21 (2021),collectible,13,2026-08-06 01:02:25
-f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,6,2026-08-06 01:02:25
-419fec31-c22c-4860-a896-6342e69f5c2e,Death Trooper Shoulder Pad,collectible,2.49,2026-08-06 01:02:25
-0592ffac-7963-4fe1-8528-7797260823fe,Episode 1 - I'm Used to It,collectible,3,2026-08-06 01:02:25
-ebb6a9d6-fdce-4bba-bcb2-ba30d20fd890,Alert,collectible,3,2026-08-06 01:02:25
-2344a6ff-eb4b-4798-91eb-b32e459da048,Basim,collectible,6.1,2026-08-06 01:02:25
-77857a70-edf2-4401-9798-93f63b941d60,Vulture,collectible,4.2,2026-08-06 01:02:25
-1e686588-d7fe-40bc-81be-15d2ca5be3fb,Mysterio,collectible,6.15,2026-08-06 01:02:25
-bc8771ab-0a33-42be-8f44-e1ed6d424274,The Winged Rock,collectible,19,2026-08-06 01:02:25
-71e624e1-3660-49d6-a6a8-707dd61803da,POW! - Gold,collectible,29.9,2026-08-06 01:02:25
-6034d020-5c76-46b5-aa1e-56011181936e,Graffi ver. Red,collectible,1.5,2026-08-06 01:02:25
-16e0d43f-4821-4e27-b2d6-09e48466ab3e,WHAM!,collectible,1,2026-08-06 01:02:25
-f55262b2-53a9-4ee9-b55c-c8635a3ae308,Sometimes I Think I Don’t Know You Anymore (3 of 7),collectible,35,2026-08-06 01:02:25
-bf64cec0-ae64-43fe-b2a9-f1466f6aeb42,Alice in Wonderland,collectible,100000,2026-08-06 02:03:24
-d042924f-2db9-4180-8d16-38bf4c9e5b9d,R2-D2,collectible,159.99,2026-08-06 02:03:24
-ee27ac13-2e51-4cda-925f-595060735022,ECOMI Logo Red Silver,collectible,1765,2026-08-06 02:03:24
-c7aa15e5-d6e1-4246-bbd9-c8b2e908b01f,Stan Lee Fine Art Collectible - Rob Prior,collectible,345.99,2026-08-06 02:03:24
-77a41d39-aab6-4dfb-bfba-f20643615121,Jubilee,collectible,449.99,2026-08-06 02:03:24
-6211625a-9004-4b34-9a45-fbdb0eaa8cbb,#72 Carmine Infantino Robin,collectible,206,2026-08-06 02:03:24
-ae9b4b16-bc4e-4457-9c69-a3306c976ed7,Supergirl,collectible,34,2026-08-06 02:03:24
-0b129e4e-3a34-464d-8f6f-6ec4334909dc,Black Panther – Vibranium Warrior,collectible,13.4,2026-08-06 02:03:24
-d6033d14-4af7-4aee-a38f-080e4cd98fd1,Gouged Stormtrooper Helmet,collectible,350,2026-08-06 02:03:24
-806c58f2-0af1-4ebe-860d-a41d6cc4c13d,Time of Your Life,collectible,34.99,2026-08-06 02:03:24
-c844b748-f9f8-41d4-98c1-ed3178f379ba,Donald Duck,collectible,7,2026-08-06 02:03:24
-36d4a1e9-2398-4262-ad35-251d5a868865,Kingpin,collectible,66.5,2026-08-06 02:03:24
-f768b31c-dcef-4122-ad4e-ca3837071108,The Golden MYO,collectible,455,2026-08-06 02:03:24
-18d56bc0-d416-4d8b-b8d1-0df800a45f72,Day of the Dead: Child,collectible,4.99,2026-08-06 02:03:24
-8854d1aa-b535-4a8d-9a7f-1392b8581136,John F. Walker,collectible,1.89,2026-08-06 02:03:24
-7aefc64f-2a8f-4412-800d-25f1e3699c90,Aang - Airbender,collectible,14,2026-08-06 02:03:24
-c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,7.65,2026-08-06 02:03:24
-a709645b-62df-490d-b74a-16a90c358d50,Master Splinter - Combat Training,collectible,27,2026-08-06 02:03:24
-262ca5c3-d806-421d-aa0a-05207e5ea59c,Donatello - IncogNinja,collectible,24.99,2026-08-06 02:03:24
-3ecd1c9c-dd05-4e9e-80b9-7b8574a095bb,Mickey & Friends Logo,collectible,5.5,2026-08-06 02:03:24
-0592ffac-7963-4fe1-8528-7797260823fe,Episode 1 - I'm Used to It,collectible,3.5,2026-08-06 02:03:24
 bf64cec0-ae64-43fe-b2a9-f1466f6aeb42,Alice in Wonderland,collectible,10000,2026-08-06 03:05:22
 237b4deb-ea74-4bcb-950c-6c4a4f2b3325,Star Wars Episode IV: A New Hope - The Star Wars,collectible,350,2026-08-06 03:05:22
 d042924f-2db9-4180-8d16-38bf4c9e5b9d,R2-D2,collectible,155,2026-08-06 03:05:22
@@ -4365,3 +4275,27 @@ a2a3ce61-3a54-47d6-a2c9-bdf78ce55a48,Delusionville Record S6 “Last Place is Fi
 ba2e8d06-c0f8-40dd-ba0d-594001238a1a,Graffi ver. Black,collectible,2,2026-08-13 01:01:25
 a014add6-fbf9-487e-bed7-a6b458e27d5d,En Garde!,collectible,3.77,2026-08-13 01:01:25
 16e0d43f-4821-4e27-b2d6-09e48466ab3e,WHAM!,collectible,1.05,2026-08-13 01:01:25
+101b30a5-9ace-4261-b419-fc3e0518e384,Human Torch - Flame On,collectible,299.99,2026-08-13 03:05:17
+12a68b57-417a-46ba-9683-df8a69eb8ba0,Coraline,collectible,4.85,2026-08-13 03:05:17
+37353ee5-47b8-4498-a220-7851c6dd0923,Michelangelo - Classic,collectible,15.95,2026-08-13 03:05:17
+b9dcae36-107b-4b39-97da-51055bc72c8b,Dr. No - UK Quad Poster,collectible,17.2,2026-08-13 03:05:17
+c85f636d-05bf-4cb2-983c-22ae671ee6b4,Record #9 - Everyone is Jealous of Me - Platinum,collectible,125,2026-08-13 03:05:17
+056eec82-cd43-44a2-90ea-22bc734606da,Bucky Barnes - Action,collectible,17,2026-08-13 03:05:17
+0c07f0cf-3bbe-4176-9f12-693cad110d08,Year of the Tiger,collectible,11.11,2026-08-13 03:05:17
+c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,6.85,2026-08-13 03:05:17
+205f1c9a-35f5-4a86-acc6-c968b286398f,MYO - Pink,collectible,40,2026-08-13 03:05:17
+5df2f9ab-f9d0-4aff-af42-f468a8e0c2bb,Emma Frost - Marauders #21 (2021),collectible,18.95,2026-08-13 03:05:17
+f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,7,2026-08-13 03:05:17
+8f791d43-a31c-406e-90b1-df084c1498ba,Java Joe,collectible,7.77,2026-08-13 03:05:17
+aeefbf50-3d0b-47cb-accb-86128d4398ed,DLT-19D Heavy Blaster,collectible,22.22,2026-08-13 03:05:17
+ee047d57-731f-46e8-8a0d-98262df19304,Creepshow Tombstone - Vol. 2 Issue 1,collectible,11.94,2026-08-13 03:05:17
+64e007ea-99fe-4a29-a561-22d0343f4beb,Donutella,collectible,6,2026-08-13 03:05:17
+f1bb37cc-7350-403f-9e06-5942bc3765ec,Master Splinter - Weapon Training,collectible,7,2026-08-13 03:05:17
+b78505b5-9cdd-414b-b43e-c73a1f6191df,Creepshow Tombstone - Vol. 2 Issue 2,collectible,10.99,2026-08-13 03:05:17
+68725834-d21d-40f7-b6fe-b6e9d410b23a,Josh Divine - Biting Vase - Faerie,collectible,49.99,2026-08-13 03:05:17
+867dc17b-9dbd-4fe5-818d-d7b02c34f79f,The ADDICTION Silver Logo,collectible,14,2026-08-13 03:05:17
+9d9643bc-a33f-4a4b-a397-7162e4cff142,Nijiko,collectible,7,2026-08-13 03:05:17
+a2a3ce61-3a54-47d6-a2c9-bdf78ce55a48,Delusionville Record S6 “Last Place is First Place” - Gold,collectible,6,2026-08-13 03:05:17
+47bc3ff2-0185-4ae6-9ce8-94c0c5c56195,Record #7 - Bunnny's Rap - Gold,collectible,6,2026-08-13 03:05:17
+d23fe8eb-7882-40fc-8e4d-16a0f81e1847,B-Rank Essence Stone,collectible,2.2,2026-08-13 03:05:17
+ff142570-e43a-4f7e-8a15-4668b0e4d332,ZAP!,collectible,3.5,2026-08-13 03:05:17
