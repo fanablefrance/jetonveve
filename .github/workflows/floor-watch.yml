@@ -528,6 +528,66 @@ jobs:
           TRACKED_CSV: _preda/data/tracked_accounts.csv
         run: python -m scraper.floor_watch
 
+      # 🕐 LES DEUX HORLOGES DE RELEVE, PUBLIEES POUR LE SITE (lot 144-A).
+      #
+      # ⭐⭐⭐ MESURE DU 13/08 QUI A CORRIGE LE PLAN. Le plan ne derivait que
+      # `sfloors`. Mesure sur les 1 200 fiches SERVIES, uuid par uuid :
+      #   sfloors seul .................. 658/1200 datees
+      #   sfloors + vfloors ............. 943/1200 datees   (+285)
+      # Le recensement du matin annonce 943 : il comptait DEJA les deux canaux.
+      # ⇒ le lot ecrit tel quel aurait livre 658 en promettant 943.
+      # ⭐ Le nombre de lignes attendu le disait deja : « 10 834 » ne peut pas
+      # sortir de sfloors seul (4 110 dates) — c'est 4 110 + 6 764.
+      # ⛔ NE PAS retirer `vfloors` : il porte 3 516 comics, et le trou du lot
+      # est a 63 % dans les comics.
+      #
+      # ⚠️ DEUX MARCHES, PAS DEUX UNITES. `sfloors` = floor StackR en OMI,
+      # `vfloors` = floor VeVe en USD. La colonne `unite` le DIT. ⛔ Ne jamais
+      # convertir l'un dans l'autre : rapport non constant (mediane 4 423,
+      # p10 2 273, p90 8 520 sur 1 306 items communs).
+      #
+      # ⚠️ FICHIER NON TRIME, contrairement au pont H-PRIX. Une fiche dont le
+      # floor n'a pas bouge depuis six mois doit pouvoir dire « releve ce
+      # matin » : un flux de CHANGEMENTS ne repond pas a une question de
+      # RELEVEMENT. C'est la confusion qui a produit ce lot.
+      - name: "Releves horodates -> releves.csv (les deux horloges)"
+        if: always()
+        run: |
+          [ -f data/floor_state.json ] || exit 0
+          python3 - <<'PY'
+          import csv, json
+
+          st = json.load(open("data/floor_state.json"))
+          lignes = []
+          # sfloors : [floor_omi, nom, rarete, image, ts]  -> ts en position 4,
+          # ajoutee le 03/08 EN FIN de tuple pour ne pas casser les 7 lecteurs
+          # qui indexent 0-3. Les entrees ecrites avant cette date n'en ont
+          # pas et ne s'en verront JAMAIS poser une sans etre re-listees.
+          for u, v in (st.get("sfloors") or {}).items():
+              if isinstance(v, list) and len(v) > 4 and isinstance(v[4], (int, float)):
+                  lignes.append((u, "%.0f" % v[4], "stackr", v[0], "OMI"))
+          # vfloors : [floor_usd, ts] -> enregistre a CHAQUE run, canal eteint
+          # compris (cf. `detect_veve_steal`). D'ou 100 % d'horodates.
+          for u, v in (st.get("vfloors") or {}).items():
+              if isinstance(v, list) and len(v) > 1 and isinstance(v[1], (int, float)):
+                  lignes.append((u, "%.0f" % v[1], "veve", v[0], "USD"))
+
+          with open("data/releves.csv", "w", newline="", encoding="utf-8") as f:
+              w = csv.writer(f)
+              w.writerow(["veve_uuid", "ts_releve", "source", "floor", "unite"])
+              w.writerows(sorted(lignes))
+
+          # ⭐ IL COMPTE, IL NE DEDUIT PAS — et il compte ce qui a ETE ECRIT,
+          # pas ce qu'on croit avoir lu. Un « apport net » a zero est le signe
+          # que `vfloors` a disparu de l'etat : ca se voit dans le log.
+          us = {l[0] for l in lignes if l[2] == "stackr"}
+          uv = {l[0] for l in lignes if l[2] == "veve"}
+          print("releves.csv : %d ligne(s) ecrite(s) · stackr %d item(s) · "
+                "veve %d · distincts %d · apport net de vfloors %d"
+                % (len(lignes), len(us), len(uv), len(us | uv), len(uv - us)),
+                flush=True)
+          PY
+
       # ⚠️ LA RECOLTE EST SACREE — mais l'etat ne vit PLUS dans git (22/07).
       # Les runs sont SERIALISES par la concurrency -> un seul ecrivain a la
       # fois -> plus besoin de fusion (floor_state_merge.py RESTE dans le
@@ -552,6 +612,16 @@ jobs:
           done
           [ -n "$ok" ] || { echo "⛔ ETAT NON SAUVE apres 5 essais — la recolte de ce run serait perdue."; exit 1; }
           echo "etat pousse dans la release."
+          # 🕐 Lot 144-A. ⛔ N'ECHOUE PAS LE RUN : la recolte est deja sauvee
+          # au-dessus, et le site lit ce fichier SANS L'EXIGER. ⭐ Un fichier
+          # reduit a son en-tete n'ECRASE PAS celui de la release — sinon un
+          # seul run degrade effacerait la date de 943 fiches d'un coup.
+          if [ -s data/releves.csv ] && [ "$(wc -l < data/releves.csv)" -gt 1 ]; then
+            gh release upload etat-floor-watch data/releves.csv --clobber \
+              || echo "⚠️ releves.csv non pousse : le site garde la version precedente."
+          else
+            echo "⚠️ releves.csv vide ou absent — on NE remplace PAS celui de la release."
+          fi
           jour=$(date -u +%Y%m%d)
           if ! gh release view etat-floor-watch --json assets -q '.assets[].name' | grep -qx "floor_state-$jour.json.gz"; then
             gzip -c data/floor_state.json > "floor_state-$jour.json.gz"
