@@ -1,15 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-e6e5683f-5b64-4842-8f74-912a0fc919ba,Homer & Bart,collectible,69,2026-08-10 05:40:23
-df8fec71-7e54-4dfb-b3e4-ea9c83aceca7,Captain America – The Punch,collectible,16,2026-08-10 05:40:23
-df101af2-42fe-4af4-bc51-f8826a6022aa,I Have You In My Sights,collectible,19.99,2026-08-10 05:40:23
-e9bdf1b9-7b80-4683-a94f-32db83f3bd39,Yoda,collectible,5,2026-08-10 05:40:23
-71556606-6539-49a3-b7b0-a3d7e743906a,Huracán STO - Rosso Epona/Grigio Adamas,collectible,45,2026-08-10 05:40:23
-708816f9-0027-4e0c-b5b8-48eaf06df734,DJ Big Bot - Gold Rust,collectible,74,2026-08-10 05:40:23
-3a104aa7-b5ba-4bd1-8197-dd402dbd46bf,Night Trooper,collectible,3,2026-08-10 05:40:23
-757f2c07-4143-4c27-a43d-0014e054ea22,Exploiter,collectible,3,2026-08-10 05:40:23
-6ea861be-16f5-4832-a6ec-da215c4fe3b6,Mutagen,collectible,4,2026-08-10 05:40:23
-ca3678e8-3ed8-4db0-ac03-da39f94d2c99,Turtle,collectible,2.5,2026-08-10 05:40:23
-305c5cde-ab8e-4d48-9d20-151a84e48725,Sagunja - The Four Gracious Plants,collectible,3.99,2026-08-10 05:40:23
 4ed1e5d8-7808-4900-8c4f-e5e89da1838d,Diablo - Gold,collectible,121,2026-08-10 07:44:04
 bd16e6f6-1138-4083-8c0f-8e312c3c9450,Santa Comes Down the Chimney,collectible,8.39,2026-08-10 07:44:04
 3035942c-117c-404f-9098-5df698f59272,The Lion King Pencil,collectible,13.5,2026-08-10 07:44:04
@@ -4026,14 +4015,62 @@ c85f636d-05bf-4cb2-983c-22ae671ee6b4,Record #9 - Everyone is Jealous of Me - Pla
 bc64c1a9-5efe-4b52-824d-27ffed8b13e4,Lightning,collectible,2.12,2026-08-17 04:12:48
 8684b674-49b4-4ece-aa1e-510ed9e5ebaf,Ash - Dark,collectible,49.86,2026-08-17 04:12:48
 5a83120d-b4c0-4982-85d7-3046dd7d5f4f,Rain,collectible,1,2026-08-17 04:12:48
-cd795c5e-00af-4132-81af-6bc2d26e683a,Xenomorph,collectible,55,2026-08-17 05:13:40
-d9892b14-8126-4b26-901d-a978d6eb5be8,T. rex Animated 2,collectible,31,2026-08-17 05:13:40
-ac35ac09-cbf8-48a8-82b5-e0604ffe5021,VeVe VIP Ticket - NYCC 2024,collectible,33.33,2026-08-17 05:13:40
-990dad00-c145-4344-8ce6-4058364d402d,"Bone Appetite - 1,000 Wott Yellow",collectible,30,2026-08-17 05:13:40
-5d80846e-6d59-45d1-8a1d-03492e5134db,Darth Vader Samurai - Shadow of the Shogun,collectible,6.99,2026-08-17 05:13:40
-868fe1f8-cc4a-421a-877c-198bd0262274,Darth Vader Samurai - Crimson Descent,collectible,9,2026-08-17 05:13:40
-2b165606-c201-4f80-b10f-b0d7e7d49908,Crimson Trooper - Running,collectible,2.4,2026-08-17 05:13:40
-d324d199-8532-4449-b67b-fdad373da71a,Stormtrooper - Running,collectible,2.32,2026-08-17 05:13:40
-73255fe7-c9e7-489a-a3bd-547b9b87a8a5,Ash,collectible,4,2026-08-17 05:13:40
-0c0023fa-0f61-4b7e-9fe3-e6e38ee93f9d,Record #1 - Living In Delusionville - Original,collectible,1.8,2026-08-17 05:13:40
-0aed9e36-107d-45dc-b81c-21dc739f946f,Shark Car,collectible,2.22,2026-08-17 05:13:40
+c3df7496-e8e7-4507-b80a-5c2b5d996645,#100 Todd McFarlane Batman,collectible,399,2026-08-17 06:16:38
+e7735bff-6de9-45b5-8b33-98a2816ccaf3,CHOICES (Ultraviolet),collectible,6500,2026-08-17 06:16:38
+39e873a8-37f3-4ef8-9247-b2b257f7dcbf,Team Avatar: SDCC 2026,collectible,316,2026-08-17 06:16:38
+db84116f-f2e1-42c7-a77b-d8cc552931e7,Zombie Captain America #2,collectible,80,2026-08-17 06:16:38
+987e4869-7dd7-47ed-a417-351d20023d78,#100 Todd McFarlane Batman - Blue & Yellow Variant,collectible,74.89,2026-08-17 06:16:38
+1922070e-f955-48ff-b79d-99eb9181759d,Ultraman,collectible,18.75,2026-08-17 06:16:38
+4d1972b6-b15f-4c98-ab98-cec603aa58de,Ritmo,collectible,113,2026-08-17 06:16:38
+9cccbffd-e907-44b4-9e2e-b285f090292d,Zombie Hunter Spider-Man #1,collectible,6.6,2026-08-17 06:16:38
+f9422701-8fc1-4af5-9312-d7e8f21b83e1,JISOO Pink Venom 1,collectible,150,2026-08-17 06:16:38
+3c2149c7-0415-47f9-b5e8-c6f6d473951a,The Rise of Ultraman #1 - Skottie Young,collectible,15.79,2026-08-17 06:16:38
+aeebac53-63e3-461e-8158-59726476d16e,David Yu - Blue Metallic,collectible,999.44,2026-08-17 06:16:38
+886b4db9-44cf-4f79-9c92-bf70ddf63bed,Bill Sienkiewicz Variant,collectible,350,2026-08-17 06:16:38
+e5481692-b3a2-4bb4-80ca-414235571a48,Hangar Bay 327 - Animated,collectible,100,2026-08-17 06:16:38
+31e89ed2-c694-41cb-944d-e0636dece312,Belle,collectible,43,2026-08-17 06:16:38
+2e9c41f0-2ea7-4618-b0e8-d39f59f12081,TMNT - Born Below Gold Diorama,collectible,699,2026-08-17 06:16:38
+38106832-449a-4c05-9ad6-4cae7177a9c9,VeVe Logo White Blue,collectible,39,2026-08-17 06:16:38
+4de77349-9d1f-44c8-a0a4-59341e52f52a,America Chavez - Miss America,collectible,79,2026-08-17 06:16:38
+c97d900d-5334-45b3-ab56-bafc78e56912,Aang - Earthbender,collectible,39,2026-08-17 06:16:38
+ec1ee9f4-8389-4f8b-9303-cbe02d2ba0c6,Young Warhol,collectible,15,2026-08-17 06:16:38
+1c2c833d-3e70-4e7e-b589-0c24832a58cd,Katara,collectible,17,2026-08-17 06:16:38
+46359177-0a0a-4148-aac9-7875a76aaa91,Toph,collectible,13.99,2026-08-17 06:16:38
+0c733e42-6f3a-4411-a1df-e6795a3ae291,Ursula: I Get What I Want,collectible,1.98,2026-08-17 06:16:38
+bfbb5341-6a35-4ecb-b3a7-896bf6eb870c,Year of the Horse - Pane of 20,collectible,27,2026-08-17 06:16:38
+4ecac144-fa6a-4d23-9b8d-36e6f2092499,Darth Vader Samurai - Blade of the Empire,collectible,79.99,2026-08-17 06:16:38
+e957f893-9b39-4a0f-ade8-168b31f62647,Emma Frost - Phoenix,collectible,10.85,2026-08-17 06:16:38
+7ed317cf-5b82-47fa-94ca-69d85591d1e8,Hapjeong Dungeon Key,collectible,20,2026-08-17 06:16:38
+f64bf297-8a18-4e49-a539-d99f19fd5350,Mister Sinister,collectible,15.79,2026-08-17 06:16:38
+0c07f0cf-3bbe-4176-9f12-693cad110d08,Year of the Tiger,collectible,9.99,2026-08-17 06:16:38
+cdf8336b-2ee0-4573-a2c0-5e8389bcc541,Vision,collectible,8,2026-08-17 06:16:38
+1a4e5dfb-afe2-4663-9b87-4dc3481d251a,Minnie,collectible,8.5,2026-08-17 06:16:38
+f6e15150-641b-4d8e-b7cc-19027a019d1f,Chris Robots Will Kill - OG,collectible,42,2026-08-17 06:16:38
+d4ec084d-812b-4a3c-958f-d691f0060ff9,Master Splinter - Battle Ready,collectible,54,2026-08-17 06:16:38
+505e2fdc-930a-4141-a863-fe9638a47cae,Jean Grey - Uncanny,collectible,31,2026-08-17 06:16:38
+4b4323d3-9f00-48c6-a7c7-3bd1927b9bdb,Headspace Black Bear - Luke Chueh x Munkyking,collectible,8,2026-08-17 06:16:38
+92635283-99b4-4597-ba69-01e39ccba334,Master Splinter - Father Figure,collectible,4.5,2026-08-17 06:16:38
+64cf903a-bdb0-4bcd-8d1d-f18f362afecd,Darth Vader Samurai - Eyes of the Empire,collectible,19.99,2026-08-17 06:16:38
+55763632-4321-4e20-a3db-34e96f554cd1,Mogul Grin - Greed Green,collectible,9,2026-08-17 06:16:38
+ec04c6de-1ef4-436b-bb1a-8a9109a95bb6,Colossus - Phoenix,collectible,5,2026-08-17 06:16:38
+39abf2f6-566b-4f0f-bc6c-e81204c1016c,Magneto,collectible,6.8,2026-08-17 06:16:38
+daf4feec-b2f7-4489-84a3-8bf4de83d9d2,Nose Goblins,collectible,4.4,2026-08-17 06:16:38
+c139b711-1f35-40ba-885e-e302c5ea7b66,RUNNING MON ver. VEVE BLUE,collectible,90,2026-08-17 06:16:38
+450206ba-7c6b-46a3-8d48-9f24b64b7aed,Falling,collectible,79.99,2026-08-17 06:16:38
+419fec31-c22c-4860-a896-6342e69f5c2e,Death Trooper Shoulder Pad,collectible,2.2,2026-08-17 06:16:38
+c60d426e-48ad-4e6b-b162-b6edd0e6e76d,Ebony,collectible,18,2026-08-17 06:16:38
+462fc423-9563-415e-aa1c-77c19f7a0650,Shadow Trooper - Running,collectible,2.57,2026-08-17 06:16:38
+288b12b5-89ed-4fa0-83cd-ec757334d4dc,Record #1 - Frankenstein - Original,collectible,2.35,2026-08-17 06:16:38
+d23fe8eb-7882-40fc-8e4d-16a0f81e1847,B-Rank Essence Stone,collectible,2.6,2026-08-17 06:16:38
+fbee4cac-4007-49a7-8662-acf27af59267,Lightning - Dark,collectible,81,2026-08-17 06:16:38
+bc64c1a9-5efe-4b52-824d-27ffed8b13e4,Lightning,collectible,2.89,2026-08-17 06:16:38
+6c3d7340-42a1-4565-b5bf-b8f435ac97e5,Record #5 - Ronnnie Rabbbit - Gold,collectible,4.75,2026-08-17 06:16:38
+51405ddc-4d53-4814-be00-9a99581ab6ed,Hammerhead Shark Car,collectible,2.99,2026-08-17 06:16:38
+15ce5afc-3082-4582-b6e5-bf6e27163351,Record #9 - Everyone is Jealous of Me - Original,collectible,1.88,2026-08-17 06:16:38
+6aa8a426-c98a-4155-8895-bc0d0f7e9f55,Record #9 - Everyone is Jealous of Me - Gold,collectible,3.5,2026-08-17 06:16:38
+a2a3ce61-3a54-47d6-a2c9-bdf78ce55a48,Delusionville Record S6 “Last Place is First Place” - Gold,collectible,3.5,2026-08-17 06:16:38
+d913a319-3a18-4250-a949-07f42a19424f,Record #8 - Duck Luck - Original,collectible,1.75,2026-08-17 06:16:38
+5a83120d-b4c0-4982-85d7-3046dd7d5f4f,Rain,collectible,1.15,2026-08-17 06:16:38
+d90a73fb-fcef-4c6c-bf36-acfe1f371cf5,Record #3 - Ascension - Original,collectible,1.35,2026-08-17 06:16:38
+121be6df-6a3a-4e64-9978-92fc5acb77ca,Record #7 - Bunnny's Rap - Original,collectible,1.25,2026-08-17 06:16:38
+ffcd8f65-95d5-4b9a-8dab-e919bdeda8be,Graffi ver. Phantom,collectible,14.99,2026-08-17 06:16:38
