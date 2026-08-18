@@ -85,8 +85,10 @@ jobs:
             exit 1
           fi
 
-          python3 - <<'PY'
-          import json, os, sys, urllib.request, urllib.error
+          # ⭐ `python3` NE FAIT QUE CONSTRUIRE LE JSON — l'envoi est en curl,
+          #   plus bas, pour la raison ecrite la.
+          python3 - > /tmp/charge.json <<'PY'
+          import json, os
 
           nom  = os.environ["NOM"]
           quoi = os.environ["CONCLUSION"]
@@ -125,30 +127,36 @@ jobs:
           msg = (f"{tete} **{nom}** {etat}  ·  `{depot}`\n"
                  f"{cout}\n{lien}")
 
-          corps = json.dumps({"content": msg,
-                              "username": "Sentinelle technique"}).encode()
-          req = urllib.request.Request(
-              os.environ["HOOK"] + "?wait=true", data=corps,
-              headers={"Content-Type": "application/json"})
-          try:
-              with urllib.request.urlopen(req, timeout=20) as r:
-                  code = r.status
-                  try:
-                      d = json.load(r)
-                      print(f"salon touche : channel_id = {d.get('channel_id')}")
-                  except Exception:
-                      pass
-          except urllib.error.HTTPError as e:
-              print(f"::error::Discord a refuse le POST (HTTP {e.code}). "
-                    f"Webhook invalide, revoque, ou salon supprime.")
-              print(e.read()[:400].decode("utf-8", "replace"))
-              sys.exit(1)
-          except Exception as e:
-              print(f"::error::Envoi impossible : {type(e).__name__}")
-              sys.exit(1)
-
-          print(f"✅ alerte envoyee (HTTP {code}) pour : {nom}")
+          print(json.dumps({"content": msg, "username": "Sentinelle technique"}))
           PY
+
+          # 🔴🔴🔴 L'ENVOI PASSE PAR `curl`, ET C'EST UNE MESURE DU 18/08.
+          # Le ping de ce depot, joue en vrai, a recu **403, corps « error
+          # code: 1010 »** en postant avec `urllib`. Ce n'est PAS un code
+          # Discord : c'est **Cloudflare**, devant Discord, qui bannit la
+          # signature du client `Python-urllib/3.x`.
+          # ⭐⭐⭐ Meme piege que « GoChain 403 sur UA Python », deja ecrit dans
+          #   ce projet : c'est une propriete de CLOUDFLARE, pas d'une source.
+          # ⇒ `curl` est le transport DEJA PROUVE ici.
+          code=$(curl -sS -o /tmp/rep.json -w '%{http_code}' \
+                   -X POST -H 'Content-Type: application/json' \
+                   --data-binary @/tmp/charge.json "${HOOK}?wait=true")
+
+          if [ "$code" != "200" ] && [ "$code" != "204" ]; then
+            if grep -q "error code: 1010" /tmp/rep.json 2>/dev/null; then
+              echo "::error::CLOUDFLARE a refuse la requete (1010), pas Discord."
+              echo "  ⇒ le webhook n'y est pour rien : c'est le client HTTP qui est banni."
+              echo "  ⇒ poster avec curl, jamais avec urllib/requests."
+            else
+              echo "::error::Discord a refuse le POST (HTTP $code)."
+              echo "  ⇒ URL du webhook invalide, revoquee, ou salon supprime."
+            fi
+            head -c 400 /tmp/rep.json || true
+            exit 1
+          fi
+
+          python3 -c "import json;d=json.load(open('/tmp/rep.json'));print('salon touche : channel_id =',d.get('channel_id'))" || true
+          echo "✅ alerte envoyee (HTTP $code) pour : $NOM"
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # ⛔ LES DEUX ABSENTS DE LA LISTE — ils alertent DEJA eux-memes

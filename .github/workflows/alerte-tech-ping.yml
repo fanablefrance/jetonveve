@@ -71,38 +71,61 @@ jobs:
           # fichier existe pour debusquer. Eprouve avec un faux Discord :
           # connexion refusee -> etape rouge.
           set -eu
-          python3 - <<'PY'
-          import json, os, sys, urllib.request, urllib.error
+
+          # ⭐ `python3` NE SERT QU'A FABRIQUER LE JSON — jamais a l'envoyer.
+          #   Voir la note « 1010 » sous cette etape : c'est l'ENVOI par urllib
+          #   qui se faisait refuser, pas le webhook.
+          python3 - > /tmp/charge.json <<'PY'
+          import json, os
           msg = ("🧪 **ping — jetonveve** : si tu lis ceci, "
                  "`DISCORD_ALERTE_TECH_WEBHOOK` est bon sur ce depot, et les "
                  "alertes techniques arriveront **ici**.")
           if os.environ.get("NOTE"):
               msg += "\n" + os.environ["NOTE"]
           msg += "\n" + os.environ["LIEN"]
-          corps = json.dumps({"content": msg,
-                              "username": "Sentinelle technique"}).encode()
-          req = urllib.request.Request(
-              os.environ["HOOK"] + "?wait=true", data=corps,
-              headers={"Content-Type": "application/json"})
+          print(json.dumps({"content": msg, "username": "Sentinelle technique"}))
+          PY
+
+          # 🔴🔴🔴 L'ENVOI PASSE PAR `curl`, ET C'EST UNE MESURE DU 18/08.
+          # Premier jet : `urllib.request`. Discord a repondu **403, corps
+          # « error code: 1010 »**. Ce n'est PAS un code Discord — c'est
+          # **Cloudflare**, devant Discord, qui refuse la requete sur la
+          # signature du client. `Python-urllib/3.x` y est banni.
+          # ⭐⭐⭐ Le meme piege est deja ecrit dans ce projet pour GoChain
+          #   (« 403 sur UA Python »). Il ne se limite donc pas a une source :
+          #   c'est une propriete de CLOUDFLARE, et Discord est derriere.
+          # ⇒ `curl` est le transport DEJA PROUVE ici : les 6 workflows de
+          #   veve-sites et les 4 alertes maison postent comme ca, et leurs
+          #   messages arrivent. On ne parie pas, on reprend ce qui marche.
+          code=$(curl -sS -o /tmp/rep.json -w '%{http_code}' \
+                   -X POST -H 'Content-Type: application/json' \
+                   --data-binary @/tmp/charge.json "${HOOK}?wait=true")
+
+          echo "reponse HTTP de Discord : $code"
+          if [ "$code" != "200" ] && [ "$code" != "204" ]; then
+            # ⭐⭐ DEUX CAUSES, DEUX GESTES — et le premier jet les confondait :
+            # il annoncait « webhook invalide » sur un blocage Cloudflare, ce qui
+            # envoyait chercher au mauvais endroit.
+            if grep -q "error code: 1010" /tmp/rep.json 2>/dev/null; then
+              echo "::error::CLOUDFLARE a refuse la requete (1010), pas Discord."
+              echo "  ⇒ le webhook n'y est pour rien : c'est le client HTTP qui est banni."
+              echo "  ⇒ poster avec curl, jamais avec urllib/requests."
+            else
+              echo "::error::Discord a refuse le POST (HTTP $code)."
+              echo "  ⇒ URL du webhook invalide, revoquee, ou salon supprime."
+            fi
+            head -c 400 /tmp/rep.json || true
+            exit 1
+          fi
+
+          python3 - <<'PY' || true
+          import json
           try:
-              with urllib.request.urlopen(req, timeout=20) as r:
-                  print(f"reponse HTTP de Discord : {r.status}")
-                  try:
-                      d = json.load(r)
-                      print(f"salon touche  : channel_id = {d.get('channel_id')}")
-                      print(f"message poste : id = {d.get('id')}")
-                  except Exception:
-                      print("(204 sans corps : le POST est passe, le salon n'est pas identifiable)")
-          except urllib.error.HTTPError as e:
-              print(f"::error::Discord a refuse le POST (HTTP {e.code}). "
-                    f"L'URL du webhook est invalide, revoquee, ou le salon a ete supprime.")
-              print(e.read()[:400].decode("utf-8", "replace"))
-              sys.exit(1)
-          except Exception as e:
-              # ⛔ Sans cette branche, une panne reseau remontait un traceback
-              #    et l'etape restait VERTE. Mesure du 18/08.
-              print(f"::error::Envoi impossible : {type(e).__name__}")
-              sys.exit(1)
+              d = json.load(open('/tmp/rep.json'))
+              print(f"salon touche  : channel_id = {d.get('channel_id')}")
+              print(f"message poste : id = {d.get('id')}")
+          except Exception:
+              print("(204 sans corps : le POST est passe, le salon n'est pas identifiable)")
           PY
 
           echo ""
