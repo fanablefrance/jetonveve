@@ -1,0 +1,114 @@
+# ⚠️ DEPOT : fanablefrance/jetonveve   ·   CHEMIN : .github/workflows/alerte-tech-ping.yml   (NEUF)
+# ═══════════════════════════════════════════════════════════════════════════════
+# LA SEULE PREUVE QU'UNE ALERTE PART, C'EST UN MESSAGE DANS LE SALON
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# 🔗 Le jumeau de celui de `VeVePreda/scrapeur-veve`, ou il a deja servi : son
+# run vert du 14/08/2026 est ce qui prouve que le secret y est pose.
+#
+# 🔴 POURQUOI IL FAUT LE MEME ICI. Les deux alertes ecrites a la main dans ce
+# depot (`analytics.yml`, `floor-watch.yml`) sortent en `exit 0` quand le secret
+# manque : elles impriment « pas d'alerte envoyee » et le run reste VERT.
+# ⇒ Leur silence ne distingue pas « rien n'est casse » de « je ne peux pas
+#   prevenir ». Aucune mesure existante ne dit si `DISCORD_ALERTE_TECH_WEBHOOK`
+#   est pose sur ce depot. Ce fichier tranche, en une minute.
+#
+# ⛔⛔ IL NE SE DECLENCHE QUE A LA MAIN. Un ping automatique deviendrait du bruit
+# dans le salon, et un salon d'alertes ou tombe du bruit finit par ne plus etre
+# lu — ce qui coute exactement ce que l'alerte pretendait faire gagner.
+#
+# 🔊 CE QU'IL FAUT EN FAIRE, UNE FOIS :
+#   Actions -> « Ping de l'alerte technique » -> Run workflow -> Run.
+#   Puis REGARDER LE SALON DISCORD. C'est le message dans le salon qui prouve,
+#   pas la pastille verte du run.
+
+name: Ping de l'alerte technique
+
+on:
+  workflow_dispatch:
+    inputs:
+      note:
+        description: "Texte à ajouter au message (facultatif)"
+        required: false
+        default: ""
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: "Le secret existe-t-il ?"
+        env:
+          HOOK: ${{ secrets.DISCORD_ALERTE_TECH_WEBHOOK }}
+        run: |
+          set -u
+          if [ -z "${HOOK:-}" ]; then
+            echo "::error::DISCORD_ALERTE_TECH_WEBHOOK est ABSENT ou VIDE sur ce depot."
+            echo "Settings -> Secrets and variables -> Actions -> New repository secret"
+            echo "Nom EXACT attendu : DISCORD_ALERTE_TECH_WEBHOOK"
+            exit 1
+          fi
+          echo "✅ le secret est present (sa valeur n'est jamais imprimee)."
+
+      # ⭐⭐ `?wait=true` CHANGE LA REPONSE DE DISCORD, ET C'EST TOUT L'INTERET.
+      # Sans lui, l'API rend `204 No Content` : on sait que le POST est passe,
+      # on ne sait pas OU. Avec lui, elle rend `200` et le message cree, qui
+      # porte son `channel_id`. ⇒ le run ne dit plus « j'ai poste quelque part »
+      # mais « j'ai poste DANS CE SALON-LA ». Il doit etre le MEME que celui
+      # touche par le ping de scrapeur-veve.
+      - name: "Poster le ping, et dire dans quel salon"
+        env:
+          HOOK: ${{ secrets.DISCORD_ALERTE_TECH_WEBHOOK }}
+          NOTE: ${{ github.event.inputs.note }}
+          LIEN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          # 🔴🔴 `set -e` N'EST PAS DECORATIF ICI, IL A ETE AJOUTE APRES UNE
+          # MESURE (18/08). Sans lui, le `python3` pouvait echouer et les `echo`
+          # qui suivent rendaient l'etape VERTE : « je n'ai pas pu prevenir »
+          # devenait identique a « tout va bien » — le defaut meme que ce
+          # fichier existe pour debusquer. Eprouve avec un faux Discord :
+          # connexion refusee -> etape rouge.
+          set -eu
+          python3 - <<'PY'
+          import json, os, sys, urllib.request, urllib.error
+          msg = ("🧪 **ping — jetonveve** : si tu lis ceci, "
+                 "`DISCORD_ALERTE_TECH_WEBHOOK` est bon sur ce depot, et les "
+                 "alertes techniques arriveront **ici**.")
+          if os.environ.get("NOTE"):
+              msg += "\n" + os.environ["NOTE"]
+          msg += "\n" + os.environ["LIEN"]
+          corps = json.dumps({"content": msg,
+                              "username": "Sentinelle technique"}).encode()
+          req = urllib.request.Request(
+              os.environ["HOOK"] + "?wait=true", data=corps,
+              headers={"Content-Type": "application/json"})
+          try:
+              with urllib.request.urlopen(req, timeout=20) as r:
+                  print(f"reponse HTTP de Discord : {r.status}")
+                  try:
+                      d = json.load(r)
+                      print(f"salon touche  : channel_id = {d.get('channel_id')}")
+                      print(f"message poste : id = {d.get('id')}")
+                  except Exception:
+                      print("(204 sans corps : le POST est passe, le salon n'est pas identifiable)")
+          except urllib.error.HTTPError as e:
+              print(f"::error::Discord a refuse le POST (HTTP {e.code}). "
+                    f"L'URL du webhook est invalide, revoquee, ou le salon a ete supprime.")
+              print(e.read()[:400].decode("utf-8", "replace"))
+              sys.exit(1)
+          except Exception as e:
+              # ⛔ Sans cette branche, une panne reseau remontait un traceback
+              #    et l'etape restait VERTE. Mesure du 18/08.
+              print(f"::error::Envoi impossible : {type(e).__name__}")
+              sys.exit(1)
+          PY
+
+          echo ""
+          echo "════════════════════════════════════════════════════════════"
+          echo "⭐ CE RUN VERT NE PROUVE PAS ENCORE GRAND-CHOSE."
+          echo "   Il prouve que le secret existe et que Discord a accepte."
+          echo "   LA PREUVE, C'EST LE MESSAGE DANS LE SALON. Va le regarder."
+          echo "   Il doit tomber au MEME endroit que le ping de scrapeur-veve."
+          echo "════════════════════════════════════════════════════════════"

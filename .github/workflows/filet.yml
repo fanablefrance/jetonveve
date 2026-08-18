@@ -1,0 +1,163 @@
+# ⚠️ DEPOT : fanablefrance/jetonveve   ·   CHEMIN : .github/workflows/filet.yml   (NEUF)
+# ═══════════════════════════════════════════════════════════════════════════════
+# 🔊 LE FILET — UNE PANNE NE COMPTE QUE SI ELLE ARRIVE QUELQUE PART
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# 🔗 LE JUMEAU DE `VeVePreda/scrapeur-veve/.github/workflows/filet.yml`.
+# Le raisonnement complet (pourquoi UN fichier et non une etape dans chacun,
+# pourquoi on n'alerte pas sur `cancelled`, pourquoi ce job echoue expres quand
+# le secret manque) est ecrit en tete de celui-la. Ici, ce qui est PROPRE a ce
+# depot.
+#
+# 🔴 CE QUI A ETE MESURE ICI, LE 18/08/2026
+# ─────────────────────────────────────────────────────────────────────────────
+#   17 workflows · **2 seulement alertaient** (`analytics.yml`, `floor-watch.yml`)
+#   435 runs sur 30 jours · **5 echecs** · 39 annulations
+#   ⇒ le filet ajoutera **~5 messages par mois**. C'est peu, et c'est le but :
+#     ce depot est fiable, donc chacun de ses rares echecs merite d'etre vu.
+#
+# ⛔⛔ LES 39 ANNULATIONS NE SONT PAS DES PANNES, ET C'EST POURQUOI ON NE LES
+# ALERTE PAS. Elles viennent toutes de `floor-watch`, appele a la fois par un
+# cron horaire et par un pinger externe : quand deux runs s'empilent sur le
+# groupe de concurrence, GitHub annule celui qui attend. Alerter dessus aurait
+# rempli le salon de 39 messages pour zero panne.
+#
+# 🔑 LE SECRET `DISCORD_ALERTE_TECH_WEBHOOK` DOIT ETRE POSE SUR CE DEPOT.
+# ⚠️ Contrairement a scrapeur-veve, ce n'est PAS verifie a ce jour : les deux
+# alertes existantes sortent en `exit 0` quand le secret manque, donc leur
+# silence ne prouve rien. ⇒ `alerte-tech-ping.yml`, livre avec ce lot, existe
+# exactement pour trancher : le lancer une fois et REGARDER LE SALON.
+
+name: Filet — alerte technique
+
+on:
+  workflow_run:
+    # ⛔⛔ CE SONT LES `name:` DES WORKFLOWS, PAS LEURS NOMS DE FICHIER.
+    # ⛔ Un nom mal recopie = un workflow NON surveille, sans le moindre signe.
+    # ⛔ Deux workflows sont volontairement absents — voir la fin du fichier.
+    workflows:
+      - "Probe agrégateur (webhooks source)"                  # aggregator-probe.yml
+      - "Audit des alertes"                                   # alertes-audit.yml
+      - "Archive — médias de la veille"                       # archive-medias.yml
+      - "Archive des salons (messages + médias)"              # archive-salons.yml
+      - "Base locale (veve.duckdb)"                           # base.yml
+      - "Burns OMI - StackR (quotidien)"                      # burns.yml
+      - "Page Classement des series comics"                   # classement.yml
+      - "Sonde GoChain (ere d'avant IMX)"                     # gochain-probe.yml
+      - "GoChain - ere d'avant IMX (2020 -> migration)"       # gochain.yml
+      - "Analytics - ledger writer (entrepot)"                # ledger-writer.yml
+      - "Fusion transferts (IMX + CollectChain, un fichier)"  # merge-transfers.yml
+      - "Fusion wallets (first_seen definitif, 3 eres)"       # merge-wallets.yml
+      - "price-history"                                       # price-history.yml
+      - "Raccord classement -> series_uuid"                   # raccord.yml
+      - "Backfill supply / gems / MCP / cover exclusive"      # supply-backfill.yml
+    types: [completed]
+
+permissions: {}
+
+jobs:
+  dire:
+    # ⭐⭐ Condition au niveau du JOB : un job saute ne reserve aucune machine,
+    # donc les ~430 fins de workflow reussies du mois coutent zero minute.
+    if: >-
+      github.event.workflow_run.conclusion == 'failure' ||
+      github.event.workflow_run.conclusion == 'timed_out'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: "Poster l'alerte dans le salon technique"
+        env:
+          HOOK: ${{ secrets.DISCORD_ALERTE_TECH_WEBHOOK }}
+          NOM: ${{ github.event.workflow_run.name }}
+          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          LIEN: ${{ github.event.workflow_run.html_url }}
+          DEPOT: ${{ github.repository }}
+          DECLENCHEUR: ${{ github.event.workflow_run.event }}
+        run: |
+          # 🔴 `set -e` : sans lui, un python3 qui echoue laisse l'etape verte
+          #    des qu'une commande suit. Mesure du 18/08, sur le ping jumeau.
+          set -eu
+          if [ -z "${HOOK:-}" ]; then
+            echo "::error::DISCORD_ALERTE_TECH_WEBHOOK est ABSENT ou VIDE sur ce depot."
+            echo "  Settings -> Secrets and variables -> Actions -> New repository secret"
+            echo "  Nom EXACT attendu : DISCORD_ALERTE_TECH_WEBHOOK"
+            echo "  ⛔ Tant qu'il manque, AUCUNE panne de ce depot n'arrive nulle part."
+            exit 1
+          fi
+
+          python3 - <<'PY'
+          import json, os, sys, urllib.request, urllib.error
+
+          nom  = os.environ["NOM"]
+          quoi = os.environ["CONCLUSION"]
+          lien = os.environ["LIEN"]
+          depot = os.environ["DEPOT"]
+          decl = os.environ["DECLENCHEUR"]
+
+          # ⭐⭐ CE QUE COUTE LA PANNE — la seule partie qui rend l'alerte utile.
+          COUT = {
+            "Analytics - ledger writer (entrepot)":
+              "L'entrepot du grand livre n'a pas ete ecrit : le writer de scrapeur-veve lira les CSV derives d'hier, ou echouera a son tour.",
+            "price-history":
+              "L'historique de prix n'a pas ete releve pour cette passe.",
+            "Burns OMI - StackR (quotidien)":
+              "Le burn du jour manque : le post BURN de Discord gardera celui de la veille.",
+            "Base locale (veve.duckdb)":
+              "La base DuckDB publiee n'a pas ete refaite : ce qui la lit travaille sur l'ancienne.",
+            "Page Classement des series comics":
+              "La page Classement gardera sa version precedente.",
+            "Fusion transferts (IMX + CollectChain, un fichier)":
+              "La source unifiee des transferts n'a pas ete refaite.",
+            "Fusion wallets (first_seen definitif, 3 eres)":
+              "Les first_seen de wallets n'ont pas ete refondus : les eres de collectionneurs restent sur l'etat precedent.",
+            "Archive — médias de la veille":
+              "Les medias de la veille n'ont pas ete archives. ⚠️ Ceux-la s'effacent : relancer sans attendre.",
+            "Archive des salons (messages + médias)":
+              "Des messages Discord n'ont pas ete sauves. ⚠️ Ceux-la s'effacent : relancer sans attendre.",
+          }
+          MANUEL = ("Lance a la main : rien ne se degrade tout seul, "
+                    "c'est a relancer quand tu veux.")
+          cout = COUT.get(nom) or (MANUEL if decl == "workflow_dispatch"
+                                   else "⚠️ Aucune consequence n'est ecrite pour ce workflow dans `filet.yml` — a completer.")
+
+          tete = "🔴" if quoi == "failure" else "⏱️"
+          etat = "a echoue" if quoi == "failure" else "a depasse son temps"
+          msg = (f"{tete} **{nom}** {etat}  ·  `{depot}`\n"
+                 f"{cout}\n{lien}")
+
+          corps = json.dumps({"content": msg,
+                              "username": "Sentinelle technique"}).encode()
+          req = urllib.request.Request(
+              os.environ["HOOK"] + "?wait=true", data=corps,
+              headers={"Content-Type": "application/json"})
+          try:
+              with urllib.request.urlopen(req, timeout=20) as r:
+                  code = r.status
+                  try:
+                      d = json.load(r)
+                      print(f"salon touche : channel_id = {d.get('channel_id')}")
+                  except Exception:
+                      pass
+          except urllib.error.HTTPError as e:
+              print(f"::error::Discord a refuse le POST (HTTP {e.code}). "
+                    f"Webhook invalide, revoque, ou salon supprime.")
+              print(e.read()[:400].decode("utf-8", "replace"))
+              sys.exit(1)
+          except Exception as e:
+              print(f"::error::Envoi impossible : {type(e).__name__}")
+              sys.exit(1)
+
+          print(f"✅ alerte envoyee (HTTP {code}) pour : {nom}")
+          PY
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ⛔ LES DEUX ABSENTS DE LA LISTE — ils alertent DEJA eux-memes
+# ═══════════════════════════════════════════════════════════════════════════════
+#   · « analytics-derived »              (analytics.yml, L.153)
+#   · « Alertes sous-floor »             (floor-watch.yml)
+# Les inscrire ici ferait tomber DEUX messages pour un seul echec, et un salon
+# ou tombe du bruit finit par ne plus etre lu.
+# ⚠️ Leur alerte maison sort en `exit 0` quand le secret manque — elles sont
+# donc muettes dans ce cas-la, la ou le filet, lui, echoue bruyamment. C'est un
+# ecart connu et assume : le jour ou on les migrera vers le filet, il suffira
+# d'ajouter leur `name:` ci-dessus et de retirer leur etape.
