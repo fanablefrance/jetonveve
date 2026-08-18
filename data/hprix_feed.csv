@@ -1,25 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-3a592c07-aca1-43c8-9788-632462579e7b,The Emperor's Fist,collectible,170,2026-08-11 11:49:24
-3433ffd5-0721-4346-b556-8ff18d545c27,Mickey Sorcerer's Hat,collectible,125,2026-08-11 11:49:24
-20578f42-c47c-454a-bb1a-7f2d78b56905,Death,collectible,49,2026-08-11 11:49:24
-ca53cfe6-6753-4f74-a62e-26b1eee26c79,Robocop: Jetpack,collectible,97,2026-08-11 11:49:24
-de9963c9-bf18-4b0c-bb4a-6646b116ef47,Rafael Grampá Batman,collectible,29,2026-08-11 11:49:24
-a6ff5d76-94cf-4f57-9045-a2538dbf41b3,Sung Jinwoo - E-Rank Hunter,collectible,1500,2026-08-11 11:49:24
-ff13b7ac-7bfe-4bfb-9efa-1902fdc9a4ba,Kenneth Rocafort Batman,collectible,8.65,2026-08-11 11:49:24
-a60477fd-6e2e-4482-bab5-02a3ee36be28,‍Gasgano’s Podracer,collectible,38,2026-08-11 11:49:24
-8a23cfee-33f5-4a13-8cff-504d63681262,Trilad,collectible,48,2026-08-11 11:49:24
-69a6f0f0-60c4-4e24-97b6-7faee35532c9,Death Trooper E-11D - Prone,collectible,500,2026-08-11 11:49:24
-98f7d0b0-8373-4037-a49f-2db41b24f168,Sokka,collectible,13.98,2026-08-11 11:49:24
-e4f3eeae-2c16-4aeb-8c80-2f9413f13dfd,Specimen #04,collectible,23.84,2026-08-11 11:49:24
-d4ec084d-812b-4a3c-958f-d691f0060ff9,Master Splinter - Battle Ready,collectible,62.99,2026-08-11 11:49:24
-885c33eb-4869-412b-9015-56039e798c14,IG-11,collectible,73.7,2026-08-11 11:49:24
-cf3ca5a8-b881-4a67-bb13-53f33d9d4b14,ODDY ver. BLUESNAKE,collectible,66,2026-08-11 11:49:24
-b8e9332e-cd45-45a2-9638-7fb3783b835e,Butterfly - Gray,collectible,130,2026-08-11 11:49:24
-2344a6ff-eb4b-4798-91eb-b32e459da048,Basim,collectible,7,2026-08-11 11:49:24
-77857a70-edf2-4401-9798-93f63b941d60,Vulture,collectible,4.9,2026-08-11 11:49:24
-6911b24f-2fd5-4d43-8ae9-8f7d978b6285,Felix  - Golden Light,collectible,11.77,2026-08-11 11:49:24
-2ab60547-aaf6-4120-828d-cc6372ac3335,Sewer Manhole - Silver,collectible,2,2026-08-11 11:49:24
-bd273292-2dd8-49f1-9199-f8dbfe7cd62d,Small Generator,collectible,1.65,2026-08-11 11:49:24
 3433ffd5-0721-4346-b556-8ff18d545c27,Mickey Sorcerer's Hat,collectible,115,2026-08-11 13:51:51
 2e03595b-e2ef-42bb-b38b-5602c691ec05,VeVe Heart Logo - Orange,collectible,180,2026-08-11 13:51:51
 025a320d-8bce-4fad-9cb2-4b41d6a2f727,Sung Jinwoo - Weakest Hunter,collectible,13.9,2026-08-11 13:51:51
@@ -3888,3 +3867,24 @@ b99cd3be-d4bb-496d-80a3-382e59f8a18a,Predator - Young Blood,collectible,9.9,2026
 3c89b9b1-b836-49c4-99f8-da6b7603e071,Eagle Eyes,collectible,6.9,2026-08-18 11:10:14
 d324d199-8532-4449-b67b-fdad373da71a,Stormtrooper - Running,collectible,2.8,2026-08-18 11:10:14
 6f5d6b03-da4c-4121-9024-74221436f214,Shadow Trooper - Crouching,collectible,7,2026-08-18 11:10:14
+e6e5683f-5b64-4842-8f74-912a0fc919ba,Homer & Bart,collectible,59.66,2026-08-18 12:11:34
+d6a2d52f-b2ba-4b15-97e8-b5617118f912,Turtle Catapult,collectible,20,2026-08-18 12:11:34
+7aefc64f-2a8f-4412-800d-25f1e3699c90,Aang - Airbender,collectible,25,2026-08-18 12:11:34
+1c2c833d-3e70-4e7e-b589-0c24832a58cd,Katara,collectible,19,2026-08-18 12:11:34
+e3f45c09-9bc7-43b0-ab69-47d0359de44d,Frozone,collectible,46,2026-08-18 12:11:34
+7ed317cf-5b82-47fa-94ca-69d85591d1e8,Hapjeong Dungeon Key,collectible,29,2026-08-18 12:11:34
+6f9120a4-09ea-4106-a855-d8565f33dfbf,1938 James Madison,collectible,9.77,2026-08-18 12:11:34
+98370f9b-b3fe-4261-a4c1-4fdfed88e97b,Experiment 626,collectible,3.5,2026-08-18 12:11:34
+a218120e-106b-4761-9cce-21f4485d53a0,Raphael - IncogNinja,collectible,39.99,2026-08-18 12:11:34
+531922ce-7c82-43dc-8ef2-dce25d31fb43,Arishem the Judge,collectible,11,2026-08-18 12:11:34
+54aecde0-6ff1-49aa-b8e5-1dcfa1dc6a12,Toph - Earth Master,collectible,60,2026-08-18 12:11:34
+5497ea9d-fe33-40c2-9522-e69ebcec2bd2,Super Grover,collectible,10,2026-08-18 12:11:34
+dc303066-ec4c-4051-bbd3-afd668481051,1938 Millard Fillmore,collectible,4.98,2026-08-18 12:11:34
+1915a00c-506e-4cd7-a346-948898bb22c4,Sun,collectible,16,2026-08-18 12:11:34
+6f5d6b03-da4c-4121-9024-74221436f214,Shadow Trooper - Crouching,collectible,8,2026-08-18 12:11:34
+d23fe8eb-7882-40fc-8e4d-16a0f81e1847,B-Rank Essence Stone,collectible,1.75,2026-08-18 12:11:34
+f9b0cd1a-7796-43c4-afcf-ac938ba83f71,Jolene McBean,collectible,2.22,2026-08-18 12:11:34
+73255fe7-c9e7-489a-a3bd-547b9b87a8a5,Ash,collectible,3.4,2026-08-18 12:11:34
+08a2b238-3dca-4780-8f60-6e50289364d4,Rain - Dark,collectible,31,2026-08-18 12:11:34
+5a83120d-b4c0-4982-85d7-3046dd7d5f4f,Rain,collectible,1.05,2026-08-18 12:11:34
+375e383d-9421-43dc-a1de-19703274118f,Snow - Dark,collectible,24.5,2026-08-18 12:11:34
