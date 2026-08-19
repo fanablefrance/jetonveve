@@ -866,6 +866,111 @@ def step_reveils(con, outdir):
         f"SELECT count(*), coalesce(sum(anciens),0) FROM read_csv('{outdir}/reveils.csv')").fetchone())
 
 
+def step_profils_agregats(con, outdir):
+    """profils_agregats.csv — LES QUATRE BLOCS DE PROFIL DE la page STATS,
+    agreges ICI plutot que sur le VPS.
+
+    POURQUOI CE STEP EXISTE (19/08/2026, demande Preda « integrer au site tous
+    les modules de la page STATS »).
+      Le site sait deja lire une release ; il lui suffisait donc de prendre
+      profiles_full.csv.gz et de compter. MESURE FAITE AVANT DE CHOISIR :
+      708 492 wallets, 24,4 Mo gzip, 81 Mo une fois ouvert, et le chargement
+      tel que `warehouse.mjs` le fait (un objet JS par ligne) coute
+      **480 Mo de RSS et 1,5 s**. Or le build de veveprice tourne sur un VPS
+      de 7,8 Go a 2 coeurs, et son conteneur a deja ete TUE SANS MESSAGE a
+      l'etape 31/55 deux fois en trois jours, dont une sans changement de code.
+      ⇒ Ajouter un pic de 480 Mo a un build qui meurt deja, pour en sortir
+        214 lignes de comptage, serait payer 480 Mo pour 5 Ko.
+    ⭐ Ici, `profiles_out` est DEJA en memoire de DuckDB (step_profiles vient de
+      la creer) : les quatre agregats sont quatre GROUP BY, et ils tournent sur
+      un runner GitHub, pas sur la machine qui sert le site.
+    ⛔ NE PAS deplacer ce calcul vers le site « pour n'avoir qu'un depot » :
+      c'est exactement l'arbitrage que ce commentaire existe pour empecher de
+      refaire, et le chiffre qui le tranche est ci-dessus.
+
+    FORME LONGUE, UNE SEULE TABLE — `bloc,ligne,colonne,wallets`.
+    ⭐ Quatre blocs dans un fichier plutot que quatre fichiers : le site fait
+      UN appel reseau au lieu de quatre, sur des pages servies en `no-store`
+      ou chaque octet est repaye a chaque visite.
+    🔴 LA GRILLE EST COMPLETE, ZEROS COMPRIS. Un croisement qui n'emet que ses
+      cases non vides se lit comme une grille pleine de trous : le lecteur ne
+      peut pas distinguer « aucun wallet ici » de « la mesure n'a pas tourne ».
+      C'est la meme regle que les tuiles sans chiffre du tableau de bord, prise
+      par l'autre bout.
+    ⚠️ `n/a` EST UN PROFIL, ET C'EST LE PLUS NOMBREUX — 341 136 wallets, 48 %
+      des 708 492 le 19/08. Il n'est PAS filtre : une repartition qui cache sa
+      moitie la plus grosse ment sur la forme du marche.
+    """
+    t = time.time()
+    PROFILS = PROFILE_ORDER + ["n/a"]
+    ACTIVITES = ACTIVITY_ORDER
+
+    def compte(sql):
+        return {tuple(r[:-1]): int(r[-1]) for r in con.execute(sql).fetchall()}
+
+    # 🔴🔴 `activityStatus` EST NUL POUR 53 WALLETS — MESURE DU 19/08, PAS UNE
+    # PRECAUTION. Sans ce `coalesce`, ces lignes tombent dans une cle `(profil,
+    # None)` absente de la grille et DISPARAISSENT : les blocs croises
+    # rendaient 708 439 au lieu de 708 492. `ACTIVITY_ORDER` porte deja
+    # « Non classé » pour ce cas — le libelle existait, c'est la conversion qui
+    # manquait. ⛔ Ne pas filtrer ces lignes : un wallet sans statut reste un
+    # wallet, et le total doit tomber juste.
+    AC = "coalesce(nullif(trim(activityStatus), ''), 'Non classé')"
+
+    sc = compte("SELECT collectorScore, count(*) FROM profiles_out GROUP BY 1")
+    pa = compte(f"""SELECT collectorScore, {AC}, count(*)
+                    FROM profiles_out GROUP BY 1, 2""")
+    pt = compte("""SELECT collectorScore, qty_bucket, count(*)
+                   FROM profiles_out GROUP BY 1, 2""")
+    at = compte(f"""SELECT {AC}, qty_bucket, count(*)
+                    FROM profiles_out GROUP BY 1, 2""")
+    total = int(con.execute("SELECT count(*) FROM profiles_out").fetchone()[0])
+
+    rows = [["total", "", "", total]]
+    for p in PROFILS:
+        rows.append(["score", p, "", sc.get((p,), 0)])
+    for p in PROFILS:
+        for a in ACTIVITES:
+            rows.append(["profil_activite", p, a, pa.get((p, a), 0)])
+    for p in PROFILS:
+        for q in QTY_ORDER:
+            rows.append(["profil_taille", p, q, pt.get((p, q), 0)])
+    for a in ACTIVITES:
+        for q in QTY_ORDER:
+            rows.append(["activite_taille", a, q, at.get((a, q), 0)])
+
+    # 🔬🔬 GARDE-FOU SUR LES QUATRE BLOCS, ET PAS SUR UN SEUL.
+    # 🔴 PREMIERE ECRITURE : il ne verifiait que `score`. Il est passe AU VERT
+    # pendant que deux blocs croises perdaient 53 wallets — la panne exacte
+    # qu'il devait empecher, un cran a cote. *Un controle qui ne couvre qu'une
+    # sortie sur quatre se lit comme un controle.*
+    # ⛔ Chaque bloc doit totaliser `total` : un libelle apparu dans la donnee
+    #    sans etre dans son ordre ferait disparaitre des wallets EN SILENCE.
+    ecarts = []
+    for b in ("score", "profil_activite", "profil_taille", "activite_taille"):
+        somme = sum(r[3] for r in rows if r[0] == b)
+        if somme != total:
+            ecarts.append(f"{b}={somme}")
+    if ecarts:
+        hors = {
+            "profil": sorted(set(k[0] for k in sc) - set(PROFILS)),
+            "activite": sorted(set(k[1] for k in pa) - set(ACTIVITES)),
+            "tranche": sorted(set(k[1] for k in pt) - set(QTY_ORDER)),
+        }
+        raise RuntimeError(
+            f"profils_agregats : {total} wallets attendus, lu {', '.join(ecarts)} — "
+            f"libelle(s) hors ordre : {hors}")
+
+    with open(f"{outdir}/profils_agregats.csv", "w", newline="",
+              encoding="utf-8") as f:
+        w = csv.writer(f, lineterminator="\n")
+        w.writerow(["bloc", "ligne", "colonne", "wallets"])
+        w.writerows(rows)
+    print(f"profils_agregats : {time.time()-t:.1f}s — {len(rows)} lignes, "
+          f"{total} wallets, {len(PROFILS)} profils x {len(ACTIVITES)} activites "
+          f"x {len(QTY_ORDER)} tranches")
+
+
 def step_size_whales(con, outdir):
     """wallet_size.csv (_size_distribution prod) + whales.csv (3 tops)."""
     rows = []
@@ -969,6 +1074,7 @@ def main():
         step_reveils(con, outdir)
     if run("size_whales"):
         step_size_whales(con, outdir)
+        step_profils_agregats(con, outdir)
     if run("meta"):
         step_meta(con, outdir)
     print(f"TOTAL ledger_derived : {time.time()-t0:.0f}s")
