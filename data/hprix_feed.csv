@@ -1,21 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-6a772acf-4006-4dd2-b325-882f6b2fca2e,WALL•E,collectible,34,2026-08-12 04:21:33
-86a1c74b-4fff-4729-9cf9-57d92f29e053,Steve Rogers,collectible,5.5,2026-08-12 04:21:33
-efce0615-f0e6-43ba-8e30-e3eb8f56d37f,Sam Wilson - Marvel Metallic Red,collectible,62,2026-08-12 04:21:33
-f7b41c83-6975-482c-ad53-1a3e86dea877,Pet Owner,collectible,49,2026-08-12 04:21:33
-1f3da159-b35e-4128-a634-de4a163cc587,Eagle Eyes - Blue Metallic,collectible,345,2026-08-12 04:21:33
-c62142c0-cf6b-4d96-92dd-ad0140ab0a41,Miles Morales,collectible,6.94,2026-08-12 04:21:33
-f5d9089b-cfa3-47b4-8408-35289430f64d,A-Rank Essence Stone,collectible,42.99,2026-08-12 04:21:33
-dd16eb91-704b-4fad-9db0-55e55cc433dc,Cyclops - Phoenix,collectible,6,2026-08-12 04:21:33
-605f6a4f-c222-492c-ba90-0412cbb11b93,The Barracuda Blast!,collectible,25,2026-08-12 04:21:33
-bae065cc-84f3-43a8-b9b3-27e6776b9274,Death Trooper - DLT-19D Heavy Blaster Rifle,collectible,2,2026-08-12 04:21:33
-a709645b-62df-490d-b74a-16a90c358d50,Master Splinter - Combat Training,collectible,16.9,2026-08-12 04:21:33
-8d292bb5-ab7d-465e-81bf-f5d329f3f06f,The Thing - Action,collectible,11.99,2026-08-12 04:21:33
-2bcd38b4-b22a-4bca-a147-b5f20241d3d6,Ruin Your Mind,collectible,9,2026-08-12 04:21:33
-57e1f1aa-b6d5-43af-9bbd-397ed10dddde,Friend Owl’s Log Base,collectible,2.5,2026-08-12 04:21:33
-ec460953-de8a-4649-8a68-666bb2f2168b,Weakest Hunter - Frame,collectible,1.75,2026-08-12 04:21:33
-d23fe8eb-7882-40fc-8e4d-16a0f81e1847,B-Rank Essence Stone,collectible,1.8,2026-08-12 04:21:33
-16e0d43f-4821-4e27-b2d6-09e48466ab3e,WHAM!,collectible,1,2026-08-12 04:21:33
 ee27ac13-2e51-4cda-925f-595060735022,ECOMI Logo Red Silver,collectible,3999,2026-08-12 06:25:01
 f274a17e-c98c-4c82-9495-9625436e5c57,Duck & Cover,collectible,15000,2026-08-12 06:25:01
 4dc2db11-350d-4c3b-82c9-84fbcaa9d138,Timon and Pumbaa,collectible,13.99,2026-08-12 06:25:01
@@ -3725,3 +3708,40 @@ de1e9deb-5145-4ca8-8348-43dcd61b8ddf,Green Truck,collectible,2.1,2026-08-19 03:4
 499c8aca-e5c2-45f8-a330-2f773ce0d67e,BLACKPINK NEON LIGHT - ROSÉ,collectible,35,2026-08-19 03:41:36
 0cb4b46d-a028-4de7-99cd-475145ae10b1,Views of Our Planets - Venus,collectible,2.55,2026-08-19 03:41:36
 5a83120d-b4c0-4982-85d7-3046dd7d5f4f,Rain,collectible,1,2026-08-19 03:41:36
+95b86201-ed47-471f-ada2-4e053041379b,Partners Statue,collectible,1780,2026-08-19 04:43:20
+cd22d5da-11d3-4dd9-b441-3656340d3948,The King of Cameos - Gold & Silver Edition,collectible,65,2026-08-19 04:43:20
+3c2149c7-0415-47f9-b5e8-c6f6d473951a,The Rise of Ultraman #1 - Skottie Young,collectible,15.79,2026-08-19 04:43:20
+05df9412-ca87-4492-8454-81f73a88c171,MOTOMICHI - Eyes,collectible,14.99,2026-08-19 04:43:20
+d4af21d2-86cd-430c-877b-501b6cbc3cff,Darth Vader Bust - Original,collectible,37,2026-08-19 04:43:20
+bbc39a36-fb1c-4fce-a32a-b2e41dc5e5d5,Anna,collectible,59,2026-08-19 04:43:20
+a29c77e8-29c1-4d9c-a07a-cbcaec9eec29,Blue and Beta Animated 2,collectible,120,2026-08-19 04:43:20
+3a8b9d03-9712-4548-ad3b-2364f7ce2a96,‍Mimban Trooper Helmet,collectible,24,2026-08-19 04:43:20
+db772d9c-36b0-478a-bfd3-fd09814d91a9,Michelangelo - Dojo Discipline,collectible,40,2026-08-19 04:43:20
+823669db-6bde-4c3d-8709-0469d7fe8da3,Donatello - Dojo Discipline,collectible,40,2026-08-19 04:43:20
+62cf09ca-e5f2-4695-8394-c0209bf56422,Raphael - Dojo Discipline,collectible,40,2026-08-19 04:43:20
+27d639fc-8d6c-4805-86dd-85731a0cd474,Leonardo - Dojo Discipline,collectible,30,2026-08-19 04:43:20
+24a2244f-2c0c-40f4-9294-b68fd45acdd7,Mr. DNA,collectible,18,2026-08-19 04:43:20
+4e65766e-d432-40a3-8465-f8a0a0270a2f,Ultraman Rising Poster,collectible,43,2026-08-19 04:43:20
+bf653adf-4386-497a-94ae-273e03b14d5f,Hooverville Labbit - Sunny Side of the Street,collectible,11,2026-08-19 04:43:20
+70fa2eb4-2890-4d80-92cf-f94c006583de,Cryo-Can,collectible,19.98,2026-08-19 04:43:20
+0c07f0cf-3bbe-4176-9f12-693cad110d08,Year of the Tiger,collectible,9.99,2026-08-19 04:43:20
+5d80846e-6d59-45d1-8a1d-03492e5134db,Darth Vader Samurai - Shadow of the Shogun,collectible,8.88,2026-08-19 04:43:20
+5a147be5-be63-485a-bb37-931603a3238d,Lunar New Year: Rabbit Souvenir Sheet,collectible,18,2026-08-19 04:43:20
+a201228d-cd3c-4d7d-a4de-271e75d0698d,Marvel Iron Man 18” – Silver,collectible,19.98,2026-08-19 04:43:20
+e74fc433-8f2a-4893-897f-4f72dd41c35a,Thumper,collectible,35,2026-08-19 04:43:20
+3481427c-7ec6-4129-8adf-f241937581ce,ROSÉ Pink/Silver,collectible,49,2026-08-19 04:43:20
+11fffaef-6dc8-4982-b7a3-c68d27a307b8,Dilophosaurus,collectible,6,2026-08-19 04:43:20
+d2166c51-23c5-4c47-8975-0808a09fcbf5,Captain Hook,collectible,4.5,2026-08-19 04:43:20
+aa3fbafe-4671-4b33-86dc-7e0556e33abf,Skating Rabbid,collectible,12,2026-08-19 04:43:20
+42883b04-d4ae-43da-81ea-b80fc7075234,Drop Incoming!,collectible,3.7,2026-08-19 04:43:20
+7b970f74-5f79-47a6-b234-3816f2a40e3d,Record #1 - Living In Delusionville - Gold,collectible,12,2026-08-19 04:43:20
+e1743ae5-27f8-4e49-975d-88b0d9674711,Toothy,collectible,3.69,2026-08-19 04:43:20
+b99cd3be-d4bb-496d-80a3-382e59f8a18a,Predator - Young Blood,collectible,9.9,2026-08-19 04:43:20
+499c8aca-e5c2-45f8-a330-2f773ce0d67e,BLACKPINK NEON LIGHT - ROSÉ,collectible,47,2026-08-19 04:43:20
+ceea21a6-2a60-4371-bd86-5249bf0741a7,Boba Fett’s Helmet,collectible,3.15,2026-08-19 04:43:20
+cbb80771-516a-4f21-a3b4-a108a9b400d1,Record #7 - Bunnny's Rap - Platinum,collectible,25,2026-08-19 04:43:20
+9fb4f37e-1474-4dea-99b9-aa016d8408e6,Adi Granov Main Cover,collectible,2,2026-08-19 04:43:20
+9ad31f51-2af6-47c0-80fe-e5120c3744ec,Delusionville Record S6 “Last Place is First Place” - Platinum,collectible,21.99,2026-08-19 04:43:20
+de1e9deb-5145-4ca8-8348-43dcd61b8ddf,Green Truck,collectible,2.15,2026-08-19 04:43:20
+0cb4b46d-a028-4de7-99cd-475145ae10b1,Views of Our Planets - Venus,collectible,2.59,2026-08-19 04:43:20
+5a83120d-b4c0-4982-85d7-3046dd7d5f4f,Rain,collectible,1.05,2026-08-19 04:43:20
