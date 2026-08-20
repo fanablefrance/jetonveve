@@ -101,20 +101,61 @@ GEM_SINK_ADDR = "0x52a6d705ef28aca50b19b90598241a67ace8a772"
 GEM_URL = f"{BASE_BS}/api/v2/addresses/{GEM_SINK_ADDR}/token-transfers"
 
 
+# ---------------------------------------------------------------------------
+# PATIENCE (lot 167, 20/08/2026)
+# ---------------------------------------------------------------------------
+# MESURE, pas impression : base.blockscout.com rend 1 succes sur 8 essais
+# espaces de 4 s (mesure le 20/08 a 10 h UTC ; deja 1/8 le 18/08 — la panne
+# dure, elle n'est pas passagere). Ce sont des HTTP 500, PAS des timeouts :
+# une reponse en echec revient en ~0,2 s. Aucun incident declare cote
+# Blockscout -> rien a attendre passivement.
+#
+# 🔑 POURQUOI 5 TENTATIVES NE POUVAIENT PAS SUFFIRE. A 12,5 % de succes par
+# essai, un _get passe avec une probabilite de 1 - 0,875^5 = 49 %. Or un walk
+# enchaine PLUSIEURS pages : a 3 pages, le walk entier avait 12 % de chances
+# d'aboutir. Les nuits des 16, 17, 19 et 20/08 n'ont pas eu de malchance —
+# elles ont eu la statistique contre elles.
+#     essais :  5 -> 49 %   ·  10 -> 74 %   ·  14 -> 85 %   ·  20 -> 93 %
+# 14 est le point ou le gain par essai supplementaire devient marginal.
+#
+# ⛔ LE BACKOFF EST PLAFONNE. Sans plafond, 14 tentatives a 2*n donneraient
+# 210 s d'attente pour UNE page et mangeraient le budget du run. Avec
+# PAUSE_MAX=10 : au pire ~2+4+6+8+10*10 = 120 s, et le cas nominal sort au
+# 1er essai sans aucune attente.
+#
+# ⭐ Un 4xx (hors 429) n'est PAS une panne passagere : insister 14 fois sur un
+# 404 ne le fera pas exister. Il sort immediatement.
+ESSAIS = int(os.environ.get("BURNS_ESSAIS", "14"))
+PAUSE_MAX = float(os.environ.get("BURNS_PAUSE_MAX", "10"))
+CODES_A_REJOUER = {429, 500, 502, 503, 504}
+
+
+class _Definitif(Exception):
+    """Erreur qu'aucune tentative supplementaire ne peut resoudre (404, 403)."""
+
+
 def _get(url, params=None):
     last = None
-    for attempt in range(1, 6):
+    for attempt in range(1, ESSAIS + 1):
         try:
             r = requests.get(url, params=params or {}, headers=UA, timeout=40)
-            if r.status_code == 429:
-                time.sleep(3 * attempt)
+            if r.status_code in CODES_A_REJOUER:
+                last = f"HTTP {r.status_code}"
+                time.sleep(min(3 * attempt, PAUSE_MAX))
                 continue
+            if 400 <= r.status_code < 500:
+                raise _Definitif(f"HTTP {r.status_code} sur {url}")
             r.raise_for_status()
+            if attempt > 1:
+                print(f"      ↻ obtenu au {attempt}e essai (dernier echec : "
+                      f"{last})", flush=True)
             return r.json()
+        except _Definitif:
+            raise
         except Exception as e:
             last = e
-            time.sleep(2 * attempt)
-    raise RuntimeError(f"echec {url}: {last}")
+            time.sleep(min(2 * attempt, PAUSE_MAX))
+    raise RuntimeError(f"echec {url} apres {ESSAIS} essais : {last}")
 
 
 def _pt_date(iso_ts: str) -> str:
@@ -649,13 +690,39 @@ def main() -> int:
     state = _load_state()
     daily = _load_daily()
 
-    if not state.get("backfill_done"):
-        print(f"BACKFILL (resumable) : pages deja faites={state.get('pages', 0)}, "
-              f"reprise={'oui' if state.get('next_page') else 'debut'}...", flush=True)
-        pages, deposits = run_backfill(state, daily, budget_s)
-    else:
-        print(f"INCREMENTAL depuis bloc {state.get('newest_block')}...", flush=True)
-        pages, deposits = run_incremental(state, daily)
+    # -----------------------------------------------------------------------
+    # 🔴🔴 LE CHEMIN D'ERREUR DOIT SAUVER L'ETAT (lot 167, 20/08/2026)
+    # -----------------------------------------------------------------------
+    # AVANT : le walk principal n'etait PAS protege (les walks gems et decompo
+    # l'etaient). Une exception tuait le processus AVANT _save_daily,
+    # _save_state et write_sheet -> le run JETAIT jusqu'a ce qu'il venait de
+    # collecter. C'est ce qui a coute les nuits des 16, 17, 19 et 20/08.
+    #
+    # ⛔⛔ ET ON N'AVALE PAS L'ECHEC. Proteger sans sortir en echec rendrait le
+    # run VERT avec un jour manquant : le filet d'alerte se tairait et personne
+    # ne saurait que la donnee manque. Les deux moities, jamais l'une sans
+    # l'autre : SAUVER, PUBLIER, PUIS SORTIR EN 1.
+    #
+    # ⭐ Les `except` de gems et decompo n'imprimaient qu'un « warning » et le
+    # run rendait 0 : ils AVALAIENT deja leur echec depuis toujours. Ils
+    # alimentent desormais la meme liste.
+    pages, deposits = 0, 0        # ⚠️ sans ca, le RECAP leve un NameError
+    echecs = []                   # apres un walk interrompu.
+
+    quel = "backfill" if not state.get("backfill_done") else "incremental"
+    try:
+        if not state.get("backfill_done"):
+            print(f"BACKFILL (resumable) : pages deja faites={state.get('pages', 0)}, "
+                  f"reprise={'oui' if state.get('next_page') else 'debut'}...", flush=True)
+            pages, deposits = run_backfill(state, daily, budget_s)
+        else:
+            print(f"INCREMENTAL depuis bloc {state.get('newest_block')}...", flush=True)
+            pages, deposits = run_incremental(state, daily)
+    except Exception as e:
+        echecs.append(f"walk principal ({quel}) : {e}")
+        print(f"🔴 walk principal ({quel}) INTERROMPU : {e}\n"
+              f"   -> on sauve quand meme ce qui a ete collecte, puis on sort "
+              f"en ECHEC.", flush=True)
 
     # gems (v7) AVANT la decompo : walk court (~70 pages au 1er run puis
     # 1-2 pages/jour) — on lui reserve une part du budget restant.
@@ -668,7 +735,8 @@ def main() -> int:
               f"{gem_days} jours avec burn gems, gem_done="
               f"{state.get('gem_done', False)}.", flush=True)
     except Exception as e:
-        print(f"gems warning: {e}", flush=True)
+        echecs.append(f"gems : {e}")
+        print(f"🔴 gems INTERROMPU : {e}", flush=True)
     _save_split(split)
 
     # decompo NFT avec le budget restant
@@ -679,12 +747,19 @@ def main() -> int:
               f"{len(split)} jours couverts, split_done="
               f"{state.get('split_done', False)}.", flush=True)
     except Exception as e:
-        print(f"decompo warning: {e}", flush=True)
+        echecs.append(f"decompo : {e}")
+        print(f"🔴 decompo INTERROMPU : {e}", flush=True)
     _save_split(split)
 
+    # ⭐ CES TROIS LIGNES SONT LA RAISON D'ETRE DU LOT : elles sont desormais
+    # atteintes MEME quand un walk est tombe.
     _save_daily(daily)
     _save_state(state)
-    print("Sheet:", write_sheet(daily, split), flush=True)
+    try:
+        print("Sheet:", write_sheet(daily, split), flush=True)
+    except Exception as e:
+        echecs.append(f"write_sheet : {e}")
+        print(f"🔴 write_sheet INTERROMPU : {e} — le CSV fait foi.", flush=True)
 
     stackr = {k[0]: v for k, v in daily.items() if k[1] == "StackR"}
     total = sum(v[1] for v in stackr.values())
@@ -702,6 +777,17 @@ def main() -> int:
         extra = (f" | NFT {sp[1]:>10,.0f} (vol {sp[2]:>12,.0f}) "
                  f"| GEM {sp[4]:>10,.0f}") if sp else ""
         print(f"   {d} | {tx:>4} tx | {omi:>15,.0f} OMI{extra}", flush=True)
+
+    if echecs:
+        print(f"\n🔴 ECHEC PARTIEL — {len(echecs)} etape(s) sont tombees. "
+              f"L'etat A ETE SAUVE et le Sheet ecrit : rien de ce qui a ete "
+              f"collecte n'est perdu, la reprise repartira d'ici.", flush=True)
+        for e in echecs:
+            print(f"   · {e}", flush=True)
+        print("   Le run sort en ECHEC VOLONTAIREMENT, pour que le filet "
+              "d'alerte le voie. ⛔ Un run vert sur une donnee manquante est "
+              "pire qu'un run rouge.", flush=True)
+        return 1
     return 0
 
 
