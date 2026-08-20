@@ -1,13 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-4d4ed906-c93a-41ff-b890-cb202250bc01,Sea Warrior Special Edition,collectible,2999,2026-08-13 17:33:23
-b504ad62-91e3-485a-861b-023fa09a5f12,BLACKPINK - Sound On,collectible,29.99,2026-08-13 17:33:23
-f037f161-585a-4e62-b28b-1f9d4f9198ef,Invisible Woman – Psionic Defender,collectible,7.99,2026-08-13 17:33:23
-6d881588-9efd-47a4-9fda-ef7180ac35a9,Guile White,collectible,120,2026-08-13 17:33:23
-64cf903a-bdb0-4bcd-8d1d-f18f362afecd,Darth Vader Samurai - Eyes of the Empire,collectible,29.99,2026-08-13 17:33:23
-193323d3-79fe-4b42-b144-ef1c227aaca1,Death Trooper - E-11D Blaster Rifle,collectible,2.8,2026-08-13 17:33:23
-ebb6a9d6-fdce-4bba-bcb2-ba30d20fd890,Alert,collectible,4,2026-08-13 17:33:23
-d22a536f-a27b-42f8-94c3-c46f52ae3e7e,$3.30 Food Stamp,collectible,3.7,2026-08-13 17:33:23
-eedb84f2-a80e-4ed2-983b-7f3e8684fd7a,Locked and Loaded,collectible,4.2,2026-08-13 17:33:23
 1b480348-4216-4a9b-a6df-d01402723123,OG Devil Bunny - Color,collectible,399,2026-08-13 18:35:03
 ffabb2e2-810d-4f83-91e7-3d6b80c0f194,Thor - Ultimate Animated,collectible,80,2026-08-13 18:35:03
 f210cd03-99a2-4a22-af3b-dc544ac84b4d,Rogue - 90’s X-Men,collectible,249.99,2026-08-13 18:35:03
@@ -3630,22 +3621,34 @@ d1f01da5-0084-4c75-9b81-509d2967f056,Dinglehopper,collectible,15,2026-08-20 14:4
 375e383d-9421-43dc-a1de-19703274118f,Snow - Dark,collectible,35,2026-08-20 14:45:24
 c8f0ded7-7052-4e35-be76-cb7353ad924b,Monovader - Chrome,collectible,3.1,2026-08-20 14:45:24
 8684b674-49b4-4ece-aa1e-510ed9e5ebaf,Ash - Dark,collectible,49.86,2026-08-20 14:45:24
-3ba00608-759f-4b4f-9984-2c6b3e6da842,No Time To Die — Aston Martin DB5,collectible,57.07,2026-08-20 16:49:20
-1a0b2842-23de-438d-8242-d11846483d6c,Beware the Dark Side,collectible,14.5,2026-08-20 16:49:20
-49bb3164-c4b0-4970-b6b2-740d7829e185,Avengers Tower,collectible,59.45,2026-08-20 16:49:20
-460769ba-fa96-44ac-b549-6200383ae710,A Merry Time You Will Have,collectible,130,2026-08-20 16:49:20
-b94e5d49-35f0-4bdc-9e41-d5c484df5ae7,Catwoman,collectible,10.9,2026-08-20 16:49:20
-05df9412-ca87-4492-8454-81f73a88c171,MOTOMICHI - Eyes,collectible,15.3,2026-08-20 16:49:20
-cdce3d25-b015-4565-8097-81bbfc524e54,Daredevil,collectible,28,2026-08-20 16:49:20
-48d02f31-a339-4cdf-b28d-b5d94cfac577,Beast,collectible,24.95,2026-08-20 16:49:20
-e120c73b-c7bd-4905-a2f7-55f3b0b9ab9a,BB-8,collectible,11,2026-08-20 16:49:20
-fcaf92c1-1f34-4042-87ee-b5cc02345977,Chris Robots Will Kill - Landscape,collectible,33,2026-08-20 16:49:20
-1bacdd79-a711-4a24-9bfa-c0927e871e9a,Chris Robots Will Kill - SUYE Special Sky Blue,collectible,27.5,2026-08-20 16:49:20
-75c89ca4-c8fa-44b1-bc4c-e68a3d0c8d0a,Creepshow Coffin - Vol. 3 Issue 2,collectible,20,2026-08-20 16:49:20
-4b64b4f1-66db-4c8e-a003-b8e9e9e823cc,1938 William Henry Harrison,collectible,1.99,2026-08-20 16:49:20
-899aa947-87ce-44ac-93b3-201ee1d977a2,C-25 Fragmentation Grenade,collectible,8.9,2026-08-20 16:49:20
-48c3da1f-c783-45f5-af97-8dbdcdeb74ec,Thought Bubble,collectible,19.99,2026-08-20 16:49:20
-1915a00c-506e-4cd7-a346-948898bb22c4,Sun,collectible,20.99,2026-08-20 16:49:20
-65828683-2a2f-4260-83eb-e86bbfbf11a8,Acrobatic Surfing - Gold,collectible,76,2026-08-20 16:49:20
-a72a940f-3713-4072-8736-415a64444d47,Take That Rabbid,collectible,21,2026-08-20 16:49:20
-a32cee46-53f1-4fc8-bcbb-4ecb37d3ab09,Creepshow Coffin - Vol. 2 Issue 2,collectible,10,2026-08-20 16:49:20
+4f992ee1-d183-485d-a9c9-00695bc727de,Jim Lee Batman V3,collectible,9,2026-08-20 17:51:15
+1a0b2842-23de-438d-8242-d11846483d6c,Beware the Dark Side,collectible,15,2026-08-20 17:51:15
+146ac2a6-6813-4a88-a03a-4cc2a90b721d,Michelangelo - Classic (Special Edition),collectible,1299.99,2026-08-20 17:51:15
+9e65bdba-e67c-4af1-b1bc-f6bcc60e4bcd,Luke Skywalker's X-wing,collectible,29,2026-08-20 17:51:15
+cdce3d25-b015-4565-8097-81bbfc524e54,Daredevil,collectible,37.95,2026-08-20 17:51:15
+05df9412-ca87-4492-8454-81f73a88c171,MOTOMICHI - Eyes,collectible,15.14,2026-08-20 17:51:15
+783ac0b6-c91d-4739-8f70-fb7735529a89,Flo,collectible,269,2026-08-20 17:51:15
+687ad0c0-c8b5-48a7-9ac9-792b8ef95981,Raphael - Classic (Special Edition),collectible,799.99,2026-08-20 17:51:15
+f5caca1e-779f-4235-8622-c763fa92ccb6,Donatello - Classic (Special Edition),collectible,799,2026-08-20 17:51:15
+48d02f31-a339-4cdf-b28d-b5d94cfac577,Beast,collectible,54,2026-08-20 17:51:15
+12ec6e39-5acf-456c-a4d3-b3cd71e412c4,Pluto,collectible,245,2026-08-20 17:51:15
+12f57d47-86bc-440e-a88a-2b44337ac54b,The Punisher - Armored Vigilante,collectible,173,2026-08-20 17:51:15
+ed0b5426-051d-476a-ab2c-9cb671cfe32b,Elmo - Gold,collectible,218.58,2026-08-20 17:51:15
+f6894d7e-b148-4f5a-a848-b366a5edaa29,Edward - Pirate’s Rest,collectible,25,2026-08-20 17:51:15
+e120c73b-c7bd-4905-a2f7-55f3b0b9ab9a,BB-8,collectible,12.7,2026-08-20 17:51:15
+9dfbafbf-12c2-4e97-88dd-9e058b2555a0,Welcoming Toby,collectible,2.99,2026-08-20 17:51:15
+3a8b9d03-9712-4548-ad3b-2364f7ce2a96,‍Mimban Trooper Helmet,collectible,15,2026-08-20 17:51:15
+9abda8bd-3e74-4e88-aef9-2281f2b9899b,Gadgets and Gizmos Aplenty,collectible,66,2026-08-20 17:51:15
+d1f01da5-0084-4c75-9b81-509d2967f056,Dinglehopper,collectible,66,2026-08-20 17:51:15
+2d87ae0d-7563-4277-855d-5a40954f1569,Walter The Teleporting Whale Box,collectible,38.48,2026-08-20 17:51:15
+f6e15150-641b-4d8e-b7cc-19027a019d1f,Chris Robots Will Kill - OG,collectible,34.75,2026-08-20 17:51:15
+2be9cf5d-8152-425d-9f5a-ac77f7f39792,Shadow Trooper - Shooting,collectible,180,2026-08-20 17:51:15
+4b64b4f1-66db-4c8e-a003-b8e9e9e823cc,1938 William Henry Harrison,collectible,2.5,2026-08-20 17:51:15
+9ed0e046-53f4-4c10-80e9-7cac8a0a01c9,Coca-Cola – 1900 Labeled Bottle,collectible,3.99,2026-08-20 17:51:15
+450206ba-7c6b-46a3-8d48-9f24b64b7aed,Falling,collectible,75,2026-08-20 17:51:15
+932f2c05-f2fc-4e81-8ed7-659d2c6748ce,Emcee Claws Box,collectible,40.5,2026-08-20 17:51:15
+6a9ca7c7-ea86-4a95-b142-0a4b557dd2a3,LA Strong - Red Heart,collectible,18.99,2026-08-20 17:51:15
+28b72409-f4cc-4acd-b498-7d24dbbfc437,Jason Naylor - OPN Heart COLOR,collectible,9.75,2026-08-20 17:51:15
+899aa947-87ce-44ac-93b3-201ee1d977a2,C-25 Fragmentation Grenade,collectible,4,2026-08-20 17:51:15
+c85f636d-05bf-4cb2-983c-22ae671ee6b4,Record #9 - Everyone is Jealous of Me - Platinum,collectible,20,2026-08-20 17:51:15
+fbee4cac-4007-49a7-8662-acf27af59267,Lightning - Dark,collectible,51.3,2026-08-20 17:51:15
