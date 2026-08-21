@@ -1,4 +1,23 @@
 uuid,name,categorie,floor_usd,ts
+fc943f7c-7e87-4f6e-b38e-8bc02c6cf7a6,Spider-Man – The Amazing Spider-Man,collectible,45,2026-08-14 04:50:34
+2e87137d-51b3-41ee-93e1-80e0e799d6ba,Spider-Man – Hangin’ Out,collectible,34.5,2026-08-14 04:50:34
+4b3b200b-8469-43a2-aa68-114a4d9e0306,Spider-Man – Jump into Action,collectible,59,2026-08-14 04:50:34
+94f72775-7b61-4e82-9f93-58e03cf89d2e,Her Majesty Special Edition,collectible,1500,2026-08-14 04:50:34
+87f6a7f3-98fc-4c51-bddd-6946a509f760,Too Much Magic!,collectible,10.47,2026-08-14 04:50:34
+0bc64cce-45bd-46de-b08b-a80e1c00773c,Jade Dragon,collectible,40,2026-08-14 04:50:34
+0fecdd27-1603-4e20-a7c0-eda9f7f391eb,JISOO - Under My Umbrella,collectible,595,2026-08-14 04:50:34
+92871a71-62d8-4cb7-a6a8-adf184636056,Battle Mode,collectible,12,2026-08-14 04:50:34
+f5a9fdc5-7bbb-4ac0-85da-8e85028f6840,Turtle Cycle,collectible,13.99,2026-08-14 04:50:34
+de1c4dd3-2300-4b7a-905e-8cd2e109f748,Go Beyond the Surface,collectible,200,2026-08-14 04:50:34
+ad1dc02e-0225-47e8-8cbc-93b5b4a7646e,Iron Man,collectible,12.22,2026-08-14 04:50:34
+38eb4855-5bfe-40a3-922d-54dc7fb3520b,Remember Us - Vital Voices II,collectible,7,2026-08-14 04:50:34
+7a91fb6d-34a5-45e6-9375-9913fae7900f,The Drop Off,collectible,23.25,2026-08-14 04:50:34
+04c4bc6c-bbea-4d2e-bb0f-84122e214979,Loki - Action,collectible,29.99,2026-08-14 04:50:34
+0899e8dd-0500-418f-8f7f-937715face56,"Love: Cherub from Sistine Madonna, by Raphael (1996)",collectible,5.99,2026-08-14 04:50:34
+0592ffac-7963-4fe1-8528-7797260823fe,Episode 1 - I'm Used to It,collectible,3.5,2026-08-14 04:50:34
+ca3678e8-3ed8-4db0-ac03-da39f94d2c99,Turtle,collectible,2,2026-08-14 04:50:34
+56d5409c-3c30-40ba-888e-2987749734c1,Record #8 - Duck Luck - Gold,collectible,3.25,2026-08-14 04:50:34
+d90a73fb-fcef-4c6c-bf36-acfe1f371cf5,Record #3 - Ascension - Original,collectible,1.09,2026-08-14 04:50:34
 fc943f7c-7e87-4f6e-b38e-8bc02c6cf7a6,Spider-Man – The Amazing Spider-Man,collectible,48,2026-08-14 05:53:24
 5e8f7e71-3285-4977-9f11-77fa35c2dda3,Spider-Man: Miles Morales - Ultimate Spider-Man,collectible,678,2026-08-14 05:53:24
 2e87137d-51b3-41ee-93e1-80e0e799d6ba,Spider-Man – Hangin’ Out,collectible,38,2026-08-14 05:53:24
@@ -3618,13 +3637,20 @@ c8a76df1-5979-4917-8189-5ecb4a2e4225,KABOOM,collectible,14.8,2026-08-21 02:06:14
 f7b1ac32-1be4-49fd-8359-771e739da940,Nozzle Eye - Ghostlight,collectible,7,2026-08-21 02:06:14
 dad4a528-bf35-4985-a7bb-beb42c14959a,Nozzle Eye - Kintsugi,collectible,7,2026-08-21 02:06:14
 30700600-f3ad-4f78-a775-c84e7b056abe,Graffi ver. Green,collectible,5,2026-08-21 02:06:14
-ebf0810d-353d-49d2-9fd8-032aaae61f6a,Magic Lamp from Aladdin,collectible,16.4,2026-08-21 05:09:14
-767ec424-2432-4620-b25f-d300fa401004,John Hammond’s Cane,collectible,99.99,2026-08-21 05:09:14
-f5caca1e-779f-4235-8622-c763fa92ccb6,Donatello - Classic (Special Edition),collectible,599.69,2026-08-21 05:09:14
-f6e15150-641b-4d8e-b7cc-19027a019d1f,Chris Robots Will Kill - OG,collectible,34.75,2026-08-21 05:09:14
-d0003c1e-2e42-499e-9eb9-a9b002000071,T-47 Airspeeder - Black,collectible,149,2026-08-21 05:09:14
-a86cc68d-be1a-49c8-a123-96c5959b7ca3,Sewer Manhole - Gold,collectible,115,2026-08-21 05:09:14
-8f791d43-a31c-406e-90b1-df084c1498ba,Java Joe,collectible,7.29,2026-08-21 05:09:14
-fe25e470-e059-45a4-863d-d25a085b0dfe,MyCollectables,collectible,3.66,2026-08-21 05:09:14
-f6717b76-db8d-48af-bffd-d7016ac4a83d,C-Rank Essence Stone,collectible,1.08,2026-08-21 05:09:14
-94eb327e-5053-416d-9b2e-412eb9fa9cf5,Ocean Coral #2,collectible,2.45,2026-08-21 05:09:14
+410fd575-30a3-45ab-a87a-7a928971d321,Leonardo - Classic (Special Edition),collectible,1999,2026-08-21 04:08:27
+ebf0810d-353d-49d2-9fd8-032aaae61f6a,Magic Lamp from Aladdin,collectible,16.5,2026-08-21 04:08:27
+f5caca1e-779f-4235-8622-c763fa92ccb6,Donatello - Classic (Special Edition),collectible,1399,2026-08-21 04:08:27
+767ec424-2432-4620-b25f-d300fa401004,John Hammond’s Cane,collectible,35,2026-08-21 04:08:27
+560171d9-021c-4447-9015-2b32714c74f7,X-Men Logo,collectible,13.85,2026-08-21 04:08:27
+d0003c1e-2e42-499e-9eb9-a9b002000071,T-47 Airspeeder - Black,collectible,199,2026-08-21 04:08:27
+7865e918-bd8f-4ef9-b529-3ac0d3f85f02,Buzz Lightyear – Laser Lock,collectible,15,2026-08-21 04:08:27
+f6e15150-641b-4d8e-b7cc-19027a019d1f,Chris Robots Will Kill - OG,collectible,35,2026-08-21 04:08:27
+d4788b46-09e9-4528-bfd0-39a1a9ca087e,Cube,collectible,25,2026-08-21 04:08:27
+983c4be0-5acb-468d-b834-3e2869618011,Super,collectible,25,2026-08-21 04:08:27
+af36d0b7-21fc-404d-a6ea-6b5676c9ba30,Hoodie,collectible,25,2026-08-21 04:08:27
+fccfc777-cc16-4a36-b063-8258d6e69ffe,Boy,collectible,25,2026-08-21 04:08:27
+a86cc68d-be1a-49c8-a123-96c5959b7ca3,Sewer Manhole - Gold,collectible,99,2026-08-21 04:08:27
+8f791d43-a31c-406e-90b1-df084c1498ba,Java Joe,collectible,6.99,2026-08-21 04:08:27
+fe25e470-e059-45a4-863d-d25a085b0dfe,MyCollectables,collectible,3.29,2026-08-21 04:08:27
+94eb327e-5053-416d-9b2e-412eb9fa9cf5,Ocean Coral #2,collectible,2.29,2026-08-21 04:08:27
+12d7ac8b-dad2-48a4-930f-5abc5399b121,Boy (Color),collectible,25,2026-08-21 04:08:27
