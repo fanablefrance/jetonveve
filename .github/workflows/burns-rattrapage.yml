@@ -1,0 +1,171 @@
+# ⚠️ DEPOT : fanablefrance/jetonveve   ·   CHEMIN : .github/workflows/burns-rattrapage.yml   (NEUF)
+# ═══════════════════════════════════════════════════════════════════════════════
+# ⏰ LE RATTRAPAGE DES BURNS — reessayer en journee, crier une seule fois
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# 🔴 CE QUI A ETE MESURE, LE 21/08/2026
+# ─────────────────────────────────────────────────────────────────────────────
+#   `burns.yml` sur 6 nuits : 16 🔴 · 17 🔴 · 18 ✅ · 19 🔴 · 20 🔴 · 21 🔴
+#   ⇒ CINQ nuits sur six, le burn du jour manquait au reveil.
+#   La cause, lue dans le log du run 32438498614 : `base.blockscout.com` rend
+#   **HTTP 500** sur `/api/v2/addresses/.../token-transfers`, apres 14 essais,
+#   sur les TROIS walks a la fois. C'est la SOURCE qui tombe, pas le code.
+#   ⛔⛔ Un burn rouge n'est donc PAS un defaut : c'est une source absente.
+#   Le seul remede honnete est de RE-ESSAYER PLUS TARD.
+#
+#   Le cron unique `31 0 * * *` etait la SEULE tentative de la journee. Si
+#   blockscout est en vague de 500 a cette minute-la, la journee est perdue.
+#
+# 🔑 CE QUE FAIT CE FICHIER, ET CE QU'IL NE FAIT PAS
+# ─────────────────────────────────────────────────────────────────────────────
+#   · Il MESURE d'abord (`scraper/burns_fraicheur.py`) : le jour est-il la ?
+#   · Si le jour est la  -> il ne lance RIEN et ne dit RIEN. Cout : ~20 s.
+#   · Si le jour manque  -> il lance `burns.yml` par `workflow_dispatch`.
+#   · Il n'alerte QUE sur la DERNIERE passe de la journee, et QUE si le jour
+#     manque ENCORE apres les passes precedentes.
+#
+# ⭐⭐⭐ POURQUOI « LA DERNIERE PASSE » NE SE DEVINE PAS A L'HORLOGE
+# ─────────────────────────────────────────────────────────────────────────────
+#   Les crons GitHub de ce projet partent avec **2 h a 3 h 15 de retard** (deja
+#   mesure et ecrit ailleurs dans le projet). Un `if heure >= 18` aurait donc
+#   pu faire alerter la passe de 14 h ET celle de 19 h le meme jour -> DEUX
+#   messages. ⇒ On lit `github.event.schedule`, qui rend l'expression cron
+#   EXACTE qui a declenche le run. C'est insensible au retard.
+#
+# ⛔⛔ ET C'EST POURQUOI `burns.yml` SORT DE `filet.yml` DANS CE MEME LOT.
+#   Le filet alertait sur CHAQUE echec de burns, en affirmant « le burn du jour
+#   manque ». Avec un rattrapage, cette phrase devient FAUSSE la moitie du
+#   temps (echec a 02 h, jour rattrape a 10 h), et surtout elle tomberait
+#   jusqu'a CINQ fois par jour. Une alerte doublee finit par ne plus etre lue.
+#   ⇒ Le filet ne surveille plus burns ; c'est ce fichier qui porte l'alerte,
+#     et il alerte sur une MESURE du fichier, plus sur la couleur d'un run.
+
+name: Burns — rattrapage du jour
+
+on:
+  schedule:
+    # ⭐ Etalees dans la journee : si blockscout est en vague de 500 a 06 h,
+    #   il ne l'est pas forcement a 10 h. Le vrai remede est le DELAI.
+    - cron: "7 6 * * *"
+    - cron: "7 10 * * *"
+    - cron: "7 14 * * *"
+    # 🔑🔑 LA DERNIERE PASSE — LA SEULE QUI A LE DROIT D'ALERTER.
+    # ⛔ Si tu changes cette expression, change AUSSI la comparaison dans
+    #   l'etape « Est-ce la derniere passe ? » : elles sont appariees a la
+    #   chaine de caracteres pres, et une faute de frappe rendrait le
+    #   rattrapage DEFINITIVEMENT MUET, sans le moindre signe.
+    - cron: "7 19 * * *"
+  workflow_dispatch:
+    inputs:
+      alerter:
+        description: "Alerter si le jour manque encore (comme la passe de 19 h)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  actions: write        # 🔑 indispensable pour `gh workflow run burns.yml`
+
+concurrency:
+  group: veve-burns-rattrapage
+  cancel-in-progress: false
+
+jobs:
+  rattraper:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Le burn du jour est-il la ? (LECTURE SEULE)"
+        id: mesure
+        run: python -m scraper.burns_fraicheur
+
+      - name: "Est-ce la derniere passe ?"
+        id: passe
+        env:
+          QUEL_CRON: ${{ github.event.schedule }}
+          FORCE: ${{ github.event.inputs.alerter }}
+        run: |
+          set -eu
+          if [ "${QUEL_CRON:-}" = "7 19 * * *" ] || [ "${FORCE:-}" = "true" ]; then
+            echo "derniere=oui" >> "$GITHUB_OUTPUT"
+            echo "⏰ Derniere passe de la journee : elle a le droit d'alerter."
+          else
+            echo "derniere=non" >> "$GITHUB_OUTPUT"
+            echo "Passe intermediaire (cron « ${QUEL_CRON:-dispatch} ») : muette."
+          fi
+
+      - name: "Le jour est la — rien a faire"
+        if: steps.mesure.outputs.manque == 'non'
+        run: echo "✅ Derniere date = ${{ steps.mesure.outputs.derniere }} (seuil ${{ steps.mesure.outputs.seuil }}). Aucun lancement, aucun message."
+
+      - name: "Relancer burns.yml (le jour manque)"
+        if: steps.mesure.outputs.manque == 'oui'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          echo "🔴 Derniere date = ${{ steps.mesure.outputs.derniere }}, seuil ${{ steps.mesure.outputs.seuil }}."
+          # ⭐ `auto_continue=false` : on veut UNE tranche, pas une chaine de
+          #   relances. Les backfills sont finis (backfill_done, split_done et
+          #   gem_done sont tous `true` au 21/08) ; ce qui manque est un
+          #   incrementiel de quelques minutes.
+          gh workflow run burns.yml --ref main -f minutes=25 -f auto_continue=false
+          echo "burns.yml relance."
+
+      - name: "Alerter — mais seulement si le jour manque ENCORE, en fin de journee"
+        if: steps.mesure.outputs.manque == 'oui' && steps.passe.outputs.derniere == 'oui'
+        env:
+          HOOK: ${{ secrets.DISCORD_ALERTE_TECH_WEBHOOK }}
+          DERNIERE: ${{ steps.mesure.outputs.derniere }}
+          SEUIL: ${{ steps.mesure.outputs.seuil }}
+          LIEN: ${{ github.server_url }}/${{ github.repository }}/actions/workflows/burns.yml
+        run: |
+          # 🔴 `set -e` : sans lui, un python3 qui echoue laisse l'etape verte
+          #    des qu'une commande suit. Meme piege que dans `filet.yml`.
+          set -eu
+          if [ -z "${HOOK:-}" ]; then
+            echo "::error::DISCORD_ALERTE_TECH_WEBHOOK est ABSENT ou VIDE sur ce depot."
+            echo "  ⛔ Tant qu'il manque, le rattrapage ne crie nulle part."
+            exit 1
+          fi
+
+          python3 - > /tmp/charge.json <<'PY'
+          import json, os
+          d = os.environ.get("DERNIERE") or "(aucune)"
+          msg = ("🔴 **Le burn du jour manque encore ce soir.**  ·  `jetonveve`\n"
+                 f"Derniere journee complete : **{d}** (attendu : au moins "
+                 f"{os.environ['SEUIL']}).\n"
+                 "Quatre relances ont ete tentees dans la journee. La cause "
+                 "habituelle est `base.blockscout.com` qui rend HTTP 500 : "
+                 "c'est la source, pas le code.\n"
+                 "Le post BURN de Discord affichera donc un jour ancien.\n"
+                 + os.environ["LIEN"])
+          print(json.dumps({"content": msg, "username": "Sentinelle technique"}))
+          PY
+
+          # 🔴🔴🔴 L'ENVOI PASSE PAR `curl`, JAMAIS PAR `urllib` : Cloudflare,
+          # devant Discord, bannit la signature `Python-urllib/3.x` et rend
+          # « error code: 1010 ». Mesure du 18/08, deja ecrite dans filet.yml.
+          code=$(curl -sS -o /tmp/rep.json -w '%{http_code}' \
+                   -X POST -H 'Content-Type: application/json' \
+                   --data-binary @/tmp/charge.json "${HOOK}?wait=true")
+          if [ "$code" != "200" ] && [ "$code" != "204" ]; then
+            echo "::error::Discord a refuse le POST (HTTP $code)."
+            head -c 400 /tmp/rep.json || true
+            exit 1
+          fi
+          echo "✅ alerte envoyee (HTTP $code)."
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ⚠️ CE QUE CE FICHIER NE PEUT PAS FAIRE
+# ═══════════════════════════════════════════════════════════════════════════════
+#   · Il ne peut pas rendre blockscout disponible. Si la source rend 500 toute
+#     la journee, les 4 passes echoueront et l'alerte du soir tombera — c'est
+#     exactement le comportement voulu.
+#   · Il n'ATTEND pas la fin de `burns.yml` : il le lance et sort. La passe
+#     suivante constatera. ⭐ Attendre aurait coute jusqu'a 25 min de machine
+#     par passe pour ne rien apprendre de plus.
+#   · Il ne verifie pas le post Discord lui-meme, seulement le CSV qui le
+#     nourrit.

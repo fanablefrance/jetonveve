@@ -41,7 +41,6 @@ on:
       - "Archive — médias de la veille"                       # archive-medias.yml
       - "Archive des salons (messages + médias)"              # archive-salons.yml
       - "Base locale (veve.duckdb)"                           # base.yml
-      - "Burns OMI - StackR (quotidien)"                      # burns.yml
       - "Page Classement des series comics"                   # classement.yml
       - "Sonde GoChain (ere d'avant IMX)"                     # gochain-probe.yml
       - "GoChain - ere d'avant IMX (2020 -> migration)"       # gochain.yml
@@ -102,8 +101,6 @@ jobs:
               "L'entrepot du grand livre n'a pas ete ecrit : le writer de scrapeur-veve lira les CSV derives d'hier, ou echouera a son tour.",
             "price-history":
               "L'historique de prix n'a pas ete releve pour cette passe.",
-            "Burns OMI - StackR (quotidien)":
-              "Le burn du jour manque : le post BURN de Discord gardera celui de la veille.",
             "Base locale (veve.duckdb)":
               "La base DuckDB publiee n'a pas ete refaite : ce qui la lit travaille sur l'ancienne.",
             "Page Classement des series comics":
@@ -159,13 +156,37 @@ jobs:
           echo "✅ alerte envoyee (HTTP $code) pour : $NOM"
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# ⛔ LES DEUX ABSENTS DE LA LISTE — ils alertent DEJA eux-memes
+# ⛔ LES ABSENTS DE LA LISTE — ils alertent DEJA eux-memes
 # ═══════════════════════════════════════════════════════════════════════════════
 #   · « analytics-derived »              (analytics.yml, L.153)
 #   · « Alertes sous-floor »             (floor-watch.yml)
+#   · « Burns OMI - StackR (quotidien) » (burns.yml)  🆕 RETIRE LE 21/08
 # Les inscrire ici ferait tomber DEUX messages pour un seul echec, et un salon
 # ou tombe du bruit finit par ne plus etre lu.
 # ⚠️ Leur alerte maison sort en `exit 0` quand le secret manque — elles sont
 # donc muettes dans ce cas-la, la ou le filet, lui, echoue bruyamment. C'est un
 # ecart connu et assume : le jour ou on les migrera vers le filet, il suffira
 # d'ajouter leur `name:` ci-dessus et de retirer leur etape.
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 🔴🔴🔴 POURQUOI BURNS A ETE RETIRE — LOT 173, 21/08/2026
+# ═══════════════════════════════════════════════════════════════════════════════
+# La consequence ecrite ici disait :
+#     « Le burn du jour manque : le post BURN de Discord gardera celui de la
+#       veille. »
+# ⛔⛔ C'ETAIT UNE SUPPOSITION TIREE DE LA COULEUR DU RUN, pas une mesure. Elle
+# etait deja fragile ; `burns-rattrapage.yml`, livre dans ce meme lot, la rend
+# carrement FAUSSE : un run peut echouer a 02 h et le jour etre rattrape a
+# 10 h. Le filet aurait affirme une panne qui n'existait plus.
+#
+# Et il l'aurait affirmee jusqu'a CINQ fois par jour (la nuit + les quatre
+# passes de rattrapage). ⭐ Une alerte doublee finit par ne plus etre lue —
+# c'est deja le raisonnement qui tient les 39 annulations hors de cette liste.
+#
+# ⇒ L'alerte des burns vit desormais dans `burns-rattrapage.yml`. Elle tombe
+#   UNE fois par jour au plus, en fin de journee, et seulement apres avoir
+#   MESURE `data/burns_daily.csv` — plus jamais sur la couleur d'un run.
+#
+# ⚠️ CE QUE CE RETRAIT COUTE : un echec de `burns.yml` ne fait plus tomber de
+#   message immediat. Si `burns-rattrapage.yml` etait desactive ou supprime,
+#   les burns redeviendraient MUETS. Les deux fichiers vont ensemble.
