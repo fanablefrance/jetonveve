@@ -1,4 +1,13 @@
 uuid,name,categorie,floor_usd,ts
+900388bb-8847-4334-8d1a-508de81c4a4d,Superman,collectible,200,2026-08-15 14:07:29
+d238354f-b734-4a0a-b0b1-4a51bf6faba4,Storm – Ultimate Animated,collectible,170,2026-08-15 14:07:29
+e9bdf1b9-7b80-4683-a94f-32db83f3bd39,Yoda,collectible,8.9,2026-08-15 14:07:29
+6a98d6cf-b421-4277-b1a0-6a6ae84ef636,Jafar: Feeling Like Royalty,collectible,7.77,2026-08-15 14:07:29
+01ee5851-240f-415b-b314-96b3bb68d5ac,Ludo,collectible,8,2026-08-15 14:07:29
+6d881588-9efd-47a4-9fda-ef7180ac35a9,Guile White,collectible,80,2026-08-15 14:07:29
+069ed892-ac0a-4ebe-9089-f72b815a8c69,First Blood - Original US Theatrical Poster (1982),collectible,6.9,2026-08-15 14:07:29
+275c860b-24ce-44da-a389-f6761b9c298d,Thought Factory,collectible,19.99,2026-08-15 14:07:29
+046fccc6-a2d0-417c-9fc2-402c07e0c0b5,Record #4 - I Am Nothing - Gold,collectible,4,2026-08-15 14:07:29
 b8a7acdc-bb2e-4f88-9d69-b59d228aa14e,1841 Penny Red NK,collectible,299,2026-08-15 15:09:06
 42910818-f5f7-4e55-8b42-78a98ef4f471,"""Batter Up!""",collectible,19.5,2026-08-15 15:09:06
 ebb6a9d6-fdce-4bba-bcb2-ba30d20fd890,Alert,collectible,4,2026-08-15 15:09:06
@@ -3555,35 +3564,19 @@ c59315ea-d18d-47a1-b12b-ae58dc542db7,Boba Fett’s Belt,collectible,135,2026-08-
 d1bed232-54cd-4cd7-a75c-feaaca1cbd80,The Air Dancing Tentacle,collectible,7.6,2026-08-22 12:11:00
 d031f29a-3b9f-4316-b78f-36ba56192bc3,Happy Lunar New Year! - White,collectible,1,2026-08-22 12:11:00
 dfe57b87-b523-412b-89db-1edd7861f2a7,Don’t Use Me as a Prop! - Special Edition,collectible,60,2026-08-22 12:11:00
-95b86201-ed47-471f-ada2-4e053041379b,Partners Statue,collectible,1800,2026-08-22 14:14:41
-c3df7496-e8e7-4507-b80a-5c2b5d996645,#100 Todd McFarlane Batman,collectible,469,2026-08-22 14:14:41
-5fd09e1f-58f8-467f-9e78-d64f6e3a69b9,R2-D2,collectible,139.99,2026-08-22 14:14:41
-8d5e5124-9f63-4f31-b838-f13a510ea10d,Ghost Trap,collectible,150,2026-08-22 14:14:41
-acf1aae9-f70c-4782-830d-71cb124fb808,Batman vs. Killer Croc,collectible,24.95,2026-08-22 14:14:41
-146ac2a6-6813-4a88-a03a-4cc2a90b721d,Michelangelo - Classic (Special Edition),collectible,1199.99,2026-08-22 14:14:41
-ef4745e5-f59f-4dcb-a886-a9026517ff60,Jurassic Park Gates,collectible,29.45,2026-08-22 14:14:41
-05df9412-ca87-4492-8454-81f73a88c171,MOTOMICHI - Eyes,collectible,13.5,2026-08-22 14:14:41
-a6ff5d76-94cf-4f57-9045-a2538dbf41b3,Sung Jinwoo - E-Rank Hunter,collectible,1200,2026-08-22 14:14:41
-ae3b97fa-38a8-413c-b2f0-cd0695450755,VeVe Outdoor Guide - Lincoln Design Co.,collectible,99,2026-08-22 14:14:41
-aeebac53-63e3-461e-8158-59726476d16e,David Yu - Blue Metallic,collectible,600,2026-08-22 14:14:41
-e84cb947-3c97-486c-9b6b-f299af4cc6b9,Cookie Monster - Gold,collectible,15.5,2026-08-22 14:14:41
-37353ee5-47b8-4498-a220-7851c6dd0923,Michelangelo - Classic,collectible,13.8,2026-08-22 14:14:41
-7e227ed9-0358-4db4-bdb1-bc0f40644694,Winter Soldier – Silent Sentinel,collectible,25,2026-08-22 14:14:41
-86812664-f489-4251-936d-954b336c94d4,Coca-Cola Vending Machine (1980s),collectible,16.5,2026-08-22 14:14:41
-ab102136-402e-45b2-a480-7d28da1b3525,The Punisher - Dark Justice,collectible,16.95,2026-08-22 14:14:41
-ac35ac09-cbf8-48a8-82b5-e0604ffe5021,VeVe VIP Ticket - NYCC 2024,collectible,26,2026-08-22 14:14:41
-fe0982da-ddc5-40b1-8da2-bb4d20d0faba,Veb,collectible,23,2026-08-22 14:14:41
-391a48df-616d-4f3c-b183-d7f7a6414b01,Nozzle Eye - VeVe Spectrum,collectible,550,2026-08-22 14:14:41
-32f655e8-3376-411e-8c6d-feedce03890c,Stormtrooper - Shooting,collectible,280,2026-08-22 14:14:41
-7da40095-ded9-4125-8d9e-c0cbd1836d23,Light This Candle,collectible,13.2,2026-08-22 14:14:41
-527a3b5d-28c0-430c-bd5b-06c0bbbf8a10,Wet Head,collectible,125,2026-08-22 14:14:41
-bcc4cd79-d35d-432d-a96a-f3b4f1ed8c5c,Collectors at Heart - Platinum Pressing,collectible,60,2026-08-22 14:14:41
-c376d32b-f61a-41de-85e7-fb3808546287,Tatooine,collectible,16,2026-08-22 14:14:41
-c139b711-1f35-40ba-885e-e302c5ea7b66,RUNNING MON ver. VEVE BLUE,collectible,89,2026-08-22 14:14:41
-16e8e300-1fa4-4459-9484-a486807cc883,Connor - Assassin's Resolve,collectible,15,2026-08-22 14:14:41
-d23fe8eb-7882-40fc-8e4d-16a0f81e1847,B-Rank Essence Stone,collectible,2.89,2026-08-22 14:14:41
-dc0e0865-ed0d-4421-8bcd-2d9007d9c73a,VeVe Uncommon General Admission Ticket - NYCC 2024,collectible,3.3,2026-08-22 14:14:41
-3b17751e-0e79-4a5e-b155-7896078cd1f8,Bob Gnarly,collectible,10,2026-08-22 14:14:41
-edd220d2-6a16-41df-98c9-9c65ceae9077,Record #5 - Ronnnie Rabbbit - Original,collectible,2.95,2026-08-22 14:14:41
-d913a319-3a18-4250-a949-07f42a19424f,Record #8 - Duck Luck - Original,collectible,2.48,2026-08-22 14:14:41
-a738176f-3b62-4024-bcaf-222086173831,MOUSE Season One Movie Poster,collectible,13,2026-08-22 14:14:41
+acf1aae9-f70c-4782-830d-71cb124fb808,Batman vs. Killer Croc,collectible,29,2026-08-22 13:12:56
+df101af2-42fe-4af4-bc51-f8826a6022aa,I Have You In My Sights,collectible,41,2026-08-22 13:12:56
+ad039541-890c-4277-8c04-b6ab6a19f656,Elsa,collectible,333,2026-08-22 13:12:56
+219d14ac-23e9-4a1d-a9cb-ec009b31ebb1,A Happy Whistle,collectible,12.95,2026-08-22 13:12:56
+756eaebb-f684-4274-9ab1-63e0844d88eb,Moon Knight 2,collectible,20,2026-08-22 13:12:56
+8b48c674-fb99-4797-a8f3-997ec02b6ae2,‘Nuff Said!,collectible,62,2026-08-22 13:12:56
+3380b39e-a974-4f27-89c3-12dc6995fbee,Planet Hulk,collectible,21.86,2026-08-22 13:12:56
+f53a28ee-991b-4401-ab56-c434c96c9453,Chun-Li,collectible,39.4,2026-08-22 13:12:56
+ab102136-402e-45b2-a480-7d28da1b3525,The Punisher - Dark Justice,collectible,18.95,2026-08-22 13:12:56
+4ea0fb53-99ca-4d63-93dd-663524732899,Bambi,collectible,32.99,2026-08-22 13:12:56
+f91fbba9-e5f3-4d7d-93b4-91efacbc0b27,Spider-Man 2099 - Genetic Awakening,collectible,7,2026-08-22 13:12:56
+9c8e3ee9-6e63-4051-8875-2d9029e22837,VeVe Heart - Lisbon 2026,collectible,48.02,2026-08-22 13:12:56
+5e4f8a69-f7c3-4060-8eb8-7b34540a36ce,Wendy’s Gift Box,collectible,14,2026-08-22 13:12:56
+868fe1f8-cc4a-421a-877c-198bd0262274,Darth Vader Samurai - Crimson Descent,collectible,9.99,2026-08-22 13:12:56
+b150dbe8-cbd5-4efe-906d-ae32259f082d,Cannon,collectible,4.99,2026-08-22 13:12:56
+bc64c1a9-5efe-4b52-824d-27ffed8b13e4,Lightning,collectible,1.84,2026-08-22 13:12:56
