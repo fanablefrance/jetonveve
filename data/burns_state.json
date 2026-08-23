@@ -1,10 +1,10 @@
 {
- "newest_block": 50286629,
+ "newest_block": 50337298,
  "pages": 1964,
  "next_page": null,
- "updated_at": "2026-08-23 02:14:14",
+ "updated_at": "2026-08-23 06:54:55",
  "backfill_done": true,
- "split_newest_block": 50330395,
+ "split_newest_block": 50337298,
  "split_pages": 5968,
  "split_next_page": null,
  "split_pending": null,
