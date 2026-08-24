@@ -621,6 +621,67 @@ jobs:
           else:
               print("ℹ️ pas de cours OMI dans l'etat (run anterieur au lot 181, "
                     "ou aucun tour n'a abouti) — fichier NON ecrit.", flush=True)
+
+          # ═══════════════════════════════════════════════════════════════════
+          # 📒 LES OFFRES STACKR -> offres_stackr.csv — lot 186 (24/08/2026)
+          # ═══════════════════════════════════════════════════════════════════
+          # Preda : « tracker les offres stackR ». Ecrit ICI, dans l'etape qui
+          # sait deja tirer un fichier de l'etat — une etape neuve relirait le
+          # meme JSON de 4 Mo une troisieme fois.
+          #
+          # ⚠️ CE FICHIER EST UN JOURNAL D'EVENEMENTS DE MISE EN VENTE, ET PAS
+          # UN COMPTEUR D'OFFRES EN COURS. Une offre retiree ou vendue n'emet
+          # rien sur le flux StackR : compter ses lignes SURESTIMERAIT le
+          # marche. La colonne s'appelle `ts_offre` pour que personne ne lise
+          # « offres disponibles » dans un decompte de lignes.
+          #
+          # ⛔ SON ABSENCE N'EST PAS UNE PANNE, exactement comme `omi_usd.csv`
+          # au lot 181 : les runs anterieurs n'ont pas `offres` dans leur etat.
+          # Le premier run avec le patch pose le fichier ; d'ici la, rien ne
+          # change nulle part.
+          off = st.get("offres")
+          if isinstance(off, dict) and off:
+              lo = []
+              for v in off.values():
+                  # v = [element_id, ts_offre, price_omi, edition]
+                  if not (isinstance(v, list) and len(v) >= 3):
+                      continue
+                  uid, t, prix = v[0], v[1], v[2]
+                  ed = v[3] if len(v) > 3 else ""
+                  if not uid or not isinstance(t, (int, float)) or t <= 0:
+                      continue
+                  if not isinstance(prix, (int, float)) or prix <= 0:
+                      continue
+                  lo.append((uid, "%.0f" % t, "%.0f" % prix,
+                             "" if ed is None else str(ed)))
+              with open("data/offres_stackr.csv", "w", newline="",
+                        encoding="utf-8") as f:
+                  w = csv.writer(f)
+                  # ⛔ `unite` EST ECRITE, comme dans releves.csv. Le prix
+                  # StackR est en OMI ; une colonne de prix sans son unite
+                  # finit convertie par quelqu'un qui suppose des dollars.
+                  w.writerow(["veve_uuid", "ts_offre", "prix", "unite", "edition"])
+                  w.writerows((u, t, p, "OMI", e) for u, t, p, e in sorted(lo))
+              items = {l[0] for l in lo}
+              # ⭐ IL COMPTE CE QUI A ETE ECRIT, pas ce qu'on croit avoir lu —
+              # et il dit la PROFONDEUR reelle du journal, seule facon de
+              # savoir si une courbe de 7 jours a de quoi se dessiner.
+              ts_min = min(float(l[1]) for l in lo) if lo else 0
+              ts_max = max(float(l[1]) for l in lo) if lo else 0
+              jours = (ts_max - ts_min) / 86400.0 if lo else 0
+              deux = sum(1 for u in items
+                         if sum(1 for l in lo if l[0] == u) >= 2)
+              print("offres_stackr.csv : %d offre(s) · %d item(s) distinct(s) · "
+                    "%d item(s) avec >= 2 offres · profondeur %.1f jour(s)"
+                    % (len(lo), len(items), deux, jours), flush=True)
+              if jours < 1:
+                  print("   ℹ️ moins d'un jour de profondeur : c'est NORMAL au "
+                        "premier run (le journal part vide et se remplit a "
+                        "~1 000 offres/jour). Aucune courbe avant 2 points.",
+                        flush=True)
+          else:
+              print("ℹ️ pas de journal d'offres dans l'etat (run anterieur au "
+                    "lot 186) — fichier NON ecrit.", flush=True)
           PY
 
       # ⚠️ LA RECOLTE EST SACREE — mais l'etat ne vit PLUS dans git (22/07).
@@ -670,6 +731,19 @@ jobs:
               || echo "⚠️ omi_usd.csv non pousse : le site garde le cours precedent."
           else
             echo "⚠️ omi_usd.csv vide ou absent — on NE remplace PAS celui de la release."
+          fi
+          # 📒 LOT 186 — LE JOURNAL DES OFFRES STACKR. Meme prudence encore,
+          # et elle mord PLUS FORT ici : ce fichier est CUMULATIF sur 30 jours.
+          # Ecraser la release avec un journal reduit a son en-tete ne
+          # priverait pas d'un chiffre du jour, ça effacerait un mois
+          # d'observations qu'aucun rejeu ne peut reconstruire — le flux
+          # StackR ne garde que ~1,7 h de passe.
+          # ⛔ N'ECHOUE PAS LE RUN : la recolte est deja sauvee plus haut.
+          if [ -s data/offres_stackr.csv ] && [ "$(wc -l < data/offres_stackr.csv)" -gt 1 ]; then
+            gh release upload etat-floor-watch data/offres_stackr.csv --clobber \
+              || echo "⚠️ offres_stackr.csv non pousse : la release garde le journal precedent."
+          else
+            echo "⚠️ offres_stackr.csv vide ou absent — on NE remplace PAS celui de la release."
           fi
           jour=$(date -u +%Y%m%d)
           if ! gh release view etat-floor-watch --json assets -q '.assets[].name' | grep -qx "floor_state-$jour.json.gz"; then
