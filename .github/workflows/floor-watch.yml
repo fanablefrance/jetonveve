@@ -555,7 +555,10 @@ jobs:
         run: |
           [ -f data/floor_state.json ] || exit 0
           python3 - <<'PY'
-          import csv, json
+          # ⚠️ `time` est ajoute au lot 181 : le journal du cours OMI dit son
+          # AGE, pas son horodate brute — « il y a 12 min » se juge d'un coup
+          # d'œil, « 1787654321 » non.
+          import csv, json, time
 
           st = json.load(open("data/floor_state.json"))
           lignes = []
@@ -586,6 +589,38 @@ jobs:
                 "veve %d · distincts %d · apport net de vfloors %d"
                 % (len(lignes), len(us), len(uv), len(us | uv), len(uv - us)),
                 flush=True)
+
+          # ═══════════════════════════════════════════════════════════════════
+          # 💱 LE COURS OMI -> omi_usd.csv — lot 181 (24/08/2026)
+          # ═══════════════════════════════════════════════════════════════════
+          # Deux lignes, ~40 octets, ecrit ICI parce que c'est deja l'etape qui
+          # sait tirer un fichier de l'etat. Une etape neuve aurait relu le
+          # meme JSON de 4 Mo une seconde fois pour deux nombres.
+          # ⛔ SON ABSENCE N'EST PAS UNE PANNE : les runs anterieurs au lot 181
+          # n'ont pas `omi_usd` dans leur etat, et le site le lit SANS
+          # L'EXIGER (source facultative de `warehouse.mjs`). Le premier run
+          # avec le patch le pose ; d'ici la, le mur StackR est exactement
+          # celui d'avant.
+          taux = st.get("omi_usd")
+          if isinstance(taux, list) and len(taux) > 1:
+              v, ts = taux[0], taux[1]
+              if isinstance(v, (int, float)) and v > 0 and isinstance(ts, (int, float)):
+                  with open("data/omi_usd.csv", "w", newline="", encoding="utf-8") as f:
+                      w = csv.writer(f)
+                      w.writerow(["omi_usd", "ts_utc"])
+                      # ⚠️ `repr` NON : `%.8f` fixe la forme. Le cours vaut
+                      # ~0,004 $ — un `%.2f` l'ecrirait « 0.00 », et le site
+                      # afficherait « ≈ $0.00 » sous chaque plancher. Huit
+                      # decimales tiennent le cours meme divise par cent.
+                      w.writerow(["%.8f" % v, "%.0f" % ts])
+                  print("omi_usd.csv : cours %.8f $ releve il y a %.0f min."
+                        % (v, (time.time() - ts) / 60), flush=True)
+              else:
+                  print("⚠️ omi_usd present mais inexploitable (%r) — "
+                        "fichier NON ecrit." % (taux,), flush=True)
+          else:
+              print("ℹ️ pas de cours OMI dans l'etat (run anterieur au lot 181, "
+                    "ou aucun tour n'a abouti) — fichier NON ecrit.", flush=True)
           PY
 
       # ⚠️ LA RECOLTE EST SACREE — mais l'etat ne vit PLUS dans git (22/07).
@@ -621,6 +656,20 @@ jobs:
               || echo "⚠️ releves.csv non pousse : le site garde la version precedente."
           else
             echo "⚠️ releves.csv vide ou absent — on NE remplace PAS celui de la release."
+          fi
+          # 💱 LOT 181 — LE COURS OMI. Meme prudence, mot pour mot, que
+          # `releves.csv` juste au-dessus, et pour la meme raison : un fichier
+          # reduit a son en-tete n'ECRASE PAS celui de la release. Sans cette
+          # garde, un seul run degrade priverait le mur StackR de son
+          # equivalent dollar sur TOUTES les fiches d'un coup, et le
+          # deploiement resterait vert.
+          # ⛔ N'ECHOUE PAS LE RUN : la recolte est deja sauvee plus haut, et
+          # le site lit ce fichier SANS L'EXIGER.
+          if [ -s data/omi_usd.csv ] && [ "$(wc -l < data/omi_usd.csv)" -gt 1 ]; then
+            gh release upload etat-floor-watch data/omi_usd.csv --clobber \
+              || echo "⚠️ omi_usd.csv non pousse : le site garde le cours precedent."
+          else
+            echo "⚠️ omi_usd.csv vide ou absent — on NE remplace PAS celui de la release."
           fi
           jour=$(date -u +%Y%m%d)
           if ! gh release view etat-floor-watch --json assets -q '.assets[].name' | grep -qx "floor_state-$jour.json.gz"; then
