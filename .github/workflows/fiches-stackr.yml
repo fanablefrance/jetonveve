@@ -1,0 +1,106 @@
+name: Fiches StackR (rotation quotidienne)
+
+# 📊 LOT 188 (24/08/2026) — les deux planchers, les offres en cours, les brulees.
+# Preda, capture a l'appui : « sur stackr il y a aussi le floor veve et le floor
+# stackr en Omi et en $, il faudra collecter l'infos ».
+#
+# ⚠️ ROTATION, PAS BALAYAGE. 19 774 items x ~1,2 s (fiche + offres) = plus de
+# six heures par tour complet. Le collecteur prend une TRANCHE par run et
+# retient ou il s'est arrete ; le catalogue entier se boucle en ~10 jours a
+# 2 000 items par run. ⛔ Ne pas monter le budget « pour aller plus vite » sans
+# regarder la duree du run : GitHub coupe a 6 h, et un run coupe perd sa tranche.
+#
+# ⏰ CRON EN UTC, et GitHub retarde les runs planifies de 2 h a 3 h sous charge
+# (mesure maison). 03:17 UTC vise le creux de la nuit europeenne ET laisse la
+# place au run de `floor-watch`, qui tourne toutes les heures.
+# ⛔ NE PAS le mettre a la meme minute qu'un autre workflow de ce depot : deux
+# collecteurs qui frappent StackR en meme temps doublent notre empreinte vue
+# de chez eux, pour aucun gain.
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+    inputs:
+      budget:
+        description: "Items par run"
+        default: "2000"
+      offres:
+        description: "Collecter aussi le nombre d'offres (2e appel par item)"
+        type: boolean
+        default: true
+      holders:
+        description: "Collecter les 5 premiers detenteurs (3e appel par item)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+# ⛔ UN SEUL A LA FOIS, ET ON NE COUPE PAS CELUI QUI TOURNE. Deux runs
+# concurrents liraient le meme CSV, ecriraient chacun leur tranche par-dessus,
+# et le second effacerait le travail du premier — sans une seule erreur.
+concurrency:
+  group: veve-fiches-stackr
+  cancel-in-progress: false
+
+jobs:
+  fiches:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      FICHES_BUDGET: ${{ github.event.inputs.budget || '2000' }}
+      FICHES_OFFRES: ${{ github.event.inputs.offres == 'false' && 'false' || 'true' }}
+      FICHES_HOLDERS: ${{ github.event.inputs.holders == 'true' && 'true' || 'false' }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install requests
+
+      # ⭐⭐ L'ETAT ET LE CSV VIENNENT DE LA RELEASE, PAS DU DEPOT. Meme choix
+      # que `floor-watch` depuis le 22/07 : un etat versionne dans git produit
+      # un conflit a chaque run et finit par bloquer le collecteur.
+      # ⛔ ET L'ABSENCE N'EST PAS UNE PANNE : au tout premier run il n'y a rien
+      # a telecharger, le collecteur part d'un fichier vide et d'un curseur a
+      # zero. C'est exactement le comportement voulu.
+      - name: Etat precedent (s'il existe)
+        run: |
+          mkdir -p data
+          gh release download etat-fiches-stackr -p 'fiches_stackr.csv' -D data --clobber || \
+            echo "ℹ️ pas de CSV precedent — premier run, on part de zero."
+          gh release download etat-fiches-stackr -p 'fiches_stackr_state.json' -D data --clobber || \
+            echo "ℹ️ pas d'etat precedent — la rotation demarre a l'item 0."
+          gh release view etat-fiches-stackr >/dev/null 2>&1 || \
+            gh release create etat-fiches-stackr --title "Fiches StackR" \
+              --notes "Etat du collecteur de fiches StackR (lot 188). Ecrit par le workflow, ne pas editer a la main." || true
+
+      - name: Collecte
+        run: python -m scraper.stackr_fiches
+
+      # ⛔ MEME PRUDENCE QUE `releves.csv` ET `offres_stackr.csv` : un fichier
+      # reduit a son en-tete n'ECRASE PAS celui de la release. Ici la garde
+      # mord PLUS FORT encore, parce que le fichier est CUMULATIF sur ~10 jours
+      # de rotation : l'ecraser effacerait un tour complet, et il faudrait dix
+      # jours pour le reconstituer.
+      - name: Publier
+        run: |
+          if [ -s data/fiches_stackr.csv ] && [ "$(wc -l < data/fiches_stackr.csv)" -gt 1 ]; then
+            gh release upload etat-fiches-stackr data/fiches_stackr.csv --clobber \
+              || echo "⚠️ fiches_stackr.csv non pousse : la release garde la version precedente."
+          else
+            echo "⚠️ fiches_stackr.csv vide ou absent — on NE remplace PAS celui de la release."
+          fi
+          # ⭐⭐ L'ETAT NE SE PUBLIE QUE SI LE CSV L'A ETE. Publier un curseur
+          # avance sans le CSV correspondant ferait sauter une tranche AU
+          # PROCHAIN RUN, definitivement, et le trou ne se verrait jamais.
+          # *Ou l'etat est-il ecrit quand ca rate ?* — c'est ici la reponse.
+          if [ -s data/fiches_stackr_state.json ] && [ -s data/fiches_stackr.csv ]; then
+            gh release upload etat-fiches-stackr data/fiches_stackr_state.json --clobber \
+              || echo "⚠️ etat non pousse : le prochain run reprendra a l'ancien curseur (il refera une tranche, il n'en sautera pas)."
+          fi
+          if [ -s data/holders_stackr.csv ] && [ "$(wc -l < data/holders_stackr.csv)" -gt 1 ]; then
+            gh release upload etat-fiches-stackr data/holders_stackr.csv --clobber || true
+          fi
