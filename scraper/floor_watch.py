@@ -2874,6 +2874,46 @@ def main() -> int:
     total = 0
     for i in range(1, POLLS + 1):
         omi = fetch_omi_price(s)
+        # ═══════════════════════════════════════════════════════════════════
+        # 💱 LE COURS OMI EST PERSISTE — lot 181 (24/08/2026), son point 156
+        # ═══════════════════════════════════════════════════════════════════
+        # Preda : « StackR en $ ». Le mur StackR de la fiche affiche un
+        # plancher en OMI, et veveprice n'a AUCUN moyen de le dire en dollars :
+        # `omi_usd` n'existe nulle part dans veve-sites (mesure du 24/08 :
+        # 0 occurrence), et AUCUNE des 15 releases de l'entrepot ne porte de
+        # cours (mesure du 24/08, listing complet des assets).
+        #
+        # ⭐⭐⭐ RIEN A COLLECTER : LA LIGNE AU-DESSUS LE DEMANDE DEJA.
+        # `fetch_omi_price` tourne a CHAQUE tour, 25 tours par run, un run par
+        # heure — c'est-a-dire ~600 appels par jour dont la valeur servait au
+        # calcul des alertes puis partait a la poubelle. On cesse de la jeter.
+        # ⛔ Zero requete ajoutee, zero collecteur neuf, zero cron neuf.
+        #
+        # ⛔⛔ CE N'EST PAS LA CONVERSION QUE DEUX COMMENTAIRES DE CE PROJET
+        # INTERDISENT, ET LA DISTINCTION EST TOUT LE LOT. Ce qui est interdit
+        # — ici, dans `warehouse.mjs` et dans `cote.mjs` — c'est de deduire le
+        # floor d'un marche du floor de l'AUTRE : `sfloors` (OMI) contre
+        # `vfloors` (USD) ont un rapport non constant (mediane 4 423, p10
+        # 2 273, p90 8 520 sur 1 306 items communs), et cette conversion-la
+        # INVENTE un chiffre. Un cours de change entre un jeton et le dollar
+        # n'est pas une deduction : c'est une observation de marche, cotee sur
+        # uniswap, la meme que StackR affiche a ses propres clients.
+        # ⇒ On convertit un MONTANT DANS SA PROPRE DEVISE. On ne traverse
+        #   toujours pas d'un marche a l'autre.
+        #
+        # ⭐ HORODATE, ET C'EST LA MOITIE DE L'INFORMATION. Un cours sans sa
+        # date ne peut pas etre juge : le lecteur ne saurait pas s'il regarde
+        # le marche de ce matin ou celui d'il y a trois jours. Le site REFUSE
+        # d'afficher un cours perime (seuil cote lecteur) — il ne le peut que
+        # si la date voyage AVEC la valeur. Meme forme que `vfloors` :
+        # [valeur, ts]. ⛔ Ne jamais reduire ce couple a un scalaire.
+        #
+        # ⚠️ ECRIT DANS L'ETAT, PAS DANS UN FICHIER. `save_state()` de fin de
+        # run (hors de toute branche depuis le lot 110) l'emporte, et le
+        # workflow le tire de `floor_state.json` comme il tire deja
+        # `releves.csv` — un seul ecrivain, un seul instant d'ecriture.
+        if omi and omi > 0:
+            state["omi_usd"] = [omi, time.time()]
         # floors VeVe + historique des ventes : rafraichis 1x/heure
         if time.time() - dernier_refresh > REFRESH_MIN * 60:
             neuf = fetch_veve_floors(s)
