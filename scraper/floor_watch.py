@@ -1535,6 +1535,35 @@ def detect(state: Dict, listings: List[Dict], omi: float,
         sf = _f(it.get("stackr_floor_price"))
         uid = str(it.get("element_id") or "")
         img = it.get("image_url") or ""
+        # 📒 LOT 186 — LE JOURNAL DES OFFRES S'ECRIT ICI, ET NULLE PART AILLEURS.
+        # ⭐ C'est le seul endroit du programme ou une mise en vente StackR est
+        #   en main, dedupliquee (`cle in vus` juste au-dessus) et validee
+        #   (`price > 0`). L'ecrire dans une deuxieme boucle relirait le meme
+        #   flux pour reconstruire ce qu'on tient deja.
+        # ⚠️ L'HORODATE EST CELLE DE L'EVENEMENT, PAS CELLE DU TOUR. `stamp`
+        #   vient de StackR ; `ts` est l'instant ou notre run a regarde. Le
+        #   flux garde ~1,7 h de listings et GitHub saute des runs : ecrire
+        #   `ts` daterait une offre d'il y a deux heures de maintenant, et la
+        #   courbe montrerait un evenement au mauvais moment. C'est la meme
+        #   faute que le retard de publication mesure le 22/07.
+        # ⛔ `MIN_USD` a deja ecarte les broutilles plus haut : le journal ne
+        #   voit donc pas tout le flux, il voit ce que le collecteur retient.
+        #   C'est dit ici pour que personne ne lise ce fichier comme exhaustif.
+        if uid:
+            _t_offre = 0.0
+            try:
+                _t_offre = _dt.datetime.strptime(
+                    stamp[:19], "%Y-%m-%dT%H:%M:%S").replace(
+                    tzinfo=_dt.timezone.utc).timestamp()
+            except (ValueError, TypeError):
+                _t_offre = 0.0
+            # ⛔ UNE HORODATE ILLISIBLE FAIT SAUTER LA LIGNE, elle ne prend
+            #   JAMAIS la valeur du tour. Une offre datee de « maintenant »
+            #   par defaut est un evenement fabrique — et sur un site de cotes
+            #   c'est la seule faute qu'on ne rattrape pas.
+            if _t_offre > 0:
+                state.setdefault("offres", {})[cle] = [
+                    uid, _t_offre, price, it.get("edition")]
         if uid and sf > 0:
             # on memorise le floor StackR de l'item (pour le signal 3)
             # ⏱️ POSITION 4 = QUAND ON L'A VU (03/08/2026). Le tuple n'avait
@@ -1605,8 +1634,75 @@ def detect(state: Dict, listings: List[Dict], omi: float,
     for k, t in list(vus.items()):
         if ts - t > 86400:
             vus.pop(k, None)
+    # ═══════════════════════════════════════════════════════════════════════
+    # 📒 LOT 186 (24/08/2026) — LE JOURNAL DES OFFRES, ET SA FENETRE A LUI
+    # ═══════════════════════════════════════════════════════════════════════
+    # ⛔ IL NE PARTAGE PAS LA FENETRE DE `vus`. Celle-ci vaut 24 h et c'est
+    # correct pour ce qu'elle fait : empecher de re-alerter sur un listing deja
+    # traite. Un JOURNAL, lui, doit couvrir la plus longue plage qu'on affiche.
+    # Les brancher ensemble ferait qu'un reglage d'anti-doublon raboterait une
+    # courbe — deux questions, deux memoires, meme si elles regardent les
+    # memes evenements.
+    _journal_offres(state, ts)
     out.sort(key=lambda a: -a.get("net", 0))   # par BENEFICE, pas par %
     return out
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 📒 LOT 186 — « TRACKER LES OFFRES STACKR » : ON LES VOIT DEJA, ON LES JETTE
+# ═══════════════════════════════════════════════════════════════════════════
+# Preda, 24/08/2026 : « tracker les offres stackR ».
+#
+# 🔴🔴 CE QUE J'AI CHERCHE D'ABORD, ET POURQUOI CE N'ETAIT PAS CA. Le flux
+#    `getAllLatestListings_v2` porte un champ `total_count`, et j'ai cru tenir
+#    « le nombre d'offres de cet item ». MESURE LE 24/08 SUR 60 LIGNES DU
+#    FLUX : les 60 portent la MEME valeur (1050), egale au `totalCount` de la
+#    racine — y compris 20 lignes du meme element_id. C'est le total du FLUX
+#    sur la fenetre demandee, pas un compteur par item. Un champ dont on
+#    devine le sens par son nom donne un chiffre plausible et faux : il aurait
+#    fini affiche sous chaque fiche comme « 1050 offres ».
+#    ⛔ Et la page StackR de l'item ne le porte pas non plus : son compteur
+#      arrive par un appel client apres hydratation (verifie : le HTML servi
+#      ne contient que des dictionnaires de traduction).
+#
+# ⭐⭐⭐ CE QUI EXISTE VRAIMENT, ET QUI EST PLUS PRES DE SA DEMANDE. Le flux
+#    livre ~1 050 MISES EN VENTE par jour, chacune avec son `element_id`, son
+#    prix en OMI, son edition et son horodate. Nous les lisons toutes, nous en
+#    tirons trois signaux d'alerte, et nous les jetons dans la seconde. Les
+#    ecrire, c'est tenir le journal des offres StackR — c'est-a-dire ce qu'il
+#    demande, au sens litteral.
+#    ⛔ ZERO REQUETE AJOUTEE, zero collecteur neuf, zero cron neuf. Meme forme
+#      que le lot 181 avec le cours OMI : on cesse de jeter.
+#
+# ⚠️ CE QUE CE JOURNAL N'EST PAS. Ce n'est pas « le nombre d'offres en cours »
+#    d'un item : une offre retiree ou vendue n'emet rien sur ce flux, donc
+#    compter les lignes surestimerait le marche. C'est un journal
+#    d'EVENEMENTS de mise en vente. Deux questions differentes, et une seule a
+#    une source. ⇒ La colonne s'appelle `ts_offre`, pas `offres_en_cours`.
+#
+# ⚠️ FENETRE BORNEE, ET DECLAREE. Sans borne, l'etat grossit de ~1 050 entrees
+#    par jour pour toujours — et `floor_state.json` est deja a 4,2 Mo, relu et
+#    reecrit a chaque tour (25 tours par run). 30 jours = ~31 500 lignes,
+#    ~2 Mo de CSV. ⛔ Ne pas confondre avec une archive : ce qui doit survivre
+#    au-dela vit dans les instantanes quotidiens de la Release.
+OFFRES_JOURS = float(os.environ.get("FLOOR_OFFRES_JOURS", "30"))
+
+
+def _journal_offres(state: Dict, ts: float) -> None:
+    """Elague le journal des offres a sa fenetre. Il n'ecrit rien : les lignes
+    sont posees au fil de `detect()`, la ou le listing est deja en main.
+
+    ⚠️ Ne juge RIEN et ne jette RIEN d'autre que le hors-fenetre.
+    """
+    j = state.get("offres")
+    if not isinstance(j, dict):
+        return
+    limite = ts - OFFRES_JOURS * 86400
+    for k, v in list(j.items()):
+        # v = [element_id, ts_offre, price_omi, edition]
+        t = v[1] if isinstance(v, list) and len(v) > 1 else 0
+        if not isinstance(t, (int, float)) or t < limite:
+            j.pop(k, None)
 
 
 def detect_spread(state: Dict, veve: Dict[str, float], omi: float,
