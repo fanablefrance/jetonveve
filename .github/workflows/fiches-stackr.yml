@@ -51,7 +51,7 @@ jobs:
     env:
       FICHES_BUDGET: ${{ github.event.inputs.budget || '2000' }}
       FICHES_OFFRES: ${{ github.event.inputs.offres == 'false' && 'false' || 'true' }}
-      FICHES_HOLDERS: ${{ github.event.inputs.holders == 'true' && 'true' || 'false' }}
+      FICHES_HOLDERS: ${{ github.event.inputs.holders == 'false' && 'false' || 'true' }}
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
