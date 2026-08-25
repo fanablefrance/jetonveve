@@ -246,5 +246,97 @@ else:
         "deux runs ne se marchent pas dessus",
         "deux runs concurrents ecriraient chacun leur tranche par-dessus l'autre")
 
+
+# ═══════════════════════════════════════════════════════════════════════════
+print("\n5 bis. les interrupteurs : le DEFAUT et l'EXPRESSION doivent s'accorder")
+# ═══════════════════════════════════════════════════════════════════════════
+# 🔴🔴🔴 CE § EXISTE PARCE QU'UNE OPTION EST RESTEE ETEINTE PENDANT DEUX JOURS
+# SANS QU'AUCUN RUN NE ROUGISSE. Chronologie mesuree :
+#   · 24/08 — `FICHES_HOLDERS: ${{ ... == 'true' && 'true' || 'false' }}`.
+#     Sur un run PLANIFIE, `inputs` est vide : `'' == 'true'` est faux, donc
+#     'false'. Les detenteurs ne sont jamais collectes. Le run est VERT.
+#   · 25/08, 05h57 — l'expression est corrigee en `== 'false' && 'false' ||
+#     'true'`, le motif que `FICHES_OFFRES` porte deja.
+#   · 25/08, 06h43 — run MANUEL (workflow_dispatch) apres correction. Journal :
+#     `FICHES_HOLDERS: false`. Toujours rien. ⇒ le bouton manuel envoie le
+#     `default:` DECLARE, et il valait `false`.
+#
+# ⭐⭐⭐ DEUX ENDROITS DECIDENT DE LA MEME CHOSE, ET ILS PEUVENT SE CONTREDIRE :
+#   ① `on.workflow_dispatch.inputs.<nom>.default` — ce que le BOUTON envoie ;
+#   ② `env.FICHES_<NOM>` — ce que le PLANIFIE deduit d'un input absent.
+# Corriger l'un laisse l'autre. Aucun run ne rougit : le collecteur fait
+# exactement ce qu'on lui a dit, et personne ne lui avait rien dit.
+# ⇒ *Un chemin de code jamais emprunte n'est pas sur, il est NON MESURE* — et
+#   ici, le chemin dormait a cause d'un reglage situe dans le meme fichier.
+#
+# ⛔ ON NE MESURE PAS « la chaine 'true' est presente ». Elle l'est dans les
+#   commentaires ci-dessus, dans la description, et dans `FICHES_OFFRES`. On
+#   ANALYSE le YAML, et on compare les deux endroits par leur SENS.
+if not y:
+    print("  ⏸️  sans objet — `fiches-stackr.yml` illisible depuis ce chemin.")
+else:
+    import re as _re
+
+    def defaut_input(nom):
+        """Le `default:` declare pour un input — ce que le BOUTON enverra."""
+        m = _re.search(r"^      " + _re.escape(nom) + r":\s*$(.*?)(?=^      \w|^\S)",
+                       y, _re.M | _re.S)
+        if not m:
+            return None
+        # ⛔ On saute les lignes de commentaire : le bloc en porte quinze, dont
+        #   une qui contient litteralement « default: true » dans une phrase.
+        #   Un banc qui lit une chaine la trouve dans un commentaire — ce
+        #   dossier l'a paye quatre fois.
+        for ligne in m.group(1).split("\n"):
+            nu = ligne.strip()
+            if nu.startswith("#"):
+                continue
+            d = _re.match(r"default:\s*(\S+)", nu)
+            if d:
+                return d.group(1).strip('"').strip("'")
+        return None
+
+    def env_allume_par_defaut(nom):
+        """`env.FICHES_<NOM>` allume-t-il l'option quand l'input est ABSENT ?
+
+        Vrai pour le motif `== 'false' && 'false' || 'true'` (le planifie
+        allume), faux pour `== 'true' && 'true' || 'false'` (le planifie
+        eteint). C'est le second qui a coute deux jours.
+        """
+        m = _re.search(r"^\s*FICHES_" + nom.upper() + r":\s*(.+)$", y, _re.M)
+        if not m:
+            return None
+        expr = m.group(1)
+        if "== 'false'" in expr and "|| 'true'" in expr:
+            return True
+        if "== 'true'" in expr and "|| 'false'" in expr:
+            return False
+        return None
+
+    for nom in ("offres", "holders"):
+        d = defaut_input(nom)
+        e = env_allume_par_defaut(nom)
+        dit(d is not None and e is not None,
+            f"`{nom}` : les deux interrupteurs sont lisibles",
+            f"default={d} · env allume par defaut={e}")
+        if d is None or e is None:
+            continue
+        # ⭐ LE CONTROLE QUI VAUT LE §. Deux endroits, un seul sens.
+        dit(str(d).lower() == str(e).lower(),
+            f"`{nom}` : le bouton MANUEL et le run PLANIFIE font la meme chose",
+            f"default={d} (bouton) · {e} (planifie)"
+            + ("" if str(d).lower() == str(e).lower()
+               else " — 🔴 ILS SE CONTREDISENT : l'un des deux chemins collecte,"
+                    " l'autre non, et AUCUN run ne rougira pour le dire"))
+
+    # ⛔ ET LE MOTIF INVERSE EST NOMME, POUR QU'UN RETOUR SE VOIE.
+    inverse = [n for n in ("offres", "holders") if env_allume_par_defaut(n) is False]
+    dit(not inverse,
+        "aucun `env` n'eteint son option sur un run planifie",
+        "toutes allumees" if not inverse
+        else f"🔴 {', '.join(inverse)} : motif `== 'true' && 'true' || 'false'` —"
+             " `inputs` est VIDE sur un run planifie, l'option reste donc eteinte"
+             " tous les jours, en silence")
+
 print(f"\n{'✅ fiches StackR : conforme' if KO == 0 else f'❌ fiches StackR : {KO} ecart(s)'}")
 sys.exit(0 if KO == 0 else 1)
