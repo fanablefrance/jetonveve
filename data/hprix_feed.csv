@@ -1,39 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-11f2b172-e206-4644-8256-e51fd7298af2,Winnie the Pooh and Piglet,collectible,24.95,2026-08-18 11:10:14
-ef4745e5-f59f-4dcb-a886-a9026517ff60,Jurassic Park Gates,collectible,29.99,2026-08-18 11:10:14
-6f9120a4-09ea-4106-a855-d8565f33dfbf,1938 James Madison,collectible,9.78,2026-08-18 11:10:14
-531922ce-7c82-43dc-8ef2-dce25d31fb43,Arishem the Judge,collectible,12,2026-08-18 11:10:14
-74724746-c601-48f3-bb7a-3b6e060d1e24,Flo Base,collectible,66,2026-08-18 11:10:14
-18ffd467-efd3-4686-924d-6e70e4ebbc87,"Krasue, the Floating Head",collectible,2.69,2026-08-18 11:10:14
-c139b711-1f35-40ba-885e-e302c5ea7b66,RUNNING MON ver. VEVE BLUE,collectible,149,2026-08-18 11:10:14
-7051dd0b-67f0-4ffe-a81b-6a397a7a496c,T-47 Airspeeder - Red,collectible,5.4,2026-08-18 11:10:14
-69227665-8301-4c3b-a2ad-35729f1c3479,Stormtrooper - Crouching,collectible,20,2026-08-18 11:10:14
-e17de1d1-76bb-49fb-bb70-afdb8b808615,Predator - Battle Scarred,collectible,10.9,2026-08-18 11:10:14
-b99cd3be-d4bb-496d-80a3-382e59f8a18a,Predator - Young Blood,collectible,9.9,2026-08-18 11:10:14
-3c89b9b1-b836-49c4-99f8-da6b7603e071,Eagle Eyes,collectible,6.9,2026-08-18 11:10:14
-d324d199-8532-4449-b67b-fdad373da71a,Stormtrooper - Running,collectible,2.8,2026-08-18 11:10:14
-6f5d6b03-da4c-4121-9024-74221436f214,Shadow Trooper - Crouching,collectible,7,2026-08-18 11:10:14
-e6e5683f-5b64-4842-8f74-912a0fc919ba,Homer & Bart,collectible,59.66,2026-08-18 12:11:34
-d6a2d52f-b2ba-4b15-97e8-b5617118f912,Turtle Catapult,collectible,20,2026-08-18 12:11:34
-7aefc64f-2a8f-4412-800d-25f1e3699c90,Aang - Airbender,collectible,25,2026-08-18 12:11:34
-1c2c833d-3e70-4e7e-b589-0c24832a58cd,Katara,collectible,19,2026-08-18 12:11:34
-e3f45c09-9bc7-43b0-ab69-47d0359de44d,Frozone,collectible,46,2026-08-18 12:11:34
-7ed317cf-5b82-47fa-94ca-69d85591d1e8,Hapjeong Dungeon Key,collectible,29,2026-08-18 12:11:34
-6f9120a4-09ea-4106-a855-d8565f33dfbf,1938 James Madison,collectible,9.77,2026-08-18 12:11:34
-98370f9b-b3fe-4261-a4c1-4fdfed88e97b,Experiment 626,collectible,3.5,2026-08-18 12:11:34
-a218120e-106b-4761-9cce-21f4485d53a0,Raphael - IncogNinja,collectible,39.99,2026-08-18 12:11:34
-531922ce-7c82-43dc-8ef2-dce25d31fb43,Arishem the Judge,collectible,11,2026-08-18 12:11:34
-54aecde0-6ff1-49aa-b8e5-1dcfa1dc6a12,Toph - Earth Master,collectible,60,2026-08-18 12:11:34
-5497ea9d-fe33-40c2-9522-e69ebcec2bd2,Super Grover,collectible,10,2026-08-18 12:11:34
-dc303066-ec4c-4051-bbd3-afd668481051,1938 Millard Fillmore,collectible,4.98,2026-08-18 12:11:34
-1915a00c-506e-4cd7-a346-948898bb22c4,Sun,collectible,16,2026-08-18 12:11:34
-6f5d6b03-da4c-4121-9024-74221436f214,Shadow Trooper - Crouching,collectible,8,2026-08-18 12:11:34
-d23fe8eb-7882-40fc-8e4d-16a0f81e1847,B-Rank Essence Stone,collectible,1.75,2026-08-18 12:11:34
-f9b0cd1a-7796-43c4-afcf-ac938ba83f71,Jolene McBean,collectible,2.22,2026-08-18 12:11:34
-73255fe7-c9e7-489a-a3bd-547b9b87a8a5,Ash,collectible,3.4,2026-08-18 12:11:34
-08a2b238-3dca-4780-8f60-6e50289364d4,Rain - Dark,collectible,31,2026-08-18 12:11:34
-5a83120d-b4c0-4982-85d7-3046dd7d5f4f,Rain,collectible,1.05,2026-08-18 12:11:34
-375e383d-9421-43dc-a1de-19703274118f,Snow - Dark,collectible,24.5,2026-08-18 12:11:34
 4b3b200b-8469-43a2-aa68-114a4d9e0306,Spider-Man – Jump into Action,collectible,75,2026-08-18 14:13:43
 db84116f-f2e1-42c7-a77b-d8cc552931e7,Zombie Captain America #2,collectible,44.44,2026-08-18 14:13:43
 eeb7939b-babf-4b2d-a078-36a40321043a,Ultraman Ace,collectible,38,2026-08-18 14:13:43
@@ -3137,3 +3102,37 @@ af36d0b7-21fc-404d-a6ea-6b5676c9ba30,Hoodie,collectible,12,2026-08-25 08:14:29
 1e686588-d7fe-40bc-81be-15d2ca5be3fb,Mysterio,collectible,5.99,2026-08-25 08:14:29
 c3df7496-e8e7-4507-b80a-5c2b5d996645,#100 Todd McFarlane Batman,collectible,460,2026-08-25 10:17:38
 e6e5683f-5b64-4842-8f74-912a0fc919ba,Homer & Bart,collectible,54.7,2026-08-25 10:17:38
+987e4869-7dd7-47ed-a417-351d20023d78,#100 Todd McFarlane Batman - Blue & Yellow Variant,collectible,46.99,2026-08-25 11:19:18
+52c36b99-b76b-4073-bfb7-49628c0ada34,Star Wars Episode IV: A New Hope,collectible,13.5,2026-08-25 11:19:18
+1b57b5d3-b008-431e-884d-4b647ad7a840,Backstab Smorkin’ Labbit,collectible,79,2026-08-25 11:19:18
+f79a401a-0f4b-4379-a5bf-3132c5750539,ECOMI Logo Red White,collectible,19.99,2026-08-25 11:19:18
+3aef8b4f-fe03-4fc9-aa77-cea709ec5988,All Aboard!,collectible,53,2026-08-25 11:19:18
+38eb4855-5bfe-40a3-922d-54dc7fb3520b,Remember Us - Vital Voices II,collectible,23,2026-08-25 11:19:18
+b7ea3a29-17e1-47cb-a6ca-2ec419165e3c,“it’s a small world”,collectible,14,2026-08-25 11:19:18
+ebb7de05-9267-43e8-a01d-0ab08ed05e29,Maserati Alfieri - Silver,collectible,11,2026-08-25 11:19:18
+bfbb5341-6a35-4ecb-b3a7-896bf6eb870c,Year of the Horse - Pane of 20,collectible,24,2026-08-25 11:19:18
+46359177-0a0a-4148-aac9-7875a76aaa91,Toph,collectible,7.99,2026-08-25 11:19:18
+ba7151f1-eba5-487d-87c9-3159fbc70bf8,Red Noggles,collectible,46,2026-08-25 11:19:18
+ec04c6de-1ef4-436b-bb1a-8a9109a95bb6,Colossus - Phoenix,collectible,6.99,2026-08-25 11:19:18
+bb531903-13ab-4806-98c8-fb2b8847e398,1840 Penny Black QB used,collectible,3.39,2026-08-25 11:19:18
+391a48df-616d-4f3c-b183-d7f7a6414b01,Nozzle Eye - VeVe Spectrum,collectible,450,2026-08-25 11:19:18
+f4bc0c5c-c12e-41c9-8062-f33011a17ef8,Light Stick,collectible,38.63,2026-08-25 11:19:18
+80dbf318-2d6b-4ac3-ad4f-7b441a6ecc82,1840 Penny Black IA-IC,collectible,7,2026-08-25 11:19:18
+582171b4-047f-4d3e-8c41-987fe0f9f7f4,Learner Jake,collectible,7.89,2026-08-25 11:19:18
+aa8ace2b-3356-421c-8bfc-d77fb68b703b,Blue Noggles,collectible,33.84,2026-08-25 11:19:18
+975dad48-3fe0-476b-b518-78706b1073ab,1840 Penny Black Ol mint,collectible,3.77,2026-08-25 11:19:18
+a92e79b9-e6c5-41cf-88ad-0f3490f9dce0,Calm Mint CANVAS PRINT,collectible,37,2026-08-25 11:19:18
+b8e9332e-cd45-45a2-9638-7fb3783b835e,Butterfly - Gray,collectible,99,2026-08-25 11:19:18
+9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,4.9,2026-08-25 11:19:18
+92b14dcc-2e83-4d5e-8cfa-ac7fb5b73f96,Year of the Horse,collectible,1.1,2026-08-25 11:19:18
+52faf771-f91f-42f1-9599-ce473644cb2c,Nozzle Eye - Fractured Stone,collectible,7.98,2026-08-25 11:19:18
+c3df7496-e8e7-4507-b80a-5c2b5d996645,#100 Todd McFarlane Batman,collectible,450,2026-08-25 12:21:20
+5ab59120-1b5b-473c-9c80-3144d9a6e1d5,"All Together, Now!",collectible,145,2026-08-25 12:21:20
+057b0e2b-41e3-4360-8585-dddc69a3f534,Sabretooth - Savage Presence,collectible,88,2026-08-25 12:21:20
+987e4869-7dd7-47ed-a417-351d20023d78,#100 Todd McFarlane Batman - Blue & Yellow Variant,collectible,48.99,2026-08-25 12:21:20
+6acfb7ff-9530-41a3-8cc1-fa145da1786d,Yurameki,collectible,47,2026-08-25 12:21:20
+ec1ee9f4-8389-4f8b-9303-cbe02d2ba0c6,Young Warhol,collectible,16.98,2026-08-25 12:21:20
+d191323b-5da1-4ccd-ba23-1a44c2ae6e85,The Love Space Gives - Tara McPherson,collectible,19.99,2026-08-25 12:21:20
+aeefbf50-3d0b-47cb-accb-86128d4398ed,DLT-19D Heavy Blaster,collectible,30,2026-08-25 12:21:20
+1789d2da-271a-4772-9622-d9a7fad2f580,Mr. Mischief the Monkey Grin - Original,collectible,9.99,2026-08-25 12:21:20
+450206ba-7c6b-46a3-8d48-9f24b64b7aed,Falling,collectible,72.85,2026-08-25 12:21:20
