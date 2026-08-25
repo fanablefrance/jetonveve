@@ -32,7 +32,21 @@ on:
       holders:
         description: "Collecter les 5 premiers detenteurs (3e appel par item)"
         type: boolean
-        default: false
+        # 🔴🔴🔴 `true`, ET LA LIGNE 54 NE SUFFISAIT PAS — MESURE DU 25/08/2026.
+        # Le run PLANIFIE n'envoie aucun input : `'' == 'false'` est faux, donc
+        # `FICHES_HOLDERS` vaut 'true'. Correct.
+        # ⛔ MAIS UN RUN MANUEL, LUI, ENVOIE LE `default` DECLARE ICI. Run
+        # 32818193636 (25/08, workflow_dispatch, apres correction de la l. 54) :
+        # le journal imprime `FICHES_HOLDERS: false`, et `holders_stackr.csv`
+        # n'est toujours pas publie. L'expression etait juste ; la valeur qu'on
+        # lui donnait ne l'etait pas.
+        # ⭐⭐⭐ *Un defaut du code peut etre ecrase par un reglage qui vaut
+        #   toujours* — ici le reglage vit DANS le meme fichier, dix-neuf lignes
+        #   plus haut que l'expression qu'on accusait.
+        # ⚠️ Les DEUX doivent dire la meme chose : `default: true` ici ET le
+        #   motif `== 'false' && 'false' || 'true'` la-bas. Le § 5 du banc
+        #   refuse desormais qu'ils divergent.
+        default: true
 
 permissions:
   contents: write
