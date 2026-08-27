@@ -1,6 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-de47a00b-94ce-4df2-ae57-e9f850b2206c,LISA Gold/Silver,collectible,199,2026-08-20 18:53:22
-1c2c833d-3e70-4e7e-b589-0c24832a58cd,Katara,collectible,20,2026-08-20 18:53:22
 a47a6df4-1ca0-40b1-8ccb-d69b60d12dcc,Lad 6,collectible,700000000,2026-08-20 20:55:45
 e6e5683f-5b64-4842-8f74-912a0fc919ba,Homer & Bart,collectible,66.66,2026-08-20 20:55:45
 ae29242b-05c3-4ddd-a03e-1f8da4f404f3,The Genesis Key,collectible,888,2026-08-20 20:55:45
@@ -3456,3 +3454,61 @@ ff142570-e43a-4f7e-8a15-4668b0e4d332,ZAP!,collectible,4.19,2026-08-27 18:13:36
 edd220d2-6a16-41df-98c9-9c65ceae9077,Record #5 - Ronnnie Rabbbit - Original,collectible,2,2026-08-27 18:13:36
 8c8416ab-c092-4aec-ace1-d90f90fe4de6,The Laboratory (1 of 7),collectible,45,2026-08-27 18:13:36
 6034d020-5c76-46b5-aa1e-56011181936e,Graffi ver. Red,collectible,1.23,2026-08-27 18:13:36
+5cd5b20e-02da-4be2-8060-b7d03b2383d5,#01 Eduardo Risso Batman,collectible,1500,2026-08-27 19:15:50
+a605b45c-c809-40d4-a98b-b5daa200a696,Black Panther – Ultimate Animated,collectible,111,2026-08-27 19:15:50
+426396ef-3b30-4c84-aa70-06e932ddde6c,Finn Mertens,collectible,35,2026-08-27 19:15:50
+7f8a49d9-06c3-4304-9a44-3ea26e873c6e,"Book with Recorder from Thunderball, 1965",collectible,333,2026-08-27 19:15:50
+0bfb1239-b03a-4084-bafe-770796eece82,Wolverine - Blue and Yellow suit,collectible,68,2026-08-27 19:15:50
+75e96af3-d4c4-4823-91ed-ea5fe3b7dcf2,Starfire,collectible,175,2026-08-27 19:15:50
+1a408aac-5fa7-4995-8244-c45fc1026f89,Marceline,collectible,99.99,2026-08-27 19:15:50
+cc9837df-83e2-4394-bac5-eda08eb0041e,#24 Brian Bolland Penguin,collectible,49,2026-08-27 19:15:50
+3174caf1-2da6-4196-9e4a-8965fcdabc49,The Rise of Ultraman #1 - John Tyler Christopher,collectible,39.95,2026-08-27 19:15:50
+0606f20c-c5c0-45af-a49a-6d25e3d5ee96,Gambit - Kinetic Assault,collectible,400,2026-08-27 19:15:50
+2a1fe986-121b-48ab-bd64-1122192a0f31,Ahsoka Tano,collectible,22,2026-08-27 19:15:50
+3f046859-154b-4a76-818f-f94ef4c0d928,Mike Wazowski: I’ve Been Waiting for This My Whole Life!,collectible,8.5,2026-08-27 19:15:50
+ebcf7ef8-7cec-4e81-b1e1-ea088c203f9f,Wild Energy,collectible,39.99,2026-08-27 19:15:50
+a046c872-8c13-4877-b705-7eb3a09bf8ee,Snow Globe - Coke Bottle,collectible,48,2026-08-27 19:15:50
+c9f36d96-2776-469a-904b-83356104dd94,Ghost Rider - Danny Ketch,collectible,69,2026-08-27 19:15:50
+a5fcf837-0263-44f1-bf85-69453bba219f,Super Armor Hiro,collectible,39.99,2026-08-27 19:15:50
+5529acf4-43b8-428a-8009-2410ceb8cce7,Huracán STO - Verde Citrea/Arancio DAC,collectible,120,2026-08-27 19:15:50
+7bd8b0f4-586b-4874-acc6-e45066ac3068,Crimson Stormtrooper - Leading the Charge,collectible,267,2026-08-27 19:15:50
+3facefe2-427f-48ec-a954-e5892b8c3b20,Yoda - Focus,collectible,69,2026-08-27 19:15:50
+c3cf7f7b-4d3b-4372-aeb3-309f5d7d91db,Donatello - Laboratory Lounge,collectible,15.03,2026-08-27 19:15:50
+dbed7372-f79d-4638-a180-1da2e36195f4,Alice,collectible,23.88,2026-08-27 19:15:50
+36d4a1e9-2398-4262-ad35-251d5a868865,Kingpin,collectible,61.4,2026-08-27 19:15:50
+d40158c7-c456-4377-980a-9c5cc6f99bc1,Ryu,collectible,29.95,2026-08-27 19:15:50
+94f72775-7b61-4e82-9f93-58e03cf89d2e,Her Majesty Special Edition,collectible,425,2026-08-27 19:15:50
+37353ee5-47b8-4498-a220-7851c6dd0923,Michelangelo - Classic,collectible,13.8,2026-08-27 19:15:50
+71daa6f7-8da5-4a89-8b3d-b9863105937b,VeVe Search Party Pattern - Lincoln Design Co.,collectible,156,2026-08-27 19:15:50
+882b40f4-c586-4c68-af9b-b7bfdaca9f0d,Spider-Man 2099 - Shadow Protocol,collectible,130,2026-08-27 19:15:50
+7aefc64f-2a8f-4412-800d-25f1e3699c90,Aang - Airbender,collectible,18.99,2026-08-27 19:15:50
+1c2c833d-3e70-4e7e-b589-0c24832a58cd,Katara,collectible,17.89,2026-08-27 19:15:50
+6e450e21-4d52-4533-ba09-08ae348f6de0,Darkseid,collectible,17.95,2026-08-27 19:15:50
+18fc8809-db68-48a1-b5df-da1318d6c6e0,Chun-Li Battle,collectible,108,2026-08-27 19:15:50
+6e5f4b19-fb4d-40c3-8338-f470221f3c25,Lumière,collectible,12,2026-08-27 19:15:50
+a494f556-ebcd-4252-b4ec-ccd52c331c5c,Mickey,collectible,13.99,2026-08-27 19:15:50
+31e89ed2-c694-41cb-944d-e0636dece312,Belle,collectible,15,2026-08-27 19:15:50
+f6449165-c84d-4d58-8931-05f103b80d91,Sakura - Battle,collectible,128,2026-08-27 19:15:50
+7b01a6a0-fae5-4700-8632-8131c7b2c839,Donald,collectible,29.88,2026-08-27 19:15:50
+719d16e4-db5a-4a9a-b956-37669f3145b0,Tefral the Surveyor,collectible,25,2026-08-27 19:15:50
+e9aa517c-43e1-48d8-ab94-8551e4610629,Daisy,collectible,24.43,2026-08-27 19:15:50
+c03b2444-bd47-4778-b0c1-d6e26429217a,Silver Surfer,collectible,12,2026-08-27 19:15:50
+59a9e7f2-af54-4414-b1a7-7ce13c55eba9,Sokka - Blademaster,collectible,69,2026-08-27 19:15:50
+32a83155-0ef9-4262-85c7-874bb4782017,Surfs Up,collectible,8,2026-08-27 19:15:50
+158cf956-dbe3-48f4-9d41-68fa97acf97e,Kaiju Tokimon,collectible,4.88,2026-08-27 19:15:50
+92635283-99b4-4597-ba69-01e39ccba334,Master Splinter - Father Figure,collectible,4.2,2026-08-27 19:15:50
+f413be9f-1152-4047-b346-798b279e9170,My Toy - Honey Bunny,collectible,30,2026-08-27 19:15:50
+eda50111-815e-42c0-8748-1f34b35c5c36,Emma Frost - Hellfire Gala #1 (2022),collectible,6.5,2026-08-27 19:15:50
+62cbb927-bee0-46fd-a852-9cbc06d5bb26,Spider-Man - Action,collectible,16.85,2026-08-27 19:15:50
+f11b5077-e080-49c9-937d-68208f0ba66f,The Tiniest Bit of Greed,collectible,89,2026-08-27 19:15:50
+f675174d-d5da-42a1-9db1-7fb59a20fb91,Doctor Octopus,collectible,18.9,2026-08-27 19:15:50
+52ba30bf-11d9-43b9-85e3-5dc6a7a53e51,Werewolf By Night,collectible,6.49,2026-08-27 19:15:50
+531922ce-7c82-43dc-8ef2-dce25d31fb43,Arishem the Judge,collectible,4,2026-08-27 19:15:50
+3f1819b2-d358-492e-b1a0-80a5b3cfe039,Morbius,collectible,5,2026-08-27 19:15:50
+f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,5.99,2026-08-27 19:15:50
+867dc17b-9dbd-4fe5-818d-d7b02c34f79f,The ADDICTION Silver Logo,collectible,15,2026-08-27 19:15:50
+c8a76df1-5979-4917-8189-5ecb4a2e4225,KABOOM,collectible,14.7,2026-08-27 19:15:50
+78b6265b-3432-46d9-bf8d-8915492b40fe,Amarena,collectible,2.5,2026-08-27 19:15:50
+c99e3fba-dfdd-4753-82f2-408f461e606c,BAM! - Gold,collectible,39.99,2026-08-27 19:15:50
+71e624e1-3660-49d6-a6a8-707dd61803da,POW! - Gold,collectible,39,2026-08-27 19:15:50
+e12e243b-e88f-4622-b0da-599c54385255,ZAP! - Gold,collectible,59,2026-08-27 19:15:50
