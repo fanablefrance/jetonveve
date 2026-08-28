@@ -14,6 +14,9 @@ name: Fusion transferts (IMX + CollectChain, un fichier)
 # chainage automatique du workflow analytics-derived a la fin (1 seul
 # dispatch regenere tout l'entrepot).
 # v3 (28/08) : CRON + garde de non-regression. Voir les deux encadres.
+# v4 (28/08) : la garde passe du POIDS au COMPTE PAR ERE (le poids ne
+# voyait pas la perte du quotidien : ~0,3 % du fichier), et les 4 sources
+# deviennent OBLIGATOIRES sur un run planifie.
 
 on:
   # 🔴🔴🔴 CRON AJOUTE LE 28/08/2026. CE WORKFLOW N'EN AVAIT JAMAIS EU :
@@ -65,6 +68,12 @@ jobs:
   merge:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    env:
+      # 🔑 POINT UNIQUE de « personne ne regarde ce run ». Les 4 etapes source
+      # et la garde s'y referent — un seul endroit a changer, jamais 5.
+      # ⭐ Un run MANUEL reste tolerant : Preda lit le log, il peut vouloir
+      #   fusionner sans une source. Un run PLANIFIE n'a aucun lecteur.
+      STRICT: ${{ github.event_name == 'schedule' }}
     steps:
       - uses: actions/checkout@v4          # pour scraper/merge_transfers.py
       - uses: actions/setup-python@v5
@@ -76,36 +85,72 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           mkdir -p arch/holders arch/imx arch/cc
-          gh release download holders-snapshot -R lepaolo/paolo \
-            --dir arch/holders --pattern '*.csv.gz' --clobber \
-            || echo "⚠️ holders-snapshot indisponible (IMX sortira sans veve_uuid)."
+          if ! gh release download holders-snapshot -R lepaolo/paolo \
+                 --dir arch/holders --pattern '*.csv.gz' --clobber; then
+            if [ "$STRICT" = "true" ]; then
+              echo "⛔ REFUS : holders-snapshot (sans lui, IMX sort sans veve_uuid) indisponible sur un run PLANIFIE."
+              echo "   Un run manuel tolere l'absence (le log est lu) ; un run"
+              echo "   planifie doit TOMBER, jamais se degrader en silence."
+              exit 1
+            fi
+            echo "⚠️ holders-snapshot (sans lui, IMX sort sans veve_uuid) indisponible — tolere (run manuel)."
+          fi
 
       - name: "imx-archive (paolo, public) — les transferts IMX"
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download imx-archive -R lepaolo/paolo \
-            --dir arch/imx --pattern '*.csv.gz' --clobber \
-            || echo "⚠️ imx-archive indisponible."
+          if ! gh release download imx-archive -R lepaolo/paolo \
+                 --dir arch/imx --pattern '*.csv.gz' --clobber; then
+            if [ "$STRICT" = "true" ]; then
+              echo "⛔ REFUS : imx-archive indisponible sur un run PLANIFIE."
+              echo "   Un run manuel tolere l'absence (le log est lu) ; un run"
+              echo "   planifie doit TOMBER, jamais se degrader en silence."
+              exit 1
+            fi
+            echo "⚠️ imx-archive indisponible — tolere (run manuel)."
+          fi
 
       - name: "chain-archive (astronema, public) — CollectChain profond"
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download chain-archive -R astronemagame-maker/astronema \
-            --dir arch/cc --pattern '*.csv.gz' --clobber \
-            || echo "⚠️ chain-archive indisponible."
+          if ! gh release download chain-archive -R astronemagame-maker/astronema \
+                 --dir arch/cc --pattern '*.csv.gz' --clobber; then
+            if [ "$STRICT" = "true" ]; then
+              echo "⛔ REFUS : chain-archive (CollectChain profond) indisponible sur un run PLANIFIE."
+              echo "   Un run manuel tolere l'absence (le log est lu) ; un run"
+              echo "   planifie doit TOMBER, jamais se degrader en silence."
+              exit 1
+            fi
+            echo "⚠️ chain-archive (CollectChain profond) indisponible — tolere (run manuel)."
+          fi
 
       - name: "chain-archive-daily (preda, PRIVE) — le quotidien CollectChain"
         env:
           GH_TOKEN: ${{ secrets.PREDA_TOKEN }}
         run: |
+          # 🔴 C'EST ICI QUE LE SCENARIO REDOUTE COMMENCE : un PREDA_TOKEN
+          # vide OU revoque. Les deux se traitent pareil, et les deux doivent
+          # TOMBER quand le run est planifie.
           if [ -z "$GH_TOKEN" ]; then
-            echo "ℹ️ Pas de PREDA_TOKEN — le quotidien preda est ignore (le deep suffit deja)."
-          else
-            gh release download chain-archive-daily -R VeVePreda/scrapeur-veve \
-              --dir arch/cc --pattern '*.csv.gz' --clobber \
-              || echo "⚠️ chain-archive-daily indisponible."
+            if [ "$STRICT" = "true" ]; then
+              echo "⛔ REFUS : PREDA_TOKEN absent sur un run PLANIFIE."
+              echo "   Sans lui il manque TOUT le quotidien CollectChain, et"
+              echo "   ⭐ c'est justement la perte que la garde de TAILLE ne"
+              echo "     voyait pas : l'increment ne pese que ~0,3 % du fichier."
+              exit 1
+            fi
+            echo "ℹ️ Pas de PREDA_TOKEN — quotidien preda ignore (run manuel)."
+          elif ! gh release download chain-archive-daily -R VeVePreda/scrapeur-veve \
+                   --dir arch/cc --pattern '*.csv.gz' --clobber; then
+            if [ "$STRICT" = "true" ]; then
+              echo "⛔ REFUS : chain-archive-daily illisible sur un run PLANIFIE."
+              echo "   Le token est PRESENT mais le telechargement echoue :"
+              echo "   revoque, expire, ou droits retires. ⛔ Ne pas degrader."
+              exit 1
+            fi
+            echo "⚠️ chain-archive-daily indisponible — tolere (run manuel)."
           fi
           echo "Sources rassemblees :" && du -sh arch/holders arch/imx arch/cc 2>/dev/null
 
@@ -114,45 +159,77 @@ jobs:
           python -m scraper.merge_transfers arch transfers_full.csv.gz
           ls -lh transfers_full.csv.gz
 
-      - name: "🛡️ Garde de non-regression — ⛔ ne PAS publier un fichier ampute"
+      - name: "🛡️ Garde de non-regression — compte par ere, monotone"
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # 🔴🔴🔴 LA RAISON D'ETRE DE CETTE ETAPE, ET ELLE NAIT DU CRON.
-          # Les 4 etapes « source » ci-dessus sont TOLERANTES : chacune finit
-          # par `|| echo "⚠️ ... indisponible"`, et PREDA_TOKEN absent donne un
-          # simple `ℹ️`. Tant qu'un humain cliquait, il lisait ces lignes. Un
-          # run PLANIFIE, personne ne les lit.
-          # ⇒ sans cette garde, un PREDA_TOKEN expire publierait en silence un
-          #   transfers-full ampute de tout le quotidien CollectChain, puis
-          #   chainerait analytics qui rebatirait TOUT l'entrepot dessus. La
-          #   porte de fraicheur d'analytics serait SATISFAITE (le fichier est
-          #   frais), le filet ne verrait rien (le run REUSSIT), et le Sheet
-          #   afficherait des chiffres faux sans une seule alerte.
-          #   ⭐ « Frais » ne veut pas dire « complet ».
-          NEUF=$(stat -c%s transfers_full.csv.gz)
-          ANCIEN=$(gh release view transfers-full --json assets \
-                     --jq '.assets[] | select(.name=="transfers_full.csv.gz") | .size' \
-                   2>/dev/null || echo 0)
-          [ -z "$ANCIEN" ] && ANCIEN=0
-          echo "neuf=$NEUF octets · ancien=$ANCIEN octets"
-          if [ "$ANCIEN" -eq 0 ]; then
-            echo "ℹ️ Pas de release existante — premiere publication, rien a comparer."
-            exit 0
-          fi
-          # 95 % : la fusion ne peut que CROITRE (les archives sont append-only
-          # et le dedup est stable). Un fichier PLUS PETIT ne dit pas qu'une
-          # donnee a disparu, il dit qu'une SOURCE a manque.
-          SEUIL=$(( ANCIEN * 95 / 100 ))
-          if [ "$NEUF" -lt "$SEUIL" ]; then
-            echo "⛔ REFUS : $NEUF octets < 95 % de $ANCIEN."
-            echo "   Une source a manque. ⚠️ Relire les 4 etapes « source » de CE run,"
-            echo "   pas seulement la premiere — elles echouent en silence."
-            echo "   ✅ La release transfers-full N'A PAS ETE TOUCHEE (cette etape est"
-            echo "      AVANT le secours N-1 et avant l'upload)."
+          # 🔴🔴🔴 v4 (28/08) — POURQUOI LE POIDS NE SUFFISAIT PAS.
+          # La v3 refusait un fichier tombe sous 95 % du precedent. Mesure le
+          # jour meme : l'ere IMX est une archive CLOSE et GELEE qui pese 63 %
+          # du fichier, et l'increment quotidien CollectChain ne pese que
+          # ~0,3 %. Perdre TOUT le quotidien laissait donc 99,7 % — tres
+          # au-dessus du seuil. ⭐⭐ UN SEUIL EN POURCENTAGE D'UN TOUT DONT LA
+          # MAJORITE EST GELEE NE MESURE PAS L'INCREMENT.
+          #
+          # ⇒ le verdict porte desormais sur le COMPTE PAR ERE, et il est
+          #   MONOTONE : une ere ne peut jamais reculer. Si le quotidien
+          #   manque, CollectChain retombe au niveau du deep (arrete le 12/08)
+          #   ⇒ strictement INFERIEUR au dernier publie ⇒ REFUS. C'est
+          #   exactement le cas que la v3 laissait passer.
+          #
+          # ⭐ ON COMPTE DANS L'ARTEFACT, PAS DANS CE QUE LE SCRIPT A IMPRIME :
+          #   relire le message d'une transformation ne dit que ce qu'elle
+          #   CROIT avoir fait. Cout mesure ~1-2 min sur 38,8 M lignes — le
+          #   run en dure 12.
+          eval "$(zcat transfers_full.csv.gz | awk -F, '
+            NR > 1 { t++; if ($1 == "IMX") i++; else if ($1 == "CollectChain") c++ }
+            END { printf "N_TOT=%d N_IMX=%d N_CC=%d\n", t+0, i+0, c+0 }')"
+          echo "compte lu dans le fichier : total=$N_TOT · IMX=$N_IMX · CollectChain=$N_CC"
+
+          if [ "$N_TOT" -eq 0 ] || [ "$N_CC" -eq 0 ]; then
+            echo "⛔ REFUS : une ere est VIDE. La fusion n'a rien produit d'exploitable."
             exit 1
           fi
-          echo "✅ Taille conforme (>= 95 % de la precedente) — publication autorisee."
+
+          # ⛔ `rm` AVANT `mkdir` : sans lui, un temoin laisse par un run
+          # precedent sur le meme espace de travail serait pris pour la
+          # reference publiee — le controle passerait pour une mauvaise raison.
+          rm -rf avant && mkdir -p avant
+          gh release download transfers-full -p transfers_full.compte.json \
+            -D avant --clobber >/dev/null 2>&1 || true
+
+          if [ ! -f avant/transfers_full.compte.json ]; then
+            # ⛔ « Pas de reference » n'est pas « conforme » : on le DIT, fort.
+            echo "⚠️ AUCUNE REFERENCE — premiere publication avec compte, ou"
+            echo "   asset absent. La monotonie ne peut pas etre jugee CE run ;"
+            echo "   elle le sera au suivant. ⭐ Ce n'est pas un feu vert."
+          else
+            A_TOT=$(jq -r '.total // 0'        avant/transfers_full.compte.json)
+            A_IMX=$(jq -r '.imx // 0'          avant/transfers_full.compte.json)
+            A_CC=$(jq  -r '.collectchain // 0' avant/transfers_full.compte.json)
+            echo "reference publiee        : total=$A_TOT · IMX=$A_IMX · CollectChain=$A_CC"
+            RECUL=""
+            [ "$N_IMX" -lt "$A_IMX" ] && RECUL="$RECUL IMX($A_IMX->$N_IMX)"
+            [ "$N_CC"  -lt "$A_CC"  ] && RECUL="$RECUL CollectChain($A_CC->$N_CC)"
+            if [ -n "$RECUL" ]; then
+              echo "⛔ REFUS : une ere a RECULE :$RECUL"
+              echo "   Les archives sont append-only et le dedup est stable :"
+              echo "   un recul ne dit pas qu'une donnee a disparu, il dit"
+              echo "   qu'une SOURCE a manque. ⚠️ Relire les 4 etapes « source »"
+              echo "   de CE run, pas seulement la premiere."
+              echo "   ✅ La release transfers-full N'A PAS ETE TOUCHEE (cette"
+              echo "      etape est AVANT le secours N-1 et avant l'upload)."
+              exit 1
+            fi
+            echo "✅ Monotonie respectee (+$((N_TOT - A_TOT)) transferts depuis la derniere publication)."
+          fi
+
+          # Le temoin que le PROCHAIN run comparera. Publie avec le CSV.
+          printf '{"total":%d,"imx":%d,"collectchain":%d,"octets":%d,"publie_le":"%s","run":"%s"}\n' \
+            "$N_TOT" "$N_IMX" "$N_CC" "$(stat -c%s transfers_full.csv.gz)" \
+            "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$GITHUB_RUN_ID" \
+            > transfers_full.compte.json
+          cat transfers_full.compte.json
 
       - name: "Secours N-1 (copie de la release actuelle AVANT ecrasement)"
         env:
@@ -182,6 +259,10 @@ jobs:
               --title "Transferts NFT — IMX + CollectChain (source unifiee)" \
               --notes "1 CSV.gz de tous les transferts NFT VeVe sur IMX (2021-2026) et CollectChain (2026+), au meme schema : era, ts_utc, date_pt, kind, category, veve_uuid, edition, from, to, tx_ref. L'IMX est habille via le holders-snapshot (token_id -> veve_uuid). Dedup IMX par txn_id / CollectChain par block:log_index, tri chronologique. GoChain exclu (NFT custodial). Regenerable a la demande via ce workflow. + transfers.parquet (publie par analytics.yml) : meme donnee, queryable par URL via DuckDB httpfs."
           gh release upload transfers-full transfers_full.csv.gz --clobber
+          # ⭐ SANS CETTE LIGNE la garde ci-dessus ne trouverait jamais de
+          #   reference et se declarerait « sans reference » a CHAQUE run :
+          #   un controle qui ne peut jamais mordre.
+          gh release upload transfers-full transfers_full.compte.json --clobber
           echo "✅ Release transfers-full mise a jour."
 
       - name: "Chainer analytics-derived (parquet + CSV derives)"
