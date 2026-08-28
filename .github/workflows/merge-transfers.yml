@@ -13,8 +13,44 @@ name: Fusion transferts (IMX + CollectChain, un fichier)
 # v2 (16/07) : secours N-1 (copie transfers-full-prev AVANT ecrasement) +
 # chainage automatique du workflow analytics-derived a la fin (1 seul
 # dispatch regenere tout l'entrepot).
+# v3 (28/08) : CRON + garde de non-regression. Voir les deux encadres.
 
 on:
+  # 🔴🔴🔴 CRON AJOUTE LE 28/08/2026. CE WORKFLOW N'EN AVAIT JAMAIS EU :
+  # 4 runs dans sa vie (16/07 x2, 13/08 x2), tous en dispatch manuel.
+  #
+  # ⭐⭐⭐ CE N'ETAIT PAS UNE PANNE, C'ETAIT LE MEME DEFAUT QU'AU CRAN DU
+  # DESSOUS. `sentinelle_absence.py` a ete ecrite POUR ce defaut : son
+  # en-tete raconte le gel du grand livre du 24/07 au 07/08, quand
+  # `ledger-writer` (cron) consommait `analytics.yml` reste manuel. On a
+  # donne un cron a `analytics.yml` le 07/08 — sans regarder que SON
+  # producteur, ce fichier-ci, restait manuel. Le gel s'est reproduit
+  # du 13/08 au 28/08, et le Sheet (onglets whales / cornerisation /
+  # pulse) est reste au 19/08.
+  #
+  # ⛔ ET LA SENTINELLE NE POUVAIT PAS LE VOIR :
+  #     surveilles = [e for e in manifeste
+  #                   if e.get("cadence") != "manuel" and e.get("fenetre_h")]
+  # Tout ce qui est declare `manuel` est exclu de la question « qui n'a
+  # rien fait ? ». Or un producteur manuel sous un consommateur programme
+  # est precisement le cas dangereux. ⇒ le manifeste des sentinelles est
+  # corrige DANS LE MEME LOT (cadence + fenetre_h + depend_de) : changer
+  # ce seul fichier laisserait le manifeste MENTIR.
+  #
+  # ⏰ MARDI 05:00 UTC, pas mercredi. Trois marges empilees, et ce sont
+  # ELLES le correctif, pas la precision de l'heure :
+  #   · GitHub retarde les crons de +2 h 20 a **11 h** (mesure le 27/08 sur
+  #     3 workflows d'un coup) et ce run dure jusqu'a 60 min ⇒ pire cas
+  #     fini mardi ~17:00 UTC, soit ~13 h avant `analytics.yml`
+  #     (mercredi 06:00 UTC) au lieu de ~1 h.
+  #   · GitHub ABANDONNE des runs planifies quand il est charge. Une
+  #     semaine sautee laisse la source a 7 j — encore SOUS le seuil de
+  #     10 j d'`analytics.yml`. Il faut DEUX abandons de suite pour casser.
+  #   · Le run chaine `analytics.yml` a la fin : les derives sont refaits
+  #     des mardi, et le cron du mercredi ne fait que confirmer. Les deux
+  #     ne se marchent pas dessus (concurrency `analytics-derived`).
+  schedule:
+    - cron: "0 5 * * 2"
   workflow_dispatch:
 
 permissions:
@@ -77,6 +113,46 @@ jobs:
         run: |
           python -m scraper.merge_transfers arch transfers_full.csv.gz
           ls -lh transfers_full.csv.gz
+
+      - name: "🛡️ Garde de non-regression — ⛔ ne PAS publier un fichier ampute"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # 🔴🔴🔴 LA RAISON D'ETRE DE CETTE ETAPE, ET ELLE NAIT DU CRON.
+          # Les 4 etapes « source » ci-dessus sont TOLERANTES : chacune finit
+          # par `|| echo "⚠️ ... indisponible"`, et PREDA_TOKEN absent donne un
+          # simple `ℹ️`. Tant qu'un humain cliquait, il lisait ces lignes. Un
+          # run PLANIFIE, personne ne les lit.
+          # ⇒ sans cette garde, un PREDA_TOKEN expire publierait en silence un
+          #   transfers-full ampute de tout le quotidien CollectChain, puis
+          #   chainerait analytics qui rebatirait TOUT l'entrepot dessus. La
+          #   porte de fraicheur d'analytics serait SATISFAITE (le fichier est
+          #   frais), le filet ne verrait rien (le run REUSSIT), et le Sheet
+          #   afficherait des chiffres faux sans une seule alerte.
+          #   ⭐ « Frais » ne veut pas dire « complet ».
+          NEUF=$(stat -c%s transfers_full.csv.gz)
+          ANCIEN=$(gh release view transfers-full --json assets \
+                     --jq '.assets[] | select(.name=="transfers_full.csv.gz") | .size' \
+                   2>/dev/null || echo 0)
+          [ -z "$ANCIEN" ] && ANCIEN=0
+          echo "neuf=$NEUF octets · ancien=$ANCIEN octets"
+          if [ "$ANCIEN" -eq 0 ]; then
+            echo "ℹ️ Pas de release existante — premiere publication, rien a comparer."
+            exit 0
+          fi
+          # 95 % : la fusion ne peut que CROITRE (les archives sont append-only
+          # et le dedup est stable). Un fichier PLUS PETIT ne dit pas qu'une
+          # donnee a disparu, il dit qu'une SOURCE a manque.
+          SEUIL=$(( ANCIEN * 95 / 100 ))
+          if [ "$NEUF" -lt "$SEUIL" ]; then
+            echo "⛔ REFUS : $NEUF octets < 95 % de $ANCIEN."
+            echo "   Une source a manque. ⚠️ Relire les 4 etapes « source » de CE run,"
+            echo "   pas seulement la premiere — elles echouent en silence."
+            echo "   ✅ La release transfers-full N'A PAS ETE TOUCHEE (cette etape est"
+            echo "      AVANT le secours N-1 et avant l'upload)."
+            exit 1
+          fi
+          echo "✅ Taille conforme (>= 95 % de la precedente) — publication autorisee."
 
       - name: "Secours N-1 (copie de la release actuelle AVANT ecrasement)"
         env:
