@@ -1,17 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-07c1d5c1-e0c4-4e6a-9ad7-553e9a854f5f,Flounder and Sebastian,collectible,22.72,2026-08-24 01:15:33
-66bf871d-a8d4-474e-a0f2-b1ceb28c7b94,Millennium Falcon,collectible,90,2026-08-24 01:15:33
-d8a553e2-3b90-4d7a-b6a2-eb8644df4148,Beta Animated 1,collectible,28.73,2026-08-24 01:15:33
-5f63b00e-88e9-4784-8600-856dd951e06d,U.S.S. Enterprise-D (1:1000),collectible,6.75,2026-08-24 01:15:33
-842e1d51-02b9-4762-9c4d-12f95f0b12d2,Ken Blue,collectible,125,2026-08-24 01:15:33
-68649d9c-b610-4ac0-a07a-f14a1fca6585,Raphael - Classic,collectible,8.65,2026-08-24 01:15:33
-eb4c9cee-d4bf-4dca-9ae7-46b7eff5f6e9,Coca-Cola Neon Sign - Pause and Refresh,collectible,28,2026-08-24 01:15:33
-60decdb0-2864-4979-85ef-714261cbdb2d,Edo Scout Trooper,collectible,6.8,2026-08-24 01:15:33
-7b970f74-5f79-47a6-b234-3816f2a40e3d,Record #1 - Living In Delusionville - Gold,collectible,13,2026-08-24 01:15:33
-a72a940f-3713-4072-8736-415a64444d47,Take That Rabbid,collectible,18.46,2026-08-24 01:15:33
-d37184af-298d-4b47-ae13-819fb234b80d,Episode 12 - Arise,collectible,1.85,2026-08-24 01:15:33
-92b14dcc-2e83-4d5e-8cfa-ac7fb5b73f96,Year of the Horse,collectible,1.15,2026-08-24 01:15:33
-8684b674-49b4-4ece-aa1e-510ed9e5ebaf,Ash - Dark,collectible,34.99,2026-08-24 01:15:33
 5e8f7e71-3285-4977-9f11-77fa35c2dda3,Spider-Man: Miles Morales - Ultimate Spider-Man,collectible,625,2026-08-24 03:18:42
 606b52d3-4562-4e3f-b217-e1b60efd6f7d,Chip n’ Dale,collectible,48.99,2026-08-24 03:18:42
 39e873a8-37f3-4ef8-9247-b2b257f7dcbf,Team Avatar: SDCC 2026,collectible,240,2026-08-24 03:18:42
@@ -3582,3 +3569,23 @@ b3e72baa-51de-496f-80ba-4a66dc33591c,Ghostbear - White,collectible,4.5,2026-08-3
 04c1b81f-a6c9-4c57-be41-5f25001cfe44,Epiko Logo - Original,collectible,6.99,2026-08-31 01:10:58
 90dc4c4d-7177-4fde-9bae-a42dc5ff7e5c,Foster,collectible,6.95,2026-08-31 01:10:58
 df4040f2-18a2-42d7-b67b-ede12c684102,BLAM!,collectible,2.41,2026-08-31 01:10:58
+1df92282-2a7c-4f15-bc75-2e44de9f0f48,Degen Dungeon,collectible,5000,2026-08-31 02:12:56
+aa9e9b2e-32f5-4ba1-8aa9-67c3446bbb61,Moonraker - UK Quad Poster,collectible,449.99,2026-08-31 02:12:56
+7384abab-ff07-4cf8-8d3e-2085e4945f75,#76 Robin,collectible,16.5,2026-08-31 02:12:56
+95c41966-3ddc-4d3d-b52a-8f8569b5bd13,Flying Balloons Girl (Bronze Statue Edition),collectible,1600,2026-08-31 02:12:56
+06289587-89e9-4317-bd5b-038fe1f2150e,Yucky Charmer,collectible,68,2026-08-31 02:12:56
+1bb217e8-acd9-4b09-9841-42ec994d4de7,Mysterio - Smoke and Mirrors,collectible,38.95,2026-08-31 02:12:56
+d1f01da5-0084-4c75-9b81-509d2967f056,Dinglehopper,collectible,15,2026-08-31 02:12:56
+3d0b6bcb-393c-4d0c-a58d-4ebe0dbfcea9,Lunar New Year: Dragon - Pane of 20,collectible,49.99,2026-08-31 02:12:56
+8fc5ef65-80b8-4b61-9cad-3a8de0cc472a,Nessie,collectible,2.85,2026-08-31 02:12:56
+0c90c49f-d867-47de-991f-d5b5606ffb09,Namor - Phoenix,collectible,12,2026-08-31 02:12:56
+2bc26405-9cf9-46bb-a4e7-2339fb0bc319,DCon Mascot - Illuminati Edition - Scott Tolleson,collectible,19,2026-08-31 02:12:56
+fa9bd8ac-2e81-459b-85d9-7182df4d43a2,Women Support the War Effort,collectible,3.65,2026-08-31 02:12:56
+0f73e72f-8bc1-48c4-8b70-4e9b4e372003,Namor - Saga of the Sub-Mariner 1988,collectible,48,2026-08-31 02:12:56
+e8af31a7-9403-4a31-89a5-65570fcb814b,Altar - Becoming a Player,collectible,8,2026-08-31 02:12:56
+02ab1567-e3b7-4862-bd09-4115bcfed9fc,Max,collectible,9,2026-08-31 02:12:56
+0b5e951b-09bd-4b29-9db9-d7ca4814d92c,Janie,collectible,7.4,2026-08-31 02:12:56
+9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,4.99,2026-08-31 02:12:56
+90dc4c4d-7177-4fde-9bae-a42dc5ff7e5c,Foster,collectible,6.75,2026-08-31 02:12:56
+df4040f2-18a2-42d7-b67b-ede12c684102,BLAM!,collectible,2.46,2026-08-31 02:12:56
+0cd81d92-e369-4339-bb20-d64a7076c4e7,Radiant Peach,collectible,5,2026-08-31 02:12:56
