@@ -1,24 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-606b52d3-4562-4e3f-b217-e1b60efd6f7d,Chip n’ Dale,collectible,44.95,2026-08-24 08:27:03
-987e4869-7dd7-47ed-a417-351d20023d78,#100 Todd McFarlane Batman - Blue & Yellow Variant,collectible,63.27,2026-08-24 08:27:03
-a0c50208-f32c-4e7e-9664-c28555a9f523,Yoda,collectible,49.75,2026-08-24 08:27:03
-7bd8b0f4-586b-4874-acc6-e45066ac3068,Crimson Stormtrooper - Leading the Charge,collectible,300,2026-08-24 08:27:03
-05df9412-ca87-4492-8454-81f73a88c171,MOTOMICHI - Eyes,collectible,12.49,2026-08-24 08:27:03
-bc8771ab-0a33-42be-8f44-e1ed6d424274,The Winged Rock,collectible,300,2026-08-24 08:27:03
-0b298557-dc9b-43f7-84b8-ac20588a5e65,Connor - Protector of Liberty,collectible,12.93,2026-08-24 08:27:03
-a60477fd-6e2e-4482-bab5-02a3ee36be28,‍Gasgano’s Podracer,collectible,28,2026-08-24 08:27:03
-930d65c5-68db-4833-b585-ea9d47b26521,Fat Tony,collectible,6,2026-08-24 08:27:03
-92635283-99b4-4597-ba69-01e39ccba334,Master Splinter - Father Figure,collectible,4.2,2026-08-24 08:27:03
-65828683-2a2f-4260-83eb-e86bbfbf11a8,Acrobatic Surfing - Gold,collectible,150,2026-08-24 08:27:03
-958d85ba-bdfb-4013-89b4-5bd4a7a87daf,Guma - Nine Horse,collectible,35,2026-08-24 08:27:03
-d53f3d33-19f8-4ba7-86c2-1309a7470af9,Episode 11 - A Knight Who Defends an Empty Throne,collectible,4.75,2026-08-24 08:27:03
-daf4feec-b2f7-4489-84a3-8bf4de83d9d2,Nose Goblins,collectible,4.2,2026-08-24 08:27:03
-c139b711-1f35-40ba-885e-e302c5ea7b66,RUNNING MON ver. VEVE BLUE,collectible,85,2026-08-24 08:27:03
-2d968b07-1cde-4d52-8322-d35999fa4647,Mint Horse Ver.,collectible,49,2026-08-24 08:27:03
-e093ba4f-4811-4b7c-aa10-f999e216f844,Speedy The Racing Snail,collectible,12,2026-08-24 08:27:03
-9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,5.4,2026-08-24 08:27:03
-f6717b76-db8d-48af-bffd-d7016ac4a83d,C-Rank Essence Stone,collectible,1.08,2026-08-24 08:27:03
-16e0d43f-4821-4e27-b2d6-09e48466ab3e,WHAM!,collectible,1,2026-08-24 08:27:03
 a0c50208-f32c-4e7e-9664-c28555a9f523,Yoda,collectible,41.99,2026-08-24 09:28:55
 aeebac53-63e3-461e-8158-59726476d16e,David Yu - Blue Metallic,collectible,599,2026-08-24 09:28:55
 e3e99d26-24f5-4b41-a02f-d69faaed28b9,Welcome to San Diego – Poster,collectible,15.99,2026-08-24 09:28:55
@@ -3621,3 +3601,36 @@ fbc51b96-8996-4dad-bd2e-0e24d9dc68ea,Monovader - Full Resin Mode,collectible,28,
 9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,4.2,2026-08-31 08:21:36
 0b5e951b-09bd-4b29-9db9-d7ca4814d92c,Janie,collectible,5.5,2026-08-31 08:21:36
 2a576f3c-561a-4a5c-89ea-9863944ee329,The Public Image (5 of 7),collectible,38.92,2026-08-31 08:21:36
+dcae65b7-bd26-41d5-8509-8212bf2f3241,Rooftop Watch – Brickline Rise,collectible,19999,2026-08-31 09:23:39
+2bc35402-179f-41b5-912c-f5ae9aae2fee,Wolverine - Primal Strike,collectible,28000,2026-08-31 09:23:39
+9954145f-e85c-462e-b84b-2b50a3e3fbe9,Elsa,collectible,69,2026-08-31 09:23:39
+c898af60-be8a-490a-ac2b-537869c1892a,1:1 DeLorean Time Machine - Interactive,collectible,50,2026-08-31 09:23:39
+4dc2db11-350d-4c3b-82c9-84fbcaa9d138,Timon and Pumbaa,collectible,15.9,2026-08-31 09:23:39
+d57d9fa6-7796-48ca-9544-1699c14d36ee,LISA,collectible,177,2026-08-31 09:23:39
+05df9412-ca87-4492-8454-81f73a88c171,MOTOMICHI - Eyes,collectible,15.95,2026-08-31 09:23:39
+fa0b161c-5a8d-42ed-9baa-1848c7e1a7da,Marvel Logo,collectible,42.99,2026-08-31 09:23:39
+c9f36d96-2776-469a-904b-83356104dd94,Ghost Rider - Danny Ketch,collectible,69,2026-08-31 09:23:39
+9c03916b-f57c-43d8-a0b0-7f7dbbbf73d9,Tian Zun Huang Yin,collectible,85,2026-08-31 09:23:39
+2b187b2b-fa3d-440d-80c1-2389f864d051,The Protector,collectible,26.95,2026-08-31 09:23:39
+840cd502-351b-4397-b1c0-1cfcb612b799,Grogu,collectible,15.88,2026-08-31 09:23:39
+18813fff-2a95-427a-9705-e9c07435ac3b,Coca-Cola – Aluminum Bottle,collectible,125,2026-08-31 09:23:39
+eda67c9c-4bb1-4b8d-9d6c-d2ce337cf711,Epiko Logo - Blue Metallic,collectible,690,2026-08-31 09:23:39
+fc9edd6c-11d2-4aba-86e4-dfc47934023c,Diablo - Orange,collectible,30,2026-08-31 09:23:39
+a494f556-ebcd-4252-b4ec-ccd52c331c5c,Mickey,collectible,14.8,2026-08-31 09:23:39
+1a4e5dfb-afe2-4663-9b87-4dc3481d251a,Minnie,collectible,13.9,2026-08-31 09:23:39
+05bfaa01-9847-43e5-82ee-8c7999c26aa7,IG-11 - Protector,collectible,9.99,2026-08-31 09:23:39
+6d17c72e-5783-4c86-afd3-95850d625ad7,RUNNING MON ver. VEVE JACKET,collectible,60,2026-08-31 09:23:39
+7051dd0b-67f0-4ffe-a81b-6a397a7a496c,T-47 Airspeeder - Red,collectible,5.4,2026-08-31 09:23:39
+fdf192f7-c406-41db-86c4-fcf5c8451b71,Ant-Man,collectible,4.5,2026-08-31 09:23:39
+fccfc777-cc16-4a36-b063-8258d6e69ffe,Boy,collectible,23,2026-08-31 09:23:39
+b08d08d6-7b80-4d13-acc4-816a97474a5c,Cassie,collectible,3.19,2026-08-31 09:23:39
+7d134a98-1a1f-4697-be81-6323e8049fde,The Ectoplasmic SnapperFeesh,collectible,30,2026-08-31 09:23:39
+02ab1567-e3b7-4862-bd09-4115bcfed9fc,Max,collectible,8,2026-08-31 09:23:39
+419fec31-c22c-4860-a896-6342e69f5c2e,Death Trooper Shoulder Pad,collectible,2.2,2026-08-31 09:23:39
+9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,4.99,2026-08-31 09:23:39
+90dc4c4d-7177-4fde-9bae-a42dc5ff7e5c,Foster,collectible,6,2026-08-31 09:23:39
+ec00071b-05f6-4fbd-9b35-cbcbfb88c996,Mr. V,collectible,5,2026-08-31 09:23:39
+7a94e5de-0de3-492f-a00e-af761e3323e3,Mr. Epiko,collectible,4.99,2026-08-31 09:23:39
+2bcdb600-76bf-4816-b44a-d298beb6417f,Flower’s Base,collectible,2.89,2026-08-31 09:23:39
+df4040f2-18a2-42d7-b67b-ede12c684102,BLAM!,collectible,2.24,2026-08-31 09:23:39
+d37184af-298d-4b47-ae13-819fb234b80d,Episode 12 - Arise,collectible,1.25,2026-08-31 09:23:39
