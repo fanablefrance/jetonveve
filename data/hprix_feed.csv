@@ -1,22 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-606b52d3-4562-4e3f-b217-e1b60efd6f7d,Chip n’ Dale,collectible,44.44,2026-08-24 18:49:37
-c6c4987d-df55-48bf-b727-655b73668c06,Red Skull,collectible,30,2026-08-24 18:49:37
-c3f8ef28-201b-4e53-a0e8-69dedc782de4,Blue the Leader,collectible,16,2026-08-24 18:49:37
-a0c50208-f32c-4e7e-9664-c28555a9f523,Yoda,collectible,49.75,2026-08-24 18:49:37
-756eaebb-f684-4274-9ab1-63e0844d88eb,Moon Knight 2,collectible,17.5,2026-08-24 18:49:37
-66e806df-9fef-4e2b-90b0-4c0ef4bb6974,Magneto Venomized,collectible,33,2026-08-24 18:49:37
-546d39b0-c7e7-4bef-b2ba-8bca695397a0,Nightcrawler,collectible,15,2026-08-24 18:49:37
-e4efce12-66ce-43f3-9507-6bf2545cf0a8,Year of the Rat,collectible,6.99,2026-08-24 18:49:37
-94bcc472-9ecb-41f0-b8bf-f5b0b4e85e37,Gambit - Trenchcoat Tactician,collectible,8,2026-08-24 18:49:37
-3a8116de-e5e6-4eb8-bf71-db3b2c208bbb,Throg – Lightning Leap,collectible,17.5,2026-08-24 18:49:37
-98f7d0b0-8373-4037-a49f-2db41b24f168,Sokka,collectible,12,2026-08-24 18:49:37
-523793ef-58f0-42d6-9b9d-c094d71ad20f,Bular,collectible,12,2026-08-24 18:49:37
-24a2244f-2c0c-40f4-9294-b68fd45acdd7,Mr. DNA,collectible,10,2026-08-24 18:49:37
-49c0b910-3dea-4425-bc85-4b11618fc3f9,AMC Blue and Beta,collectible,2.99,2026-08-24 18:49:37
-af36d0b7-21fc-404d-a6ea-6b5676c9ba30,Hoodie,collectible,15,2026-08-24 18:49:37
-d4788b46-09e9-4528-bfd0-39a1a9ca087e,Cube,collectible,18,2026-08-24 18:49:37
-983c4be0-5acb-468d-b834-3e2869618011,Super,collectible,15,2026-08-24 18:49:37
-fccfc777-cc16-4a36-b063-8258d6e69ffe,Boy,collectible,15,2026-08-24 18:49:37
 2e87137d-51b3-41ee-93e1-80e0e799d6ba,Spider-Man – Hangin’ Out,collectible,35,2026-08-24 22:56:56
 4b3b200b-8469-43a2-aa68-114a4d9e0306,Spider-Man – Jump into Action,collectible,59,2026-08-24 22:56:56
 a226b4ca-a314-4665-8021-953622add643,Dave Pressler - Shut Up And Paint!,collectible,104.69,2026-08-24 22:56:56
@@ -3969,3 +3951,61 @@ ec460953-de8a-4649-8a68-666bb2f2168b,Weakest Hunter - Frame,collectible,1.35,202
 f108a1b1-62eb-473c-88d0-3d340255f4d7,Beach Prank,collectible,2.22,2026-08-31 17:41:31
 538d7c66-16e6-46ac-9678-f2a60c0772f0,Record #4 - I Am Nothing - Original,collectible,1.75,2026-08-31 17:41:31
 bc64c1a9-5efe-4b52-824d-27ffed8b13e4,Lightning,collectible,1.95,2026-08-31 17:41:31
+c3df7496-e8e7-4507-b80a-5c2b5d996645,#100 Todd McFarlane Batman,collectible,464,2026-08-31 19:44:58
+df101af2-42fe-4af4-bc51-f8826a6022aa,I Have You In My Sights,collectible,33,2026-08-31 19:44:58
+2789bea1-b535-4f44-a21e-0b8f003e9038,Ride the Lightning Board v2,collectible,666,2026-08-31 19:44:58
+3c2149c7-0415-47f9-b5e8-c6f6d473951a,The Rise of Ultraman #1 - Skottie Young,collectible,25,2026-08-31 19:44:58
+0af7304b-acef-4994-86cf-dfb6d2858822,Doodle Dog,collectible,399,2026-08-31 19:44:58
+ab37308f-a1f8-4c67-8664-2ed76b13f914,The Thing,collectible,3.52,2026-08-31 19:44:58
+c58a5507-3f12-47ea-95c8-2f7974ba3b0b,350 GT - Rosso,collectible,65,2026-08-31 19:44:58
+2ba85fcd-a54f-4b0a-8d9c-922cdd7bc059,JENNIE Pink Venom 1,collectible,250,2026-08-31 19:44:58
+66b61c70-1953-48c0-9557-281671cd3d29,Coca-Cola Creations Footprint,collectible,6.9,2026-08-31 19:44:58
+0c733e42-6f3a-4411-a1df-e6795a3ae291,Ursula: I Get What I Want,collectible,3.99,2026-08-31 19:44:58
+8d6e31ef-0c5e-401a-a297-9e2db711cabf,VeVe Search Party - Lincoln Design Co.,collectible,69,2026-08-31 19:44:58
+b4dab570-ab46-4f42-bd42-3a8d3737dbcd,Franken Fat,collectible,14.99,2026-08-31 19:44:58
+08ff2277-5ae8-428c-80c1-4cb8df9d6622,Velkhana - Animated,collectible,28,2026-08-31 19:44:58
+62fc1db4-c7bc-491f-b158-a5258448b10a,Doodle Pencil,collectible,70,2026-08-31 19:44:58
+f67ba0be-e897-46af-a0c4-07ba0103977f,Janie - Blue Metallic,collectible,890,2026-08-31 19:44:58
+6a2b62f4-4d20-40e5-8676-703921ccf597,Star Wars: Episode VI Return of the Jedi - The Battle of Endor,collectible,27.11,2026-08-31 19:44:58
+8d14679c-ef72-4a0d-ab39-617170e2e2e5,Quaritch's Banshee,collectible,43,2026-08-31 19:44:58
+22434091-c9c0-4ed8-b2f5-d9b591efb60e,Foster - Blue Metallic,collectible,600,2026-08-31 19:44:58
+0c6af189-3d90-4fdd-b28b-a60c8d42ec7b,Rushing Toby,collectible,3.35,2026-08-31 19:44:58
+f53a28ee-991b-4401-ab56-c434c96c9453,Chun-Li,collectible,34,2026-08-31 19:44:58
+68649d9c-b610-4ac0-a07a-f14a1fca6585,Raphael - Classic,collectible,7.77,2026-08-31 19:44:58
+016edb7e-a1bb-4e5a-b3bc-b3d5514f8f01,Rock N Roll Edition,collectible,5.9,2026-08-31 19:44:58
+5af9aa16-1052-4a45-8794-0b4f25bd81aa,Lucky,collectible,180,2026-08-31 19:44:58
+3ecd1c9c-dd05-4e9e-80b9-7b8574a095bb,Mickey & Friends Logo,collectible,10.5,2026-08-31 19:44:58
+7598d35a-beb1-432d-bef6-a204eb526d44,Fix-It Felix,collectible,9.99,2026-08-31 19:44:58
+5a629d81-f499-4da6-bff6-419f1c27e921,Karina,collectible,3.97,2026-08-31 19:44:58
+7b01a6a0-fae5-4700-8632-8131c7b2c839,Donald,collectible,29.87,2026-08-31 19:44:58
+a0a401e5-86ce-4522-80f5-f342bb554582,Peter Quill,collectible,4,2026-08-31 19:44:58
+9cbc1801-d809-4146-9a8f-35281ed59d74,1841 Penny Red CH-DI,collectible,4.28,2026-08-31 19:44:58
+3f1d93f5-0c2c-4709-a69d-98cc20d77747,Scott Tolleson - 20 Yr. Anniversary Vincent,collectible,9.99,2026-08-31 19:44:58
+fff6c15f-39e2-480a-aa90-db92b96b7797,Spider-Man - NYCC,collectible,11,2026-08-31 19:44:58
+a59d9661-2544-46d1-841c-b773f0330c94,Sarah Sanderson,collectible,12,2026-08-31 19:44:58
+23855e1f-f678-4831-8e58-ecfd53c4fb53,Cruz,collectible,10,2026-08-31 19:44:58
+c531cc49-cda0-4657-9f03-b1a156c1acfa,FOREST LORD - Tristan Eaton,collectible,30,2026-08-31 19:44:58
+637f88b9-2ccf-45e1-a3aa-abc13ff13cf8,Seymour Evil Monkey - Original,collectible,11,2026-08-31 19:44:58
+f4bc0c5c-c12e-41c9-8062-f33011a17ef8,Light Stick,collectible,33,2026-08-31 19:44:58
+e3d0b938-9e56-4484-bbfb-b59bab629950,Clæmon - Allison Bamcat,collectible,14.63,2026-08-31 19:44:58
+29e16f1c-8bc5-47cb-8b2e-ab133d6dace0,Cereal Chiller,collectible,4.4,2026-08-31 19:44:58
+fccfc777-cc16-4a36-b063-8258d6e69ffe,Boy,collectible,19,2026-08-31 19:44:58
+d4788b46-09e9-4528-bfd0-39a1a9ca087e,Cube,collectible,18,2026-08-31 19:44:58
+abfe3678-583d-4bc4-920c-a14f59e3ba02,Nightshade Cheshire,collectible,10.99,2026-08-31 19:44:58
+3d1d07b2-d3dd-48f4-8998-8a964d414208,Invisible Woman - Action,collectible,14,2026-08-31 19:44:58
+0f8752da-6035-4717-884b-84dc10995f4f,Octo-Cart,collectible,9.23,2026-08-31 19:44:58
+d9c90e56-3022-460f-a6a9-ad3356c5668e,Creepshow Graveyard,collectible,25,2026-08-31 19:44:58
+02ab1567-e3b7-4862-bd09-4115bcfed9fc,Max,collectible,8,2026-08-31 19:44:58
+983c4be0-5acb-468d-b834-3e2869618011,Super,collectible,13,2026-08-31 19:44:58
+9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,4.99,2026-08-31 19:44:58
+f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,4.9,2026-08-31 19:44:58
+419fec31-c22c-4860-a896-6342e69f5c2e,Death Trooper Shoulder Pad,collectible,2.1,2026-08-31 19:44:58
+cb2f921b-2efd-4dd7-a016-16662e692656,Record #8 - Duck Luck - Platinum,collectible,23.9,2026-08-31 19:44:58
+8695474c-fcaf-4a64-a9b1-112ac0d05519,Tan Horse Ver.,collectible,14,2026-08-31 19:44:58
+0b5e951b-09bd-4b29-9db9-d7ca4814d92c,Janie,collectible,5.24,2026-08-31 19:44:58
+ec00071b-05f6-4fbd-9b35-cbcbfb88c996,Mr. V,collectible,4.9,2026-08-31 19:44:58
+b150dbe8-cbd5-4efe-906d-ae32259f082d,Cannon,collectible,4.48,2026-08-31 19:44:58
+7a94e5de-0de3-492f-a00e-af761e3323e3,Mr. Epiko,collectible,4.49,2026-08-31 19:44:58
+04c1b81f-a6c9-4c57-be41-5f25001cfe44,Epiko Logo - Original,collectible,4,2026-08-31 19:44:58
+375e383d-9421-43dc-a1de-19703274118f,Snow - Dark,collectible,39.95,2026-08-31 19:44:58
+dfe57b87-b523-412b-89db-1edd7861f2a7,Don’t Use Me as a Prop! - Special Edition,collectible,1500,2026-08-31 19:44:58
