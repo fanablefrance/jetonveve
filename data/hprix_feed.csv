@@ -1,30 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-ea0d07e7-6beb-4178-af18-8673c66d074f,BMO,collectible,40,2026-08-27 01:35:16
-aadb24d5-07a5-4630-a937-60af8a8ef08e,Edo,collectible,60,2026-08-27 01:35:16
-d605b979-df6b-43fb-a3be-9103dbd33baa,Addams Family Portrait,collectible,122,2026-08-27 01:35:16
-63d685af-c084-48fa-955c-271b0fe8b6e7,Star Wars Episode V: The Empire Strikes Back,collectible,9.75,2026-08-27 01:35:16
-910546f2-36d4-4d76-b1f6-221585a894a9,Sebulba’s Podracer,collectible,55,2026-08-27 01:35:16
-d920d7d1-8fb4-4f36-b291-e85b09ecebf6,Amazing Nighttime Spectacular,collectible,66,2026-08-27 01:35:16
-3a00cc91-e39f-4040-9a06-17dc99b376b3,Single 2 1/2d 'Lake Wakitipu' gummed stamp,collectible,195,2026-08-27 01:35:16
-17e0ad50-e443-46f9-9016-0f79c5753a7a,Kaiju Tokigold,collectible,83.99,2026-08-27 01:35:16
-1e30f14b-8d53-451c-a1e4-24ffdc99f44c,Necronomicon (Book of the Dead),collectible,21,2026-08-27 01:35:16
-684d93e2-0ecf-47a5-a2c5-1c7dd0b8d4dd,Spider-Man 2099 - Beyond Destiny,collectible,15.11,2026-08-27 01:35:16
-e3d0b938-9e56-4484-bbfb-b59bab629950,Clæmon - Allison Bamcat,collectible,38,2026-08-27 01:35:16
-b11c1a84-a154-4340-91a7-bfb6a7eb54cf,Marvel Iron Man 18” – Gold,collectible,55,2026-08-27 01:35:16
-f4116c72-c35b-471f-a04f-569b2489b046,R1-G4 Droid,collectible,99,2026-08-27 01:35:16
-00b4fa44-9f8e-4e31-b6d9-649b2856c099,Betty Boop - RockNRoll,collectible,20,2026-08-27 01:35:16
-043ed720-aa2c-49fa-8dd2-9607de31a386,Ken Story,collectible,44.99,2026-08-27 01:35:16
-c5d840e8-6f79-4717-a34c-7af19d3b89ba,Totem Pole Church,collectible,19,2026-08-27 01:35:16
-582a6663-a706-4bc9-9078-b594acc896a8,Gouki Nostalgic,collectible,43.99,2026-08-27 01:35:16
-92635283-99b4-4597-ba69-01e39ccba334,Master Splinter - Father Figure,collectible,4.1,2026-08-27 01:35:16
-b37f3b91-b0e0-4d8b-8c76-3be08ee852d1,Nothing But Net Rabbid,collectible,23.76,2026-08-27 01:35:16
-868fe1f8-cc4a-421a-877c-198bd0262274,Darth Vader Samurai - Crimson Descent,collectible,11.23,2026-08-27 01:35:16
-4b4323d3-9f00-48c6-a7c7-3bd1927b9bdb,Headspace Black Bear - Luke Chueh x Munkyking,collectible,5.14,2026-08-27 01:35:16
-97eaad27-9a3e-4b8a-a7ff-96a2789ce00b,The Awakened - Frame,collectible,14.75,2026-08-27 01:35:16
-af36d0b7-21fc-404d-a6ea-6b5676c9ba30,Hoodie,collectible,17.19,2026-08-27 01:35:16
-7f37eb78-0787-446f-a757-b48e4b97dc40,Retro Bobo,collectible,7.99,2026-08-27 01:35:16
-1915a00c-506e-4cd7-a346-948898bb22c4,Sun,collectible,17,2026-08-27 01:35:16
-bc64c1a9-5efe-4b52-824d-27ffed8b13e4,Lightning,collectible,1.9,2026-08-27 01:35:16
 e6e5683f-5b64-4842-8f74-912a0fc919ba,Homer & Bart,collectible,63,2026-08-27 02:38:11
 66bf871d-a8d4-474e-a0f2-b1ceb28c7b94,Millennium Falcon,collectible,95.99,2026-08-27 02:38:11
 19c55785-624d-4d2f-95b0-c4a0b0c42f28,Elektra – Ultimate Animated,collectible,66,2026-08-27 02:38:11
@@ -4249,3 +4223,54 @@ c5f00b9d-f642-4f6d-b186-4b3c21dc66a1,Year of the Snake Medallion,collectible,44,
 b5ee952e-4674-41a1-a985-17664336e905,"Good Food, Good Fortune",collectible,2.4,2026-09-03 00:41:23
 49308035-554f-46ff-9ed5-21436bfae647,Ms. Lion,collectible,25,2026-09-03 00:41:23
 6034d020-5c76-46b5-aa1e-56011181936e,Graffi ver. Red,collectible,1.06,2026-09-03 00:41:23
+95b86201-ed47-471f-ada2-4e053041379b,Partners Statue,collectible,1799,2026-09-03 01:45:06
+25d8132e-95d9-4bb2-a355-6406bd485b42,VeVe Partner Logo,collectible,3333,2026-09-03 01:45:06
+cd22d5da-11d3-4dd9-b441-3656340d3948,The King of Cameos - Gold & Silver Edition,collectible,120,2026-09-03 01:45:06
+b33424b2-ea2b-45c0-9f5b-05748c064554,Spider-Man: Miles Morales - Hoodie Season,collectible,350,2026-09-03 01:45:06
+77e624d4-68c7-418b-962c-603b4f7797e6,Edo Imperial Royal Guard - Lunging Press,collectible,9999,2026-09-03 01:45:06
+28669aff-cb86-421e-a2c7-1cc4f6bd4e89,Sentinel - Purple,collectible,2000,2026-09-03 01:45:06
+5806d270-96fc-4b54-a107-de5318e69770,Flower Bomber (Patina Bronze Edition),collectible,1900,2026-09-03 01:45:06
+eaff1411-4a8b-40b7-9e26-5d45cd8e409d,24K D.J.,collectible,800,2026-09-03 01:45:06
+bb17655f-b0d9-408a-8fd8-f30368943bc1,CHOICES (Underbrush),collectible,1050,2026-09-03 01:45:06
+733a17a8-14be-4e49-93b7-02e22c7374bd,Superman vs. The Flash,collectible,15.99,2026-09-03 01:45:06
+a0c50208-f32c-4e7e-9664-c28555a9f523,Yoda,collectible,65,2026-09-03 01:45:06
+3a867661-d468-4559-884f-777a86ec8eda,Pluto,collectible,18,2026-09-03 01:45:06
+7f046b6a-22f0-43c7-901c-1544c39661f9,Lady Rainicorn,collectible,61.99,2026-09-03 01:45:06
+41246555-75f5-4901-a073-96c151dc504d,Edo Stormtrooper - Drawn and Ready,collectible,2000,2026-09-03 01:45:06
+05df9412-ca87-4492-8454-81f73a88c171,MOTOMICHI - Eyes,collectible,14.99,2026-09-03 01:45:06
+a5fcf837-0263-44f1-bf85-69453bba219f,Super Armor Hiro,collectible,36,2026-09-03 01:45:06
+9f061b04-5b7c-4f88-bf20-e4ce6b7783b6,The Living Daylights - UK quad,collectible,75,2026-09-03 01:45:06
+2db18c43-ffa3-4823-93fc-209e7eb77d77,Diamonds Are Forever - Japanese One Sheet Poster,collectible,32,2026-09-03 01:45:06
+a2d990aa-9d9f-4eb3-89b9-398dabe7fa7c,Tinker Bell Pencil,collectible,15.9,2026-09-03 01:45:06
+fc78ca94-4db6-40bb-841c-92f516444be6,Aang - Spirit World,collectible,250,2026-09-03 01:45:06
+7aefc64f-2a8f-4412-800d-25f1e3699c90,Aang - Airbender,collectible,19.99,2026-09-03 01:45:06
+38106832-449a-4c05-9ad6-4cae7177a9c9,VeVe Logo White Blue,collectible,29.99,2026-09-03 01:45:06
+785c098f-b182-4056-a5cf-cc7ca15237ab,Snow Globes - Block of Four,collectible,99.99,2026-09-03 01:45:06
+025a320d-8bce-4fad-9cb2-4b41d6a2f727,Sung Jinwoo - Weakest Hunter,collectible,14.95,2026-09-03 01:45:06
+d94de475-51bb-4c41-8adf-f259e1cd5fdb,Emcee Claws,collectible,234.56,2026-09-03 01:45:06
+f1efa276-6ab9-4b33-88b0-a49114e5cd04,M.Bison - SF 30th Anniversary,collectible,92.49,2026-09-03 01:45:06
+63feb830-6cf1-4544-b39b-a74ef50bac8d,"Surprise, Minnie!",collectible,20,2026-09-03 01:45:06
+1a4e5dfb-afe2-4663-9b87-4dc3481d251a,Minnie,collectible,11.99,2026-09-03 01:45:06
+94bcc472-9ecb-41f0-b8bf-f5b0b4e85e37,Gambit - Trenchcoat Tactician,collectible,5,2026-09-03 01:45:06
+4f38dd75-8591-485e-bab8-a8fbd3ffdd5a,Nedry’s Computer,collectible,15,2026-09-03 01:45:06
+b425e7fc-da87-429b-9799-430993490103,The Aquatic Double Can,collectible,234.56,2026-09-03 01:45:06
+aa3fbafe-4671-4b33-86dc-7e0556e33abf,Skating Rabbid,collectible,24,2026-09-03 01:45:06
+3ecd1c9c-dd05-4e9e-80b9-7b8574a095bb,Mickey & Friends Logo,collectible,9.99,2026-09-03 01:45:06
+262ca5c3-d806-421d-aa0a-05207e5ea59c,Donatello - IncogNinja,collectible,33,2026-09-03 01:45:06
+ff19b015-858f-44cb-89eb-f29eb8e40443,Year of the Dragon Medallion,collectible,23,2026-09-03 01:45:06
+ff4f925c-6495-4ec3-b8fc-c08aaff142a3,Single 2 1/2d 'Lake Wakatipu' gummed stamp,collectible,25,2026-09-03 01:45:06
+868fe1f8-cc4a-421a-877c-198bd0262274,Darth Vader Samurai - Crimson Descent,collectible,19,2026-09-03 01:45:06
+e5e0de12-2189-4143-a87d-162190fbf553,Max - Blue Metallic,collectible,333,2026-09-03 01:45:06
+ec04c6de-1ef4-436b-bb1a-8a9109a95bb6,Colossus - Phoenix,collectible,6.99,2026-09-03 01:45:06
+49308035-554f-46ff-9ed5-21436bfae647,Ms. Lion,collectible,125,2026-09-03 01:45:06
+22434091-c9c0-4ed8-b2f5-d9b591efb60e,Foster - Blue Metallic,collectible,300,2026-09-03 01:45:06
+c5f00b9d-f642-4f6d-b186-4b3c21dc66a1,Year of the Snake Medallion,collectible,50,2026-09-03 01:45:06
+7ed317cf-5b82-47fa-94ca-69d85591d1e8,Hapjeong Dungeon Key,collectible,11.99,2026-09-03 01:45:06
+33f16c99-a5e4-4268-98e1-ce6e3ea05dad,Elf Labbit,collectible,3,2026-09-03 01:45:06
+48c3da1f-c783-45f5-af97-8dbdcdeb74ec,Thought Bubble,collectible,28,2026-09-03 01:45:06
+7e4821ed-7ad2-4a08-9dd2-2d5c04261446,ROSÉ,collectible,15,2026-09-03 01:45:06
+4d5e1d1b-a183-4efc-84bf-1e469d588395,Lad 7,collectible,65,2026-09-03 01:45:06
+36530d3b-a434-4fd4-b548-7ea92aed808a,BLACKPINK - Behind the Beat,collectible,55,2026-09-03 01:45:06
+84964212-3fb9-4248-a0e5-012e5a104609,Snow Globes - Christmas tree,collectible,4.99,2026-09-03 01:45:06
+b5ee952e-4674-41a1-a985-17664336e905,"Good Food, Good Fortune",collectible,2.9,2026-09-03 01:45:06
+6034d020-5c76-46b5-aa1e-56011181936e,Graffi ver. Red,collectible,1,2026-09-03 01:45:06
