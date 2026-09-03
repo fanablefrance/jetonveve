@@ -1,22 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-5cd5b20e-02da-4be2-8060-b7d03b2383d5,#01 Eduardo Risso Batman,collectible,1399.09,2026-08-27 12:05:04
-7ae4653c-f3d9-44ed-85ee-8dd338ba0e3a,Lamborghini Countach LP 400 - Nero Tenebre,collectible,4550,2026-08-27 12:05:04
-1a408aac-5fa7-4995-8244-c45fc1026f89,Marceline,collectible,200,2026-08-27 12:05:04
-55876156-f6d4-4ca8-bb50-fd6c1f5f0fb8,U.S.S. Enterprise-D (1:1),collectible,49.99,2026-08-27 12:05:04
-3c2149c7-0415-47f9-b5e8-c6f6d473951a,The Rise of Ultraman #1 - Skottie Young,collectible,19.99,2026-08-27 12:05:04
-b6d21cbe-d479-4daf-b6a6-fcb3188ec9fc,Bellina,collectible,39.99,2026-08-27 12:05:04
-875f46f0-0430-4bf0-855c-e632d869f32a,Death Trooper - SE-14r Blaster Elite,collectible,195,2026-08-27 12:05:04
-3a24545f-3e4d-45d7-916f-817a50c7f1b2,No Time To Die  - Triumph Motorcycle,collectible,10,2026-08-27 12:05:04
-b3848db8-0178-4ea6-96e5-542c428d28a3,Zinogre - Animated,collectible,60,2026-08-27 12:05:04
-7bd8b0f4-586b-4874-acc6-e45066ac3068,Crimson Stormtrooper - Leading the Charge,collectible,290,2026-08-27 12:05:04
-4e3995e4-db33-43c6-8198-7bfbeeda6935,VeVe Level 100 Logo v2,collectible,525,2026-08-27 12:05:04
-1e6cc040-882f-4288-8b0d-0ad4226be991,The Pink Panther - Animated,collectible,9,2026-08-27 12:05:04
-99dad9ce-573b-4ba5-983a-460cde874f19,Brave Berry,collectible,28.99,2026-08-27 12:05:04
-f89af751-7576-4091-a27c-9b7bb767096b,Mysterio - Master of Illusions,collectible,12.5,2026-08-27 12:05:04
-de8319d8-1023-4e43-abac-e0acec85cca9,1841 Penny Red AA-EF,collectible,8,2026-08-27 12:05:04
-92aa9444-e4f7-4961-b815-eef04b1313a8,VeVe Christmas Tree - Gold,collectible,1.75,2026-08-27 12:05:04
-9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,6.95,2026-08-27 12:05:04
-5c6f67bf-80c4-4d04-9912-80c1aae0930e,1938 Benjamin Franklin,collectible,1.5,2026-08-27 12:05:04
 55876156-f6d4-4ca8-bb50-fd6c1f5f0fb8,U.S.S. Enterprise-D (1:1),collectible,62.8,2026-08-27 13:05:35
 1a408aac-5fa7-4995-8244-c45fc1026f89,Marceline,collectible,84.99,2026-08-27 13:05:35
 875f46f0-0430-4bf0-855c-e632d869f32a,Death Trooper - SE-14r Blaster Elite,collectible,250,2026-08-27 13:05:35
@@ -4184,3 +4166,32 @@ d72e96d5-43e1-454e-b447-05b2c67b30d4,Felix – Bright Within,collectible,5.27,20
 38bc4ba4-ed87-425a-8fef-2e5cd436a0a5,ILLAZILLAZ (Metal Element) - TNES,collectible,4,2026-09-03 11:03:34
 0b5e951b-09bd-4b29-9db9-d7ca4814d92c,Janie,collectible,4,2026-09-03 11:03:34
 92b14dcc-2e83-4d5e-8cfa-ac7fb5b73f96,Year of the Horse,collectible,1.05,2026-09-03 11:03:34
+2d319882-cb74-4383-8d91-31ff8fca91c4,Avengers Logo,collectible,49,2026-09-03 12:07:20
+2574a367-7ea1-4f57-be52-f226c2ed6e70,#89 Batman,collectible,15.95,2026-09-03 12:07:20
+1922070e-f955-48ff-b79d-99eb9181759d,Ultraman,collectible,14,2026-09-03 12:07:20
+462c5fbb-fc0d-4aec-b7e8-856dea8b4963,Kylo Ren,collectible,11,2026-09-03 12:07:20
+fe5be1bb-4c44-4ca3-985a-0d5a2e2c4a30,Dragon Girl - Silver / Black,collectible,26.5,2026-09-03 12:07:20
+d9ac86dd-bb8b-4211-817a-db2a77324a75,Evil Queen: Wickedly Transformed,collectible,10.95,2026-09-03 12:07:20
+b7ec2f8f-dc08-4168-9b96-a22812dfc400,Casino Royale - UK Quad,collectible,40,2026-09-03 12:07:20
+b5c014a8-3ab8-41a5-95e9-ead8e63896d1,Die Another Day - UK Quad,collectible,40,2026-09-03 12:07:20
+823669db-6bde-4c3d-8709-0469d7fe8da3,Donatello - Dojo Discipline,collectible,35,2026-09-03 12:07:20
+eda50111-815e-42c0-8748-1f34b35c5c36,Emma Frost - Hellfire Gala #1 (2022),collectible,14.99,2026-09-03 12:07:20
+7ed317cf-5b82-47fa-94ca-69d85591d1e8,Hapjeong Dungeon Key,collectible,15.99,2026-09-03 12:07:20
+8cd9530d-6ea9-436c-bdc0-ee73e43c0abe,Magik - Phoenix,collectible,7.95,2026-09-03 12:07:20
+b2fe3dd7-19c3-4898-8cc6-358e27495a0c,BLACKPINK NEON LIGHT - JENNIE,collectible,125,2026-09-03 12:07:20
+1fdd304a-5e0d-4ca6-9972-ed4b4da02efd,ODDY ver. GREY,collectible,9.98,2026-09-03 12:07:20
+481ae8fb-9032-420c-b3a9-5399d887e086,LIN Droid,collectible,9.95,2026-09-03 12:07:20
+f6c0f08f-a0e9-455b-9008-13dc70abcfba,Vana,collectible,21.99,2026-09-03 12:07:20
+acc96b30-b800-4537-b5ca-56586fc091ef,Single 9d 'Pink Terraces' gummed stamp,collectible,9.88,2026-09-03 12:07:20
+65907fba-1f10-463d-8c9f-c37a8d33a50c,Headspace Monkey - Luke Chueh x Munkyking,collectible,9.99,2026-09-03 12:07:20
+499c8aca-e5c2-45f8-a330-2f773ce0d67e,BLACKPINK NEON LIGHT - ROSÉ,collectible,75,2026-09-03 12:07:20
+1f673f58-b8cb-496c-b158-5cee3630ccc2,2X-7KPR,collectible,16,2026-09-03 12:07:20
+af36d0b7-21fc-404d-a6ea-6b5676c9ba30,Hoodie,collectible,14.8,2026-09-03 12:07:20
+d4788b46-09e9-4528-bfd0-39a1a9ca087e,Cube,collectible,12.75,2026-09-03 12:07:20
+983c4be0-5acb-468d-b834-3e2869618011,Super,collectible,12.75,2026-09-03 12:07:20
+3cd38803-98a6-4b5c-85fa-a8a3353c0b7f,Single 1/2d 'Mount Cook' gummed stamp,collectible,1.74,2026-09-03 12:07:20
+d72e96d5-43e1-454e-b447-05b2c67b30d4,Felix – Bright Within,collectible,5,2026-09-03 12:07:20
+d37184af-298d-4b47-ae13-819fb234b80d,Episode 12 - Arise,collectible,1.79,2026-09-03 12:07:20
+02ab1567-e3b7-4862-bd09-4115bcfed9fc,Max,collectible,4.5,2026-09-03 12:07:20
+7a94e5de-0de3-492f-a00e-af761e3323e3,Mr. Epiko,collectible,3.5,2026-09-03 12:07:20
+6034d020-5c76-46b5-aa1e-56011181936e,Graffi ver. Red,collectible,1.23,2026-09-03 12:07:20
