@@ -1,18 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-05df9412-ca87-4492-8454-81f73a88c171,MOTOMICHI - Eyes,collectible,11.88,2026-08-28 08:45:27
-d4af21d2-86cd-430c-877b-501b6cbc3cff,Darth Vader Bust - Original,collectible,33.25,2026-08-28 08:45:27
-19861993-902b-4a5a-a7d7-bd90a8cc5849,Honey Butt the Obese,collectible,29.49,2026-08-28 08:45:27
-a6ff5d76-94cf-4f57-9045-a2538dbf41b3,Sung Jinwoo - E-Rank Hunter,collectible,1070,2026-08-28 08:45:27
-768e3b9d-2b74-420e-be62-2a375fbd911f,Crowd Favorite,collectible,6.99,2026-08-28 08:45:27
-7663a3d1-fada-4aa3-bcce-b06ddca43604,Vultura Macabra,collectible,20,2026-08-28 08:45:27
-0e0313e5-e1bb-43be-bf73-e45bf130d86b,Two Ton Sam,collectible,9.88,2026-08-28 08:45:27
-4ee198eb-1dd7-435c-9967-63297f2eb4e0,Count Calorie,collectible,21,2026-08-28 08:45:27
-e80b2c89-2182-410a-8fea-eb8c330599f2,Jubilee - Dancefloor Detonator,collectible,129.99,2026-08-28 08:45:27
-ec04c6de-1ef4-436b-bb1a-8a9109a95bb6,Colossus - Phoenix,collectible,13,2026-08-28 08:45:27
-33f16c99-a5e4-4268-98e1-ce6e3ea05dad,Elf Labbit,collectible,6.5,2026-08-28 08:45:27
-6bd27e97-4c19-476e-9f48-1778d135e4ab,Camille Rose Garcia - Vultura Macabra (Black Jack),collectible,9.21,2026-08-28 08:45:27
-336b962c-792c-487d-bf8b-f8868302f8d6,MYO - Blue,collectible,44,2026-08-28 08:45:27
-484dde9a-1cf6-441d-afd8-896155686657,AT-AT,collectible,11.99,2026-08-28 08:45:27
 30a9f14d-f5ef-4047-bf97-c2b047190f83,1:6 DeLorean Time Machine - Interactive,collectible,6.78,2026-08-28 09:47:23
 5806d270-96fc-4b54-a107-de5318e69770,Flower Bomber (Patina Bronze Edition),collectible,2999,2026-08-28 09:47:23
 a64c22fa-268e-4153-b31f-2b93d8c877eb,1:1 DeLorean Time Machine - Static,collectible,9.99,2026-08-28 09:47:23
@@ -3965,3 +3951,20 @@ ebb7de05-9267-43e8-a01d-0ab08ed05e29,Maserati Alfieri - Silver,collectible,15,20
 e1c2cc4c-9097-4aa1-b503-aa311b80f19f,Crush,collectible,13.9,2026-09-04 07:43:26
 1e033ca4-e213-4960-8862-78fc4ca41aeb,Potball BB,collectible,4.2,2026-09-04 07:43:26
 04c1b81f-a6c9-4c57-be41-5f25001cfe44,Epiko Logo - Original,collectible,4.2,2026-09-04 07:43:26
+3174caf1-2da6-4196-9e4a-8965fcdabc49,The Rise of Ultraman #1 - John Tyler Christopher,collectible,44.9,2026-09-04 08:46:59
+1a0b2842-23de-438d-8242-d11846483d6c,Beware the Dark Side,collectible,14,2026-09-04 08:46:59
+f8578333-9ab1-45d8-a856-895b8fc7637f,Spider-Man 2099 - Neon Future,collectible,777,2026-09-04 08:46:59
+84717424-94be-4da6-a2d8-54d291c64e66,Sung Jinwoo - The Awakened,collectible,110,2026-09-04 08:46:59
+51e601a8-e50b-4f2f-95a3-3b11ae49b4de,OG Devil Bunny - Gold,collectible,21,2026-09-04 08:46:59
+6423ffc0-d8e3-4f1c-94a1-7299ad991bf9,Cosmo,collectible,59,2026-09-04 08:46:59
+9d7c8721-adf8-454a-af4d-4217ba661766,Alligator Loki - Animated,collectible,12,2026-09-04 08:46:59
+67cbb002-bb92-4daa-865c-27cf5263f2d1,Beta - Attack Ready,collectible,6.5,2026-09-04 08:46:59
+f5dde82b-b929-4aa7-902b-32a88c353617,D&D Sewer Savvy,collectible,119,2026-09-04 08:46:59
+34be3430-9c6d-4d66-bd10-4fdde8d16392,Twilight Mothman,collectible,4.5,2026-09-04 08:46:59
+438829a3-1ddf-43ef-a849-d05292e7937f,Night Trooper - Marching,collectible,10,2026-09-04 08:46:59
+8564d30f-2411-4d71-8f53-330747e9326d,Night Trooper Exposed - Marching,collectible,10,2026-09-04 08:46:59
+d4ec084d-812b-4a3c-958f-d691f0060ff9,Master Splinter - Battle Ready,collectible,42.99,2026-09-04 08:46:59
+856227a4-716c-4b50-893c-d16a4fc93e33,Night Trooper Exposed - Unleashed,collectible,10,2026-09-04 08:46:59
+7dba3b40-2198-4e9a-92dc-4f4874c30e39,Night Trooper - Unleashed,collectible,10,2026-09-04 08:46:59
+55ba9c5c-a97e-4759-91b4-06c6aa97c08e,Night Trooper Exposed - Reawakened,collectible,10,2026-09-04 08:46:59
+b23059e4-7b10-4e83-a5a4-890bf1146ccc,Night Trooper - Reawakened,collectible,10,2026-09-04 08:46:59
