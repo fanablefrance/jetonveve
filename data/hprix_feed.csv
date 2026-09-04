@@ -1,38 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-900388bb-8847-4334-8d1a-508de81c4a4d,Superman,collectible,225,2026-08-28 15:01:34
-5cd5b20e-02da-4be2-8060-b7d03b2383d5,#01 Eduardo Risso Batman,collectible,1000,2026-08-28 15:01:34
-29df76ed-368e-4415-be9f-34e87b751d3d,I'll Take Those Odds,collectible,99.99,2026-08-28 15:01:34
-07c1d5c1-e0c4-4e6a-9ad7-553e9a854f5f,Flounder and Sebastian,collectible,20,2026-08-28 15:01:34
-b3d41370-81f9-40aa-8b5e-8b2b9f3ea2fb,Grade School Guernica 2022,collectible,27.75,2026-08-28 15:01:34
-ef4745e5-f59f-4dcb-a886-a9026517ff60,Jurassic Park Gates,collectible,37,2026-08-28 15:01:34
-bc961870-a3c9-40bc-a35d-46e4a5353c2c,Pirates of the Caribbean,collectible,25,2026-08-28 15:01:34
-c81ac9ff-1954-4ba5-8194-9b83ecdd3228,Sunflower Grin - Special Mission - Gold,collectible,8.8,2026-08-28 15:01:34
-66e806df-9fef-4e2b-90b0-4c0ef4bb6974,Magneto Venomized,collectible,19.5,2026-08-28 15:01:34
-3164f5e3-044d-477d-8022-0a99dead294d,Leonardo - Classic,collectible,12,2026-08-28 15:01:34
-b7ea3a29-17e1-47cb-a6ca-2ec419165e3c,“it’s a small world”,collectible,14.95,2026-08-28 15:01:34
-72b60c77-038d-4ced-bbad-e8c73d13cff1,Scott Lang/Ant-Man,collectible,6.99,2026-08-28 15:01:34
-d3773a79-cb8e-4071-a607-c3e5caae15b1,Christmas with the Super Heroes,collectible,29.99,2026-08-28 15:01:34
-fa9bd8ac-2e81-459b-85d9-7182df4d43a2,Women Support the War Effort,collectible,4.75,2026-08-28 15:01:34
-bbff0eb1-be5e-4ec8-9d83-2c0a4c3f1dbd,Makkari,collectible,2.74,2026-08-28 15:01:34
-68649d9c-b610-4ac0-a07a-f14a1fca6585,Raphael - Classic,collectible,7.77,2026-08-28 15:01:34
-efe5cbdd-b3ed-40e0-9a00-c0c654af5f8e,Goose,collectible,44,2026-08-28 15:01:34
-2dbdb7e3-6f49-4210-a050-a6b812e4caad,Aaron,collectible,3.34,2026-08-28 15:01:34
-4ef118b2-42e0-47b7-901c-3de06e5660be,The Haus of Dance feat. DJ Octo,collectible,79.99,2026-08-28 15:01:34
-c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,6.39,2026-08-28 15:01:34
-2201e5cc-a012-4b93-8a30-3b606e5167ef,Winter Soldier – Tactical Vigil,collectible,19.99,2026-08-28 15:01:34
-637f88b9-2ccf-45e1-a3aa-abc13ff13cf8,Seymour Evil Monkey - Original,collectible,13.5,2026-08-28 15:01:34
-db669ae6-e3bc-4f29-a31c-48572a97721e,Mercury Greaper - Sket One,collectible,18.99,2026-08-28 15:01:34
-fccfc777-cc16-4a36-b063-8258d6e69ffe,Boy,collectible,24.99,2026-08-28 15:01:34
-9e79842b-ab20-4f0e-8bca-01b4877aa45f,Views of Our Planets - Mercury,collectible,6.9,2026-08-28 15:01:34
-a86cc68d-be1a-49c8-a123-96c5959b7ca3,Sewer Manhole - Gold,collectible,94.99,2026-08-28 15:01:34
-983c4be0-5acb-468d-b834-3e2869618011,Super,collectible,17.99,2026-08-28 15:01:34
-fe25e470-e059-45a4-863d-d25a085b0dfe,MyCollectables,collectible,7.89,2026-08-28 15:01:34
-3780bad9-f648-46a8-966e-ddfd205f1b93,Matt Murdock - Nightly Defender,collectible,24.95,2026-08-28 15:01:34
-74ffff21-4447-4ce3-a62f-610747e8afdf,Snow Globes - Snowman,collectible,2.97,2026-08-28 15:01:34
-f216c114-f12c-4c32-a2af-0c8632206274,Single 2s 'Milford Sound' gummed stamp,collectible,2.75,2026-08-28 15:01:34
-3c89b9b1-b836-49c4-99f8-da6b7603e071,Eagle Eyes,collectible,5.5,2026-08-28 15:01:34
-0c0023fa-0f61-4b7e-9fe3-e6e38ee93f9d,Record #1 - Living In Delusionville - Original,collectible,2.97,2026-08-28 15:01:34
-c99e3fba-dfdd-4753-82f2-408f461e606c,BAM! - Gold,collectible,35,2026-08-28 15:01:34
 5cd5b20e-02da-4be2-8060-b7d03b2383d5,#01 Eduardo Risso Batman,collectible,1500,2026-08-28 16:03:45
 83e94f86-f495-4002-a3b1-1123fda8864e,Sleeping Beauty Castle,collectible,189,2026-08-28 16:03:45
 d238354f-b734-4a0a-b0b1-4a51bf6faba4,Storm – Ultimate Animated,collectible,152,2026-08-28 16:03:45
@@ -3978,3 +3944,63 @@ c60d426e-48ad-4e6b-b162-b6edd0e6e76d,Ebony,collectible,18.4,2026-09-04 13:53:31
 43bb7950-19b2-4687-b6da-de526c651fc1,Vincent Mascot,collectible,11,2026-09-04 13:53:31
 febc44f1-0b23-4c2d-951e-43cd51b034c5,Ernie Special Edition,collectible,30,2026-09-04 13:53:31
 df4040f2-18a2-42d7-b67b-ede12c684102,BLAM!,collectible,1.75,2026-09-04 13:53:31
+c3df7496-e8e7-4507-b80a-5c2b5d996645,#100 Todd McFarlane Batman,collectible,499,2026-09-04 14:55:47
+14331e28-1127-4b22-9d9b-002bb92ac957,Stan Lee Fine Art Collectible - Bill Sienkiewicz,collectible,750,2026-09-04 14:55:47
+0bfb1239-b03a-4084-bafe-770796eece82,Wolverine - Blue and Yellow suit,collectible,58.95,2026-09-04 14:55:47
+2cb3a529-07d0-4a7f-a911-2aa392d652c1,1:1 Ecto-1 Interactive,collectible,24,2026-09-04 14:55:47
+ad62bc36-b967-40cb-8b10-5dd30054dd4e,Russell,collectible,75,2026-09-04 14:55:47
+68b32df0-5f80-4e31-8a4d-d0d5e8b3c436,1:1 Glider - Animated,collectible,29.99,2026-09-04 14:55:47
+fa0b161c-5a8d-42ed-9baa-1848c7e1a7da,Marvel Logo,collectible,45,2026-09-04 14:55:47
+88cbd191-476f-4e7a-9413-f0b69715c35f,Scar,collectible,76,2026-09-04 14:55:47
+b7ea3a29-17e1-47cb-a6ca-2ec419165e3c,“it’s a small world”,collectible,27,2026-09-04 14:55:47
+587c3e21-87ed-465a-9e68-4e0afe30b8b1,ILLAZILLAZ (Wood Element) - TNES,collectible,116,2026-09-04 14:55:47
+91ae052f-7496-48f1-a96d-0ece0dca200d,Safin’s Mask,collectible,6.99,2026-09-04 14:55:47
+20b4a3eb-2580-403c-bbce-ec7805a90f89,Namor,collectible,41.5,2026-09-04 14:55:47
+3481427c-7ec6-4129-8adf-f241937581ce,ROSÉ Pink/Silver,collectible,154,2026-09-04 14:55:47
+083cd7a4-4f26-4c8a-983c-29dea38fad01,Man on a Mission,collectible,14.95,2026-09-04 14:55:47
+a87f709c-41e9-4b82-8627-60867a585b2e,Ice Cream Escape,collectible,17,2026-09-04 14:55:47
+aa07ce2d-aeff-4234-9eeb-78d70f92c429,Chun-Li Red,collectible,110,2026-09-04 14:55:47
+d2f4cb16-5993-4aeb-9016-7003bf41f0f0,Vanellope,collectible,27,2026-09-04 14:55:47
+842e1d51-02b9-4762-9c4d-12f95f0b12d2,Ken Blue,collectible,90,2026-09-04 14:55:47
+94bcc472-9ecb-41f0-b8bf-f5b0b4e85e37,Gambit - Trenchcoat Tactician,collectible,5,2026-09-04 14:55:47
+505e2fdc-930a-4141-a863-fe9638a47cae,Jean Grey - Uncanny,collectible,44,2026-09-04 14:55:47
+247ed551-4606-4497-bec5-9742019e8f95,Look to the Surface,collectible,99,2026-09-04 14:55:47
+d1f01da5-0084-4c75-9b81-509d2967f056,Dinglehopper,collectible,99,2026-09-04 14:55:47
+9abda8bd-3e74-4e88-aef9-2281f2b9899b,Gadgets and Gizmos Aplenty,collectible,99,2026-09-04 14:55:47
+de1c4dd3-2300-4b7a-905e-8cd2e109f748,Go Beyond the Surface,collectible,99,2026-09-04 14:55:47
+1426a5b0-2a68-4487-9cd5-ec118b3c323f,Twist,collectible,7.49,2026-09-04 14:55:47
+e6fe7bb8-ecf0-4dbe-a9d5-2f24451a0a16,"Laser Gun from Moonraker, 1979",collectible,16.89,2026-09-04 14:55:47
+14cf72b5-65ca-46c5-88a2-6f62e5799cbd,Kahalo ver. DeepSea,collectible,60,2026-09-04 14:55:47
+7051dd0b-67f0-4ffe-a81b-6a397a7a496c,T-47 Airspeeder - Red,collectible,5.4,2026-09-04 14:55:47
+1b9748f6-de35-4e16-b04e-10a303bc48ab,Walter The Teleporting Whale,collectible,22,2026-09-04 14:55:47
+c983ca1d-6b6d-4cd7-b0fc-e735d9584cf0,ILLAZILLAZ (Fire Element) - TNES,collectible,7.75,2026-09-04 14:55:47
+845f23d3-b1ff-4eef-b732-69f09db16030,Chip Off the 'Ol Block Mural,collectible,13,2026-09-04 14:55:47
+6d1fa821-b2bd-47cc-94c6-af85c41a9fb6,Edo Scout Trooper - Kunai Throw,collectible,18,2026-09-04 14:55:47
+e6df8654-5245-4b6d-83b0-f5f80f1a6f61,ILLAZILLAZ (Earth Element) - TNES,collectible,7,2026-09-04 14:55:47
+61fa958d-8683-41b5-8421-446732676d8e,Kahalo ver. Original,collectible,2.7,2026-09-04 14:55:47
+0f8752da-6035-4717-884b-84dc10995f4f,Octo-Cart,collectible,8.21,2026-09-04 14:55:47
+768e3b9d-2b74-420e-be62-2a375fbd911f,Crowd Favorite,collectible,26.99,2026-09-04 15:59:30
+a0c50208-f32c-4e7e-9664-c28555a9f523,Yoda,collectible,64.75,2026-09-04 15:59:30
+b94e5d49-35f0-4bdc-9e41-d5c484df5ae7,Catwoman,collectible,10.85,2026-09-04 15:59:30
+98370f9b-b3fe-4261-a4c1-4fdfed88e97b,Experiment 626,collectible,16.26,2026-09-04 15:59:30
+52c36b99-b76b-4073-bfb7-49628c0ada34,Star Wars Episode IV: A New Hope,collectible,11.99,2026-09-04 15:59:30
+88cbd191-476f-4e7a-9413-f0b69715c35f,Scar,collectible,75,2026-09-04 15:59:30
+a87f709c-41e9-4b82-8627-60867a585b2e,Ice Cream Escape,collectible,28,2026-09-04 15:59:30
+842e1d51-02b9-4762-9c4d-12f95f0b12d2,Ken Blue,collectible,154,2026-09-04 15:59:30
+40f0f126-d43a-42b5-b7f1-9401b8722678,Gallardo - Nero Noctis,collectible,49,2026-09-04 15:59:30
+2e71ad76-e3d9-48ea-97f9-35844a65a189,Stormbreaker - Avengers: Infinity War,collectible,50,2026-09-04 15:59:30
+aa07ce2d-aeff-4234-9eeb-78d70f92c429,Chun-Li Red,collectible,105,2026-09-04 15:59:30
+f26f89e6-0e34-44ce-b823-4aa9509e90d7,Mimban Trooper - Shooting,collectible,299,2026-09-04 15:59:30
+a7dacd8a-133e-4a8e-9fc5-0ff0ad51db88,KABOOM - Gold,collectible,399,2026-09-04 15:59:30
+c9cdb666-5e73-48ab-b7d9-83ec6005df9a,Madame Puffersworth,collectible,20,2026-09-04 15:59:30
+6d1fa821-b2bd-47cc-94c6-af85c41a9fb6,Edo Scout Trooper - Kunai Throw,collectible,19,2026-09-04 15:59:30
+a86cc68d-be1a-49c8-a123-96c5959b7ca3,Sewer Manhole - Gold,collectible,70,2026-09-04 15:59:30
+1915a00c-506e-4cd7-a346-948898bb22c4,Sun,collectible,19.99,2026-09-04 15:59:30
+61fa958d-8683-41b5-8421-446732676d8e,Kahalo ver. Original,collectible,2.69,2026-09-04 15:59:30
+90dc4c4d-7177-4fde-9bae-a42dc5ff7e5c,Foster,collectible,5.75,2026-09-04 15:59:30
+65828683-2a2f-4260-83eb-e86bbfbf11a8,Acrobatic Surfing - Gold,collectible,49,2026-09-04 15:59:30
+eef9e3ab-a2bd-44ef-b10f-bc58be804cbd,On the Way to Work,collectible,33,2026-09-04 15:59:30
+02ab1567-e3b7-4862-bd09-4115bcfed9fc,Max,collectible,4.5,2026-09-04 15:59:30
+0b5e951b-09bd-4b29-9db9-d7ca4814d92c,Janie,collectible,4,2026-09-04 15:59:30
+180c9444-99fb-41ec-b15c-f6b1f9be8054,RUNNING MON ver. NATURE,collectible,2.65,2026-09-04 15:59:30
+ec00071b-05f6-4fbd-9b35-cbcbfb88c996,Mr. V,collectible,3.79,2026-09-04 15:59:30
