@@ -1,17 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-95b86201-ed47-471f-ada2-4e053041379b,Partners Statue,collectible,1990,2026-08-28 03:35:22
-ffabb2e2-810d-4f83-91e7-3d6b80c0f194,Thor - Ultimate Animated,collectible,345,2026-08-28 03:35:22
-4b3b200b-8469-43a2-aa68-114a4d9e0306,Spider-Man – Jump into Action,collectible,64,2026-08-28 03:35:22
-3510f366-2964-49ae-b856-a29064e9c253,She-Hulk - Prosecutor Punch,collectible,220,2026-08-28 03:35:22
-8e561f57-6f16-49d2-b6f1-06fa9576feec,Gaze,collectible,455,2026-08-28 03:35:22
-c420311a-2c0c-434c-9c76-9d294e6cc304,Spider-Man 2099 - Temporal Vanguard,collectible,165,2026-08-28 03:35:22
-7cbd0451-4cbb-48b3-9745-2912daa54432,Bluegrass - Pane of 20,collectible,48,2026-08-28 03:35:22
-cbe61eb0-01cd-4e7b-a23d-4950bd6e1855,Riri Williams,collectible,9.99,2026-08-28 03:35:22
-b780b8d8-5345-43f6-9a53-f0e97d55f5aa,X-Men ‘97 Cyclops,collectible,49.99,2026-08-28 03:35:22
-d9142a24-fb93-439c-9c06-e09b52172052,Going to War,collectible,88,2026-08-28 03:35:22
-67d50437-4aee-4d0a-bdad-99505e237e2a,RUNNING MON ver. VIPER,collectible,94,2026-08-28 03:35:22
-295ead7b-e20b-45e6-88e1-f280e55faf07,FDP Tower,collectible,22,2026-08-28 03:35:22
-77857a70-edf2-4401-9798-93f63b941d60,Vulture,collectible,5,2026-08-28 03:35:22
 cd7e1761-e21f-4356-8c43-2de19a293220,Sam Wilson - On Guard,collectible,67,2026-08-28 04:38:50
 582171b4-047f-4d3e-8c41-987fe0f9f7f4,Learner Jake,collectible,530,2026-08-28 04:38:50
 ffabb2e2-810d-4f83-91e7-3d6b80c0f194,Thor - Ultimate Animated,collectible,269,2026-08-28 04:38:50
@@ -3977,3 +3964,71 @@ c01b071c-962a-48d4-9a6a-9a5e73d40abd,Obi-Wan Kenobi,collectible,28.5,2026-09-04 
 05df9412-ca87-4492-8454-81f73a88c171,MOTOMICHI - Eyes,collectible,14.99,2026-09-04 02:35:28
 97a369cd-f9db-45b3-aedb-87aaf31a64e4,Lightning McQueen Base,collectible,19.99,2026-09-04 02:35:28
 d629f709-d1b4-4e1d-803d-542a6b00ea9a,VeVe Heart Logo - Pink,collectible,2.5,2026-09-04 02:35:28
+101b85cc-e958-4fa6-a25a-0ab02a243a62,Rooftop Watch – After Hours,collectible,825,2026-09-04 03:39:02
+53057d99-ac36-4dd2-b28a-8aa22d9f0b51,Ben Reilly - Acrobatic Arachnid,collectible,32.8,2026-09-04 03:39:02
+bc50774d-b923-4a5c-8e5d-f25608e1e80e,Batgirl,collectible,10.5,2026-09-04 03:39:02
+a9ae0af3-8c76-45eb-9ef0-cd314ebc4e20,Carnage,collectible,125,2026-09-04 03:39:02
+b94e5d49-35f0-4bdc-9e41-d5c484df5ae7,Catwoman,collectible,10.9,2026-09-04 03:39:02
+276a47d1-4c6d-439b-b7e5-069af65a26f4,Moana,collectible,45,2026-09-04 03:39:02
+4ceba0e1-b6d4-48a0-a9ad-da51cb24f16c,"Focus, Please!",collectible,6,2026-09-04 03:39:02
+0952a89b-b570-4e2f-acf7-63f6174c6a92,Mandalorian,collectible,75,2026-09-04 03:39:02
+1619ed4e-6500-4dfe-82e2-eb3c96a7afcf,Ariel,collectible,37.31,2026-09-04 03:39:02
+98370f9b-b3fe-4261-a4c1-4fdfed88e97b,Experiment 626,collectible,10.99,2026-09-04 03:39:02
+92acb92c-a257-4dc0-abb2-3647b2a310a2,Lucky Rosso Gold,collectible,775,2026-09-04 03:39:02
+cff35b1c-56ae-4a5a-884d-ab06503836bd,Potball MOUSE,collectible,299,2026-09-04 03:39:02
+d40158c7-c456-4377-980a-9c5cc6f99bc1,Ryu,collectible,38,2026-09-04 03:39:02
+f9f80a96-fd46-4967-aef2-3571369639f7,Mr. Knight 2,collectible,11.5,2026-09-04 03:39:02
+e955dcc5-43e2-4cdd-a978-c8b66ddd6c96,Miura - Arancio Miura,collectible,27,2026-09-04 03:39:02
+28ed3953-b326-4d02-aa27-d472e939f213,One Above All,collectible,150,2026-09-04 03:39:02
+0c20eae8-dd0c-4786-ae2b-a4c9445783c0,Arendelle in Spring,collectible,84,2026-09-04 03:39:02
+dbed7372-f79d-4638-a180-1da2e36195f4,Alice,collectible,21.75,2026-09-04 03:39:02
+b3d41370-81f9-40aa-8b5e-8b2b9f3ea2fb,Grade School Guernica 2022,collectible,11,2026-09-04 03:39:02
+4f41756b-fc06-49d4-89de-27a6a27bed12,IG-11 - Assassin Droid,collectible,2500,2026-09-04 03:39:02
+d1a65019-8f2e-471e-94d0-c3de74c3b851,Weapon Racks – Gold Black,collectible,25,2026-09-04 03:39:02
+288da7a6-b671-410f-aeda-2dfbd355cc9c,VeVe Logo White Red,collectible,55,2026-09-04 03:39:02
+f7b41c83-6975-482c-ad53-1a3e86dea877,Pet Owner,collectible,59,2026-09-04 03:39:02
+796522a5-d6ce-4eb3-9a6c-1fd693373ec7,BLACKPINK Lightbox - Monochrome Mode,collectible,399,2026-09-04 03:39:02
+ad11c67d-5365-48b9-80e9-00c4a0e67f91,"""It Wasn't Me!""",collectible,12.02,2026-09-04 03:39:02
+e7c08aaa-eb11-4af2-8d7e-488bb3df87dc,Spring,collectible,50,2026-09-04 03:39:02
+86812664-f489-4251-936d-954b336c94d4,Coca-Cola Vending Machine (1980s),collectible,21.9,2026-09-04 03:39:02
+575b686d-20ac-40df-a304-3968fa7724ce,Sisters Three,collectible,99,2026-09-04 03:39:02
+a494f556-ebcd-4252-b4ec-ccd52c331c5c,Mickey,collectible,16.5,2026-09-04 03:39:02
+3164f5e3-044d-477d-8022-0a99dead294d,Leonardo - Classic,collectible,10.5,2026-09-04 03:39:02
+ca37ecf7-75c4-4362-9af8-dd03965d3e96,PLANET DEATH #0 Framed Art,collectible,325,2026-09-04 03:39:02
+5a147be5-be63-485a-bb37-931603a3238d,Lunar New Year: Rabbit Souvenir Sheet,collectible,30,2026-09-04 03:39:02
+25973a98-fafb-4fea-a9ec-be2921c082a2,BLACKPINK Lightbox - Midnight Mode,collectible,200,2026-09-04 03:39:02
+f91fbba9-e5f3-4d7d-93b4-91efacbc0b27,Spider-Man 2099 - Genetic Awakening,collectible,11,2026-09-04 03:39:02
+dc04b2f6-c77b-4997-845d-2a0107c83f21,Gambit - Kinetic Combat Master,collectible,7,2026-09-04 03:39:02
+ac8afbde-a31c-496a-bacf-ce837980f4eb,BLACKPINK Lightbox - Blush Mode,collectible,200,2026-09-04 03:39:02
+3d0b6bcb-393c-4d0c-a58d-4ebe0dbfcea9,Lunar New Year: Dragon - Pane of 20,collectible,29,2026-09-04 03:39:02
+0a3541a1-dcf7-459f-9850-5569e91eb96d,Maleficent: Vintage Metal Poster,collectible,17,2026-09-04 03:39:02
+94bcc472-9ecb-41f0-b8bf-f5b0b4e85e37,Gambit - Trenchcoat Tactician,collectible,4,2026-09-04 03:39:02
+505e2fdc-930a-4141-a863-fe9638a47cae,Jean Grey - Uncanny,collectible,34.99,2026-09-04 03:39:02
+a9a3706c-32e5-414f-b6f9-3510caa9d855,Weapon Racks – Silver Black,collectible,3.39,2026-09-04 03:39:02
+3ecd1c9c-dd05-4e9e-80b9-7b8574a095bb,Mickey & Friends Logo,collectible,7,2026-09-04 03:39:02
+92635283-99b4-4597-ba69-01e39ccba334,Master Splinter - Father Figure,collectible,3.99,2026-09-04 03:39:02
+88254714-b869-4f2e-9799-a62e284fcaf6,Record #1 - Frankenstein - Gold,collectible,13.12,2026-09-04 03:39:02
+d0122a89-aac8-4527-a413-7267041c59be,VeVe Reveal,collectible,21.86,2026-09-04 03:39:02
+f6c0f08f-a0e9-455b-9008-13dc70abcfba,Vana,collectible,22,2026-09-04 03:39:02
+d629f709-d1b4-4e1d-803d-542a6b00ea9a,VeVe Heart Logo - Pink,collectible,3.5,2026-09-04 03:39:02
+f269d094-71dc-4cc9-a2c2-b3de82fe8cb7,Sket One - Boo Crew - OG White,collectible,16.99,2026-09-04 03:39:02
+1bacdd79-a711-4a24-9bfa-c0927e871e9a,Chris Robots Will Kill - SUYE Special Sky Blue,collectible,21,2026-09-04 03:39:02
+af36d0b7-21fc-404d-a6ea-6b5676c9ba30,Hoodie,collectible,14.5,2026-09-04 03:39:02
+d4788b46-09e9-4528-bfd0-39a1a9ca087e,Cube,collectible,12.99,2026-09-04 03:39:02
+fccfc777-cc16-4a36-b063-8258d6e69ffe,Boy,collectible,12.92,2026-09-04 03:39:02
+983c4be0-5acb-468d-b834-3e2869618011,Super,collectible,12.75,2026-09-04 03:39:02
+df1940af-34c5-4599-a190-d5f80ba6875f,Green Noggles,collectible,13.4,2026-09-04 03:39:02
+cac60134-17f8-40d5-988f-f911652e1a12,VeVe Common General Admission Ticket - NYCC 2024,collectible,3,2026-09-04 03:39:02
+eedca775-7427-43ed-8911-df08ae0a3cd9,DF9 Turret,collectible,7,2026-09-04 03:39:02
+ed14d888-8124-41c3-9200-f66b92c4a42a,Service is Success,collectible,6.6,2026-09-04 03:39:02
+b5ee952e-4674-41a1-a985-17664336e905,"Good Food, Good Fortune",collectible,2.99,2026-09-04 03:39:02
+c453fdaf-e57f-4a45-88a6-487d999916b9,Fall,collectible,7.9,2026-09-04 03:39:02
+ca3678e8-3ed8-4db0-ac03-da39f94d2c99,Turtle,collectible,1.8,2026-09-04 03:39:02
+3689dc6c-48c3-4b84-a08b-fd6c3e5778cb,ILLAZILLAZ (Water Element) - TNES,collectible,30,2026-09-04 03:39:02
+04c1b81f-a6c9-4c57-be41-5f25001cfe44,Epiko Logo - Original,collectible,4,2026-09-04 03:39:02
+30700600-f3ad-4f78-a775-c84e7b056abe,Graffi ver. Green,collectible,6.59,2026-09-04 03:39:02
+906fe78e-60ab-4d7e-bd1d-70d70fe10ba0,Lucky Peach,collectible,1.35,2026-09-04 03:39:02
+3a179b42-be8c-4239-86a0-3bd5674cf304,ROSÉ – Open Heart,collectible,19.99,2026-09-04 03:39:02
+1e033ca4-e213-4960-8862-78fc4ca41aeb,Potball BB,collectible,3,2026-09-04 03:39:02
+58d2a9af-b491-43ca-8fbc-964ba2c1e282,A Dissident Enters (2 of 7),collectible,32,2026-09-04 03:39:02
+418dcebb-67d5-4216-9fc2-09f66901422e,Record #5 - Ronnnie Rabbbit - Platinum,collectible,6.99,2026-09-04 03:39:02
