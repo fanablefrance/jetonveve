@@ -1,17 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-7475a966-ed09-4fa8-9b3f-ca6833ea98af,Spider-Man: Miles Morales - Animated,collectible,131131,2026-08-28 19:09:48
-5cd5b20e-02da-4be2-8060-b7d03b2383d5,#01 Eduardo Risso Batman,collectible,1290,2026-08-28 19:09:48
-877dfb81-f781-44c8-a1ce-8d585164cd26,Yoda - One With The Force,collectible,1777,2026-08-28 19:09:48
-b918f882-01dc-420e-8697-01b74924394b,Oscar the Grouch,collectible,58.9,2026-08-28 19:09:48
-92871a71-62d8-4cb7-a6a8-adf184636056,Battle Mode,collectible,18.63,2026-08-28 19:09:48
-a840e47a-0db8-46bd-bffe-c1c5ecb295d3,Zombie Captain America #1,collectible,3.8,2026-08-28 19:09:48
-aa36484b-4931-42fa-a3aa-c91d10981542,J. Jonah Jameson,collectible,248,2026-08-28 19:09:48
-a00ad2e9-37fe-4ca2-b2df-5fea2e0131d0,"""Read Me A Story!""",collectible,6,2026-08-28 19:09:48
-89f1561b-78b1-4a9f-9aaf-09543d007bd0,Maserati MC12 - Stradale,collectible,15,2026-08-28 19:09:48
-af8ea121-6321-4fbd-9958-d03a49fb604f,LA Strong - Black Heart,collectible,14.99,2026-08-28 19:09:48
-0b9cbb5a-7c04-4b6c-ab53-e401c6096618,Lunar New Year: Snake,collectible,1.39,2026-08-28 19:09:48
-d4ec084d-812b-4a3c-958f-d691f0060ff9,Master Splinter - Battle Ready,collectible,47,2026-08-28 19:09:48
-983c4be0-5acb-468d-b834-3e2869618011,Super,collectible,17.99,2026-08-28 19:09:48
 ffabb2e2-810d-4f83-91e7-3d6b80c0f194,Thor - Ultimate Animated,collectible,111.11,2026-08-28 20:11:40
 b918f882-01dc-420e-8697-01b74924394b,Oscar the Grouch,collectible,52.89,2026-08-28 20:11:40
 83e94f86-f495-4002-a3b1-1123fda8864e,Sleeping Beauty Castle,collectible,140,2026-08-28 20:11:40
@@ -3898,3 +3885,78 @@ b7ea3a29-17e1-47cb-a6ca-2ec419165e3c,“it’s a small world”,collectible,14.4
 2db2e5c8-17f0-4187-9006-c60d9d3c87a4,Darth Vader Bust - White Marble,collectible,19,2026-09-04 19:04:21
 7f7d3588-103e-414e-a1b1-71b1a1f7a7bd,David’s Doo Gold,collectible,180,2026-09-04 19:04:21
 02ab1567-e3b7-4862-bd09-4115bcfed9fc,Max,collectible,4.5,2026-09-04 19:04:21
+61a84d22-d05c-446d-a41a-ca17ffb242b1,The Addiction #2 - Ryan Brown Exclusive Framed Artwork,collectible,179500,2026-09-04 20:07:00
+a659bbc2-45cd-4f72-9ca2-7e92a245d05f,#97 Joe Madureira Batman,collectible,64.95,2026-09-04 20:07:00
+c28c3378-9625-4b15-819e-d09e49466d1b,Quiet Pistachio,collectible,500,2026-09-04 20:07:00
+75677539-6781-4d04-9361-54a43fd8ad17,The Skywalker Lightsaber,collectible,14.99,2026-09-04 20:07:00
+55876156-f6d4-4ca8-bb50-fd6c1f5f0fb8,U.S.S. Enterprise-D (1:1),collectible,39.99,2026-09-04 20:07:00
+9df59b34-4aa2-44c5-9ba8-101f9f31bff8,S3LF MADE - Brett Crawford,collectible,1050,2026-09-04 20:07:00
+a64c22fa-268e-4153-b31f-2b93d8c877eb,1:1 DeLorean Time Machine - Static,collectible,8.9,2026-09-04 20:07:00
+53057d99-ac36-4dd2-b28a-8aa22d9f0b51,Ben Reilly - Acrobatic Arachnid,collectible,31.99,2026-09-04 20:07:00
+9cccbffd-e907-44b4-9e2e-b285f090292d,Zombie Hunter Spider-Man #1,collectible,8.91,2026-09-04 20:07:00
+4d1972b6-b15f-4c98-ab98-cec603aa58de,Ritmo,collectible,101,2026-09-04 20:07:00
+39e873a8-37f3-4ef8-9247-b2b257f7dcbf,Team Avatar: SDCC 2026,collectible,150,2026-09-04 20:07:00
+768e3b9d-2b74-420e-be62-2a375fbd911f,Crowd Favorite,collectible,16.99,2026-09-04 20:07:00
+0acd73ab-9908-4060-a8b5-4d9330f1ecb6,Day of the Dead Mother,collectible,26.25,2026-09-04 20:07:00
+f5a393e0-13d2-40a3-8c6f-075709139d24,Daisy Duck,collectible,12.99,2026-09-04 20:07:00
+3f233a1f-fe67-4d15-b796-f60845ee3d35,Lightning McQueen: Ka-chow!,collectible,9.99,2026-09-04 20:07:00
+9c03916b-f57c-43d8-a0b0-7f7dbbbf73d9,Tian Zun Huang Yin,collectible,115,2026-09-04 20:07:00
+1c16c026-5fee-490f-96e5-919636558b8f,Admiral Ackbar,collectible,50,2026-09-04 20:07:00
+4cf97843-a9fc-4bc4-a323-7d485ce86c68,Numbers and Letters United,collectible,400,2026-09-04 20:07:00
+98370f9b-b3fe-4261-a4c1-4fdfed88e97b,Experiment 626,collectible,12.99,2026-09-04 20:07:00
+783ac0b6-c91d-4739-8f70-fb7735529a89,Flo,collectible,294,2026-09-04 20:07:00
+d4a983b5-07d5-4b85-afbf-23df999abe11,You Ain't Seen Nothin' Yet!,collectible,89.99,2026-09-04 20:07:00
+31232a5e-f1b3-43a9-bb8b-94c3c36b406e,Day of the Dead Father,collectible,13.95,2026-09-04 20:07:00
+bbaa7ca7-7861-4f23-be96-6e771c65e2f9,Metropolis II,collectible,500,2026-09-04 20:07:00
+0fecdd27-1603-4e20-a7c0-eda9f7f391eb,JISOO - Under My Umbrella,collectible,555,2026-09-04 20:07:00
+dafd1777-5245-4a69-9b99-c31926c307dd,Red Hulk,collectible,26.95,2026-09-04 20:07:00
+d40158c7-c456-4377-980a-9c5cc6f99bc1,Ryu,collectible,35,2026-09-04 20:07:00
+373c4df1-35cf-4ff3-9da7-76686bbcec40,The Queen: Want a Bite?,collectible,5.9,2026-09-04 20:07:00
+11f07bd6-7fc3-4516-897a-0da17d09abe5,#60 Dick Sprang Batman,collectible,8.99,2026-09-04 20:07:00
+09671fc1-7831-4ed5-812e-f78612774a56,Yoskay Yamamoto x Munkyking - Moonflower,collectible,16.99,2026-09-04 20:07:00
+91c62af2-5b60-4a7c-a14d-9ec8eee3e013,Snow White,collectible,10.49,2026-09-04 20:07:00
+ca37ecf7-75c4-4362-9af8-dd03965d3e96,PLANET DEATH #0 Framed Art,collectible,499,2026-09-04 20:07:00
+36d4a1e9-2398-4262-ad35-251d5a868865,Kingpin,collectible,54.99,2026-09-04 20:07:00
+17e0ad50-e443-46f9-9016-0f79c5753a7a,Kaiju Tokigold,collectible,76.92,2026-09-04 20:07:00
+1c2c833d-3e70-4e7e-b589-0c24832a58cd,Katara,collectible,17.89,2026-09-04 20:07:00
+d4af21d2-86cd-430c-877b-501b6cbc3cff,Darth Vader Bust - Original,collectible,18,2026-09-04 20:07:00
+86812664-f489-4251-936d-954b336c94d4,Coca-Cola Vending Machine (1980s),collectible,18.99,2026-09-04 20:07:00
+488b4d3e-b76b-447f-a922-c2f33711d93c,Jawa 03,collectible,3.83,2026-09-04 20:07:00
+37353ee5-47b8-4498-a220-7851c6dd0923,Michelangelo - Classic,collectible,10,2026-09-04 20:07:00
+dec46e84-89a1-4773-b6fc-e258e868c724,Horus Guards - Anubis,collectible,99,2026-09-04 20:07:00
+8d14679c-ef72-4a0d-ab39-617170e2e2e5,Quaritch's Banshee,collectible,39.99,2026-09-04 20:07:00
+5494ef8b-c77a-48cb-b813-a5f6ec7602fe,Jaws,collectible,13.39,2026-09-04 20:07:00
+98f7d0b0-8373-4037-a49f-2db41b24f168,Sokka,collectible,12.85,2026-09-04 20:07:00
+816a9cc5-5125-4cde-9b8e-af25dcab4862,The Punisher - Fists of Vengeance,collectible,7,2026-09-04 20:07:00
+0c90c49f-d867-47de-991f-d5b5606ffb09,Namor - Phoenix,collectible,12.5,2026-09-04 20:07:00
+04494b1c-d7a1-45c1-bca6-bf8ccce8407d,Horus Guards - Horus,collectible,29.9,2026-09-04 20:07:00
+5d80846e-6d59-45d1-8a1d-03492e5134db,Darth Vader Samurai - Shadow of the Shogun,collectible,12,2026-09-04 20:07:00
+3a00cc91-e39f-4040-9a06-17dc99b376b3,Single 2 1/2d 'Lake Wakitipu' gummed stamp,collectible,65.12,2026-09-04 20:07:00
+beebd4fa-865f-4397-9034-95548858a0ca,Sakura - Nostalgia,collectible,79.9,2026-09-04 20:07:00
+db32e4a3-e1c7-4f3f-a2c5-ae54ed27c637,1938 Rutherford B. Hayes,collectible,11.99,2026-09-04 20:07:00
+ec04c6de-1ef4-436b-bb1a-8a9109a95bb6,Colossus - Phoenix,collectible,10.95,2026-09-04 20:07:00
+2e1dc20a-de45-4824-a3f2-e7a0874ee701,Johnny Storm - Classic Blue,collectible,9,2026-09-04 20:07:00
+914191ea-74f7-48cd-ad71-d116392fd65b,"Attaché Case from From Russia With Love, 1963",collectible,13.99,2026-09-04 20:07:00
+247ed551-4606-4497-bec5-9742019e8f95,Look to the Surface,collectible,69,2026-09-04 20:07:00
+9abda8bd-3e74-4e88-aef9-2281f2b9899b,Gadgets and Gizmos Aplenty,collectible,69,2026-09-04 20:07:00
+de1c4dd3-2300-4b7a-905e-8cd2e109f748,Go Beyond the Surface,collectible,69,2026-09-04 20:07:00
+d1f01da5-0084-4c75-9b81-509d2967f056,Dinglehopper,collectible,69,2026-09-04 20:07:00
+cce3a323-94cb-44e3-b87b-c37cc9a34429,Beta Ray Bill - Action,collectible,70,2026-09-04 20:07:00
+f2466d62-13ed-471f-877f-f4cbadd07e37,Darth Vader Bust - Carbonite,collectible,36,2026-09-04 20:07:00
+00e93e80-e149-4038-bb6f-7737ce16fe80,Mourning Glory,collectible,13.99,2026-09-04 20:07:00
+5df2f9ab-f9d0-4aff-af42-f468a8e0c2bb,Emma Frost - Marauders #21 (2021),collectible,15.5,2026-09-04 20:07:00
+88254714-b869-4f2e-9799-a62e284fcaf6,Record #1 - Frankenstein - Gold,collectible,9.99,2026-09-04 20:07:00
+de494d7c-4df4-4695-a189-a28f88a80550,M.Bison - Battle,collectible,44.99,2026-09-04 20:07:00
+511147ad-2ed3-4d8c-b811-828355f61f35,Single 3d 'Huia' gummed stamp,collectible,14.99,2026-09-04 20:07:00
+a7dacd8a-133e-4a8e-9fc5-0ff0ad51db88,KABOOM - Gold,collectible,250,2026-09-04 20:07:00
+c983ca1d-6b6d-4cd7-b0fc-e735d9584cf0,ILLAZILLAZ (Fire Element) - TNES,collectible,6.99,2026-09-04 20:07:00
+79f49f24-d6f3-4ba0-9253-599d05699a35,Single 1s 'Kea and Kaka' gummed stamp,collectible,10.99,2026-09-04 20:07:00
+f19b84e8-7d86-46a6-b180-ed0edd777e5c,Edo Imperial Royal Guard - Pierce Through,collectible,16.5,2026-09-04 20:07:00
+36870fc2-0fa9-47f8-937c-b56eb1288ad2,Single 5s 'Mount Cook' gummed stamp,collectible,4.18,2026-09-04 20:07:00
+aca3eac8-fea3-4f1f-af6e-38b1854f2c65,Single 2d 'Pembroke Peak' gummed stamp,collectible,2.12,2026-09-04 20:07:00
+f216c114-f12c-4c32-a2af-0c8632206274,Single 2s 'Milford Sound' gummed stamp,collectible,2.1,2026-09-04 20:07:00
+dfd04ee9-970a-4c10-bf41-8acadede5d28,Single 5d 'Otira Gorge' gummed stamp,collectible,4.15,2026-09-04 20:07:00
+86e4bade-2c04-426d-af8a-656d258936b0,Single 8d 'War Canoe and Crown' gummed stamp,collectible,4.16,2026-09-04 20:07:00
+ec460953-de8a-4649-8a68-666bb2f2168b,Weakest Hunter - Frame,collectible,1.3,2026-09-04 20:07:00
+121be6df-6a3a-4e64-9978-92fc5acb77ca,Record #7 - Bunnny's Rap - Original,collectible,1.98,2026-09-04 20:07:00
+6974b69e-b502-4bd8-820e-9b876cb02c9f,Single 6d 'Kiwi' gummed stamp,collectible,2.17,2026-09-04 20:07:00
