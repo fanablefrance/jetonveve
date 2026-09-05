@@ -1,4 +1,19 @@
 uuid,name,categorie,floor_usd,ts
+2bddd574-39a8-400d-b614-a71ff7734a93,A Jaunty Jig,collectible,18,2026-08-29 21:07:33
+53057d99-ac36-4dd2-b28a-8aa22d9f0b51,Ben Reilly - Acrobatic Arachnid,collectible,21.5,2026-08-29 21:07:33
+05df9412-ca87-4492-8454-81f73a88c171,MOTOMICHI - Eyes,collectible,12.4,2026-08-29 21:07:33
+91628d4f-bf1a-454d-a213-424f34877bd2,No Tech Hoverboard,collectible,7,2026-08-29 21:07:33
+fde25c18-f029-423b-a295-07de8a210cf9,1:1 Ecto-1 Static,collectible,7.5,2026-08-29 21:07:33
+10f278dd-3d5b-425f-b12c-4bdbc7f24b7c,Back to the Future,collectible,15,2026-08-29 21:07:33
+0c90c49f-d867-47de-991f-d5b5606ffb09,Namor - Phoenix,collectible,14.99,2026-08-29 21:07:33
+fa9bd8ac-2e81-459b-85d9-7182df4d43a2,Women Support the War Effort,collectible,4.25,2026-08-29 21:07:33
+875f46f0-0430-4bf0-855c-e632d869f32a,Death Trooper - SE-14r Blaster Elite,collectible,49.99,2026-08-29 21:07:33
+587c3e21-87ed-465a-9e68-4e0afe30b8b1,ILLAZILLAZ (Wood Element) - TNES,collectible,39,2026-08-29 21:07:33
+1bacdd79-a711-4a24-9bfa-c0927e871e9a,Chris Robots Will Kill - SUYE Special Sky Blue,collectible,25,2026-08-29 21:07:33
+f6e15150-641b-4d8e-b7cc-19027a019d1f,Chris Robots Will Kill - OG,collectible,24,2026-08-29 21:07:33
+14cf72b5-65ca-46c5-88a2-6f62e5799cbd,Kahalo ver. DeepSea,collectible,39,2026-08-29 21:07:33
+f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,6.8,2026-08-29 21:07:33
+9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,5.5,2026-08-29 21:07:33
 95b86201-ed47-471f-ada2-4e053041379b,Partners Statue,collectible,1880,2026-08-29 22:11:14
 c3df7496-e8e7-4507-b80a-5c2b5d996645,#100 Todd McFarlane Batman,collectible,489,2026-08-29 22:11:14
 2e87137d-51b3-41ee-93e1-80e0e799d6ba,Spider-Man – Hangin’ Out,collectible,34,2026-08-29 22:11:14
@@ -3844,32 +3859,3 @@ d4788b46-09e9-4528-bfd0-39a1a9ca087e,Cube,collectible,11.5,2026-09-05 21:03:36
 6dfe3789-1ad9-4232-a6cd-b657eb90efdd,Pizza Boxes,collectible,1.8,2026-09-05 21:03:36
 fbee4cac-4007-49a7-8662-acf27af59267,Lightning - Dark,collectible,39,2026-09-05 21:03:36
 16e0d43f-4821-4e27-b2d6-09e48466ab3e,WHAM!,collectible,1.05,2026-09-05 21:03:36
-95b86201-ed47-471f-ada2-4e053041379b,Partners Statue,collectible,1798,2026-09-05 22:05:47
-883f2d9e-0fd7-4454-be5d-839e8b56bbd3,John F. Walker - On Guard,collectible,24,2026-09-05 22:05:47
-66bf871d-a8d4-474e-a0f2-b1ceb28c7b94,Millennium Falcon,collectible,91.5,2026-09-05 22:05:47
-b918f882-01dc-420e-8697-01b74924394b,Oscar the Grouch,collectible,39.99,2026-09-05 22:05:47
-7384abab-ff07-4cf8-8d3e-2085e4945f75,#76 Robin,collectible,12.9,2026-09-05 22:05:47
-89b6d074-36ca-4b72-af67-3ac2e5648581,Blossom,collectible,19.99,2026-09-05 22:05:47
-eb8895db-94cd-465a-bc25-05ce6e18e2c2,Melvin,collectible,14,2026-09-05 22:05:47
-d066e432-247f-4ca1-8e43-671a67a3bbd9,Ice King,collectible,19.99,2026-09-05 22:05:47
-2387c605-0f0b-4415-ad9d-0901814ee103,Murciélago LP670-4 SV Blu Nova,collectible,41.7,2026-09-05 22:05:47
-3d38c822-050f-42bf-a382-f209819911e4,Deadpool – Deck The Halls,collectible,3.25,2026-09-05 22:05:47
-e955dcc5-43e2-4cdd-a978-c8b66ddd6c96,Miura - Arancio Miura,collectible,29,2026-09-05 22:05:47
-b7ea3a29-17e1-47cb-a6ca-2ec419165e3c,“it’s a small world”,collectible,27,2026-09-05 22:05:47
-f768b31c-dcef-4122-ad4e-ca3837071108,The Golden MYO,collectible,450,2026-09-05 22:05:47
-9f7d75e4-ccad-4428-95fa-018904c9bb9b,Blue Eye,collectible,400,2026-09-05 22:05:47
-9fc00c0d-146d-4f67-8acc-8a8ad3ea2008,Bill & Ted's Bogus Journey,collectible,11,2026-09-05 22:05:47
-c85f636d-05bf-4cb2-983c-22ae671ee6b4,Record #9 - Everyone is Jealous of Me - Platinum,collectible,99,2026-09-05 22:05:47
-582a6663-a706-4bc9-9078-b594acc896a8,Gouki Nostalgic,collectible,66.67,2026-09-05 22:05:47
-12786e8c-7cd5-4739-8917-9b93e08842b1,Rewind Collective - Flag,collectible,7.9,2026-09-05 22:05:47
-26db4fcc-0f1f-4f7e-9aac-b719c61387a6,JISOO Pink Venom 3,collectible,10.95,2026-09-05 22:05:47
-b72f0788-948e-4e0a-8c22-3e067e35634f,The Rabbbits Jukebox,collectible,2.75,2026-09-05 22:05:47
-1e6de8a0-49ab-4967-a802-5e24b22e92f2,$2.30 Hakeke Harvest Stamp,collectible,2.99,2026-09-05 22:05:47
-fccfc777-cc16-4a36-b063-8258d6e69ffe,Boy,collectible,13.48,2026-09-05 22:05:47
-d324d199-8532-4449-b67b-fdad373da71a,Stormtrooper - Running,collectible,3,2026-09-05 22:05:47
-2b165606-c201-4f80-b10f-b0d7e7d49908,Crimson Trooper - Running,collectible,2.7,2026-09-05 22:05:47
-d4788b46-09e9-4528-bfd0-39a1a9ca087e,Cube,collectible,12,2026-09-05 22:05:47
-3cd38803-98a6-4b5c-85fa-a8a3353c0b7f,Single 1/2d 'Mount Cook' gummed stamp,collectible,1.6,2026-09-05 22:05:47
-6dfe3789-1ad9-4232-a6cd-b657eb90efdd,Pizza Boxes,collectible,1.88,2026-09-05 22:05:47
-fbee4cac-4007-49a7-8662-acf27af59267,Lightning - Dark,collectible,45,2026-09-05 22:05:47
-16e0d43f-4821-4e27-b2d6-09e48466ab3e,WHAM!,collectible,1,2026-09-05 22:05:47
