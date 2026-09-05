@@ -1,18 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-11f2b172-e206-4644-8256-e51fd7298af2,Winnie the Pooh and Piglet,collectible,34.75,2026-08-29 02:23:42
-a659bbc2-45cd-4f72-9ca2-7e92a245d05f,#97 Joe Madureira Batman,collectible,77,2026-08-29 02:23:42
-ffabb2e2-810d-4f83-91e7-3d6b80c0f194,Thor - Ultimate Animated,collectible,170,2026-08-29 02:23:42
-2bddd574-39a8-400d-b614-a71ff7734a93,A Jaunty Jig,collectible,13.85,2026-08-29 02:23:42
-4f992ee1-d183-485d-a9c9-00695bc727de,Jim Lee Batman V3,collectible,9,2026-08-29 02:23:42
-05df9412-ca87-4492-8454-81f73a88c171,MOTOMICHI - Eyes,collectible,13.35,2026-08-29 02:23:42
-def65f71-6b97-4cff-a72d-e346d091c582,Sam Wilson,collectible,2.1,2026-08-29 02:23:42
-c69b7701-c33f-4801-99f3-080450f2b6c7,Hawkgirl,collectible,8,2026-08-29 02:23:42
-bfbb5341-6a35-4ecb-b3a7-896bf6eb870c,Year of the Horse - Pane of 20,collectible,34.99,2026-08-29 02:23:42
-e913c1f9-9578-4077-b90b-94b0b0cde315,The Golden Lad,collectible,289,2026-08-29 02:23:42
-29e16f1c-8bc5-47cb-8b2e-ab133d6dace0,Cereal Chiller,collectible,5.5,2026-08-29 02:23:42
-8015520d-7b05-4409-83b6-c387b1a453f8,Wing Tiger,collectible,8.95,2026-08-29 02:23:42
-f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,6.9,2026-08-29 02:23:42
-454c8252-7aaa-49fb-bca5-ec1ba8776309,White Tiger,collectible,15,2026-08-29 02:23:42
 5ab59120-1b5b-473c-9c80-3144d9a6e1d5,"All Together, Now!",collectible,145,2026-08-29 03:29:53
 2bddd574-39a8-400d-b614-a71ff7734a93,A Jaunty Jig,collectible,19.9,2026-08-29 03:29:53
 0bfb1239-b03a-4084-bafe-770796eece82,Wolverine - Blue and Yellow suit,collectible,85.7,2026-08-29 03:29:53
@@ -3874,3 +3860,35 @@ e3f45c09-9bc7-43b0-ab69-47d0359de44d,Frozone,collectible,46,2026-09-05 02:17:39
 3f9c5d51-2619-4add-8f8f-f5520f99754b,MyCollectables - Blue Metallic,collectible,149.68,2026-09-05 02:17:39
 af653c3c-f0a0-4e4d-ba6c-7d194a747001,Chi Yan Chi Lin,collectible,3.2,2026-09-05 02:17:39
 450206ba-7c6b-46a3-8d48-9f24b64b7aed,Falling,collectible,63.63,2026-09-05 02:17:39
+d1d1bb93-94e7-442f-8974-bf440900b27b,Alligator Loki - Ultimate Animated,collectible,8115,2026-09-05 03:20:10
+5e9b0f4f-6120-487c-93e7-12f8c268fbca,Thanos - Warrior,collectible,499,2026-09-05 03:20:10
+b33424b2-ea2b-45c0-9f5b-05748c064554,Spider-Man: Miles Morales - Hoodie Season,collectible,220,2026-09-05 03:20:10
+9d3783e8-05f7-4e20-b1f7-2c3b520ab3ee,Mr. Toad's Wild Ride,collectible,280,2026-09-05 03:20:10
+ad039541-890c-4277-8c04-b6ab6a19f656,Elsa,collectible,318,2026-09-05 03:20:10
+39e873a8-37f3-4ef8-9247-b2b257f7dcbf,Team Avatar: SDCC 2026,collectible,199.99,2026-09-05 03:20:10
+270dc2b6-b609-42e9-b074-7a3afc4c821a,Cthulhu Idol - Gold,collectible,95,2026-09-05 03:20:10
+5529acf4-43b8-428a-8009-2410ceb8cce7,Huracán STO - Verde Citrea/Arancio DAC,collectible,250,2026-09-05 03:20:10
+806c58f2-0af1-4ebe-860d-a41d6cc4c13d,Time of Your Life,collectible,79,2026-09-05 03:20:10
+9ab7ce3a-cdc7-4d0c-bd6c-9063a85f8271,Stay Puft Marshmallow Man,collectible,41.95,2026-09-05 03:20:10
+0c73f790-245c-47be-a7f2-ec1678beb0e9,Galactus - Ruler of the Universe,collectible,478,2026-09-05 03:20:10
+768e3b9d-2b74-420e-be62-2a375fbd911f,Crowd Favorite,collectible,13.63,2026-09-05 03:20:10
+bf5fcb3f-2e79-4928-b8ff-bbb0045da5d7,Cat-Trooper (Color),collectible,90,2026-09-05 03:20:10
+d1a65019-8f2e-471e-94d0-c3de74c3b851,Weapon Racks – Gold Black,collectible,60,2026-09-05 03:20:10
+0edde921-abe4-44cb-9a15-c64cb2f26560,Gallardo - Giallo Midas,collectible,189,2026-09-05 03:20:10
+7bd8b0f4-586b-4874-acc6-e45066ac3068,Crimson Stormtrooper - Leading the Charge,collectible,248,2026-09-05 03:20:10
+0c20eae8-dd0c-4786-ae2b-a4c9445783c0,Arendelle in Spring,collectible,82,2026-09-05 03:20:10
+d6012097-18c4-488b-8133-44b575447270,Mr. Mischief the Monkey Grin - Gold,collectible,100,2026-09-05 03:20:10
+842e1d51-02b9-4762-9c4d-12f95f0b12d2,Ken Blue,collectible,153,2026-09-05 03:20:10
+0764efd5-2967-4f8e-89c5-e5839123f198,Chewbacca And Family Wish You a Happy Holiday,collectible,40,2026-09-05 03:20:10
+bf653adf-4386-497a-94ae-273e03b14d5f,Hooverville Labbit - Sunny Side of the Street,collectible,19,2026-09-05 03:20:10
+1426a5b0-2a68-4487-9cd5-ec118b3c323f,Twist,collectible,12,2026-09-05 03:20:10
+c9d59609-5b77-4acc-a73d-8a78141e7089,Cap'n Cornstarch,collectible,9,2026-09-05 03:20:10
+930d65c5-68db-4833-b585-ea9d47b26521,Fat Tony,collectible,6,2026-09-05 03:20:10
+13cd77cf-6f37-4299-b384-810b31bed42b,Grundo,collectible,25,2026-09-05 03:20:10
+b8e9332e-cd45-45a2-9638-7fb3783b835e,Butterfly - Gray,collectible,150,2026-09-05 03:20:10
+af653c3c-f0a0-4e4d-ba6c-7d194a747001,Chi Yan Chi Lin,collectible,5.04,2026-09-05 03:20:10
+5df2f9ab-f9d0-4aff-af42-f468a8e0c2bb,Emma Frost - Marauders #21 (2021),collectible,19,2026-09-05 03:20:10
+c8a76df1-5979-4917-8189-5ecb4a2e4225,KABOOM,collectible,22,2026-09-05 03:20:10
+86ad416a-57ac-491a-b31a-f587acdc0894,Sweet Release,collectible,25,2026-09-05 03:20:10
+bc8771ab-0a33-42be-8f44-e1ed6d424274,The Winged Rock,collectible,29.78,2026-09-05 03:20:10
+0b5e951b-09bd-4b29-9db9-d7ca4814d92c,Janie,collectible,4,2026-09-05 03:20:10
