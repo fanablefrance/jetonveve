@@ -1,49 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-f583497a-51d4-4f53-9985-7c3061533280,Military Jake,collectible,8.4,2026-08-28 23:17:35
-0c7b5608-1fb4-4ec4-a55d-f1199de26a2c,Homestead,collectible,8.99,2026-08-28 23:17:35
-d4788b46-09e9-4528-bfd0-39a1a9ca087e,Cube,collectible,12.5,2026-08-28 23:17:35
-d37184af-298d-4b47-ae13-819fb234b80d,Episode 12 - Arise,collectible,1.11,2026-08-28 23:17:35
-3d1cbbec-65a6-4f2b-9a21-74be61438ad7,Violet,collectible,500,2026-08-29 00:21:00
-cd7e1761-e21f-4356-8c43-2de19a293220,Sam Wilson - On Guard,collectible,35,2026-08-29 00:21:00
-6a3c8ad0-8bb9-4065-abff-9d12b8e82bc4,Lady and the Tramp,collectible,30,2026-08-29 00:21:00
-ba6c92e5-c8a0-406c-ad7c-9087858c1bb2,Infinity Gauntlet - Animated,collectible,55,2026-08-29 00:21:00
-9bbf3fa3-9b0c-446d-9b17-f6e452b070c7,Black Panther – Wakanda Forever,collectible,7.25,2026-08-29 00:21:00
-f64f5581-0640-4c33-873d-1d798c086e24,Stormtrooper,collectible,8.5,2026-08-29 00:21:00
-aadb24d5-07a5-4630-a937-60af8a8ef08e,Edo,collectible,65,2026-08-29 00:21:00
-95ea8d6d-886d-4c3c-b171-82d23310d2bf,Woody: Hey Howdy Hey!,collectible,9,2026-08-29 00:21:00
-367a490c-567c-4e47-b79d-142a25f97489,Gallardo - Arancio Borealis,collectible,150,2026-08-29 00:21:00
-7e595273-5759-492c-b95d-4db62eaaef88,On Guard,collectible,8.75,2026-08-29 00:21:00
-11bc19eb-ef1b-4fa0-8e0d-1a8281197e90,Ghost-Spider,collectible,5,2026-08-29 00:21:00
-05df9412-ca87-4492-8454-81f73a88c171,MOTOMICHI - Eyes,collectible,13,2026-08-29 00:21:00
-6423ffc0-d8e3-4f1c-94a1-7299ad991bf9,Cosmo,collectible,77,2026-08-29 00:21:00
-0952a89b-b570-4e2f-acf7-63f6174c6a92,Mandalorian,collectible,59.99,2026-08-29 00:21:00
-92871a71-62d8-4cb7-a6a8-adf184636056,Battle Mode,collectible,15.63,2026-08-29 00:21:00
-6d0d3e7e-502d-4e49-abf5-e7e5ed978e1d,Goblin Knight,collectible,25,2026-08-29 00:21:00
-f9422701-8fc1-4af5-9312-d7e8f21b83e1,JISOO Pink Venom 1,collectible,78,2026-08-29 00:21:00
-a8e88f46-106f-4792-a9be-b511c776084a,Atlas Ready,collectible,9,2026-08-29 00:21:00
-d40158c7-c456-4377-980a-9c5cc6f99bc1,Ryu,collectible,29.95,2026-08-29 00:21:00
-7f8a49d9-06c3-4304-9a44-3ea26e873c6e,"Book with Recorder from Thunderball, 1965",collectible,58,2026-08-29 00:21:00
-c69b7701-c33f-4801-99f3-080450f2b6c7,Hawkgirl,collectible,9,2026-08-29 00:21:00
-0deb4d99-746c-463e-80f9-43c724334c8f,Smorkin' Labbit - Choice Cuts,collectible,9,2026-08-29 00:21:00
-3f1d93f5-0c2c-4709-a69d-98cc20d77747,Scott Tolleson - 20 Yr. Anniversary Vincent,collectible,17,2026-08-29 00:21:00
-71daa6f7-8da5-4a89-8b3d-b9863105937b,VeVe Search Party Pattern - Lincoln Design Co.,collectible,110,2026-08-29 00:21:00
-498009da-d0bd-48a5-824d-cd038af77cff,Remember Us - Vital Voices I,collectible,13,2026-08-29 00:21:00
-39ceaffc-298a-481a-ac53-074fe1843ddd,Hapjeong Station,collectible,25,2026-08-29 00:21:00
-aa427c53-ab3f-48f7-ace3-519c7f210141,Predator - Unguided Wrath,collectible,129,2026-08-29 00:21:00
-72b60c77-038d-4ced-bbad-e8c73d13cff1,Scott Lang/Ant-Man,collectible,5,2026-08-29 00:21:00
-590afe3a-120d-4ff3-a983-0213765d6e45,GNK Power Droid,collectible,25,2026-08-29 00:21:00
-e8064631-1c9d-408a-ada4-7534693c8c12,Sentinel,collectible,5,2026-08-29 00:21:00
-2dd00fad-e4ed-4bf4-8e53-8fd49d18dfc9,Witch Tricks - Camille Rose Garcia,collectible,27.5,2026-08-29 00:21:00
-681d11f3-09fd-4d5f-ad61-1d9352a498f7,Mater Base,collectible,21.5,2026-08-29 00:21:00
-f583497a-51d4-4f53-9985-7c3061533280,Military Jake,collectible,7.9,2026-08-29 00:21:00
-dd16eb91-704b-4fad-9db0-55e55cc433dc,Cyclops - Phoenix,collectible,7.99,2026-08-29 00:21:00
-99dad9ce-573b-4ba5-983a-460cde874f19,Brave Berry,collectible,13.2,2026-08-29 00:21:00
-7ed317cf-5b82-47fa-94ca-69d85591d1e8,Hapjeong Dungeon Key,collectible,13.99,2026-08-29 00:21:00
-392c6df5-78ae-4b4a-b015-867fc56f68c8,Hope Van Dyne/Wasp,collectible,3,2026-08-29 00:21:00
-59a82182-4b75-471a-bca0-c876420fd948,Storm,collectible,4.25,2026-08-29 00:21:00
-e3d0b938-9e56-4484-bbfb-b59bab629950,Clæmon - Allison Bamcat,collectible,15.64,2026-08-29 00:21:00
-af36d0b7-21fc-404d-a6ea-6b5676c9ba30,Hoodie,collectible,22,2026-08-29 00:21:00
-b08d08d6-7b80-4d13-acc4-816a97474a5c,Cassie,collectible,2.75,2026-08-29 00:21:00
 11f2b172-e206-4644-8256-e51fd7298af2,Winnie the Pooh and Piglet,collectible,34.75,2026-08-29 02:23:42
 a659bbc2-45cd-4f72-9ca2-7e92a245d05f,#97 Joe Madureira Batman,collectible,77,2026-08-29 02:23:42
 ffabb2e2-810d-4f83-91e7-3d6b80c0f194,Thor - Ultimate Animated,collectible,170,2026-08-29 02:23:42
@@ -3908,3 +3863,14 @@ d2166c51-23c5-4c47-8975-0808a09fcbf5,Captain Hook,collectible,5.49,2026-09-04 23
 5aff9179-4f70-4cf3-8539-c3ba7d31dd02,1938 Martha Washington,collectible,1.2,2026-09-04 23:13:42
 6dfe3789-1ad9-4232-a6cd-b657eb90efdd,Pizza Boxes,collectible,1.87,2026-09-04 23:13:42
 cb514393-4ab4-4042-afcf-33e6083341ed,Collectors at Heart - Vinyl Pressing,collectible,1.25,2026-09-04 23:13:42
+a605b45c-c809-40d4-a98b-b5daa200a696,Black Panther – Ultimate Animated,collectible,166.66,2026-09-05 02:17:39
+f8b0814e-80ca-4758-99c2-5b19784fa308,Jack-Jack,collectible,125,2026-09-05 02:17:39
+7acdd5c6-566d-4711-a46e-32df7e76cf1e,Dash,collectible,135,2026-09-05 02:17:39
+92871a71-62d8-4cb7-a6a8-adf184636056,Battle Mode,collectible,19,2026-09-05 02:17:39
+3de45cbc-3a22-433d-92c0-a8099d775e8d,Green Lantern (Hal Jordan),collectible,25,2026-09-05 02:17:39
+de4a7aac-7b16-48d4-a6f2-3aaa3ea90bdb,Bombed Ting - Sket One,collectible,78,2026-09-05 02:17:39
+e3f45c09-9bc7-43b0-ab69-47d0359de44d,Frozone,collectible,46,2026-09-05 02:17:39
+8283c167-a79d-4308-853a-bdb08368eb5a,Fastball Special,collectible,49.41,2026-09-05 02:17:39
+3f9c5d51-2619-4add-8f8f-f5520f99754b,MyCollectables - Blue Metallic,collectible,149.68,2026-09-05 02:17:39
+af653c3c-f0a0-4e4d-ba6c-7d194a747001,Chi Yan Chi Lin,collectible,3.2,2026-09-05 02:17:39
+450206ba-7c6b-46a3-8d48-9f24b64b7aed,Falling,collectible,63.63,2026-09-05 02:17:39
