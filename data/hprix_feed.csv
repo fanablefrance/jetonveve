@@ -1,8 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-c3df7496-e8e7-4507-b80a-5c2b5d996645,#100 Todd McFarlane Batman,collectible,489,2026-08-30 12:45:30
-c03b2444-bd47-4778-b0c1-d6e26429217a,Silver Surfer,collectible,14,2026-08-30 12:45:30
-31572cb5-b90f-47cc-82e9-c8751ccf0a70,Buzz Lightyear – Galactic Guardian,collectible,7.99,2026-08-30 12:45:30
-99ef7ea3-9f79-45f1-9152-42837ad5282b,MARBLE LORD - Tristan Eaton,collectible,30,2026-08-30 12:45:30
 5e8f7e71-3285-4977-9f11-77fa35c2dda3,Spider-Man: Miles Morales - Ultimate Spider-Man,collectible,489,2026-08-30 14:49:16
 101b85cc-e958-4fa6-a25a-0ab02a243a62,Rooftop Watch – After Hours,collectible,2000,2026-08-30 14:49:16
 da4f0ab8-00be-498e-8784-bde7d0d105e2,#56 Bruce Timm Harley Quinn,collectible,34.6,2026-08-30 14:49:16
@@ -3980,3 +3976,51 @@ ba7151f1-eba5-487d-87c9-3159fbc70bf8,Red Noggles,collectible,26.9,2026-09-06 12:
 e748dd3a-9398-47a4-8e84-0301afa96afc,1938 Theodore Roosevelt,collectible,5,2026-09-06 12:32:24
 a738176f-3b62-4024-bcaf-222086173831,MOUSE Season One Movie Poster,collectible,15.59,2026-09-06 12:32:24
 02ab1567-e3b7-4862-bd09-4115bcfed9fc,Max,collectible,3.88,2026-09-06 12:32:24
+2574a367-7ea1-4f57-be52-f226c2ed6e70,#89 Batman,collectible,15.85,2026-09-06 13:33:19
+1e6c918e-201d-44ea-9775-0cdd333bb27b,Zombie Hunter Spider-Man #2,collectible,43.83,2026-09-06 13:33:19
+19c55785-624d-4d2f-95b0-c4a0b0c42f28,Elektra – Ultimate Animated,collectible,55.55,2026-09-06 13:33:19
+c43e163e-cd49-4da9-b4aa-9aa2049cc2f5,Miguel,collectible,28,2026-09-06 13:33:19
+c844b748-f9f8-41d4-98c1-ed3178f379ba,Donald Duck,collectible,13.42,2026-09-06 13:33:19
+da7f15db-60fa-48db-ac21-f7be7cf6917f,Batgirl,collectible,13.66,2026-09-06 13:33:19
+df0af6e7-a1e6-4565-9e50-9b34b922a553,Metallo,collectible,39.99,2026-09-06 13:33:19
+a6161136-c31e-4b73-ac98-1ec9a9f188c1,Supergirl,collectible,9.85,2026-09-06 13:33:19
+3ff0d908-69de-4ef1-b341-c040bca1e6ec,"Spectre Ring from Spectre, 2015",collectible,77,2026-09-06 13:33:19
+c69b7701-c33f-4801-99f3-080450f2b6c7,Hawkgirl,collectible,13.45,2026-09-06 13:33:19
+38eb4855-5bfe-40a3-922d-54dc7fb3520b,Remember Us - Vital Voices II,collectible,15,2026-09-06 13:33:19
+e2782558-fce9-438b-be3c-84e1539af4c4,Stormtrooper Helmet - Cross Section,collectible,5.5,2026-09-06 13:33:19
+10fdaf2c-4b9b-4a2d-9f83-7cfcb43358d2,Glider Blueprint,collectible,5,2026-09-06 13:33:19
+dec46e84-89a1-4773-b6fc-e258e868c724,Horus Guards - Anubis,collectible,100,2026-09-06 13:33:19
+f5d9089b-cfa3-47b4-8408-35289430f64d,A-Rank Essence Stone,collectible,55,2026-09-06 13:33:19
+a512f767-6f55-42d5-b489-a5dfaf7b0cc3,"Lights, Camera, Hijinks!",collectible,5.5,2026-09-06 13:33:19
+34be3430-9c6d-4d66-bd10-4fdde8d16392,Twilight Mothman,collectible,4.5,2026-09-06 13:33:19
+67d718f3-658b-4815-a112-053541fad6ae,Piston Cup,collectible,18,2026-09-06 13:33:19
+7d54ee76-0aa1-47d7-8b04-c41613db4197,Red Reaching,collectible,39.99,2026-09-06 13:33:19
+c8381bdd-5f77-40fc-81cf-4f27e4001d29,Lilypad,collectible,4,2026-09-06 13:33:19
+d1f01da5-0084-4c75-9b81-509d2967f056,Dinglehopper,collectible,111,2026-09-06 13:33:19
+9abda8bd-3e74-4e88-aef9-2281f2b9899b,Gadgets and Gizmos Aplenty,collectible,111,2026-09-06 13:33:19
+de1c4dd3-2300-4b7a-905e-8cd2e109f748,Go Beyond the Surface,collectible,111,2026-09-06 13:33:19
+c9840620-e6cb-4265-8e45-40b4910c7948,Jersey Devil,collectible,3.3,2026-09-06 13:33:19
+88ac49f8-6433-4852-8702-53063cf644bb,AMC Dilophosaurus,collectible,5.99,2026-09-06 13:33:19
+5763e59f-3bcb-4a5d-b391-afd2476d94ef,Snickering Toby,collectible,4.5,2026-09-06 13:33:19
+de8319d8-1023-4e43-abac-e0acec85cca9,1841 Penny Red AA-EF,collectible,7.9,2026-09-06 13:33:19
+8310250a-46b6-4a2d-9d2e-5e0300e7ef91,1841 Penny Red IG-JL,collectible,4.5,2026-09-06 13:33:19
+b72f0788-948e-4e0a-8c22-3e067e35634f,The Rabbbits Jukebox,collectible,2.75,2026-09-06 13:33:19
+9638e03e-7510-4309-85cd-866447fa88d8,1938 James Monroe,collectible,6,2026-09-06 13:33:19
+158cf956-dbe3-48f4-9d41-68fa97acf97e,Kaiju Tokimon,collectible,4,2026-09-06 13:33:19
+49ebb3bc-9ac4-43cd-a734-5aee8c6d67ef,Earth Day - Stamp,collectible,1.9,2026-09-06 13:33:19
+349d2928-d6b8-4b90-aa46-c49d76bd4038,Aesthetic (2020),collectible,17.5,2026-09-06 13:33:19
+60decdb0-2864-4979-85ef-714261cbdb2d,Edo Scout Trooper,collectible,5,2026-09-06 13:33:19
+20ee46b8-77c6-481b-ab57-ddd590530546,Frankenstein Mon,collectible,4.5,2026-09-06 13:33:19
+29e16f1c-8bc5-47cb-8b2e-ab133d6dace0,Cereal Chiller,collectible,3.3,2026-09-06 13:33:19
+983c4be0-5acb-468d-b834-3e2869618011,Super,collectible,12.75,2026-09-06 13:33:19
+02a94a9e-a3da-49d4-b211-997b0ad60dcb,Jiangshi Mon,collectible,5,2026-09-06 13:33:19
+4ed555bb-e861-4923-b047-95006e7526e5,Views of Our Planets - Mars,collectible,3.89,2026-09-06 13:33:19
+d22a536f-a27b-42f8-94c3-c46f52ae3e7e,$3.30 Food Stamp,collectible,4,2026-09-06 13:33:19
+dfd04ee9-970a-4c10-bf41-8acadede5d28,Single 5d 'Otira Gorge' gummed stamp,collectible,4.59,2026-09-06 13:33:19
+40f03ab2-65d1-445b-a66c-1fb1ec751621,Aquatic Plant - Big Bronze 2,collectible,4,2026-09-06 13:33:19
+511147ad-2ed3-4d8c-b811-828355f61f35,Single 3d 'Huia' gummed stamp,collectible,6.99,2026-09-06 13:33:19
+9d9643bc-a33f-4a4b-a397-7162e4cff142,Nijiko,collectible,5,2026-09-06 13:33:19
+79f49f24-d6f3-4ba0-9253-599d05699a35,Single 1s 'Kea and Kaka' gummed stamp,collectible,5.99,2026-09-06 13:33:19
+f9b0cd1a-7796-43c4-afcf-ac938ba83f71,Jolene McBean,collectible,3.3,2026-09-06 13:33:19
+1f0a1a89-e8d4-4d4c-a841-3ffa19df4d01,David’s Doo Black,collectible,2.2,2026-09-06 13:33:19
+a738176f-3b62-4024-bcaf-222086173831,MOUSE Season One Movie Poster,collectible,12.99,2026-09-06 13:33:19
