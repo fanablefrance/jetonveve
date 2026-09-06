@@ -591,6 +591,64 @@ jobs:
                 flush=True)
 
           # ═══════════════════════════════════════════════════════════════════
+          # 📉📈 LES EXTREMES StackR -> extremes_stackr.csv — LOT H (06/09/2026)
+          # ═══════════════════════════════════════════════════════════════════
+          # 🔴🔴 CE N'EST PAS UNE COLLECTE NEUVE, C'EST UN PONT. `atl_stackr`
+          # existe dans l'etat depuis des mois — 7 059 pieces mesurees le
+          # 06/09 — parce que `detect_atl_stackr` memorise le plus-bas AVANT de
+          # regarder si le canal d'alerte est allume. Il n'a simplement JAMAIS
+          # ete publie : le site ne pouvait pas le lire, donc la colonne « ATL »
+          # de /market/ n'a jamais eu sa ligne StackR.
+          # ⭐⭐⭐ On a failli lancer une collecte pour une donnee deja
+          # collectee. C'est la deuxieme fois en deux jours (cf. le pouls 24 h)
+          # que « il manque une collecte » se revele etre « il manque un pont ».
+          #
+          # ⚠️ LES DEUX MEMOIRES N'ONT PAS LE MEME AGE, ET LE FICHIER LE DIT.
+          # `atl_stackr` accumule depuis des mois ; `ath_stackr` nait avec ce
+          # lot et sera VIDE au premier run. Une colonne vide n'est pas une
+          # panne — c'est une memoire qui commence. Le CSV porte donc une
+          # colonne par extreme, chacune avec SON horodate : le site peut dire
+          # « vu le … » pour l'un et se taire pour l'autre.
+          #
+          # 💵 EN DOLLARS, ET LA COLONNE `unite` LE DIT — comme dans
+          # `releves.csv`. `detect_atl_stackr` ecrit `usd = pr * omi`, donc au
+          # cours DU MOMENT DE L'OBSERVATION. ⛔ C'est plus juste qu'un OMI
+          # converti au cours d'aujourd'hui, et c'est POUR CA qu'on ne
+          # republie pas la valeur OMI : elle n'aurait plus de cours a laquelle
+          # l'attacher. ⛔ Et ca ne traverse toujours pas d'un marche a
+          # l'autre : on ne deduit aucun plancher VeVe de ces chiffres.
+          atl = st.get("atl_stackr") or {}
+          ath = st.get("ath_stackr") or {}
+          def _v(d, u):
+              x = d.get(u)
+              if not isinstance(x, list) or len(x) < 2:
+                  return ("", "")
+              try:
+                  p = float(x[0]); t = float(x[1])
+              except (TypeError, ValueError):
+                  return ("", "")
+              # ⛔ Un prix a zero ou negatif n'est pas un extreme, c'est une
+              # entree abimee : elle sort par le vide, jamais par un « 0.00 »
+              # qui aurait l'air d'un prix.
+              if p <= 0 or t <= 0:
+                  return ("", "")
+              return ("%.4f" % p, "%.0f" % t)
+          ex = []
+          for u in sorted(set(atl) | set(ath)):
+              a, at = _v(atl, u)
+              h, ht = _v(ath, u)
+              if not a and not h:
+                  continue
+              ex.append((u, a, at, h, ht, "USD"))
+          with open("data/extremes_stackr.csv", "w", newline="", encoding="utf-8") as f:
+              w = csv.writer(f)
+              w.writerow(["veve_uuid", "atl", "atl_ts", "ath", "ath_ts", "unite"])
+              w.writerows(ex)
+          print("extremes_stackr.csv : %d piece(s) · plus-bas %d · plus-haut %d"
+                % (len(ex), sum(1 for r in ex if r[1]), sum(1 for r in ex if r[3])),
+                flush=True)
+
+          # ═══════════════════════════════════════════════════════════════════
           # 💱 LE COURS OMI -> omi_usd.csv — lot 181 (24/08/2026)
           # ═══════════════════════════════════════════════════════════════════
           # Deux lignes, ~40 octets, ecrit ICI parce que c'est deja l'etape qui
@@ -717,6 +775,20 @@ jobs:
               || echo "⚠️ releves.csv non pousse : le site garde la version precedente."
           else
             echo "⚠️ releves.csv vide ou absent — on NE remplace PAS celui de la release."
+          fi
+          # 📉📈 LOT H — LES EXTREMES StackR. Meme prudence, mot pour mot, et
+          # elle mord ici AUSSI FORT que pour `offres_stackr.csv` : ce fichier
+          # est le reflet d'une memoire CUMULATIVE que le flux StackR ne permet
+          # pas de reconstruire (il ne garde que ~1,7 h de passe). L'ecraser
+          # avec un fichier reduit a son en-tete effacerait des mois
+          # d'observation, et le deploiement du site resterait vert.
+          # ⛔ N'ECHOUE PAS LE RUN : la recolte est deja sauvee plus haut, et
+          # le site lit ce fichier SANS L'EXIGER.
+          if [ -s data/extremes_stackr.csv ] && [ "$(wc -l < data/extremes_stackr.csv)" -gt 1 ]; then
+            gh release upload etat-floor-watch data/extremes_stackr.csv --clobber \
+              || echo "⚠️ extremes_stackr.csv non pousse : le site garde la version precedente."
+          else
+            echo "⚠️ extremes_stackr.csv vide ou absent — on NE remplace PAS celui de la release."
           fi
           # 💱 LOT 181 — LE COURS OMI. Meme prudence, mot pour mot, que
           # `releves.csv` juste au-dessus, et pour la meme raison : un fichier
