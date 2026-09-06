@@ -2341,6 +2341,34 @@ def detect_atl_stackr(state, flux, omi, cat=None, ts=None):
     on alerterait en continu). Jamais d'alerte a la 1re observation."""
     ts = ts if ts is not None else time.time()
     seen = state.setdefault("atl_stackr", {})        # {uuid:[low_usd, ts]}
+    # ═══════════════════════════════════════════════════════════════════════
+    # LOT H (06/09/2026) — LE PLUS-HAUT StackR, MEMORISE ICI ET NULLE PART
+    # AILLEURS. Demande de Preda : le site veut afficher un plus-bas ET un
+    # plus-haut StackR sous les colonnes ATL/ATH, comme il le fait deja pour
+    # VeVe (`atl_seen` / `ath_seen`).
+    #
+    # POURQUOI DANS CETTE FONCTION-CI, QUI S'APPELLE `detect_atl_stackr`.
+    # Elle est la SEULE a parcourir le flux StackR en ayant deja converti
+    # chaque prix en dollars (`usd = pr * omi`). Une fonction jumelle
+    # `detect_ath_stackr` reparcourrait le meme flux, referait la meme
+    # conversion et la meme validation — deux boucles pour une donnee, et le
+    # jour ou l'une gagne un garde-fou (le `usd <= 0` ci-dessus, par exemple)
+    # l'autre ne l'aurait pas. C'est le motif « deux fabriques » que ce projet
+    # a deja paye quatre fois.
+    # -> Le nom de la fonction ne dit plus tout ce qu'elle fait ; ce
+    #    commentaire le dit a sa place, et c'est le moins cher des deux.
+    #
+    # AUCUNE ALERTE N'EST BRANCHEE DESSUS, ET C'EST VOLONTAIRE. Preda a demande
+    # un AFFICHAGE. Un canal Discord « plus-haut StackR » se declencherait sur
+    # chaque mise en vente optimiste — c'est-a-dire en continu, pour un fait qui
+    # n'interesse personne au moment ou il se produit. On memorise, on ne crie
+    # pas. -> le fichier publie par `floor-watch.yml` suffit au site.
+    #
+    # LA MEMOIRE REPART DE ZERO, et il faut le dire au site : `atl_stackr`
+    # porte 7 059 pieces accumulees depuis des mois, `ath_stackr` en portera
+    # zero au premier run et se remplira au flux 2 min. Une colonne vide n'est
+    # pas une panne — c'est une memoire qui commence.
+    haut = state.setdefault("ath_stackr", {})        # {uuid:[high_usd, ts]}
     alerts = state.setdefault("alerts_atl_stackr", {})
     cat = cat or {}
     out = []
@@ -2358,6 +2386,17 @@ def detect_atl_stackr(state, flux, omi, cat=None, ts=None):
         prev = _f(vieux[0]) if isinstance(vieux, list) and vieux else 0.0
         if prev <= 0 or usd < prev:
             seen[uid] = [round(usd, 4), ts]            # on suit le plus-bas live
+        # LOT H — et le plus-haut, symetriquement. Meme prix, meme conversion,
+        # meme tour de boucle. ATTENTION a l'ordre : ces deux blocs sont AVANT
+        # le `if not ATL_STACKR_ON`, comme le plus-bas l'etait deja. La memoire
+        # ne depend PAS du canal d'alerte — c'est ce qui a permis a
+        # `atl_stackr` d'accumuler 7 059 pieces alors que le canal est reste a
+        # `false` par defaut. Deplacer ces lignes sous le garde-fou eteindrait
+        # la collecte en croyant n'eteindre qu'une notification.
+        vieux_h = haut.get(uid)
+        prev_h = _f(vieux_h[0]) if isinstance(vieux_h, list) and vieux_h else 0.0
+        if prev_h <= 0 or usd > prev_h:
+            haut[uid] = [round(usd, 4), ts]            # on suit le plus-haut live
         if not ATL_STACKR_ON:
             continue
         if usd < ATL_STACKR_MIN_USD:
