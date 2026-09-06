@@ -1,26 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-a605b45c-c809-40d4-a98b-b5daa200a696,Black Panther – Ultimate Animated,collectible,131.15,2026-08-30 04:23:18
-d8e91fe1-47f5-4375-a3de-0040c9851417,Minnie Mouse,collectible,129,2026-08-30 04:23:18
-e7735bff-6de9-45b5-8b33-98a2816ccaf3,CHOICES (Ultraviolet),collectible,1750,2026-08-30 04:23:18
-4f992ee1-d183-485d-a9c9-00695bc727de,Jim Lee Batman V3,collectible,9.72,2026-08-30 04:23:18
-3c2149c7-0415-47f9-b5e8-c6f6d473951a,The Rise of Ultraman #1 - Skottie Young,collectible,25.88,2026-08-30 04:23:18
-2ff8504e-a8f3-4ea6-aa7e-5652c6645796,Dumbo,collectible,84.99,2026-08-30 04:23:18
-367a490c-567c-4e47-b79d-142a25f97489,Gallardo - Arancio Borealis,collectible,120,2026-08-30 04:23:18
-d1099f21-5336-42cd-a813-42fddfcf2aff,Night Trooper,collectible,90,2026-08-30 04:23:18
-bdbb93d0-c9db-41ef-8790-190b4088942a,Thing,collectible,29.99,2026-08-30 04:23:18
-f37c5bb1-5803-49d1-b4ef-3e6958c031fb,Hunk - Yellow Lion,collectible,63,2026-08-30 04:23:18
-fe0f996e-9621-4a5d-939e-e79032a631db,Maestro,collectible,17.95,2026-08-30 04:23:18
-94f72775-7b61-4e82-9f93-58e03cf89d2e,Her Majesty Special Edition,collectible,415,2026-08-30 04:23:18
-45b19b53-65fd-45a3-aca6-dadae852983f,Shadow Trooper Helmet,collectible,11.99,2026-08-30 04:23:18
-dec46e84-89a1-4773-b6fc-e258e868c724,Horus Guards - Anubis,collectible,100,2026-08-30 04:23:18
-69a6f0f0-60c4-4e24-97b6-7faee35532c9,Death Trooper E-11D - Prone,collectible,420,2026-08-30 04:23:18
-069acda0-d0af-47fe-b9b8-258498de1e95,Star Wars: Episode V The Empire Strikes Back - Master Yoda,collectible,15.31,2026-08-30 04:23:18
-46359177-0a0a-4148-aac9-7875a76aaa91,Toph,collectible,7.8,2026-08-30 04:23:18
-f6c0f08f-a0e9-455b-9008-13dc70abcfba,Vana,collectible,29.9,2026-08-30 04:23:18
-1e686588-d7fe-40bc-81be-15d2ca5be3fb,Mysterio,collectible,5.8,2026-08-30 04:23:18
-73255fe7-c9e7-489a-a3bd-547b9b87a8a5,Ash,collectible,4,2026-08-30 04:23:18
-bc64c1a9-5efe-4b52-824d-27ffed8b13e4,Lightning,collectible,2,2026-08-30 04:23:18
-4f41756b-fc06-49d4-89de-27a6a27bed12,IG-11 - Assassin Droid,collectible,25,2026-08-30 04:23:18
 3433ffd5-0721-4346-b556-8ff18d545c27,Mickey Sorcerer's Hat,collectible,119,2026-08-30 05:23:35
 53057d99-ac36-4dd2-b28a-8aa22d9f0b51,Ben Reilly - Acrobatic Arachnid,collectible,44,2026-08-30 05:23:35
 9ec3912b-737f-4396-b83f-96d488cb2ffb,Darth Vader Samurai - Wrath of the Dragon,collectible,850,2026-08-30 05:23:35
@@ -3943,3 +3921,43 @@ b33280f4-4d16-49ed-9787-581eee052e2f,Astro,collectible,17.99,2026-09-06 04:14:44
 c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,5.9,2026-09-06 04:14:44
 db32e4a3-e1c7-4f3f-a2c5-ae54ed27c637,1938 Rutherford B. Hayes,collectible,7.5,2026-09-06 04:14:44
 30c99f6d-b603-47d4-a30b-626c9baa0ae2,1938 James Buchanan,collectible,2.79,2026-09-06 04:14:44
+9c635d40-5aea-484a-b0fb-03d819ba3885,Harley Quinn - #19 Steve Pugh,collectible,1955,2026-09-06 05:15:39
+74464753-0902-4b7b-b3a5-c345e981356f,Harley Quinn - #06 Terry Dodson,collectible,390,2026-09-06 05:15:39
+3eaf1638-5c0c-487e-9ceb-ec8e9871e817,The Proof of Greed,collectible,1000,2026-09-06 05:15:39
+72fb80f0-9a51-422d-97c0-d09d84de0738,Wonder Woman,collectible,21,2026-09-06 05:15:39
+66bf871d-a8d4-474e-a0f2-b1ceb28c7b94,Millennium Falcon,collectible,92.5,2026-09-06 05:15:39
+5e9b0f4f-6120-487c-93e7-12f8c268fbca,Thanos - Warrior,collectible,165,2026-09-06 05:15:39
+ff567837-203b-4507-bbfe-d83ec112be53,Flower Bomber (Street Cleaner Edition),collectible,388,2026-09-06 05:15:39
+0952a89b-b570-4e2f-acf7-63f6174c6a92,Mandalorian,collectible,88,2026-09-06 05:15:39
+7e595273-5759-492c-b95d-4db62eaaef88,On Guard,collectible,8.75,2026-09-06 05:15:39
+3aef8b4f-fe03-4fc9-aa77-cea709ec5988,All Aboard!,collectible,89.9,2026-09-06 05:15:39
+025f038e-f202-4ba9-b64a-aff9ccaf30f2,Maserati MC12 - Victory Blue,collectible,185,2026-09-06 05:15:39
+9ec3912b-737f-4396-b83f-96d488cb2ffb,Darth Vader Samurai - Wrath of the Dragon,collectible,699,2026-09-06 05:15:39
+641ae92d-1a09-431c-81ad-e708d0bd81e5,Mama Imelda,collectible,49,2026-09-06 05:15:39
+70dca326-5dc9-4e24-8c5c-1200d7409f45,Lumpy Space Princess,collectible,12,2026-09-06 05:15:39
+1c2c833d-3e70-4e7e-b589-0c24832a58cd,Katara,collectible,17.89,2026-09-06 05:15:39
+1e6cc040-882f-4288-8b0d-0ad4226be991,The Pink Panther - Animated,collectible,6.98,2026-09-06 05:15:39
+658f1d45-3417-40ec-84f7-054cb8f0d494,Symbiote,collectible,4.99,2026-09-06 05:15:39
+77fe6eff-5fb9-40d8-ac9c-42e23eb64863,Jawa 01,collectible,4.39,2026-09-06 05:15:39
+dec46e84-89a1-4773-b6fc-e258e868c724,Horus Guards - Anubis,collectible,66,2026-09-06 05:15:39
+98f7d0b0-8373-4037-a49f-2db41b24f168,Sokka,collectible,9,2026-09-06 05:15:39
+d4ec084d-812b-4a3c-958f-d691f0060ff9,Master Splinter - Battle Ready,collectible,42,2026-09-06 05:15:39
+46359177-0a0a-4148-aac9-7875a76aaa91,Toph,collectible,5.75,2026-09-06 05:15:39
+dc0e0865-ed0d-4421-8bcd-2d9007d9c73a,VeVe Uncommon General Admission Ticket - NYCC 2024,collectible,8.44,2026-09-06 05:15:39
+62cbb927-bee0-46fd-a852-9cbc06d5bb26,Spider-Man - Action,collectible,14,2026-09-06 05:15:39
+de1c4dd3-2300-4b7a-905e-8cd2e109f748,Go Beyond the Surface,collectible,39,2026-09-06 05:15:39
+9abda8bd-3e74-4e88-aef9-2281f2b9899b,Gadgets and Gizmos Aplenty,collectible,39,2026-09-06 05:15:39
+d1f01da5-0084-4c75-9b81-509d2967f056,Dinglehopper,collectible,39,2026-09-06 05:15:39
+f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,6.9,2026-09-06 05:15:39
+1915a00c-506e-4cd7-a346-948898bb22c4,Sun,collectible,19.9,2026-09-06 05:15:39
+1e686588-d7fe-40bc-81be-15d2ca5be3fb,Mysterio,collectible,7,2026-09-06 05:15:39
+aca3eac8-fea3-4f1f-af6e-38b1854f2c65,Single 2d 'Pembroke Peak' gummed stamp,collectible,2.4,2026-09-06 05:15:39
+79f49f24-d6f3-4ba0-9253-599d05699a35,Single 1s 'Kea and Kaka' gummed stamp,collectible,7.99,2026-09-06 05:15:39
+511147ad-2ed3-4d8c-b811-828355f61f35,Single 3d 'Huia' gummed stamp,collectible,7.99,2026-09-06 05:15:39
+6d26c5d3-29f1-4c5f-b3b4-d32fbbab8984,$3.60 Presents Stamp,collectible,3.49,2026-09-06 05:15:39
+86e4bade-2c04-426d-af8a-656d258936b0,Single 8d 'War Canoe and Crown' gummed stamp,collectible,4.16,2026-09-06 05:15:39
+0352cd90-432a-49f9-bc46-a3f12f8e8d8f,Monovader - Heart of Play,collectible,6.9,2026-09-06 05:15:39
+c453fdaf-e57f-4a45-88a6-487d999916b9,Fall,collectible,7,2026-09-06 05:15:39
+04c1b81f-a6c9-4c57-be41-5f25001cfe44,Epiko Logo - Original,collectible,3.99,2026-09-06 05:15:39
+6974b69e-b502-4bd8-820e-9b876cb02c9f,Single 6d 'Kiwi' gummed stamp,collectible,2.59,2026-09-06 05:15:39
+0b5e951b-09bd-4b29-9db9-d7ca4814d92c,Janie,collectible,3.5,2026-09-06 05:15:39
