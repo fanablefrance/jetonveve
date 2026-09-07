@@ -1,24 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-1df92282-2a7c-4f15-bc75-2e44de9f0f48,Degen Dungeon,collectible,5000,2026-08-31 02:12:56
-aa9e9b2e-32f5-4ba1-8aa9-67c3446bbb61,Moonraker - UK Quad Poster,collectible,449.99,2026-08-31 02:12:56
-7384abab-ff07-4cf8-8d3e-2085e4945f75,#76 Robin,collectible,16.5,2026-08-31 02:12:56
-95c41966-3ddc-4d3d-b52a-8f8569b5bd13,Flying Balloons Girl (Bronze Statue Edition),collectible,1600,2026-08-31 02:12:56
-06289587-89e9-4317-bd5b-038fe1f2150e,Yucky Charmer,collectible,68,2026-08-31 02:12:56
-1bb217e8-acd9-4b09-9841-42ec994d4de7,Mysterio - Smoke and Mirrors,collectible,38.95,2026-08-31 02:12:56
-d1f01da5-0084-4c75-9b81-509d2967f056,Dinglehopper,collectible,15,2026-08-31 02:12:56
-3d0b6bcb-393c-4d0c-a58d-4ebe0dbfcea9,Lunar New Year: Dragon - Pane of 20,collectible,49.99,2026-08-31 02:12:56
-8fc5ef65-80b8-4b61-9cad-3a8de0cc472a,Nessie,collectible,2.85,2026-08-31 02:12:56
-0c90c49f-d867-47de-991f-d5b5606ffb09,Namor - Phoenix,collectible,12,2026-08-31 02:12:56
-2bc26405-9cf9-46bb-a4e7-2339fb0bc319,DCon Mascot - Illuminati Edition - Scott Tolleson,collectible,19,2026-08-31 02:12:56
-fa9bd8ac-2e81-459b-85d9-7182df4d43a2,Women Support the War Effort,collectible,3.65,2026-08-31 02:12:56
-0f73e72f-8bc1-48c4-8b70-4e9b4e372003,Namor - Saga of the Sub-Mariner 1988,collectible,48,2026-08-31 02:12:56
-e8af31a7-9403-4a31-89a5-65570fcb814b,Altar - Becoming a Player,collectible,8,2026-08-31 02:12:56
-02ab1567-e3b7-4862-bd09-4115bcfed9fc,Max,collectible,9,2026-08-31 02:12:56
-0b5e951b-09bd-4b29-9db9-d7ca4814d92c,Janie,collectible,7.4,2026-08-31 02:12:56
-9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,4.99,2026-08-31 02:12:56
-90dc4c4d-7177-4fde-9bae-a42dc5ff7e5c,Foster,collectible,6.75,2026-08-31 02:12:56
-df4040f2-18a2-42d7-b67b-ede12c684102,BLAM!,collectible,2.46,2026-08-31 02:12:56
-0cd81d92-e369-4339-bb20-d64a7076c4e7,Radiant Peach,collectible,5,2026-08-31 02:12:56
 7384abab-ff07-4cf8-8d3e-2085e4945f75,#76 Robin,collectible,16,2026-08-31 03:15:09
 2975026b-9d14-475b-a356-d35855637309,Hulk - Animated,collectible,39.99,2026-08-31 03:15:09
 ac5bc2af-f67d-46da-bac1-1b404a3dd6d1,H.I.M.,collectible,499.94,2026-08-31 03:15:09
@@ -4020,3 +4000,17 @@ f6e15150-641b-4d8e-b7cc-19027a019d1f,Chris Robots Will Kill - OG,collectible,28,
 3c94d7bf-2a58-4e7b-901d-2d177a642da3,Felix – Dual Realms,collectible,45,2026-09-07 01:53:22
 7dba3b40-2198-4e9a-92dc-4f4874c30e39,Night Trooper - Unleashed,collectible,26,2026-09-07 01:53:22
 438829a3-1ddf-43ef-a849-d05292e7937f,Night Trooper - Marching,collectible,1.65,2026-09-07 01:53:22
+7475a966-ed09-4fa8-9b3f-ca6833ea98af,Spider-Man: Miles Morales - Animated,collectible,35000,2026-09-07 02:54:49
+d4a983b5-07d5-4b85-afbf-23df999abe11,You Ain't Seen Nothin' Yet!,collectible,82,2026-09-07 02:54:49
+38240a36-10d1-4653-ba38-61bd524e3ef3,Jean Grey - Phoenix,collectible,25,2026-09-07 02:54:49
+eb1a9ec3-d193-4956-bcb8-d16d5a4a68a7,Captain Carter,collectible,8.95,2026-09-07 02:54:49
+e913c1f9-9578-4077-b90b-94b0b0cde315,The Golden Lad,collectible,400,2026-09-07 02:54:49
+2e75b438-b763-4b0d-9b36-8f3edecb6614,Buzz Lightyear – Mission Ready,collectible,18,2026-09-07 02:54:49
+c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,7.5,2026-09-07 02:54:49
+97f60a30-aa00-4f48-9978-fbd8e1567f15,The Golden,collectible,199,2026-09-07 02:54:49
+55ba9c5c-a97e-4759-91b4-06c6aa97c08e,Night Trooper Exposed - Reawakened,collectible,290,2026-09-07 02:54:49
+7dba3b40-2198-4e9a-92dc-4f4874c30e39,Night Trooper - Unleashed,collectible,25,2026-09-07 02:54:49
+5ac589d9-ee8c-40a7-84cb-dae681744a3f,Warrior Jake,collectible,13,2026-09-07 02:54:49
+ac2d7f15-df6b-4177-a427-ffa286085d39,VeVe Lisbon VIP Entry Ticket,collectible,6,2026-09-07 02:54:49
+553733cf-6ee3-4789-bc97-e4daaaac5dbb,Year of the Rabbid Dragon,collectible,5,2026-09-07 02:54:49
+8564d30f-2411-4d71-8f53-330747e9326d,Night Trooper Exposed - Marching,collectible,1.63,2026-09-07 02:54:49
