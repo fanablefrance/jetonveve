@@ -1,28 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-3b43ff0a-b0ae-4df8-a9d2-f19cada64cd5,Cheshire Cat,collectible,120,2026-09-01 11:15:35
-d40158c7-c456-4377-980a-9c5cc6f99bc1,Ryu,collectible,39.45,2026-09-01 11:15:35
-6423ffc0-d8e3-4f1c-94a1-7299ad991bf9,Cosmo,collectible,69,2026-09-01 11:15:35
-dbed7372-f79d-4638-a180-1da2e36195f4,Alice,collectible,22.5,2026-09-01 11:15:35
-667dfe39-caca-4fa3-b427-c5311b15fa43,Seymour Evil Monkey – Yellow & Red,collectible,70,2026-09-01 11:15:35
-38eb4855-5bfe-40a3-922d-54dc7fb3520b,Remember Us - Vital Voices II,collectible,21,2026-09-01 11:15:35
-7aefc64f-2a8f-4412-800d-25f1e3699c90,Aang - Airbender,collectible,19.99,2026-09-01 11:15:35
-5dbd1ad5-e6a6-48b4-ad2a-f4489968dce0,Buzz Lightyear – Lightyear Blast,collectible,95,2026-09-01 11:15:35
-8686b5d4-4c26-42c8-8c79-0963c81754b0,Hear More Evil Monkey - Yellow & Red,collectible,55,2026-09-01 11:15:35
-0c90c49f-d867-47de-991f-d5b5606ffb09,Namor - Phoenix,collectible,9.99,2026-09-01 11:15:35
-d9142a24-fb93-439c-9c06-e09b52172052,Going to War,collectible,85,2026-09-01 11:15:35
-7a91fb6d-34a5-45e6-9375-9913fae7900f,The Drop Off,collectible,24,2026-09-01 11:15:35
-59a9e7f2-af54-4414-b1a7-7ce13c55eba9,Sokka - Blademaster,collectible,62.99,2026-09-01 11:15:35
-fccfc777-cc16-4a36-b063-8258d6e69ffe,Boy,collectible,17.5,2026-09-01 11:15:35
-af36d0b7-21fc-404d-a6ea-6b5676c9ba30,Hoodie,collectible,17.5,2026-09-01 11:15:35
-ec00071b-05f6-4fbd-9b35-cbcbfb88c996,Mr. V,collectible,4.5,2026-09-01 11:15:35
-f6717b76-db8d-48af-bffd-d7016ac4a83d,C-Rank Essence Stone,collectible,1.08,2026-09-01 11:15:35
-ee2cc7c4-19c2-4b7f-818c-ed5e3c2d8713,Don’t Use Me as a Prop! (6 of 7),collectible,44.8,2026-09-01 11:15:35
-8c8416ab-c092-4aec-ace1-d90f90fe4de6,The Laboratory (1 of 7),collectible,39.92,2026-09-01 11:15:35
-431c6749-4010-45c0-9af3-8bb0caa5f31c,Taking it Back (7 of 7),collectible,39.5,2026-09-01 11:15:35
-2a576f3c-561a-4a5c-89ea-9863944ee329,The Public Image (5 of 7),collectible,34.92,2026-09-01 11:15:35
-a41b032c-1fa3-4973-b2d7-d2d3a49f1120,Don’t You Think That’s a Little Obvious? (4 of 7),collectible,33.92,2026-09-01 11:15:35
-f55262b2-53a9-4ee9-b55c-c8635a3ae308,Sometimes I Think I Don’t Know You Anymore (3 of 7),collectible,32.93,2026-09-01 11:15:35
-58d2a9af-b491-43ca-8fbc-964ba2c1e282,A Dissident Enters (2 of 7),collectible,32.92,2026-09-01 11:15:35
 d042924f-2db9-4180-8d16-38bf4c9e5b9d,R2-D2,collectible,150,2026-09-01 12:17:42
 2cf09235-f140-422e-a800-d0b049fbaff0,C-3PO,collectible,65,2026-09-01 12:17:42
 b33424b2-ea2b-45c0-9f5b-05748c064554,Spider-Man: Miles Morales - Hoodie Season,collectible,290,2026-09-01 12:17:42
@@ -3805,3 +3781,52 @@ d6d5078f-5301-4a78-bfe6-e56d90c89b9c,I Am Groot,collectible,14,2026-09-08 11:07:
 796348ff-b081-4473-b255-acf577417d96,Thor,collectible,3,2026-09-08 11:07:34
 82a6d503-2189-4014-86bb-c0f8f5900f8e,DCon Mascot – U.K. Edition,collectible,4.1,2026-09-08 11:07:34
 e8ac58ab-783e-4b9d-9845-054a86e41b69,Gouki Default,collectible,30,2026-09-08 11:07:34
+b23059e4-7b10-4e83-a5a4-890bf1146ccc,Night Trooper - Reawakened,collectible,1500000,2026-09-08 12:09:22
+5e8f7e71-3285-4977-9f11-77fa35c2dda3,Spider-Man: Miles Morales - Ultimate Spider-Man,collectible,575,2026-09-08 12:09:22
+2bddd574-39a8-400d-b614-a71ff7734a93,A Jaunty Jig,collectible,16.95,2026-09-08 12:09:22
+ebcf7ef8-7cec-4e81-b1e1-ea088c203f9f,Wild Energy,collectible,102,2026-09-08 12:09:22
+1d55c901-4e62-472f-95ae-50b248a2d1e7,Harley Quinn (J. Scott Campbell),collectible,32,2026-09-08 12:09:22
+55876156-f6d4-4ca8-bb50-fd6c1f5f0fb8,U.S.S. Enterprise-D (1:1),collectible,38.99,2026-09-08 12:09:22
+6b9b6046-7fbd-43e1-bfe0-54a5f4ddeb0b,Rogue - Southern Powerhouse,collectible,50,2026-09-08 12:09:22
+7ae4653c-f3d9-44ed-85ee-8dd338ba0e3a,Lamborghini Countach LP 400 - Nero Tenebre,collectible,1445,2026-09-08 12:09:22
+66bf871d-a8d4-474e-a0f2-b1ceb28c7b94,Millennium Falcon,collectible,89.55,2026-09-08 12:09:22
+733a17a8-14be-4e49-93b7-02e22c7374bd,Superman vs. The Flash,collectible,15.99,2026-09-08 12:09:22
+9e65bdba-e67c-4af1-b1bc-f6bcc60e4bcd,Luke Skywalker's X-wing,collectible,31,2026-09-08 12:09:22
+444f60ea-3bfd-472b-b774-24916aba489f,Lamborghini Countach LP 400 - Bianco  Siderale,collectible,39.9,2026-09-08 12:09:22
+7a892a43-f3b9-4542-ab17-7fd15022899a,Thunderbird,collectible,17.5,2026-09-08 12:09:22
+a6ff5d76-94cf-4f57-9045-a2538dbf41b3,Sung Jinwoo - E-Rank Hunter,collectible,1190,2026-09-08 12:09:22
+a8f8d463-7081-4fdf-b411-1a3182200f8b,Big Thunder Mountain,collectible,33,2026-09-08 12:09:22
+a8691a6a-9bad-40fd-b0de-a11d3f54041e,Mjolnir - Thor: The Dark World,collectible,40,2026-09-08 12:09:22
+89f1561b-78b1-4a9f-9aaf-09543d007bd0,Maserati MC12 - Stradale,collectible,29.99,2026-09-08 12:09:22
+b7ea3a29-17e1-47cb-a6ca-2ec419165e3c,“it’s a small world”,collectible,27,2026-09-08 12:09:22
+69aa8eb1-0cd0-4a6f-8ee5-d06bd3eac21f,Miura - Bianco Polo Park,collectible,70,2026-09-08 12:09:22
+9948f482-7f31-4e5a-9fdd-951a237380b3,Ernie,collectible,35,2026-09-08 12:09:22
+e955dcc5-43e2-4cdd-a978-c8b66ddd6c96,Miura - Arancio Miura,collectible,26,2026-09-08 12:09:22
+ff13b7ac-7bfe-4bfb-9efa-1902fdc9a4ba,Kenneth Rocafort Batman,collectible,7.45,2026-09-08 12:09:22
+1d121222-5f88-404a-9ecc-303d87a3a04e,Lamborghini Countach LP 400 - Rosso Siviglia,collectible,47,2026-09-08 12:09:22
+fc9edd6c-11d2-4aba-86e4-dfc47934023c,Diablo - Orange,collectible,45,2026-09-08 12:09:22
+3e628ba1-7c41-4d53-8ae7-ecc2aa09512a,Michelangelo - IncogNinja,collectible,88,2026-09-08 12:09:22
+56c63f1f-6636-4954-8f6a-49933cee761f,Miura - Giallo Miura,collectible,150,2026-09-08 12:09:22
+cbeeec13-aef9-4d30-a06b-6d429669b152,Sirena,collectible,4.5,2026-09-08 12:09:22
+12901d40-475f-4dd3-86a1-328e108583d6,Wreck-It Ralph Pencil,collectible,17.5,2026-09-08 12:09:22
+bff6c07d-832d-4d1a-82aa-be214645deb0,Raphael - Tune-Up Workshop,collectible,7.8,2026-09-08 12:09:22
+235379ec-7004-4053-9528-20f530419148,VeVe Heart Logo - Green,collectible,55,2026-09-08 12:09:22
+a31fd9df-edf2-449f-8f0b-7fac53aec930,Bing Bong,collectible,55,2026-09-08 12:09:22
+5d8c0b3d-ab81-4906-926f-b00dc3cc5fb0,VeVe Heart Logo - Red,collectible,48,2026-09-08 12:09:22
+c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,7.5,2026-09-08 12:09:22
+e120c73b-c7bd-4905-a2f7-55f3b0b9ab9a,BB-8,collectible,10.9,2026-09-08 12:09:22
+9fc00c0d-146d-4f67-8acc-8a8ad3ea2008,Bill & Ted's Bogus Journey,collectible,11,2026-09-08 12:09:22
+582171b4-047f-4d3e-8c41-987fe0f9f7f4,Learner Jake,collectible,10.99,2026-09-08 12:09:22
+d4432421-d5cc-4a1d-9f0d-d98ac39ee597,Cartenon Temple Diorama,collectible,7.99,2026-09-08 12:09:22
+b2c5500c-a2b0-48e6-ab14-65fdc2e76814,Blasted Stormtrooper Helmet,collectible,29.99,2026-09-08 12:09:22
+a6a8e263-17b8-4653-894b-6b7dac0bc777,Sadness,collectible,8.55,2026-09-08 12:09:22
+8f79e4c4-d070-4d54-88f2-64866de63473,Joseph Parker - Framed Photo,collectible,14.95,2026-09-08 12:09:22
+553733cf-6ee3-4789-bc97-e4daaaac5dbb,Year of the Rabbid Dragon,collectible,8.89,2026-09-08 12:09:22
+d8f15b6a-79b7-4354-b9fd-4dace50e7f3d,Kahalo ver. Rainbow,collectible,4.99,2026-09-08 12:09:22
+61fa958d-8683-41b5-8421-446732676d8e,Kahalo ver. Original,collectible,2.22,2026-09-08 12:09:22
+3d1d07b2-d3dd-48f4-8998-8a964d414208,Invisible Woman - Action,collectible,9.99,2026-09-08 12:09:22
+aee6fb37-95fe-4573-bc42-3e45d46cb950,Vermillion,collectible,2.99,2026-09-08 12:09:22
+8564d30f-2411-4d71-8f53-330747e9326d,Night Trooper Exposed - Marching,collectible,1.5,2026-09-08 12:09:22
+9044735a-0826-4a8c-bb54-9ccbc222a47e,Toon,collectible,3.5,2026-09-08 12:09:22
+b5d881ee-489b-4b13-8a1d-7785c7862818,Monovader - Lord of the Boom,collectible,2.59,2026-09-08 12:09:22
+7a94e5de-0de3-492f-a00e-af761e3323e3,Mr. Epiko,collectible,3.2,2026-09-08 12:09:22
