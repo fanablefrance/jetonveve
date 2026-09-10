@@ -1,22 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-e3c58965-57b1-40a7-b091-2ba227c4c284,ROSÉ - Animated,collectible,400,2026-09-03 15:11:33
-3f046859-154b-4a76-818f-f94ef4c0d928,Mike Wazowski: I’ve Been Waiting for This My Whole Life!,collectible,10.5,2026-09-03 15:11:33
-462c5fbb-fc0d-4aec-b7e8-856dea8b4963,Kylo Ren,collectible,8,2026-09-03 15:11:33
-0183c5a4-0480-4d6b-a9db-7e1228124f50,Po,collectible,14,2026-09-03 15:11:33
-069acda0-d0af-47fe-b9b8-258498de1e95,Star Wars: Episode V The Empire Strikes Back - Master Yoda,collectible,16,2026-09-03 15:11:33
-0433455f-ebd3-447d-bb00-347564d5f6a4,Guile Story,collectible,64.95,2026-09-03 15:11:33
-92635283-99b4-4597-ba69-01e39ccba334,Master Splinter - Father Figure,collectible,4.5,2026-09-03 15:11:33
-531922ce-7c82-43dc-8ef2-dce25d31fb43,Arishem the Judge,collectible,7,2026-09-03 15:11:33
-fdd6f19d-4614-44d4-b816-5cef345d7981,Red Horse,collectible,33.33,2026-09-03 15:11:33
-845f23d3-b1ff-4eef-b732-69f09db16030,Chip Off the 'Ol Block Mural,collectible,18,2026-09-03 15:11:33
-ea954588-2e89-4829-9b96-92609acfc4c1,Eson the Searcher,collectible,5,2026-09-03 15:11:33
-a709645b-62df-490d-b74a-16a90c358d50,Master Splinter - Combat Training,collectible,13.99,2026-09-03 15:11:33
-f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,6,2026-09-03 15:11:33
-52ba30bf-11d9-43b9-85e3-5dc6a7a53e51,Werewolf By Night,collectible,5,2026-09-03 15:11:33
-77857a70-edf2-4401-9798-93f63b941d60,Vulture,collectible,5,2026-09-03 15:11:33
-9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,5,2026-09-03 15:11:33
-29e16f1c-8bc5-47cb-8b2e-ab133d6dace0,Cereal Chiller,collectible,2.2,2026-09-03 15:11:33
-02ab1567-e3b7-4862-bd09-4115bcfed9fc,Max,collectible,4.25,2026-09-03 15:11:33
 65dab55c-40a4-4117-9a0e-96888f9028de,Ben Reilly - Beyond Spider-Man,collectible,599,2026-09-03 16:13:33
 a0c50208-f32c-4e7e-9664-c28555a9f523,Yoda,collectible,64,2026-09-03 16:13:33
 c6785ff7-d2d1-404a-a1f0-7a5104e73009,‍The Armorer,collectible,48,2026-09-03 16:13:33
@@ -3539,26 +3521,28 @@ bc50774d-b923-4a5c-8e5d-f25608e1e80e,Batgirl,collectible,9.55,2026-09-10 13:44:3
 6897547b-b936-4c5a-961d-e6303f0a58ef,Blue Animated 2,collectible,17.5,2026-09-10 13:44:34
 3164f5e3-044d-477d-8022-0a99dead294d,Leonardo - Classic,collectible,10.5,2026-09-10 13:44:34
 af36d0b7-21fc-404d-a6ea-6b5676c9ba30,Hoodie,collectible,11,2026-09-10 13:44:34
-900388bb-8847-4334-8d1a-508de81c4a4d,Superman,collectible,220,2026-09-10 14:47:12
-5fd09e1f-58f8-467f-9e78-d64f6e3a69b9,R2-D2,collectible,175,2026-09-10 14:47:12
-0acd73ab-9908-4060-a8b5-4d9330f1ecb6,Day of the Dead Mother,collectible,22,2026-09-10 14:47:12
-40a5cbc7-3fc7-4441-8b27-96238e7b6310,JISOO Gold/Silver,collectible,250,2026-09-10 14:47:12
-319f7e96-0519-416f-b180-7b3fc4ecb240,Doug Mahnke Batman,collectible,4.88,2026-09-10 14:47:12
-0b56408b-874b-4fbb-a571-0f412cdccca5,Deadpool – Animated,collectible,16.8,2026-09-10 14:47:12
-3facefe2-427f-48ec-a954-e5892b8c3b20,Yoda - Focus,collectible,62.5,2026-09-10 14:47:12
-10617c75-f9d0-48cb-b164-fe5b192e8cae,Beta Ray Bill,collectible,39,2026-09-10 14:47:12
-2dc769f6-356f-4001-b568-8e7dcdbf624b,Mister Fantastic,collectible,1.8,2026-09-10 14:47:12
-4804e172-42a2-419f-b1f0-431ece52c00a,Deadpool – Ugly Sweater Party,collectible,3,2026-09-10 14:47:12
-f09d3ca4-d90a-4844-a28b-3207b87161a4,Bat-Signal,collectible,4.4,2026-09-10 14:47:12
-4a8e584e-4cd0-47e8-8954-af74c52d90fe,Invisible Woman,collectible,1.95,2026-09-10 14:47:12
-262ca5c3-d806-421d-aa0a-05207e5ea59c,Donatello - IncogNinja,collectible,46,2026-09-10 14:47:12
-6f7ce463-15ba-484f-939f-2ec6a87f4a5c,Tropicana,collectible,4.1,2026-09-10 14:47:12
-8cd9530d-6ea9-436c-bdc0-ee73e43c0abe,Magik - Phoenix,collectible,6.95,2026-09-10 14:47:12
-47a56835-3d0e-44c8-b636-987bf484f9c2,Romulan - Bird of Prey,collectible,37,2026-09-10 14:47:12
-48c3da1f-c783-45f5-af97-8dbdcdeb74ec,Thought Bubble,collectible,22,2026-09-10 14:47:12
-fccfc777-cc16-4a36-b063-8258d6e69ffe,Boy,collectible,14,2026-09-10 14:47:12
-d37184af-298d-4b47-ae13-819fb234b80d,Episode 12 - Arise,collectible,2.95,2026-09-10 14:47:12
-af36d0b7-21fc-404d-a6ea-6b5676c9ba30,Hoodie,collectible,11.99,2026-09-10 14:47:12
-983c4be0-5acb-468d-b834-3e2869618011,Super,collectible,11.5,2026-09-10 14:47:12
-56d5409c-3c30-40ba-888e-2987749734c1,Record #8 - Duck Luck - Gold,collectible,7,2026-09-10 14:47:12
-e0f54705-754e-4973-92a6-56a6194ef000,With Love and Kisses: Booklet of 20,collectible,6,2026-09-10 14:47:12
+65dab55c-40a4-4117-9a0e-96888f9028de,Ben Reilly - Beyond Spider-Man,collectible,580,2026-09-10 15:49:29
+da4f0ab8-00be-498e-8784-bde7d0d105e2,#56 Bruce Timm Harley Quinn,collectible,29.95,2026-09-10 15:49:29
+069ed892-ac0a-4ebe-9089-f72b815a8c69,First Blood - Original US Theatrical Poster (1982),collectible,14.95,2026-09-10 15:49:29
+be0c63aa-8fc1-4037-99cb-862713e65001,Avengers Tower - Marvel Metallic Red,collectible,75,2026-09-10 15:49:29
+98f7d0b0-8373-4037-a49f-2db41b24f168,Sokka,collectible,11,2026-09-10 15:49:29
+33f16c99-a5e4-4268-98e1-ce6e3ea05dad,Elf Labbit,collectible,4.95,2026-09-10 15:49:29
+8f796085-6c23-43e4-af28-f0df9cace79f,Sakura,collectible,54,2026-09-10 15:49:29
+55ba9c5c-a97e-4759-91b4-06c6aa97c08e,Night Trooper Exposed - Reawakened,collectible,385,2026-09-10 15:49:29
+d53cc996-2d61-4be9-976c-f65ca3e4e0c0,Episode 2 - If I Had One More Chance,collectible,5,2026-09-10 15:49:29
+77857a70-edf2-4401-9798-93f63b941d60,Vulture,collectible,8,2026-09-10 15:49:29
+f786c6ec-1f78-496e-8f68-d4f2bf242deb,The Splash Manta Ray,collectible,24,2026-09-10 15:49:29
+983c4be0-5acb-468d-b834-3e2869618011,Super,collectible,13.5,2026-09-10 15:49:29
+856227a4-716c-4b50-893c-d16a4fc93e33,Night Trooper Exposed - Unleashed,collectible,19.9,2026-09-10 15:49:29
+d37184af-298d-4b47-ae13-819fb234b80d,Episode 12 - Arise,collectible,2.94,2026-09-10 15:49:29
+2bfd9dbb-ac7a-4b5e-8dd7-651694dcba17,Dynamite Edition - Homelander Poster,collectible,60,2026-09-10 15:49:29
+6f04f0ca-d6fa-4b8c-b5cf-34c96602c7e9,VeveMagic,collectible,7.1,2026-09-10 15:49:29
+90dc4c4d-7177-4fde-9bae-a42dc5ff7e5c,Foster,collectible,5,2026-09-10 15:49:29
+438829a3-1ddf-43ef-a849-d05292e7937f,Night Trooper - Marching,collectible,1.7,2026-09-10 15:49:29
+8564d30f-2411-4d71-8f53-330747e9326d,Night Trooper Exposed - Marching,collectible,1.6,2026-09-10 15:49:29
+04c1b81f-a6c9-4c57-be41-5f25001cfe44,Epiko Logo - Original,collectible,4,2026-09-10 15:49:29
+a738176f-3b62-4024-bcaf-222086173831,MOUSE Season One Movie Poster,collectible,14.95,2026-09-10 15:49:29
+0b5e951b-09bd-4b29-9db9-d7ca4814d92c,Janie,collectible,3.79,2026-09-10 15:49:29
+5e4f8a69-f7c3-4060-8eb8-7b34540a36ce,Wendy’s Gift Box,collectible,4.2,2026-09-10 15:49:29
+375e383d-9421-43dc-a1de-19703274118f,Snow - Dark,collectible,29.99,2026-09-10 15:49:29
+fec6128b-b0f8-4f18-9077-1f63aad3bc3c,Beach Prank - Gold,collectible,15,2026-09-10 15:49:29
