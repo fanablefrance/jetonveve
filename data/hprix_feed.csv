@@ -1,20 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-9c1ba3e2-9e84-4987-8704-0044f03f509b,The Spy Who Loved Me - Hungarian Poster,collectible,15500,2026-09-03 10:01:46
-2cf09235-f140-422e-a800-d0b049fbaff0,C-3PO,collectible,67,2026-09-03 10:01:46
-d63e9844-2204-4dde-82e0-3d5c467ed225,Goofy,collectible,87,2026-09-03 10:01:46
-d238354f-b734-4a0a-b0b1-4a51bf6faba4,Storm – Ultimate Animated,collectible,143,2026-09-03 10:01:46
-9c67d52d-1f05-4a9a-abb7-dfb390da50bc,Scout Trooper,collectible,62,2026-09-03 10:01:46
-319f7e96-0519-416f-b180-7b3fc4ecb240,Doug Mahnke Batman,collectible,5,2026-09-03 10:01:46
-882fd08e-05c8-44c4-97d1-98f907cd40b7,Buttercup,collectible,16,2026-09-03 10:01:46
-37353ee5-47b8-4498-a220-7851c6dd0923,Michelangelo - Classic,collectible,9.99,2026-09-03 10:01:46
-3164f5e3-044d-477d-8022-0a99dead294d,Leonardo - Classic,collectible,8.99,2026-09-03 10:01:46
-68649d9c-b610-4ac0-a07a-f14a1fca6585,Raphael - Classic,collectible,7,2026-09-03 10:01:46
-c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,6,2026-09-03 10:01:46
-e5e0de12-2189-4143-a87d-162190fbf553,Max - Blue Metallic,collectible,349,2026-09-03 10:01:46
-46359177-0a0a-4148-aac9-7875a76aaa91,Toph,collectible,6.89,2026-09-03 10:01:46
-a13d3ffd-24cb-4b53-8902-43ea34515a0c,Jubilee - Full Charge,collectible,9.99,2026-09-03 10:01:46
-0b5e951b-09bd-4b29-9db9-d7ca4814d92c,Janie,collectible,4.5,2026-09-03 10:01:46
-38bc4ba4-ed87-425a-8fef-2e5cd436a0a5,ILLAZILLAZ (Metal Element) - TNES,collectible,4.15,2026-09-03 10:01:46
 7ae4653c-f3d9-44ed-85ee-8dd338ba0e3a,Lamborghini Countach LP 400 - Nero Tenebre,collectible,3999,2026-09-03 11:03:34
 b33424b2-ea2b-45c0-9f5b-05748c064554,Spider-Man: Miles Morales - Hoodie Season,collectible,270,2026-09-03 11:03:34
 44b81776-9e29-4b9f-992d-127fe9e66873,Locomotive 131 Time Machine,collectible,58.33,2026-09-03 11:03:34
@@ -3582,3 +3566,20 @@ ef4745e5-f59f-4dcb-a886-a9026517ff60,Jurassic Park Gates,collectible,32,2026-09-
 f274a17e-c98c-4c82-9495-9625436e5c57,Duck & Cover,collectible,799,2026-09-10 09:35:37
 7a50712b-8a87-4d4c-9e0b-90e23cfd7441,Night Trooper Exposed,collectible,3.5,2026-09-10 09:35:37
 eda67c9c-4bb1-4b8d-9d6c-d2ce337cf711,Epiko Logo - Blue Metallic,collectible,210,2026-09-10 09:35:37
+6a3c8ad0-8bb9-4065-abff-9d12b8e82bc4,Lady and the Tramp,collectible,54.99,2026-09-10 10:39:14
+1a0b2842-23de-438d-8242-d11846483d6c,Beware the Dark Side,collectible,11.37,2026-09-10 10:39:14
+3a24545f-3e4d-45d7-916f-817a50c7f1b2,No Time To Die  - Triumph Motorcycle,collectible,10.99,2026-09-10 10:39:14
+3d677e40-ac5d-4c53-83a2-892d8275524e,The Visible Labbit - Neon Edition,collectible,50,2026-09-10 10:39:14
+125b902c-7c6e-4262-a58f-4f3e4ee8d195,The Rise of Ultraman #1 - Alex Ross,collectible,10.67,2026-09-10 10:39:14
+0988f04a-e678-4797-9652-0142e3a37f8b,Just-Us (color),collectible,59,2026-09-10 10:39:14
+06ca77a0-4e16-4556-80a3-6ea1b5949065,Anne Boleyn,collectible,28,2026-09-10 10:39:14
+6f5c2461-9501-45fe-8077-70169d70efd5,Black Death Greaper - Sket One,collectible,100,2026-09-10 10:39:14
+842f5443-b6d0-4fec-a3cb-a17b91d9287b,Dream from Day to Night,collectible,11.99,2026-09-10 10:39:14
+ad0dbff5-70b9-4bb5-be40-2bb436f1cef2,Coca-Cola Vending Machine (1950s),collectible,9.99,2026-09-10 10:39:14
+47a56835-3d0e-44c8-b636-987bf484f9c2,Romulan - Bird of Prey,collectible,37.99,2026-09-10 10:39:14
+2be9cf5d-8152-425d-9f5a-ac77f7f39792,Shadow Trooper - Shooting,collectible,145,2026-09-10 10:39:14
+856227a4-716c-4b50-893c-d16a4fc93e33,Night Trooper Exposed - Unleashed,collectible,19.99,2026-09-10 10:39:14
+1e686588-d7fe-40bc-81be-15d2ca5be3fb,Mysterio,collectible,6.9,2026-09-10 10:39:14
+fbc51b96-8996-4dad-bd2e-0e24d9dc68ea,Monovader - Full Resin Mode,collectible,27,2026-09-10 10:39:14
+c59d0246-84e4-476e-a398-f6f9d24a2f58,OLYMPUS SAGA: MEGALITH #1 Variant Cover Poster,collectible,108,2026-09-10 10:39:14
+6dfe3789-1ad9-4232-a6cd-b657eb90efdd,Pizza Boxes,collectible,1.8,2026-09-10 10:39:14
