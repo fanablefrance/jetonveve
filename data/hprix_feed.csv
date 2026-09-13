@@ -1,45 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-2e31455d-8c38-405d-b2f6-50b2e5d27ea0,Iron Man,collectible,49,2026-09-06 01:08:31
-370fff46-9ed2-402c-a981-955b3b0202e1,Donald Duck and Daisy Duck,collectible,35,2026-09-06 01:08:31
-cd795c5e-00af-4132-81af-6bc2d26e683a,Xenomorph,collectible,55,2026-09-06 01:08:31
-1c22b893-611f-4047-80eb-191462a96b61,Aventador SVJ Roadster - Verde Alceo,collectible,27.99,2026-09-06 01:08:31
-3de45cbc-3a22-433d-92c0-a8099d775e8d,Green Lantern (Hal Jordan),collectible,22.99,2026-09-06 01:08:31
-f9f80a96-fd46-4967-aef2-3571369639f7,Mr. Knight 2,collectible,10.99,2026-09-06 01:08:31
-319f7e96-0519-416f-b180-7b3fc4ecb240,Doug Mahnke Batman,collectible,3.9,2026-09-06 01:08:31
-1f7f450e-d3af-451c-978b-158aad824e9d,Storm – Mistress of the Elements,collectible,3,2026-09-06 01:08:31
-719d16e4-db5a-4a9a-b956-37669f3145b0,Tefral the Surveyor,collectible,69,2026-09-06 01:08:31
-f37c5bb1-5803-49d1-b4ef-3e6958c031fb,Hunk - Yellow Lion,collectible,53,2026-09-06 01:08:31
-fa08de73-250d-4e26-a6eb-e3ae46378b26,Blade,collectible,39,2026-09-06 01:08:31
-0135a605-9c50-4ad4-bd2e-17a253fb028f,Hawkeye Venomized,collectible,16.99,2026-09-06 01:08:31
-6aa7e21f-2901-4dbb-b36c-1e25711642ee,Red Wagon Inn,collectible,15.99,2026-09-06 01:08:31
-1c2c833d-3e70-4e7e-b589-0c24832a58cd,Katara,collectible,14,2026-09-06 01:08:31
-0a126e9f-b830-4a77-8733-09a15ef897df,Sabretooth - Imprisoned Predator,collectible,44,2026-09-06 01:08:31
-020331ea-b8e1-4552-b804-50eca175b88c,Mogul Grin - Gold Skull,collectible,35,2026-09-06 01:08:31
-cfbc5159-b5ef-4a33-adb6-0e31e2cea1f6,JISOO Pink Venom Card,collectible,15.99,2026-09-06 01:08:31
-98f7d0b0-8373-4037-a49f-2db41b24f168,Sokka,collectible,10,2026-09-06 01:08:31
-c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,6.5,2026-09-06 01:08:31
-3deb2406-4e7a-4b6c-9ca9-dfd08814c9e8,Groot Spider-Man,collectible,9.99,2026-09-06 01:08:31
-577a23d0-6417-4930-b5ac-092174aee57b,Running Keith (Modern) - XLARGE,collectible,9.99,2026-09-06 01:08:31
-872821f8-2814-450d-8287-e870cf137179,Kang 1,collectible,5,2026-09-06 01:08:31
-cbc31f4d-20cb-4a04-a1a7-11e6801f7a43,Year of the Dragon Miniature Sheet,collectible,18,2026-09-06 01:08:31
-b72f0788-948e-4e0a-8c22-3e067e35634f,The Rabbbits Jukebox,collectible,2.75,2026-09-06 01:08:31
-de1c4dd3-2300-4b7a-905e-8cd2e109f748,Go Beyond the Surface,collectible,55,2026-09-06 01:08:31
-9abda8bd-3e74-4e88-aef9-2281f2b9899b,Gadgets and Gizmos Aplenty,collectible,55,2026-09-06 01:08:31
-d1f01da5-0084-4c75-9b81-509d2967f056,Dinglehopper,collectible,55,2026-09-06 01:08:31
-dc0e0865-ed0d-4421-8bcd-2d9007d9c73a,VeVe Uncommon General Admission Ticket - NYCC 2024,collectible,8.44,2026-09-06 01:08:31
-1bacdd79-a711-4a24-9bfa-c0927e871e9a,Chris Robots Will Kill - SUYE Special Sky Blue,collectible,18,2026-09-06 01:08:31
-9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,5.75,2026-09-06 01:08:31
-39c4b021-c6e7-479d-ab1d-8de90749d729,DJ Big Bot - Rust,collectible,3.5,2026-09-06 01:08:31
-79f49f24-d6f3-4ba0-9253-599d05699a35,Single 1s 'Kea and Kaka' gummed stamp,collectible,9.99,2026-09-06 01:08:31
-511147ad-2ed3-4d8c-b811-828355f61f35,Single 3d 'Huia' gummed stamp,collectible,9.99,2026-09-06 01:08:31
-ed1533cd-1a17-4968-b8d6-9a8f57e052ee,Boba Fett’s Chest Plate,collectible,5,2026-09-06 01:08:31
-7f37eb78-0787-446f-a757-b48e4b97dc40,Retro Bobo,collectible,5.8,2026-09-06 01:08:31
-f216c114-f12c-4c32-a2af-0c8632206274,Single 2s 'Milford Sound' gummed stamp,collectible,1.99,2026-09-06 01:08:31
-36870fc2-0fa9-47f8-937c-b56eb1288ad2,Single 5s 'Mount Cook' gummed stamp,collectible,2.99,2026-09-06 01:08:31
-aca3eac8-fea3-4f1f-af6e-38b1854f2c65,Single 2d 'Pembroke Peak' gummed stamp,collectible,1.4,2026-09-06 01:08:31
-86e4bade-2c04-426d-af8a-656d258936b0,Single 8d 'War Canoe and Crown' gummed stamp,collectible,2.99,2026-09-06 01:08:31
-bc64c1a9-5efe-4b52-824d-27ffed8b13e4,Lightning,collectible,1.75,2026-09-06 01:08:31
-6974b69e-b502-4bd8-820e-9b876cb02c9f,Single 6d 'Kiwi' gummed stamp,collectible,1.5,2026-09-06 01:08:31
 95b86201-ed47-471f-ada2-4e053041379b,Partners Statue,collectible,1799,2026-09-06 02:11:06
 2e87137d-51b3-41ee-93e1-80e0e799d6ba,Spider-Man – Hangin’ Out,collectible,32,2026-09-06 02:11:06
 b33424b2-ea2b-45c0-9f5b-05748c064554,Spider-Man: Miles Morales - Hoodie Season,collectible,220,2026-09-06 02:11:06
@@ -3545,3 +3504,33 @@ fc9edd6c-11d2-4aba-86e4-dfc47934023c,Diablo - Orange,collectible,25,2026-09-12 2
 fccfc777-cc16-4a36-b063-8258d6e69ffe,Boy,collectible,11,2026-09-12 23:41:21
 438829a3-1ddf-43ef-a849-d05292e7937f,Night Trooper - Marching,collectible,1.39,2026-09-12 23:41:21
 51405ddc-4d53-4814-be00-9a99581ab6ed,Hammerhead Shark Car,collectible,2.73,2026-09-12 23:41:21
+9954145f-e85c-462e-b84b-2b50a3e3fbe9,Elsa,collectible,76.5,2026-09-13 01:43:24
+f2ba3cb4-e1e6-41c0-a18c-28524b52f299,Doctor Doom,collectible,88.5,2026-09-13 01:43:24
+6a3c8ad0-8bb9-4065-abff-9d12b8e82bc4,Lady and the Tramp,collectible,35,2026-09-13 01:43:24
+d1950c68-0bd7-47c3-a183-aa950613de36,#81 - Amanda Conner Batman,collectible,129,2026-09-13 01:43:24
+8e9682fc-9d88-4dad-a61e-74d743da57e7,#71 Batman,collectible,32,2026-09-13 01:43:24
+da4f0ab8-00be-498e-8784-bde7d0d105e2,#56 Bruce Timm Harley Quinn,collectible,26,2026-09-13 01:43:24
+55876156-f6d4-4ca8-bb50-fd6c1f5f0fb8,U.S.S. Enterprise-D (1:1),collectible,32,2026-09-13 01:43:24
+62cbbb56-6c35-4d7f-8dcf-4e4f301ffc73,Harley Quinn,collectible,39,2026-09-13 01:43:24
+ae9b4b16-bc4e-4457-9c69-a3306c976ed7,Supergirl,collectible,47,2026-09-13 01:43:24
+20578f42-c47c-454a-bb1a-7f2d78b56905,Death,collectible,66,2026-09-13 01:43:24
+1e6c918e-201d-44ea-9775-0cdd333bb27b,Zombie Hunter Spider-Man #2,collectible,35,2026-09-13 01:43:24
+de9963c9-bf18-4b0c-bb4a-6646b116ef47,Rafael Grampá Batman,collectible,32,2026-09-13 01:43:24
+9ab7ce3a-cdc7-4d0c-bd6c-9063a85f8271,Stay Puft Marshmallow Man,collectible,30.88,2026-09-13 01:43:24
+53c4a149-6786-4946-a052-7267e8eb7feb,#06 Mike Mignola Batman - Blue & Yellow Variant,collectible,71,2026-09-13 01:43:24
+6edf0436-e37c-4e2f-a811-22e5df176765,Edna Mode: Bold! Dramatic! Heroic!,collectible,9,2026-09-13 01:43:24
+eae3ce49-4a7c-483e-9c99-46b4d650ddcc,Tara McPherson - Gold Bunny Rider,collectible,379,2026-09-13 01:43:24
+eb1a9ec3-d193-4956-bcb8-d16d5a4a68a7,Captain Carter,collectible,8.9,2026-09-13 01:43:24
+8d8093ae-34a6-4ef5-a7b4-4b5fe9bd8892,2023 OG,collectible,159.9,2026-09-13 01:43:24
+2a9d29f2-d827-4c1d-aee7-22f7ab4f0a7d,ULTRAMAN JACK,collectible,9,2026-09-13 01:43:24
+595f497d-4d6f-4f58-a19e-ce5dcb942696,Ironheart - Riri Williams,collectible,13.94,2026-09-13 01:43:24
+8d163d2c-5d0e-4ead-ba8e-0abcef101a5a,Storm - Marvel Metallic Red,collectible,52,2026-09-13 01:43:24
+5b7a614e-d72b-4f81-be42-406dd91b4b68,DC Dark Nights: Metal Emblem,collectible,69,2026-09-13 01:43:24
+e3c58965-57b1-40a7-b091-2ba227c4c284,ROSÉ - Animated,collectible,50,2026-09-13 01:43:24
+bd9f38e8-78b4-4eb1-84ed-a6e3ed560d63,Sam Wilson - Heart of a Hero,collectible,10,2026-09-13 01:43:24
+bbff0eb1-be5e-4ec8-9d83-2c0a4c3f1dbd,Makkari,collectible,2,2026-09-13 01:43:24
+51dc2dd3-44db-41ed-bc65-b513e92f186f,‍Sam Wilson - From Sky to Shield,collectible,18,2026-09-13 01:43:24
+6a42790c-8c28-43a3-8f73-6e17f3d50eb0,Crimson Stormtrooper,collectible,2,2026-09-13 01:43:24
+19fc5e03-b35d-42c8-8a8f-6fa896035f27,Swag,collectible,8,2026-09-13 01:43:24
+fe8b6115-0f8f-4ecf-b957-f36a24b0759a,Moon Knight,collectible,3,2026-09-13 01:43:24
+8564d30f-2411-4d71-8f53-330747e9326d,Night Trooper Exposed - Marching,collectible,1.6,2026-09-13 01:43:24
