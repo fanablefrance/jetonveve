@@ -1,33 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-f2ba3cb4-e1e6-41c0-a18c-28524b52f299,Doctor Doom,collectible,88,2026-09-07 01:53:22
-ad039541-890c-4277-8c04-b6ab6a19f656,Elsa,collectible,288,2026-09-07 01:53:22
-86a1c74b-4fff-4729-9cf9-57d92f29e053,Steve Rogers,collectible,5.75,2026-09-07 01:53:22
-5262e9f2-b83e-4665-a621-b555d4e9e814,Zeux,collectible,199,2026-09-07 01:53:22
-febc44f1-0b23-4c2d-951e-43cd51b034c5,Ernie Special Edition,collectible,1000,2026-09-07 01:53:22
-84717424-94be-4da6-a2d8-54d291c64e66,Sung Jinwoo - The Awakened,collectible,105,2026-09-07 01:53:22
-1a7a521f-21a0-4468-b6ce-be8e55823815,Thanos - Philosopher,collectible,15.95,2026-09-07 01:53:22
-6b480765-2dde-44e1-b6e6-d5dd4fef0c0e,A Close Call,collectible,36,2026-09-07 01:53:22
-488697cf-fc29-478a-807b-99795f740790,Bucky Barnes,collectible,4,2026-09-07 01:53:22
-12901d40-475f-4dd3-86a1-328e108583d6,Wreck-It Ralph Pencil,collectible,21.99,2026-09-07 01:53:22
-fde25c18-f029-423b-a295-07de8a210cf9,1:1 Ecto-1 Static,collectible,6.5,2026-09-07 01:53:22
-eb1a9ec3-d193-4956-bcb8-d16d5a4a68a7,Captain Carter,collectible,7.5,2026-09-07 01:53:22
-bd4210ed-70bd-43ab-8bab-3321dda9e892,350 GT - Azzurro,collectible,38,2026-09-07 01:53:22
-1d121222-5f88-404a-9ecc-303d87a3a04e,Lamborghini Countach LP 400 - Rosso Siviglia,collectible,35,2026-09-07 01:53:22
-60c97403-6e8b-47bd-b049-81700b66ff26,Elektra – Perfect Death,collectible,3,2026-09-07 01:53:22
-0fe59e23-6592-4313-a932-6cac2c7af374,350 GT - Blu Scuro,collectible,29,2026-09-07 01:53:22
-d57d9fa6-7796-48ca-9544-1699c14d36ee,LISA,collectible,36,2026-09-07 01:53:22
-33f16c99-a5e4-4268-98e1-ce6e3ea05dad,Elf Labbit,collectible,6.5,2026-09-07 01:53:22
-fdf192f7-c406-41db-86c4-fcf5c8451b71,Ant-Man,collectible,9.99,2026-09-07 01:53:22
-8c2a6f95-80eb-47db-9e64-ccebb639d0d7,VeVe Logo White Green,collectible,22,2026-09-07 01:53:22
-f91fbba9-e5f3-4d7d-93b4-91efacbc0b27,Spider-Man 2099 - Genetic Awakening,collectible,10,2026-09-07 01:53:22
-5c6a7271-9748-42a7-a5ba-77b1d21945bf,Mad Hatter,collectible,8.95,2026-09-07 01:53:22
-00c0c87d-7510-417b-92c3-26c6e86b94ac,JENNIE - Animated,collectible,35,2026-09-07 01:53:22
-1a1387d3-e99f-45bd-8463-58de6f1afb73,The Punisher - Skull Reaper,collectible,19.5,2026-09-07 01:53:22
-92635283-99b4-4597-ba69-01e39ccba334,Master Splinter - Father Figure,collectible,4.4,2026-09-07 01:53:22
-f6e15150-641b-4d8e-b7cc-19027a019d1f,Chris Robots Will Kill - OG,collectible,28,2026-09-07 01:53:22
-3c94d7bf-2a58-4e7b-901d-2d177a642da3,Felix – Dual Realms,collectible,45,2026-09-07 01:53:22
-7dba3b40-2198-4e9a-92dc-4f4874c30e39,Night Trooper - Unleashed,collectible,26,2026-09-07 01:53:22
-438829a3-1ddf-43ef-a849-d05292e7937f,Night Trooper - Marching,collectible,1.65,2026-09-07 01:53:22
 7475a966-ed09-4fa8-9b3f-ca6833ea98af,Spider-Man: Miles Morales - Animated,collectible,35000,2026-09-07 02:54:49
 d4a983b5-07d5-4b85-afbf-23df999abe11,You Ain't Seen Nothin' Yet!,collectible,82,2026-09-07 02:54:49
 38240a36-10d1-4653-ba38-61bd524e3ef3,Jean Grey - Phoenix,collectible,25,2026-09-07 02:54:49
@@ -3523,3 +3494,44 @@ bc64c1a9-5efe-4b52-824d-27ffed8b13e4,Lightning,collectible,2,2026-09-13 23:39:22
 6911b24f-2fd5-4d43-8ae9-8f7d978b6285,Felix  - Golden Light,collectible,9.99,2026-09-14 00:41:23
 375e383d-9421-43dc-a1de-19703274118f,Snow - Dark,collectible,26.99,2026-09-14 00:41:23
 4f4a6a39-9577-4267-ac9d-1f463d510c34,Toph - The Blind Bandit,collectible,30,2026-09-14 00:41:23
+090a4338-c085-4a8e-b526-e5238c97ba60,Gallardo - Blu Aegir,collectible,8888,2026-09-14 02:43:25
+04740707-137f-494f-92f0-5428abb1aef4,1938 James A. Garfield,collectible,99,2026-09-14 02:43:25
+4804e172-42a2-419f-b1f0-431ece52c00a,Deadpool – Ugly Sweater Party,collectible,4.49,2026-09-14 02:43:25
+c9f36d96-2776-469a-904b-83356104dd94,Ghost Rider - Danny Ketch,collectible,45,2026-09-14 02:43:25
+11f07bd6-7fc3-4516-897a-0da17d09abe5,#60 Dick Sprang Batman,collectible,7.99,2026-09-14 02:43:25
+09ccc7cb-b9f1-40be-9860-79138b01230c,Cookie Monster,collectible,7,2026-09-14 02:43:25
+3d38c822-050f-42bf-a382-f209819911e4,Deadpool – Deck The Halls,collectible,2,2026-09-14 02:43:25
+de9e5e5c-5e00-4db1-be89-69281e8907ae,Peter Pan,collectible,27,2026-09-14 02:43:25
+3e5cb4ae-ab83-494c-87d6-2b4373cad416,Edward - Dual Stance,collectible,17.5,2026-09-14 02:43:25
+a8691a6a-9bad-40fd-b0de-a11d3f54041e,Mjolnir - Thor: The Dark World,collectible,19.5,2026-09-14 02:43:25
+dd3e18ed-b702-4173-81a9-85534f4003d4,Redrum,collectible,15.55,2026-09-14 02:43:25
+2b095c6b-6106-41f7-9d10-85c8d4b73c3c,JISOO Pink Venom 2,collectible,39,2026-09-14 02:43:25
+ed419393-e574-48fb-8130-48941992e2b0,Altaïr - Crouching,collectible,13.33,2026-09-14 02:43:25
+89f1561b-78b1-4a9f-9aaf-09543d007bd0,Maserati MC12 - Stradale,collectible,13.13,2026-09-14 02:43:25
+595f497d-4d6f-4f58-a19e-ce5dcb942696,Ironheart - Riri Williams,collectible,11.12,2026-09-14 02:43:25
+ebb7de05-9267-43e8-a01d-0ab08ed05e29,Maserati Alfieri - Silver,collectible,11.11,2026-09-14 02:43:25
+4d18f169-e8d4-4a10-a783-a53db7363f6f,Female Eivor - Flame of the Fjord,collectible,17.17,2026-09-14 02:43:25
+307d71a8-fe8b-41a4-ba69-798ddba7ff76,Juggernaut,collectible,25,2026-09-14 02:43:25
+3d0b6bcb-393c-4d0c-a58d-4ebe0dbfcea9,Lunar New Year: Dragon - Pane of 20,collectible,28,2026-09-14 02:43:25
+53ffd4dc-2ac7-4c1f-bca1-78c4316201a0,Rogue - X-Treme Force,collectible,60,2026-09-14 02:43:25
+3e24518f-be71-4226-a758-655a803f4807,Joe and Mr. Mittens,collectible,15.55,2026-09-14 02:43:25
+faa51bbb-63ce-4280-91bd-b3573e1293a2,Jackson Storm,collectible,21,2026-09-14 02:43:25
+582171b4-047f-4d3e-8c41-987fe0f9f7f4,Learner Jake,collectible,10.99,2026-09-14 02:43:25
+2344a6ff-eb4b-4798-91eb-b32e459da048,Basim,collectible,18.5,2026-09-14 02:43:25
+ad5b7ae1-ad36-44e6-9dbd-a57e8b1a94bc,Tesseract,collectible,2.5,2026-09-14 02:43:25
+e3d0b938-9e56-4484-bbfb-b59bab629950,Clæmon - Allison Bamcat,collectible,19.5,2026-09-14 02:43:25
+10d332fe-c05f-44c9-860f-14d28b26573b,From Russia With Love - Italian Duo Poster,collectible,6,2026-09-14 02:43:25
+867dc17b-9dbd-4fe5-818d-d7b02c34f79f,The ADDICTION Silver Logo,collectible,27.5,2026-09-14 02:43:25
+39abf2f6-566b-4f0f-bc6c-e81204c1016c,Magneto,collectible,7,2026-09-14 02:43:25
+c5d840e8-6f79-4717-a34c-7af19d3b89ba,Totem Pole Church,collectible,14.44,2026-09-14 02:43:25
+2a215129-a315-4d1f-807c-9bdb72548bcb,Charles Muntz,collectible,19.5,2026-09-14 02:43:25
+8e13d360-3a66-4437-96b1-77360d1863c0,Decorative Rock 2,collectible,7.89,2026-09-14 02:43:25
+930556b0-3566-4301-95c3-1f50bbf059a2,Decorative Rock 1,collectible,6.5,2026-09-14 02:43:25
+9968a51e-c7ba-4b11-ace9-4ab3f1e7410c,1938 Andrew Jackson,collectible,1.29,2026-09-14 02:43:25
+8564d30f-2411-4d71-8f53-330747e9326d,Night Trooper Exposed - Marching,collectible,2.99,2026-09-14 02:43:25
+daf4feec-b2f7-4489-84a3-8bf4de83d9d2,Nose Goblins,collectible,3,2026-09-14 02:43:25
+856227a4-716c-4b50-893c-d16a4fc93e33,Night Trooper Exposed - Unleashed,collectible,19,2026-09-14 02:43:25
+1d76ad1d-e54f-41ac-b83b-eebc714493bc,Love: Puppy (1986),collectible,4.5,2026-09-14 02:43:25
+de1e9deb-5145-4ca8-8348-43dcd61b8ddf,Green Truck,collectible,2,2026-09-14 02:43:25
+90dc4c4d-7177-4fde-9bae-a42dc5ff7e5c,Foster,collectible,5,2026-09-14 02:43:25
+375e383d-9421-43dc-a1de-19703274118f,Snow - Dark,collectible,26.99,2026-09-14 02:43:25
