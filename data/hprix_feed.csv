@@ -1,11 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-8854d1aa-b535-4a8d-9a7f-1392b8581136,John F. Walker,collectible,9,2026-09-07 20:35:20
-7384abab-ff07-4cf8-8d3e-2085e4945f75,#76 Robin,collectible,10,2026-09-07 20:35:20
-426396ef-3b30-4c84-aa70-06e932ddde6c,Finn Mertens,collectible,9,2026-09-07 20:35:20
-8d4f4c2a-1a34-4071-a901-1b01fa619514,Belle,collectible,13,2026-09-07 20:35:20
-a1273f2c-934d-4c2a-a17f-3d1be7278c6a,On the Prinsengracht in Amsterdam,collectible,169,2026-09-07 20:35:20
-013e6d39-c3e5-4a39-b0bc-28c6ef799694,​​Matt,collectible,2.56,2026-09-07 20:35:20
-4a49549d-9049-4a63-930e-d563e53fb9c2,Rewind Collective Logo,collectible,7,2026-09-07 20:35:20
 61a84d22-d05c-446d-a41a-ca17ffb242b1,The Addiction #2 - Ryan Brown Exclusive Framed Artwork,collectible,80000,2026-09-07 21:38:55
 900388bb-8847-4334-8d1a-508de81c4a4d,Superman,collectible,275,2026-09-07 21:38:55
 d63e9844-2204-4dde-82e0-3d5c467ed225,Goofy,collectible,62.9,2026-09-07 21:38:55
@@ -3225,3 +3218,32 @@ a76c6827-046a-4c95-8823-965c9a5b22d8,Mr. V - Blue Metallic,collectible,400,2026-
 ea954588-2e89-4829-9b96-92609acfc4c1,Eson the Searcher,collectible,7.25,2026-09-14 20:15:41
 410fd575-30a3-45ab-a87a-7a928971d321,Leonardo - Classic (Special Edition),collectible,40,2026-09-14 20:15:41
 eedca775-7427-43ed-8911-df08ae0a3cd9,DF9 Turret,collectible,5.67,2026-09-14 20:15:41
+a9ae0af3-8c76-45eb-9ef0-cd314ebc4e20,Carnage,collectible,99.8,2026-09-14 21:17:34
+c6785ff7-d2d1-404a-a1f0-7a5104e73009,‍The Armorer,collectible,44,2026-09-14 21:17:34
+1969839e-04bc-4433-801f-3a2007e410f4,You'll find that I’m full of surprises,collectible,19.99,2026-09-14 21:17:34
+3097f216-96b5-4a4b-b63d-76a75f101f71,Mickey Mouse,collectible,17.99,2026-09-14 21:17:34
+a676dd9a-bd22-4a67-8233-3df6b0844726,Snow Globe - 4 Coke Bottles,collectible,4.9,2026-09-14 21:17:34
+6b9b6046-7fbd-43e1-bfe0-54a5f4ddeb0b,Rogue - Southern Powerhouse,collectible,9.97,2026-09-14 21:17:34
+0f658da6-d65d-49c3-b144-9f5e354a863d,Bert & Ernie - Gold,collectible,175,2026-09-14 21:17:34
+7528dee9-9938-42c1-9561-468154c20a56,Galactus - Cosmic Devourer,collectible,7.5,2026-09-14 21:17:34
+840cd502-351b-4397-b1c0-1cfcb612b799,Grogu,collectible,13,2026-09-14 21:17:34
+576ad8fb-45f2-47aa-9b94-54fd80871aa0,Thanos - Marvel Metallic Red,collectible,49,2026-09-14 21:17:34
+cd610d2e-dd02-44af-9809-f13df08fe04a,Bert & Ernie,collectible,85,2026-09-14 21:17:34
+efce0615-f0e6-43ba-8e30-e3eb8f56d37f,Sam Wilson - Marvel Metallic Red,collectible,39,2026-09-14 21:17:34
+885c33eb-4869-412b-9015-56039e798c14,IG-11,collectible,89.99,2026-09-14 21:17:34
+ad5b7ae1-ad36-44e6-9dbd-a57e8b1a94bc,Tesseract,collectible,3.5,2026-09-14 21:17:34
+8527bdbf-49c2-4a08-8231-561161f81563,Dogpool,collectible,145,2026-09-14 21:17:34
+80446761-989d-489f-bc02-15b19a866885,Pit Droid,collectible,29.99,2026-09-14 21:17:34
+0592ffac-7963-4fe1-8528-7797260823fe,Episode 1 - I'm Used to It,collectible,5,2026-09-14 21:17:34
+7d0fe4bf-3359-4ac7-bc69-7203cff96e13,Flerkitten 5,collectible,9.95,2026-09-14 21:17:34
+ceea21a6-2a60-4371-bd86-5249bf0741a7,Boba Fett’s Helmet,collectible,4.3,2026-09-14 21:17:34
+8564d30f-2411-4d71-8f53-330747e9326d,Night Trooper Exposed - Marching,collectible,2,2026-09-14 21:17:34
+438829a3-1ddf-43ef-a849-d05292e7937f,Night Trooper - Marching,collectible,1.5,2026-09-14 21:17:34
+eedca775-7427-43ed-8911-df08ae0a3cd9,DF9 Turret,collectible,5,2026-09-14 21:17:34
+0b5e951b-09bd-4b29-9db9-d7ca4814d92c,Janie,collectible,3.79,2026-09-14 21:17:34
+d23fe8eb-7882-40fc-8e4d-16a0f81e1847,B-Rank Essence Stone,collectible,1.75,2026-09-14 21:17:34
+f6717b76-db8d-48af-bffd-d7016ac4a83d,C-Rank Essence Stone,collectible,1.1,2026-09-14 21:17:34
+02ab1567-e3b7-4862-bd09-4115bcfed9fc,Max,collectible,3.25,2026-09-14 21:17:34
+04c1b81f-a6c9-4c57-be41-5f25001cfe44,Epiko Logo - Original,collectible,3.25,2026-09-14 21:17:34
+7a94e5de-0de3-492f-a00e-af761e3323e3,Mr. Epiko,collectible,3.22,2026-09-14 21:17:34
+d37184af-298d-4b47-ae13-819fb234b80d,Episode 12 - Arise,collectible,1.23,2026-09-14 21:17:34
