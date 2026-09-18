@@ -1,19 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-6a3c8ad0-8bb9-4065-abff-9d12b8e82bc4,Lady and the Tramp,collectible,53,2026-09-11 13:24:54
-aadb24d5-07a5-4630-a937-60af8a8ef08e,Edo,collectible,69,2026-09-11 13:24:54
-1b80b8da-dcdd-499e-af5b-0a91308d58e2,1860 George Washington (originally 90 cents),collectible,35,2026-09-11 13:24:54
-025f038e-f202-4ba9-b64a-aff9ccaf30f2,Maserati MC12 - Victory Blue,collectible,175,2026-09-11 13:24:54
-ee46c303-5b18-4836-b6d8-9865afb2e133,Huracán STO - Bianco Asopo/Blu Le Mans,collectible,19.99,2026-09-11 13:24:54
-9ec3912b-737f-4396-b83f-96d488cb2ffb,Darth Vader Samurai - Wrath of the Dragon,collectible,750,2026-09-11 13:24:54
-6b9b6046-7fbd-43e1-bfe0-54a5f4ddeb0b,Rogue - Southern Powerhouse,collectible,12,2026-09-11 13:24:54
-3e628ba1-7c41-4d53-8ae7-ecc2aa09512a,Michelangelo - IncogNinja,collectible,79.99,2026-09-11 13:24:54
-b8e2a2ee-d61b-4500-9700-e29f9bfdee8e,Facehugger,collectible,10,2026-09-11 13:24:54
-68ccccf4-a906-46f5-945f-4425c1fa2e1a,Paradise Falls,collectible,20,2026-09-11 13:24:54
-24c168f7-d4ef-4fa0-b9a6-21cf30a2625d,Rabbid Knightmare,collectible,15,2026-09-11 13:24:54
-205f1c9a-35f5-4a86-acc6-c968b286398f,MYO - Pink,collectible,38,2026-09-11 13:24:54
-47a56835-3d0e-44c8-b636-987bf484f9c2,Romulan - Bird of Prey,collectible,36,2026-09-11 13:24:54
-f1bb37cc-7350-403f-9e06-5942bc3765ec,Master Splinter - Weapon Training,collectible,5.99,2026-09-11 13:24:54
-d038d730-3ce2-46e4-8409-6dd4553a913f,Marvel Iron Man 18”  – Black & Gold,collectible,50,2026-09-11 13:24:54
 6a3c8ad0-8bb9-4065-abff-9d12b8e82bc4,Lady and the Tramp,collectible,52.95,2026-09-11 14:31:25
 9ab7ce3a-cdc7-4d0c-bd6c-9063a85f8271,Stay Puft Marshmallow Man,collectible,37.4,2026-09-11 14:31:25
 f09d3ca4-d90a-4844-a28b-3207b87161a4,Bat-Signal,collectible,4.99,2026-09-11 14:31:25
@@ -2862,30 +2847,16 @@ ed1533cd-1a17-4968-b8d6-9a8f57e052ee,Boba Fett’s Chest Plate,collectible,4.84,
 7a94e5de-0de3-492f-a00e-af761e3323e3,Mr. Epiko,collectible,4,2026-09-18 12:19:09
 70005252-4f58-49b4-962d-e099f64cf57c,Record #2 - Fame Finds The Village Idiot - Gold,collectible,4.56,2026-09-18 12:19:09
 ec00071b-05f6-4fbd-9b35-cbcbfb88c996,Mr. V,collectible,3.49,2026-09-18 12:19:09
-f772a5b4-03af-444d-a608-c2c271def046,Deadpool – Ultimate Animated,collectible,90,2026-09-18 13:22:21
-1a7caa75-e930-4d8e-8b03-672bf40cfd5f,Princess Jasmine,collectible,49,2026-09-18 13:22:21
-f9e82d52-57cc-467d-ab0a-00b45ccb6bdb,Tinker Bell Poster,collectible,125,2026-09-18 13:22:21
-440ef232-772c-441a-8db1-b077a55f445a,Tinker Bell,collectible,69,2026-09-18 13:22:21
-823669db-6bde-4c3d-8709-0469d7fe8da3,Donatello - Dojo Discipline,collectible,45,2026-09-18 13:22:21
-967e6313-09df-458c-9d97-ef05de184ee8,House of Cards (2019),collectible,85,2026-09-18 13:22:21
-3164f5e3-044d-477d-8022-0a99dead294d,Leonardo - Classic,collectible,11.99,2026-09-18 13:22:21
-ebb7de05-9267-43e8-a01d-0ab08ed05e29,Maserati Alfieri - Silver,collectible,16.99,2026-09-18 13:22:21
-be0c63aa-8fc1-4037-99cb-862713e65001,Avengers Tower - Marvel Metallic Red,collectible,69.99,2026-09-18 13:22:21
-a1273f2c-934d-4c2a-a17f-3d1be7278c6a,On the Prinsengracht in Amsterdam,collectible,139,2026-09-18 13:22:21
-d65a302d-eda5-457f-b6c3-46826dee1941,Sket One - Boo Crew - Glow in the Dark Cyan,collectible,321,2026-09-18 13:22:21
-68649d9c-b610-4ac0-a07a-f14a1fca6585,Raphael - Classic,collectible,6.98,2026-09-18 13:22:21
-94bcc472-9ecb-41f0-b8bf-f5b0b4e85e37,Gambit - Trenchcoat Tactician,collectible,2.99,2026-09-18 13:22:21
-0a50c1f6-4aba-4de7-99bb-9fe80a1aa605,VeVe Logo White Orange,collectible,15,2026-09-18 13:22:21
-46359177-0a0a-4148-aac9-7875a76aaa91,Toph,collectible,6,2026-09-18 13:22:21
-85f31f35-a752-43f1-a4d2-9f10d6c64e80,Death Trooper DLT-19D - Running,collectible,5.78,2026-09-18 13:22:21
-8c2a6f95-80eb-47db-9e64-ccebb639d0d7,VeVe Logo White Green,collectible,11,2026-09-18 13:22:21
-cac60134-17f8-40d5-988f-f911652e1a12,VeVe Common General Admission Ticket - NYCC 2024,collectible,4.99,2026-09-18 13:22:21
-47a56835-3d0e-44c8-b636-987bf484f9c2,Romulan - Bird of Prey,collectible,28.99,2026-09-18 13:22:21
-12753baa-1c77-49aa-bd6d-5c0b9bfb6eac,Emi - Fierce,collectible,26.66,2026-09-18 13:22:21
-20733f6b-c168-4a46-b558-e85b2ed125bd,Dan,collectible,8.39,2026-09-18 13:22:21
-a72a940f-3713-4072-8736-415a64444d47,Take That Rabbid,collectible,21,2026-09-18 13:22:21
-6f04f0ca-d6fa-4b8c-b5cf-34c96602c7e9,VeveMagic,collectible,6.66,2026-09-18 13:22:21
-de1e9deb-5145-4ca8-8348-43dcd61b8ddf,Green Truck,collectible,1.99,2026-09-18 13:22:21
-90dc4c4d-7177-4fde-9bae-a42dc5ff7e5c,Foster,collectible,5,2026-09-18 13:22:21
-7a94e5de-0de3-492f-a00e-af761e3323e3,Mr. Epiko,collectible,4.31,2026-09-18 13:22:21
-08a2b238-3dca-4780-8f60-6e50289364d4,Rain - Dark,collectible,38,2026-09-18 13:22:21
+f9e82d52-57cc-467d-ab0a-00b45ccb6bdb,Tinker Bell Poster,collectible,130,2026-09-18 14:23:12
+823669db-6bde-4c3d-8709-0469d7fe8da3,Donatello - Dojo Discipline,collectible,40,2026-09-18 14:23:12
+3164f5e3-044d-477d-8022-0a99dead294d,Leonardo - Classic,collectible,12.98,2026-09-18 14:23:12
+ebb7de05-9267-43e8-a01d-0ab08ed05e29,Maserati Alfieri - Silver,collectible,11.11,2026-09-18 14:23:12
+68649d9c-b610-4ac0-a07a-f14a1fca6585,Raphael - Classic,collectible,6.99,2026-09-18 14:23:12
+94bcc472-9ecb-41f0-b8bf-f5b0b4e85e37,Gambit - Trenchcoat Tactician,collectible,4,2026-09-18 14:23:12
+46359177-0a0a-4148-aac9-7875a76aaa91,Toph,collectible,6.56,2026-09-18 14:23:12
+cac60134-17f8-40d5-988f-f911652e1a12,VeVe Common General Admission Ticket - NYCC 2024,collectible,5,2026-09-18 14:23:12
+6f04f0ca-d6fa-4b8c-b5cf-34c96602c7e9,VeveMagic,collectible,6.99,2026-09-18 14:23:12
+a72a940f-3713-4072-8736-415a64444d47,Take That Rabbid,collectible,19,2026-09-18 14:23:12
+de1e9deb-5145-4ca8-8348-43dcd61b8ddf,Green Truck,collectible,2.29,2026-09-18 14:23:12
+85f31f35-a752-43f1-a4d2-9f10d6c64e80,Death Trooper DLT-19D - Running,collectible,1.89,2026-09-18 14:23:12
+08a2b238-3dca-4780-8f60-6e50289364d4,Rain - Dark,collectible,39,2026-09-18 14:23:12
