@@ -1,20 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-6211625a-9004-4b34-9a45-fbdb0eaa8cbb,#72 Carmine Infantino Robin,collectible,205,2026-09-12 13:23:49
-03fe42ae-a098-4215-b3e1-a014aabddadf,Venom,collectible,235,2026-09-12 13:23:49
-d1d1bb93-94e7-442f-8974-bf440900b27b,Alligator Loki - Ultimate Animated,collectible,299,2026-09-12 13:23:49
-ff567837-203b-4507-bbfe-d83ec112be53,Flower Bomber (Street Cleaner Edition),collectible,388,2026-09-12 13:23:49
-a29c77e8-29c1-4d9c-a07a-cbcaec9eec29,Blue and Beta Animated 2,collectible,275,2026-09-12 13:23:49
-e3f45c09-9bc7-43b0-ab69-47d0359de44d,Frozone,collectible,150,2026-09-12 13:23:49
-3a24545f-3e4d-45d7-916f-817a50c7f1b2,No Time To Die  - Triumph Motorcycle,collectible,9,2026-09-12 13:23:49
-6edf0436-e37c-4e2f-a811-22e5df176765,Edna Mode: Bold! Dramatic! Heroic!,collectible,10.94,2026-09-12 13:23:49
-1a258258-8835-4cb1-ae1e-1ed782166e33,Galactus - Cosmic Laser Fury,collectible,19,2026-09-12 13:23:49
-d08cf3f5-f182-4de6-a540-2fbeb726561a,The Hunter,collectible,60,2026-09-12 13:23:49
-786a69fd-65d2-4305-b415-43f50e04f861,Ye Xiao Chai,collectible,8,2026-09-12 13:23:49
-2d817683-3755-4076-be51-4bbd95377745,Buzz Lightyear – Wings Deployed,collectible,149,2026-09-12 13:23:49
-e6fd9727-4bc1-4abb-80c7-1e0628531739,Poxh Pixeez - I Like Cold Drinks Record,collectible,200,2026-09-12 13:23:49
-3bb4a28b-e7ef-49a7-9930-f5c042f1fbe9,Guile,collectible,29,2026-09-12 13:23:49
-f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,6.9,2026-09-12 13:23:49
-438829a3-1ddf-43ef-a849-d05292e7937f,Night Trooper - Marching,collectible,2.4,2026-09-12 13:23:49
 bfbb5341-6a35-4ecb-b3a7-896bf6eb870c,Year of the Horse - Pane of 20,collectible,11599,2026-09-12 14:26:54
 16c33ccb-f980-45d1-b27a-9b1d64e5bd24,Ghostbusters I Logo - Platinum,collectible,3000,2026-09-12 14:26:54
 77648516-37a8-4cd8-87f4-d0ea832ddb49,Bubbles,collectible,666,2026-09-12 14:26:54
@@ -2821,3 +2805,21 @@ fe25e470-e059-45a4-863d-d25a085b0dfe,MyCollectables,collectible,5.96,2026-09-19 
 b87927b2-6ad2-43ee-ae88-cfd7a2668e15,Bubble Machine,collectible,2.48,2026-09-19 13:20:07
 eb2b8652-44a4-4f81-9149-dd50d0796f0d,Laser Beam Machine - Gold Edition,collectible,44,2026-09-19 13:20:07
 725f985e-0a82-47b6-96df-8f4a4dffc28f,Confetti Machine - Gold Edition,collectible,42,2026-09-19 13:20:07
+30a9f14d-f5ef-4047-bf97-c2b047190f83,1:6 DeLorean Time Machine - Interactive,collectible,6.67,2026-09-19 14:23:11
+9bbf3fa3-9b0c-446d-9b17-f6e452b070c7,Black Panther – Wakanda Forever,collectible,8.96,2026-09-19 14:23:11
+58b28cd3-fe7e-42d4-99c7-92dbb28cbd87,ULTRAMAN ACE,collectible,55,2026-09-19 14:23:11
+ab37308f-a1f8-4c67-8664-2ed76b13f914,The Thing,collectible,1.99,2026-09-19 14:23:11
+ad19dd92-4d70-4eed-9caf-6acfcbe026d1,The Blue One,collectible,144,2026-09-19 14:23:11
+f20b6280-e9c4-481e-9a67-549fa354bb67,Gambit - Glowing Kinetic Fury,collectible,47.15,2026-09-19 14:23:11
+c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,6.56,2026-09-19 14:23:11
+8afcff93-6e98-44aa-8b60-e3cc0274d76a,The Diamond of the Mines,collectible,68.5,2026-09-19 14:23:11
+6ea861be-16f5-4832-a6ec-da215c4fe3b6,Mutagen,collectible,7.5,2026-09-19 14:23:11
+9dfbafbf-12c2-4e97-88dd-9e058b2555a0,Welcoming Toby,collectible,1.54,2026-09-19 14:23:11
+72504642-224e-46d1-8b68-66db5d355b23,Nounish Vincent Mascot,collectible,119,2026-09-19 14:23:11
+7f7d3588-103e-414e-a1b1-71b1a1f7a7bd,David’s Doo Gold,collectible,99,2026-09-19 14:23:11
+ba7151f1-eba5-487d-87c9-3159fbc70bf8,Red Noggles,collectible,24,2026-09-19 14:23:11
+12d7ac8b-dad2-48a4-930f-5abc5399b121,Boy (Color),collectible,269,2026-09-19 14:23:11
+8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,4,2026-09-19 14:23:11
+f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,3.99,2026-09-19 14:23:11
+b87927b2-6ad2-43ee-ae88-cfd7a2668e15,Bubble Machine,collectible,3.5,2026-09-19 14:23:11
+5e72800a-aaba-4743-a005-18675ee33d9a,Smoke Machine - Gold Edition,collectible,45.55,2026-09-19 14:23:11
