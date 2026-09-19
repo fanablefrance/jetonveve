@@ -1,32 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-11f2b172-e206-4644-8256-e51fd7298af2,Winnie the Pooh and Piglet,collectible,24.99,2026-09-12 15:28:49
-bc50774d-b923-4a5c-8e5d-f25608e1e80e,Batgirl,collectible,10,2026-09-12 15:28:49
-19c55785-624d-4d2f-95b0-c4a0b0c42f28,Elektra – Ultimate Animated,collectible,39.99,2026-09-12 15:28:49
-ca649d00-5d67-405d-829c-afa85411c1fc,#12 Harley Quinn,collectible,19.9,2026-09-12 15:28:49
-bfbb5341-6a35-4ecb-b3a7-896bf6eb870c,Year of the Horse - Pane of 20,collectible,105,2026-09-12 15:28:49
-025f038e-f202-4ba9-b64a-aff9ccaf30f2,Maserati MC12 - Victory Blue,collectible,160,2026-09-12 15:28:49
-f5a9fdc5-7bbb-4ac0-85da-8e85028f6840,Turtle Cycle,collectible,20,2026-09-12 15:28:49
-e4b06af3-a0a8-4e68-96af-3e01d573fa5e,Creepshow Coffin - Vol. 4 Issue 1,collectible,189,2026-09-12 15:28:49
-06137121-cc15-4b85-b69d-346b97d20337,Maserati MC12 - Pantone Orange,collectible,57,2026-09-12 15:28:49
-595f497d-4d6f-4f58-a19e-ce5dcb942696,Ironheart - Riri Williams,collectible,21,2026-09-12 15:28:49
-704bdbba-09b9-4c25-9e18-292da2b87c6e,The Crystal Waterfall - Tara McPherson,collectible,52.3,2026-09-12 15:28:49
-3fb9a95f-7c9f-4f4d-858d-4a87c4813206,Dan - Blue Metallic,collectible,375,2026-09-12 15:28:49
-1c2c833d-3e70-4e7e-b589-0c24832a58cd,Katara,collectible,12,2026-09-12 15:28:49
-4fe7f5d3-d9a8-46b0-8be2-c0680f894525,Mr. Epiko - Blue Metallic,collectible,450,2026-09-12 15:28:49
-98f7d0b0-8373-4037-a49f-2db41b24f168,Sokka,collectible,9,2026-09-12 15:28:49
-2036655b-f5dc-4187-9d2a-1380a3bed625,Coming Soon Poster,collectible,6.99,2026-09-12 15:28:49
-bf1488a9-8f48-4a2f-86c0-1b6a67e0cd0e,The Slimey SurgeonFeesh,collectible,69.99,2026-09-12 15:28:49
-47a56835-3d0e-44c8-b636-987bf484f9c2,Romulan - Bird of Prey,collectible,33,2026-09-12 15:28:49
-856227a4-716c-4b50-893c-d16a4fc93e33,Night Trooper Exposed - Unleashed,collectible,21.9,2026-09-12 15:28:49
-cb5a1381-302f-414d-adcd-0d8e6aeebc52,Battery Box,collectible,6.9,2026-09-12 15:28:49
-39c4b021-c6e7-479d-ab1d-8de90749d729,DJ Big Bot - Rust,collectible,2.7,2026-09-12 15:28:49
-f809385e-d6fc-452c-9c0c-f7f9fb6cc019,CIARA ver. Ready to Paint,collectible,2.5,2026-09-12 15:28:49
-0b5e951b-09bd-4b29-9db9-d7ca4814d92c,Janie,collectible,3.29,2026-09-12 15:28:49
-02ab1567-e3b7-4862-bd09-4115bcfed9fc,Max,collectible,3.25,2026-09-12 15:28:49
-15ce5afc-3082-4582-b6e5-bf6e27163351,Record #9 - Everyone is Jealous of Me - Original,collectible,2,2026-09-12 15:28:49
-d90a73fb-fcef-4c6c-bf36-acfe1f371cf5,Record #3 - Ascension - Original,collectible,2,2026-09-12 15:28:49
-a9bd25e9-7deb-403f-9710-15314e0bc689,Acrobatic Surfing,collectible,1,2026-09-12 15:28:49
-a67aa0d3-7e99-4e1d-9fc0-780c2cafe8f9,Diamond Emma Frost - Marauders #21 (2021),collectible,30,2026-09-12 15:28:49
 56128c3c-1c59-4be5-82f5-380d0712f9cf,Ironheart - Neon,collectible,1460,2026-09-12 16:31:32
 595f497d-4d6f-4f58-a19e-ce5dcb942696,Ironheart - Riri Williams,collectible,17,2026-09-12 16:31:32
 46359177-0a0a-4148-aac9-7875a76aaa91,Toph,collectible,6.5,2026-09-12 16:31:32
@@ -2754,23 +2726,25 @@ ba7151f1-eba5-487d-87c9-3159fbc70bf8,Red Noggles,collectible,24,2026-09-19 14:23
 f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,3.99,2026-09-19 14:23:11
 b87927b2-6ad2-43ee-ae88-cfd7a2668e15,Bubble Machine,collectible,3.5,2026-09-19 14:23:11
 5e72800a-aaba-4743-a005-18675ee33d9a,Smoke Machine - Gold Edition,collectible,45.55,2026-09-19 14:23:11
-76f8e6d2-7d34-47a9-addf-f2280db37087,Factory of Shadows,collectible,100000,2026-09-19 15:25:15
-def65f71-6b97-4cff-a72d-e346d091c582,Sam Wilson,collectible,4,2026-09-19 15:25:15
-37f7f7ba-2961-4105-a0dc-87d7365d48af,Destruction of the Cosmos,collectible,99.99,2026-09-19 15:25:15
-3a24545f-3e4d-45d7-916f-817a50c7f1b2,No Time To Die  - Triumph Motorcycle,collectible,8.99,2026-09-19 15:25:15
-0f0391cb-0541-4191-a1a4-387f48c0e8e3,Black Panther,collectible,299,2026-09-19 15:25:15
-0c20eae8-dd0c-4786-ae2b-a4c9445783c0,Arendelle in Spring,collectible,73,2026-09-19 15:25:15
-38240a36-10d1-4653-ba38-61bd524e3ef3,Jean Grey - Phoenix,collectible,21,2026-09-19 15:25:15
-9d17be60-295f-4c99-867b-058417b2c74c,Odin - Action,collectible,185.85,2026-09-19 15:25:15
-67cbb002-bb92-4daa-865c-27cf5263f2d1,Beta - Attack Ready,collectible,6.5,2026-09-19 15:25:15
-488b4d3e-b76b-447f-a922-c2f33711d93c,Jawa 03,collectible,3.83,2026-09-19 15:25:15
-684d93e2-0ecf-47a5-a2c5-1c7dd0b8d4dd,Spider-Man 2099 - Beyond Destiny,collectible,15,2026-09-19 15:25:15
-63feb830-6cf1-4544-b39b-a74ef50bac8d,"Surprise, Minnie!",collectible,16.22,2026-09-19 15:25:15
-8afcff93-6e98-44aa-8b60-e3cc0274d76a,The Diamond of the Mines,collectible,59.95,2026-09-19 15:25:15
-0caa25d4-204a-41ef-94ee-22d69b96e2d7,JISOO Pink Venom 4,collectible,10.98,2026-09-19 15:25:15
-2253cf7f-d6e4-4c1b-9ada-fc10d4c3379f,Death Trooper Pistol - Running,collectible,4.5,2026-09-19 15:25:15
-55763632-4321-4e20-a3db-34e96f554cd1,Mogul Grin - Greed Green,collectible,7,2026-09-19 15:25:15
-60decdb0-2864-4979-85ef-714261cbdb2d,Edo Scout Trooper,collectible,5,2026-09-19 15:25:15
-cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,3.5,2026-09-19 15:25:15
-53ff9a39-afb8-4a2e-b9de-516d6ea965d5,Laser Beam Machine,collectible,2.98,2026-09-19 15:25:15
-36adfd74-e06b-4b10-a4a3-01fc13113d8d,Foam Machine - Gold Edition,collectible,13.99,2026-09-19 15:25:15
+fdb6c958-dc73-4452-aec4-19baa6abbe18,HOTH Battlefield Diorama - Echo Base Defense,collectible,166,2026-09-19 16:27:49
+e37ee580-892b-4db5-b6d7-3221eaee4960,Lucky,collectible,200,2026-09-19 16:27:49
+9df59b34-4aa2-44c5-9ba8-101f9f31bff8,S3LF MADE - Brett Crawford,collectible,850,2026-09-19 16:27:49
+a9ae0af3-8c76-45eb-9ef0-cd314ebc4e20,Carnage,collectible,79.99,2026-09-19 16:27:49
+114f9b05-5004-4657-884c-744baa97b872,Weapon Racks – Pink Blue,collectible,7.5,2026-09-19 16:27:49
+cbddd94c-f918-4062-9155-527066262481,Snow Globe - Polar Bear,collectible,2.99,2026-09-19 16:27:49
+725f985e-0a82-47b6-96df-8f4a4dffc28f,Confetti Machine - Gold Edition,collectible,500,2026-09-19 16:27:49
+9d17be60-295f-4c99-867b-058417b2c74c,Odin - Action,collectible,95.9,2026-09-19 16:27:49
+58ce00bf-e599-453d-ab67-146d84e4803c,Colossus - Secret Wars 1985,collectible,38.85,2026-09-19 16:27:49
+0f73e72f-8bc1-48c4-8b70-4e9b4e372003,Namor - Saga of the Sub-Mariner 1988,collectible,39.49,2026-09-19 16:27:49
+2c70e420-29bd-46bc-ba10-04073967e4d2,Take Me Out to the Ball Game,collectible,2.2,2026-09-19 16:27:49
+545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,7.9,2026-09-19 16:27:49
+46359177-0a0a-4148-aac9-7875a76aaa91,Toph,collectible,3.99,2026-09-19 16:27:49
+47a56835-3d0e-44c8-b636-987bf484f9c2,Romulan - Bird of Prey,collectible,22.99,2026-09-19 16:27:49
+f95a7ade-32c1-48e2-bab0-4dd51faf1d04,Bubble Machine - Gold Edition,collectible,79,2026-09-19 16:27:49
+f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,3.6,2026-09-19 16:27:49
+5e72800a-aaba-4743-a005-18675ee33d9a,Smoke Machine - Gold Edition,collectible,69.69,2026-09-19 16:27:49
+a15d54d8-0fa1-42bf-a69c-315662f4bfdf,Strobe Light Machine - Gold Edition,collectible,59,2026-09-19 16:27:49
+e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,2.9,2026-09-19 16:27:49
+36adfd74-e06b-4b10-a4a3-01fc13113d8d,Foam Machine - Gold Edition,collectible,13.8,2026-09-19 16:27:49
+42883b04-d4ae-43da-81ea-b80fc7075234,Drop Incoming!,collectible,1.69,2026-09-19 16:27:49
+08a2b238-3dca-4780-8f60-6e50289364d4,Rain - Dark,collectible,35,2026-09-19 16:27:49
