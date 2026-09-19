@@ -1,6 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-1f7f450e-d3af-451c-978b-158aad824e9d,Storm – Mistress of the Elements,collectible,5,2026-09-12 17:31:49
-82eeb970-aad4-41b1-b7c3-4b77b535c58f,LISA - Face My Katana!,collectible,499.99,2026-09-12 17:31:49
 30a9f14d-f5ef-4047-bf97-c2b047190f83,1:6 DeLorean Time Machine - Interactive,collectible,7.99,2026-09-12 18:34:41
 8f02fc96-7086-4afc-b681-f0892d1d0621,Death Trooper - DLT-19D Heavy Blaster Rifle Advance,collectible,5000,2026-09-12 18:34:41
 bf64cec0-ae64-43fe-b2a9-f1466f6aeb42,Alice in Wonderland,collectible,199,2026-09-12 18:34:41
@@ -2755,3 +2753,58 @@ e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,3.5,2026-0
 42883b04-d4ae-43da-81ea-b80fc7075234,Drop Incoming!,collectible,1.98,2026-09-19 17:31:26
 36adfd74-e06b-4b10-a4a3-01fc13113d8d,Foam Machine - Gold Edition,collectible,14,2026-09-19 17:31:26
 08a2b238-3dca-4780-8f60-6e50289364d4,Rain - Dark,collectible,38,2026-09-19 17:31:26
+db25d35f-7378-4c88-9d15-71ab97d25c09,The Rancor,collectible,234,2026-09-19 18:34:38
+72fb80f0-9a51-422d-97c0-d09d84de0738,Wonder Woman,collectible,23.95,2026-09-19 18:34:38
+39e873a8-37f3-4ef8-9247-b2b257f7dcbf,Team Avatar: SDCC 2026,collectible,222,2026-09-19 18:34:38
+c420311a-2c0c-434c-9c76-9d294e6cc304,Spider-Man 2099 - Temporal Vanguard,collectible,555,2026-09-19 18:34:38
+f64f5581-0640-4c33-873d-1d798c086e24,Stormtrooper,collectible,9,2026-09-19 18:34:38
+a0c50208-f32c-4e7e-9664-c28555a9f523,Yoda,collectible,57.99,2026-09-19 18:34:38
+756eaebb-f684-4274-9ab1-63e0844d88eb,Moon Knight 2,collectible,21.85,2026-09-19 18:34:38
+92871a71-62d8-4cb7-a6a8-adf184636056,Battle Mode,collectible,25.95,2026-09-19 18:34:38
+9ec3912b-737f-4396-b83f-96d488cb2ffb,Darth Vader Samurai - Wrath of the Dragon,collectible,1099,2026-09-19 18:34:38
+d94de475-51bb-4c41-8adf-f259e1cd5fdb,Emcee Claws,collectible,649,2026-09-19 18:34:38
+e913c1f9-9578-4077-b90b-94b0b0cde315,The Golden Lad,collectible,379,2026-09-19 18:34:38
+e94f5013-1df6-462b-a89b-fd810219157e,LISA Pink/Silver,collectible,134.99,2026-09-19 18:34:38
+9200fc5a-9913-45cd-addf-5c17bdd006b3,Starlight Orb,collectible,3.8,2026-09-19 18:34:38
+9c03916b-f57c-43d8-a0b0-7f7dbbbf73d9,Tian Zun Huang Yin,collectible,50,2026-09-19 18:34:38
+38240a36-10d1-4653-ba38-61bd524e3ef3,Jean Grey - Phoenix,collectible,20,2026-09-19 18:34:38
+17e0ad50-e443-46f9-9016-0f79c5753a7a,Kaiju Tokigold,collectible,76.92,2026-09-19 18:34:38
+18d56bc0-d416-4d8b-b8d1-0df800a45f72,Day of the Dead: Child,collectible,4.95,2026-09-19 18:34:38
+40dd129c-df8b-4d97-89df-98cc9fa00f7d,Creeping DERO (Shadow) - Jermaine Rogers,collectible,50,2026-09-19 18:34:38
+5da277e1-31b3-4d38-8ae4-6a1edc188a12,Lady Deadpool,collectible,1.99,2026-09-19 18:34:38
+2036655b-f5dc-4187-9d2a-1380a3bed625,Coming Soon Poster,collectible,9.99,2026-09-19 18:34:38
+725f985e-0a82-47b6-96df-8f4a4dffc28f,Confetti Machine - Gold Edition,collectible,399,2026-09-19 18:34:38
+d0d24b34-c4bc-41bc-af6c-23dc874bc60a,The Volcanic Haunt,collectible,88,2026-09-19 18:34:38
+27cde852-c39e-4fde-94f5-5f85a8a6e757,Xie Ying Bai Di,collectible,15,2026-09-19 18:34:38
+12dba506-2a2e-4f26-b89a-f5cf8518151a,D&D - Year One Table,collectible,36.9,2026-09-19 18:34:38
+58ce00bf-e599-453d-ab67-146d84e4803c,Colossus - Secret Wars 1985,collectible,38.45,2026-09-19 18:34:38
+0f73e72f-8bc1-48c4-8b70-4e9b4e372003,Namor - Saga of the Sub-Mariner 1988,collectible,39.49,2026-09-19 18:34:38
+88150db3-a2e8-48ac-b9a1-a66f2f0ff36d,The Invisible Woman - Invisible,collectible,17,2026-09-19 18:34:38
+2c70e420-29bd-46bc-ba10-04073967e4d2,Take Me Out to the Ball Game,collectible,2.2,2026-09-19 18:34:38
+f6e15150-641b-4d8e-b7cc-19027a019d1f,Chris Robots Will Kill - OG,collectible,40,2026-09-19 18:34:38
+1e033ca4-e213-4960-8862-78fc4ca41aeb,Potball BB,collectible,15,2026-09-19 18:34:38
+fcaf92c1-1f34-4042-87ee-b5cc02345977,Chris Robots Will Kill - Landscape,collectible,32,2026-09-19 18:34:38
+49ebb3bc-9ac4-43cd-a734-5aee8c6d67ef,Earth Day - Stamp,collectible,1.9,2026-09-19 18:34:38
+e6fd9727-4bc1-4abb-80c7-1e0628531739,Poxh Pixeez - I Like Cold Drinks Record,collectible,102.56,2026-09-19 18:34:38
+f4c0a191-911f-44bb-b52c-a4b805e071cb,Spooky Silhouettes - Bats,collectible,6,2026-09-19 18:34:38
+eda50111-815e-42c0-8748-1f34b35c5c36,Emma Frost - Hellfire Gala #1 (2022),collectible,5.95,2026-09-19 18:34:38
+545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,7.9,2026-09-19 18:34:38
+31944bea-3443-4497-8387-db84f26750a9,Pyro Machine - Gold Edition,collectible,139,2026-09-19 18:34:38
+46359177-0a0a-4148-aac9-7875a76aaa91,Toph,collectible,3.99,2026-09-19 18:34:38
+f6c0f08f-a0e9-455b-9008-13dc70abcfba,Vana,collectible,16.93,2026-09-19 18:34:38
+9d2783d6-13a1-4175-b8ae-a38b23fa3d2b,Heads Up Rabbid,collectible,12,2026-09-19 18:34:38
+af653c3c-f0a0-4e4d-ba6c-7d194a747001,Chi Yan Chi Lin,collectible,3.04,2026-09-19 18:34:38
+9e79842b-ab20-4f0e-8bca-01b4877aa45f,Views of Our Planets - Mercury,collectible,3.99,2026-09-19 18:34:38
+c646e937-7af9-4243-9e49-ee5e8452e3c5,Snow Globes - Reindeer,collectible,3.99,2026-09-19 18:34:38
+e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,4,2026-09-19 18:34:38
+cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,4,2026-09-19 18:34:38
+a15d54d8-0fa1-42bf-a69c-315662f4bfdf,Strobe Light Machine - Gold Edition,collectible,59,2026-09-19 18:34:38
+36adfd74-e06b-4b10-a4a3-01fc13113d8d,Foam Machine - Gold Edition,collectible,13.75,2026-09-19 18:34:38
+42883b04-d4ae-43da-81ea-b80fc7075234,Drop Incoming!,collectible,1.69,2026-09-19 18:34:38
+615d22d7-990a-4566-8223-8031eaf43c62,ODDY ver. CHOCOLATE FOREST,collectible,7.5,2026-09-19 18:34:38
+f95a7ade-32c1-48e2-bab0-4dd51faf1d04,Bubble Machine - Gold Edition,collectible,49,2026-09-19 18:34:38
+383b2411-0ef9-4ec9-8b7a-2825ebeab4c6,Year of the Horse Medallion,collectible,1.5,2026-09-19 18:34:38
+5e72800a-aaba-4743-a005-18675ee33d9a,Smoke Machine - Gold Edition,collectible,41.5,2026-09-19 18:34:38
+f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,2,2026-09-19 18:34:38
+b87927b2-6ad2-43ee-ae88-cfd7a2668e15,Bubble Machine,collectible,2,2026-09-19 18:34:38
+08a2b238-3dca-4780-8f60-6e50289364d4,Rain - Dark,collectible,35,2026-09-19 18:34:38
