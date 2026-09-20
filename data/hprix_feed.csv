@@ -1,17 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-900388bb-8847-4334-8d1a-508de81c4a4d,Superman,collectible,200,2026-09-13 06:04:34
-2b33f887-18e5-484a-a725-2d6a0cb41201,Capt. Stormy,collectible,1250,2026-09-13 06:04:34
-5a00c7ae-ce58-4b8e-91e4-62af4baac6e8,Pizza Planet Truck,collectible,45,2026-09-13 06:04:34
-0595e315-f9cc-4675-8e9e-cf9d127663a3,Spider-Woman,collectible,4,2026-09-13 06:04:34
-67d718f3-658b-4815-a112-053541fad6ae,Piston Cup,collectible,23,2026-09-13 06:04:34
-7518a463-6a62-4202-a661-583ccf664332,Miss Minutes,collectible,19.99,2026-09-13 06:04:34
-595f497d-4d6f-4f58-a19e-ce5dcb942696,Ironheart - Riri Williams,collectible,13.49,2026-09-13 06:04:34
-3f2c02a2-c2ef-45e0-bae2-4d509fb119f9,VeVe Heart Logo - VeVeVerse,collectible,39.99,2026-09-13 06:04:34
-a0c5169a-8dea-4b13-9d01-f4e64555ccbc,Tara McPherson - Purple Bunny Rider,collectible,20,2026-09-13 06:04:34
-293b3939-c579-4b4c-83fd-1f8ddfa91357,Okoye,collectible,4,2026-09-13 06:04:34
-f64bf297-8a18-4e49-a539-d99f19fd5350,Mister Sinister,collectible,10,2026-09-13 06:04:34
-12d7ac8b-dad2-48a4-930f-5abc5399b121,Boy (Color),collectible,290,2026-09-13 06:04:34
-04c4bc6c-bbea-4d2e-bb0f-84122e214979,Loki - Action,collectible,6,2026-09-13 06:04:34
 2b33f887-18e5-484a-a725-2d6a0cb41201,Capt. Stormy,collectible,985,2026-09-13 07:05:40
 75bffbf5-3527-4c34-a73d-06252becd47f,Skateboard,collectible,54,2026-09-13 07:05:40
 6a3c8ad0-8bb9-4065-abff-9d12b8e82bc4,Lady and the Tramp,collectible,42.95,2026-09-13 07:05:40
@@ -2744,3 +2731,29 @@ f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,2.89,2026-09-20 05
 ec00071b-05f6-4fbd-9b35-cbcbfb88c996,Mr. V,collectible,4.45,2026-09-20 05:55:12
 8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,2.73,2026-09-20 05:55:12
 a92e79b9-e6c5-41cf-88ad-0f3490f9dce0,Calm Mint CANVAS PRINT,collectible,10,2026-09-20 05:55:12
+bba0290e-1506-4702-a8fb-c1892b5bb638,Back to the Future,collectible,67,2026-09-20 07:03:03
+1e6c918e-201d-44ea-9775-0cdd333bb27b,Zombie Hunter Spider-Man #2,collectible,34.83,2026-09-20 07:03:03
+3065cf80-b9c7-4fad-bfe4-5e724baad39f,Faline,collectible,499,2026-09-20 07:03:03
+eaa4170a-284c-40b5-9add-db1034f91d4a,Bayek,collectible,16.9,2026-09-20 07:03:03
+684d93e2-0ecf-47a5-a2c5-1c7dd0b8d4dd,Spider-Man 2099 - Beyond Destiny,collectible,14.95,2026-09-20 07:03:03
+91f93596-2aa8-4cf4-8355-31c7e020ac90,Qhrist,collectible,13.99,2026-09-20 07:03:03
+a1273f2c-934d-4c2a-a17f-3d1be7278c6a,On the Prinsengracht in Amsterdam,collectible,179,2026-09-20 07:03:03
+d65a302d-eda5-457f-b6c3-46826dee1941,Sket One - Boo Crew - Glow in the Dark Cyan,collectible,333,2026-09-20 07:03:03
+f91fbba9-e5f3-4d7d-93b4-91efacbc0b27,Spider-Man 2099 - Genetic Awakening,collectible,10,2026-09-20 07:03:03
+7f7d3588-103e-414e-a1b1-71b1a1f7a7bd,David’s Doo Gold,collectible,200,2026-09-20 07:03:03
+9ed0e046-53f4-4c10-80e9-7cac8a0a01c9,Coca-Cola – 1900 Labeled Bottle,collectible,9,2026-09-20 07:03:03
+7051dd0b-67f0-4ffe-a81b-6a397a7a496c,T-47 Airspeeder - Red,collectible,6.99,2026-09-20 07:03:03
+57cc6578-d821-4ea1-a709-521905ed5838,Sunflower Grin - Special Mission - Silver,collectible,2.45,2026-09-20 07:03:03
+e64a8eab-3d0b-4ec5-b714-31451199a1e6,Year of the Ox,collectible,1.44,2026-09-20 07:03:03
+c85f636d-05bf-4cb2-983c-22ae671ee6b4,Record #9 - Everyone is Jealous of Me - Platinum,collectible,59,2026-09-20 07:03:03
+a15d54d8-0fa1-42bf-a69c-315662f4bfdf,Strobe Light Machine - Gold Edition,collectible,135,2026-09-20 07:03:03
+a72a940f-3713-4072-8736-415a64444d47,Take That Rabbid,collectible,30,2026-09-20 07:03:03
+53ff9a39-afb8-4a2e-b9de-516d6ea965d5,Laser Beam Machine,collectible,6,2026-09-20 07:03:03
+d629f709-d1b4-4e1d-803d-542a6b00ea9a,VeVe Heart Logo - Pink,collectible,1.99,2026-09-20 07:03:03
+a92e79b9-e6c5-41cf-88ad-0f3490f9dce0,Calm Mint CANVAS PRINT,collectible,20,2026-09-20 07:03:03
+f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,3.88,2026-09-20 07:03:03
+b87927b2-6ad2-43ee-ae88-cfd7a2668e15,Bubble Machine,collectible,3.5,2026-09-20 07:03:03
+de1e9deb-5145-4ca8-8348-43dcd61b8ddf,Green Truck,collectible,1.99,2026-09-20 07:03:03
+8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,2.9,2026-09-20 07:03:03
+2c3b5185-c87d-440e-a040-902aacc1d57d,Monovader - Blue Mic Theory,collectible,2.99,2026-09-20 07:03:03
+a9bd25e9-7deb-403f-9710-15314e0bc689,Acrobatic Surfing,collectible,1.15,2026-09-20 07:03:03
