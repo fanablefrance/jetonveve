@@ -1,22 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-2b33f887-18e5-484a-a725-2d6a0cb41201,Capt. Stormy,collectible,985,2026-09-13 07:05:40
-75bffbf5-3527-4c34-a73d-06252becd47f,Skateboard,collectible,54,2026-09-13 07:05:40
-6a3c8ad0-8bb9-4065-abff-9d12b8e82bc4,Lady and the Tramp,collectible,42.95,2026-09-13 07:05:40
-df101af2-42fe-4af4-bc51-f8826a6022aa,I Have You In My Sights,collectible,31.5,2026-09-13 07:05:40
-1b0b3cc2-226d-416c-ab86-875e8268b370,Gold Dragon,collectible,190,2026-09-13 07:05:40
-15399c5e-7cd8-46c3-9240-9db5794ceea3,Human Torch,collectible,7.5,2026-09-13 07:05:40
-107f52b8-4494-4251-9193-ae32264f76fc,Ready For Action,collectible,8.95,2026-09-13 07:05:40
-a9ae0af3-8c76-45eb-9ef0-cd314ebc4e20,Carnage,collectible,79,2026-09-13 07:05:40
-65746e5e-b2d0-4ea0-acc7-eb7fd60da909,ROSÉ – Natural Confidence,collectible,499.99,2026-09-13 07:05:40
-020331ea-b8e1-4552-b804-50eca175b88c,Mogul Grin - Gold Skull,collectible,115,2026-09-13 07:05:40
-e95c604e-68ca-44e6-887f-397874db0fe7,Views of Our Planets - Earth,collectible,28.99,2026-09-13 07:05:40
-069ed892-ac0a-4ebe-9089-f72b815a8c69,First Blood - Original US Theatrical Poster (1982),collectible,12.99,2026-09-13 07:05:40
-425c2402-c9cc-4ae5-88d3-c1dd8775be0c,Human Torch - Action,collectible,18.88,2026-09-13 07:05:40
-378f29fe-ba48-4e71-98d6-c84ab93ab4c7,Happy Lunar New Year! - Red,collectible,22,2026-09-13 07:05:40
-60dbacaa-bf89-4683-9dc9-10363e32d986,Cliff Cramp Variant,collectible,29,2026-09-13 07:05:40
-9fb4f37e-1474-4dea-99b9-aa016d8408e6,Adi Granov Main Cover,collectible,4,2026-09-13 07:05:40
-47a56835-3d0e-44c8-b636-987bf484f9c2,Romulan - Bird of Prey,collectible,31,2026-09-13 07:05:40
-a92e79b9-e6c5-41cf-88ad-0f3490f9dce0,Calm Mint CANVAS PRINT,collectible,22,2026-09-13 07:05:40
 9c1ba3e2-9e84-4987-8704-0044f03f509b,The Spy Who Loved Me - Hungarian Poster,collectible,9000,2026-09-13 08:09:34
 5157866e-cbb9-4563-abda-56217b75b4b9,VeVe,collectible,2500,2026-09-13 08:09:34
 85c100df-a1e0-42e7-91b2-cb953340fef6,C-3PO,collectible,1495,2026-09-13 08:09:34
@@ -2757,3 +2739,27 @@ de1e9deb-5145-4ca8-8348-43dcd61b8ddf,Green Truck,collectible,1.99,2026-09-20 07:
 8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,2.9,2026-09-20 07:03:03
 2c3b5185-c87d-440e-a040-902aacc1d57d,Monovader - Blue Mic Theory,collectible,2.99,2026-09-20 07:03:03
 a9bd25e9-7deb-403f-9710-15314e0bc689,Acrobatic Surfing,collectible,1.15,2026-09-20 07:03:03
+ac8afbde-a31c-496a-bacf-ce837980f4eb,BLACKPINK Lightbox - Blush Mode,collectible,990,2026-09-20 08:04:46
+742b6127-cae8-43de-858c-0db0a7c14c4b,LISA – Playful Era,collectible,499,2026-09-20 08:04:46
+09bfcac2-3930-4191-ae89-8aad25d47f69,Nakia,collectible,19.99,2026-09-20 08:04:46
+94e3db13-8cbc-4673-92c0-c75c2d627aa2,Holiday Groot – Ultimate Animated,collectible,4.99,2026-09-20 08:04:46
+e2c15ba9-4abe-4280-a7f6-945823bd55d6,JENNIE – Cool Command,collectible,298,2026-09-20 08:04:46
+1bb217e8-acd9-4b09-9841-42ec994d4de7,Mysterio - Smoke and Mirrors,collectible,19.99,2026-09-20 08:04:46
+56c63f1f-6636-4954-8f6a-49933cee761f,Miura - Giallo Miura,collectible,110,2026-09-20 08:04:46
+a6a8e263-17b8-4653-894b-6b7dac0bc777,Sadness,collectible,9.99,2026-09-20 08:04:46
+8fc5ef65-80b8-4b61-9cad-3a8de0cc472a,Nessie,collectible,1.79,2026-09-20 08:04:46
+2c70e420-29bd-46bc-ba10-04073967e4d2,Take Me Out to the Ball Game,collectible,2.2,2026-09-20 08:04:46
+ad0dbff5-70b9-4bb5-be40-2bb436f1cef2,Coca-Cola Vending Machine (1950s),collectible,9.9,2026-09-20 08:04:46
+a31fd9df-edf2-449f-8f0b-7fac53aec930,Bing Bong,collectible,20,2026-09-20 08:04:46
+c85f636d-05bf-4cb2-983c-22ae671ee6b4,Record #9 - Everyone is Jealous of Me - Platinum,collectible,49,2026-09-20 08:04:46
+545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,7.9,2026-09-20 08:04:46
+92aa9444-e4f7-4961-b815-eef04b1313a8,VeVe Christmas Tree - Gold,collectible,1.85,2026-09-20 08:04:46
+d629f709-d1b4-4e1d-803d-542a6b00ea9a,VeVe Heart Logo - Pink,collectible,2.91,2026-09-20 08:04:46
+de1e9deb-5145-4ca8-8348-43dcd61b8ddf,Green Truck,collectible,2.29,2026-09-20 08:04:46
+f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,3.8,2026-09-20 08:04:46
+71e624e1-3660-49d6-a6a8-707dd61803da,POW! - Gold,collectible,59.99,2026-09-20 08:04:46
+cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,3.49,2026-09-20 08:04:46
+ff142570-e43a-4f7e-8a15-4668b0e4d332,ZAP!,collectible,5.65,2026-09-20 08:04:46
+e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,2.75,2026-09-20 08:04:46
+383b2411-0ef9-4ec9-8b7a-2825ebeab4c6,Year of the Horse Medallion,collectible,1.7,2026-09-20 08:04:46
+2c3b5185-c87d-440e-a040-902aacc1d57d,Monovader - Blue Mic Theory,collectible,1.99,2026-09-20 08:04:46
