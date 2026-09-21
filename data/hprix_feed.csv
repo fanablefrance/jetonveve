@@ -1,4 +1,16 @@
 uuid,name,categorie,floor_usd,ts
+e6e5683f-5b64-4842-8f74-912a0fc919ba,Homer & Bart,collectible,61.99,2026-09-14 05:49:01
+42b9dcb8-5cbc-4c17-a1af-eeeaf5957728,Colossus - Uncanny X-Men 1975,collectible,10000,2026-09-14 05:49:01
+9cccbffd-e907-44b4-9e2e-b285f090292d,Zombie Hunter Spider-Man #1,collectible,4.5,2026-09-14 05:49:01
+92871a71-62d8-4cb7-a6a8-adf184636056,Battle Mode,collectible,18.95,2026-09-14 05:49:01
+89f1561b-78b1-4a9f-9aaf-09543d007bd0,Maserati MC12 - Stradale,collectible,19.98,2026-09-14 05:49:01
+86d59fbf-23ee-491d-bdce-9a8c5de94285,LISA Pink Venom Card,collectible,39.95,2026-09-14 05:49:01
+f5c9bb3e-292b-45c6-a809-f9df9e1cf6a8,ROSÉ Pink Venom Card,collectible,45,2026-09-14 05:49:01
+595f497d-4d6f-4f58-a19e-ce5dcb942696,Ironheart - Riri Williams,collectible,11.12,2026-09-14 05:49:01
+39abf2f6-566b-4f0f-bc6c-e81204c1016c,Magneto,collectible,11.99,2026-09-14 05:49:01
+b7af07ae-716b-4c4c-b13a-1b3c55b00cf2,Hear More Evil Monkey - Original,collectible,14.5,2026-09-14 05:49:01
+8564d30f-2411-4d71-8f53-330747e9326d,Night Trooper Exposed - Marching,collectible,2.75,2026-09-14 05:49:01
+438829a3-1ddf-43ef-a849-d05292e7937f,Night Trooper - Marching,collectible,2,2026-09-14 05:49:01
 1b0b3cc2-226d-416c-ab86-875e8268b370,Gold Dragon,collectible,190,2026-09-14 07:51:25
 a3823ed6-2f7b-4fbc-8647-7a20f161c3a0,Stitch Poster,collectible,390,2026-09-14 07:51:25
 020331ea-b8e1-4552-b804-50eca175b88c,Mogul Grin - Gold Skull,collectible,94,2026-09-14 07:51:25
@@ -2489,48 +2501,4 @@ a15d54d8-0fa1-42bf-a69c-315662f4bfdf,Strobe Light Machine - Gold Edition,collect
 920d56a7-1f6f-44ba-8558-61024a5084e7,Potball HIT,collectible,3.75,2026-09-21 04:45:42
 be788d66-d29a-4d20-bd8c-65a1cbc7e1e1,Bubbly,collectible,6,2026-09-21 04:45:42
 829b3928-472c-40ba-bf53-c35baed4de5a,Sabretooth - Savage Presence Special Edition,collectible,20,2026-09-21 04:45:42
-796522a5-d6ce-4eb3-9a6c-1fd693373ec7,BLACKPINK Lightbox - Monochrome Mode,collectible,3500,2026-09-21 06:50:53
-107572e7-d947-4cc0-b8dc-af5e16233566,Bucky Barnes - On Guard,collectible,24.95,2026-09-21 06:50:53
-cbe550c6-847b-47ea-a5b4-89187cd8ef99,Sam Wilson - Action,collectible,28.98,2026-09-21 06:50:53
-3ab09024-348e-4e98-9f7d-cbe428fe0d19,Uprising,collectible,21.1,2026-09-21 06:50:53
-1a258258-8835-4cb1-ae1e-1ed782166e33,Galactus - Cosmic Laser Fury,collectible,21.15,2026-09-21 06:50:53
-842e1d51-02b9-4762-9c4d-12f95f0b12d2,Ken Blue,collectible,198,2026-09-21 06:50:53
-020331ea-b8e1-4552-b804-50eca175b88c,Mogul Grin - Gold Skull,collectible,70,2026-09-21 06:50:53
-b8a474b2-e594-484a-a0f5-59f26ebdab97,Bunny Blossom,collectible,34.98,2026-09-21 06:50:53
-06289587-89e9-4317-bd5b-038fe1f2150e,Yucky Charmer,collectible,22.22,2026-09-21 06:50:53
-cbea19a1-4736-447f-a98e-c26085b66f58,Kang 2,collectible,33.25,2026-09-21 06:50:53
-b33280f4-4d16-49ed-9787-581eee052e2f,Astro,collectible,11,2026-09-21 06:50:53
-0b39709d-b8c7-4dc4-ae55-83d940cb7891,Altaïr - Before the Leap,collectible,150,2026-09-21 06:50:53
-0f9de5c7-9110-4e09-b054-55c969dafca3,Marvel’s Avengers: Beyond Earth’s Mightiest - Poster,collectible,33.33,2026-09-21 06:50:53
-d37448eb-4dd9-4693-abb5-3747fb07ef3f,Flo’s V8 Cafe,collectible,20,2026-09-21 06:50:53
-dd3e18ed-b702-4173-81a9-85534f4003d4,Redrum,collectible,15,2026-09-21 06:50:53
-86812664-f489-4251-936d-954b336c94d4,Coca-Cola Vending Machine (1980s),collectible,16.5,2026-09-21 06:50:53
-1194ee6f-a407-47f9-b3de-efbb7aa587ea,Mr. Knight 1,collectible,2,2026-09-21 06:50:53
-199febf6-f9a8-44e3-b106-3c8e545bb78f,Feng Cai Ling,collectible,2.85,2026-09-21 06:50:53
-1426a5b0-2a68-4487-9cd5-ec118b3c323f,Twist,collectible,9.75,2026-09-21 06:50:53
-59123bd4-c092-4fe7-9c72-0a0d748cb6fd,Title IX - Gymnast,collectible,2.99,2026-09-21 06:50:53
-f9422701-8fc1-4af5-9312-d7e8f21b83e1,JISOO Pink Venom 1,collectible,27.65,2026-09-21 06:50:53
-5815ba10-688c-446a-9822-91cc3f8aa67a,Ovomorph,collectible,5,2026-09-21 06:50:53
-fb126fc0-85cd-4363-aded-425205ec8d62,Stabbed Trooper Helmet,collectible,32.99,2026-09-21 06:50:53
-582a6663-a706-4bc9-9078-b594acc896a8,Gouki Nostalgic,collectible,53.99,2026-09-21 06:50:53
-9ed0e046-53f4-4c10-80e9-7cac8a0a01c9,Coca-Cola – 1900 Labeled Bottle,collectible,7.55,2026-09-21 06:50:53
-1b85ed24-8f74-4e91-b467-5024b04e0749,Galactus - Devourer of Worlds,collectible,23.98,2026-09-21 06:50:53
-c3c9cf87-6d65-4ad6-8e95-0a32b7bcd9e9,Thanos Copter,collectible,8.3,2026-09-21 06:50:53
-b8e2a2ee-d61b-4500-9700-e29f9bfdee8e,Facehugger,collectible,4,2026-09-21 06:50:53
-b9e782f0-2edd-425f-853f-087ba24e00bc,Gasgano’s Podracer Base,collectible,55.55,2026-09-21 06:50:53
-7b609421-a92f-42c7-963f-ce3514a8a07d,Emily & The Strangers,collectible,12,2026-09-21 06:50:53
-6a9ca7c7-ea86-4a95-b142-0a4b557dd2a3,LA Strong - Red Heart,collectible,33.33,2026-09-21 06:50:53
-63067716-0eaa-4b87-9910-0f229f4b5be5,Aquatic Plant - Vibrant Red,collectible,15,2026-09-21 06:50:53
-2a215129-a315-4d1f-807c-9bdb72548bcb,Charles Muntz,collectible,22.22,2026-09-21 06:50:53
-47a56835-3d0e-44c8-b636-987bf484f9c2,Romulan - Bird of Prey,collectible,25.99,2026-09-21 06:50:53
-b6f29798-c0ff-4bd8-96fc-a5f8b9b621ae,Flerkitten 3,collectible,12.52,2026-09-21 06:50:53
-12d7ac8b-dad2-48a4-930f-5abc5399b121,Boy (Color),collectible,290,2026-09-21 06:50:53
-81cb0032-6589-41e2-ad05-f12815a5fba9,David - Golden Path,collectible,12,2026-09-21 06:50:53
-087f1d36-ca76-4674-88a9-e182acbe0a4a,BLAM! - Gold,collectible,105,2026-09-21 06:50:53
-26d26ce6-1441-4390-abe6-2a2a1e49340c,Aquatic Plant - Emerald Green,collectible,11.61,2026-09-21 06:50:53
-8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,3.75,2026-09-21 06:50:53
-f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,3.25,2026-09-21 06:50:53
-43bb7950-19b2-4687-b6da-de526c651fc1,Vincent Mascot,collectible,15,2026-09-21 06:50:53
-b87927b2-6ad2-43ee-ae88-cfd7a2668e15,Bubble Machine,collectible,3.05,2026-09-21 06:50:53
-ec00071b-05f6-4fbd-9b35-cbcbfb88c996,Mr. V,collectible,4.45,2026-09-21 06:50:53
-a877e714-7bbc-4a8a-95a0-4cd087216f99,Maido & Kanpai,collectible,3.99,2026-09-21 06:50:53
+900388bb-8847-4334-8d1a-508de81c4a4d,Superman,collectible,235,2026-09-21 05:47:27
