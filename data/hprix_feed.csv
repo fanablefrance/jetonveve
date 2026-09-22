@@ -1,18 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-5e8f7e71-3285-4977-9f11-77fa35c2dda3,Spider-Man: Miles Morales - Ultimate Spider-Man,collectible,625,2026-09-15 02:31:22
-c0fd5575-0a5f-4625-a271-bf050842057c,Sakura Dragon Girl,collectible,199,2026-09-15 02:31:22
-9e65bdba-e67c-4af1-b1bc-f6bcc60e4bcd,Luke Skywalker's X-wing,collectible,27.99,2026-09-15 02:31:22
-6b9b6046-7fbd-43e1-bfe0-54a5f4ddeb0b,Rogue - Southern Powerhouse,collectible,15,2026-09-15 02:31:22
-89f1561b-78b1-4a9f-9aaf-09543d007bd0,Maserati MC12 - Stradale,collectible,21,2026-09-15 02:31:22
-3164f5e3-044d-477d-8022-0a99dead294d,Leonardo - Classic,collectible,12.99,2026-09-15 02:31:22
-66e806df-9fef-4e2b-90b0-4c0ef4bb6974,Magneto Venomized,collectible,14.99,2026-09-15 02:31:22
-3a104aa7-b5ba-4bd1-8197-dd402dbd46bf,Night Trooper,collectible,4.99,2026-09-15 02:31:22
-24a2244f-2c0c-40f4-9294-b68fd45acdd7,Mr. DNA,collectible,10.94,2026-09-15 02:31:22
-eda50111-815e-42c0-8748-1f34b35c5c36,Emma Frost - Hellfire Gala #1 (2022),collectible,5.99,2026-09-15 02:31:22
-d23fe8eb-7882-40fc-8e4d-16a0f81e1847,B-Rank Essence Stone,collectible,4.75,2026-09-15 02:31:22
-b99cd3be-d4bb-496d-80a3-382e59f8a18a,Predator - Young Blood,collectible,9.45,2026-09-15 02:31:22
-235b8120-4c54-4b9c-afa5-414af205002a,Happy New Year! 2026 - Tier 5,collectible,1.22,2026-09-15 02:31:22
-d37184af-298d-4b47-ae13-819fb234b80d,Episode 12 - Arise,collectible,1.11,2026-09-15 02:31:22
 5ab59120-1b5b-473c-9c80-3144d9a6e1d5,"All Together, Now!",collectible,115,2026-09-15 03:33:19
 22051b59-d148-440f-8d9e-550d1da58555,Marvel Iron Man 18” – Superior,collectible,1500,2026-09-15 03:33:19
 30a9f14d-f5ef-4047-bf97-c2b047190f83,1:6 DeLorean Time Machine - Interactive,collectible,7,2026-09-15 03:33:19
@@ -2598,19 +2584,16 @@ fbc6e8d2-feb1-46b9-9321-2cf8d34a47c2,Friend Owl,collectible,3,2026-09-22 00:44:3
 81cb0032-6589-41e2-ad05-f12815a5fba9,David - Golden Path,collectible,10,2026-09-22 00:44:33
 209d240e-c9a7-45e8-b0e1-2975e4b01452,Bambi’s Forest Base,collectible,8.2,2026-09-22 00:44:33
 288b12b5-89ed-4fa0-83cd-ec757334d4dc,Record #1 - Frankenstein - Original,collectible,1.99,2026-09-22 00:44:33
-25d8132e-95d9-4bb2-a355-6406bd485b42,VeVe Partner Logo,collectible,8000,2026-09-22 01:48:10
-66bf871d-a8d4-474e-a0f2-b1ceb28c7b94,Millennium Falcon,collectible,109.99,2026-09-22 01:48:10
-9bbf3fa3-9b0c-446d-9b17-f6e452b070c7,Black Panther – Wakanda Forever,collectible,6.44,2026-09-22 01:48:10
-1049f40a-b3db-42ef-aeec-036b9e4ecd88,Elektra – Lady Daredevil,collectible,12.99,2026-09-22 01:48:10
-87f6a7f3-98fc-4c51-bddd-6946a509f760,Too Much Magic!,collectible,5.89,2026-09-22 01:48:10
-9a22c13c-a299-4639-b07e-6cf2d133e45f,Mariachi - Vihuela Player,collectible,18,2026-09-22 01:48:10
-f768b31c-dcef-4122-ad4e-ca3837071108,The Golden MYO,collectible,255,2026-09-22 01:48:10
-b5709a30-1677-410d-ab7e-8b755859a70e,"Q-Boat from The World is Not Enough, 1999",collectible,13,2026-09-22 01:48:10
-0595e315-f9cc-4675-8e9e-cf9d127663a3,Spider-Woman,collectible,3,2026-09-22 01:48:10
-262ca5c3-d806-421d-aa0a-05207e5ea59c,Donatello - IncogNinja,collectible,43,2026-09-22 01:48:10
-1426a5b0-2a68-4487-9cd5-ec118b3c323f,Twist,collectible,7.75,2026-09-22 01:48:10
-d2166c51-23c5-4c47-8975-0808a09fcbf5,Captain Hook,collectible,6,2026-09-22 01:48:10
-914191ea-74f7-48cd-ad71-d116392fd65b,"Attaché Case from From Russia With Love, 1963",collectible,13.99,2026-09-22 01:48:10
-4f38dd75-8591-485e-bab8-a8fbd3ffdd5a,Nedry’s Computer,collectible,9.99,2026-09-22 01:48:10
-31944bea-3443-4497-8387-db84f26750a9,Pyro Machine - Gold Edition,collectible,69.69,2026-09-22 01:48:10
-f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,3,2026-09-22 01:48:10
+900388bb-8847-4334-8d1a-508de81c4a4d,Superman,collectible,200,2026-09-22 02:49:13
+d03f035e-fe59-40f6-9977-3cef76ee112b,Spider-Man - Animated,collectible,675,2026-09-22 02:49:13
+75bffbf5-3527-4c34-a73d-06252becd47f,Skateboard,collectible,89,2026-09-22 02:49:13
+5fd09e1f-58f8-467f-9e78-d64f6e3a69b9,R2-D2,collectible,222,2026-09-22 02:49:13
+9f428e38-ab8d-446b-8037-f58c1a4af078,The London Police x SUYE Utility Coin,collectible,25,2026-09-22 02:49:13
+b94e5d49-35f0-4bdc-9e41-d5c484df5ae7,Catwoman,collectible,8.5,2026-09-22 02:49:13
+3a24545f-3e4d-45d7-916f-817a50c7f1b2,No Time To Die  - Triumph Motorcycle,collectible,6.99,2026-09-22 02:49:13
+c9840620-e6cb-4265-8e45-40b4910c7948,Jersey Devil,collectible,7.75,2026-09-22 02:49:13
+e3f45c09-9bc7-43b0-ab69-47d0359de44d,Frozone,collectible,59.95,2026-09-22 02:49:13
+91f93596-2aa8-4cf4-8355-31c7e020ac90,Qhrist,collectible,11,2026-09-22 02:49:13
+05bfaa01-9847-43e5-82ee-8c7999c26aa7,IG-11 - Protector,collectible,6.22,2026-09-22 02:49:13
+30341e3d-3fd2-49bc-b52e-cb539458aee5,LUV,collectible,14.99,2026-09-22 02:49:13
+f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,3.25,2026-09-22 02:49:13
