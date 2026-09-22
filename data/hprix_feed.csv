@@ -1,12 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-c0fd5575-0a5f-4625-a271-bf050842057c,Sakura Dragon Girl,collectible,180,2026-09-15 16:58:34
-28906a0f-8d90-41fb-b193-7e619c906ad0,Harley Quinn (Stanley Lau),collectible,24.5,2026-09-15 16:58:34
-1b80b8da-dcdd-499e-af5b-0a91308d58e2,1860 George Washington (originally 90 cents),collectible,11,2026-09-15 16:58:34
-c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,7.5,2026-09-15 16:58:34
-68649d9c-b610-4ac0-a07a-f14a1fca6585,Raphael - Classic,collectible,7.5,2026-09-15 16:58:34
-52106634-c0eb-445c-a09e-7aa34e05e8d1,Emma Frost - Uncanny 1980,collectible,35,2026-09-15 16:58:34
-856227a4-716c-4b50-893c-d16a4fc93e33,Night Trooper Exposed - Unleashed,collectible,20.9,2026-09-15 16:58:34
-73255fe7-c9e7-489a-a3bd-547b9b87a8a5,Ash,collectible,3.37,2026-09-15 16:58:34
 407c2658-6e20-471f-b677-95e95dffd4a3,Community Events Participant Award,collectible,16000,2026-09-15 18:03:22
 6a3c8ad0-8bb9-4065-abff-9d12b8e82bc4,Lady and the Tramp,collectible,39.95,2026-09-15 18:03:22
 0bfb1239-b03a-4084-bafe-770796eece82,Wolverine - Blue and Yellow suit,collectible,85,2026-09-15 18:03:22
@@ -2771,3 +2763,21 @@ ee2cc7c4-19c2-4b7f-818c-ed5e3c2d8713,Don’t Use Me as a Prop! (6 of 7),collecti
 f55262b2-53a9-4ee9-b55c-c8635a3ae308,Sometimes I Think I Don’t Know You Anymore (3 of 7),collectible,31,2026-09-22 16:19:35
 431c6749-4010-45c0-9af3-8bb0caa5f31c,Taking it Back (7 of 7),collectible,29.92,2026-09-22 16:19:35
 a41b032c-1fa3-4973-b2d7-d2d3a49f1120,Don’t You Think That’s a Little Obvious? (4 of 7),collectible,26,2026-09-22 16:19:35
+fa0b161c-5a8d-42ed-9baa-1848c7e1a7da,Marvel Logo,collectible,39,2026-09-22 17:21:35
+aab442c6-8b61-485f-b06c-49b9772f7c9b,Imperial Royal Guard,collectible,65,2026-09-22 17:21:35
+4ba2733e-9df3-4ae7-9392-7f8fbe46bcea,Storm – Windrider,collectible,4.5,2026-09-22 17:21:35
+2749b5d7-4000-49d4-b488-30987ae0bd22,Maido & Kanpai - Special Edition,collectible,995,2026-09-22 17:21:35
+a494f556-ebcd-4252-b4ec-ccd52c331c5c,Mickey,collectible,18,2026-09-22 17:21:35
+1a4e5dfb-afe2-4663-9b87-4dc3481d251a,Minnie,collectible,14,2026-09-22 17:21:35
+9e545359-1e52-4b28-99a7-cab799e99eaf,The Secret History Of Delusionville - Platinum,collectible,12.69,2026-09-22 17:21:35
+e26ca080-631b-4aaf-a292-91ee915efd0a,Stormtrooper Helmet,collectible,5.8,2026-09-22 17:21:35
+e9aa517c-43e1-48d8-ab94-8551e4610629,Daisy,collectible,29.98,2026-09-22 17:21:35
+7b01a6a0-fae5-4700-8632-8131c7b2c839,Donald,collectible,29.87,2026-09-22 17:21:35
+595f497d-4d6f-4f58-a19e-ce5dcb942696,Ironheart - Riri Williams,collectible,9,2026-09-22 17:21:35
+3ecd1c9c-dd05-4e9e-80b9-7b8574a095bb,Mickey & Friends Logo,collectible,6.5,2026-09-22 17:21:35
+d0b2f4f9-b7e3-445c-9fa5-3c5750564912,1840 Two Penny Blue RJ,collectible,1.95,2026-09-22 17:21:35
+8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,14.98,2026-09-22 17:21:35
+d72e96d5-43e1-454e-b447-05b2c67b30d4,Felix – Bright Within,collectible,5,2026-09-22 17:21:35
+8fdca362-e999-414e-af25-bbcadf58cc40,Agave,collectible,40,2026-09-22 17:21:35
+9014cceb-4db2-4a5c-a619-679d4c106a28,Novello,collectible,8,2026-09-22 17:21:35
+d422752a-51cf-40da-82a1-257f817eed43,HiKR,collectible,8,2026-09-22 17:21:35
