@@ -1,21 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-8c984d73-0718-427e-870e-f558b01a653f,Spider-Man: Symbiote Suit,collectible,65,2026-09-15 08:43:21
-89f1561b-78b1-4a9f-9aaf-09543d007bd0,Maserati MC12 - Stradale,collectible,27.12,2026-09-15 08:43:21
-0f658da6-d65d-49c3-b144-9f5e354a863d,Bert & Ernie - Gold,collectible,174.99,2026-09-15 08:43:21
-cd610d2e-dd02-44af-9809-f13df08fe04a,Bert & Ernie,collectible,84.99,2026-09-15 08:43:21
-016edb7e-a1bb-4e5a-b3bc-b3d5514f8f01,Rock N Roll Edition,collectible,5.5,2026-09-15 08:43:21
-baa3d595-5506-45fb-8851-3b0012d6b8d7,Lyja,collectible,9.5,2026-09-15 08:43:21
-de494d7c-4df4-4695-a189-a28f88a80550,M.Bison - Battle,collectible,99.99,2026-09-15 08:43:21
-59f12148-7812-4565-a181-2d6cf0def697,Nebula,collectible,3.5,2026-09-15 08:43:21
-885d2aab-8a0c-4c32-924a-51323518866e,Mai Mai,collectible,15,2026-09-15 08:43:21
-855a0885-86cc-4e17-917f-5968793a0d99,Brewsky,collectible,15,2026-09-15 08:43:21
-be788d66-d29a-4d20-bd8c-65a1cbc7e1e1,Bubbly,collectible,15,2026-09-15 08:43:21
-9014cceb-4db2-4a5c-a619-679d4c106a28,Novello,collectible,15,2026-09-15 08:43:21
-3c3a194e-bbeb-431d-9b34-09d2f4ce632c,Cherry Bomb,collectible,15,2026-09-15 08:43:21
-a877e714-7bbc-4a8a-95a0-4cd087216f99,Maido & Kanpai,collectible,15,2026-09-15 08:43:21
-1856537d-7c29-4e52-815a-bff276fbe80b,Whiskey Tango,collectible,15,2026-09-15 08:43:21
-8fdca362-e999-414e-af25-bbcadf58cc40,Agave,collectible,15,2026-09-15 08:43:21
-2749b5d7-4000-49d4-b488-30987ae0bd22,Maido & Kanpai - Special Edition,collectible,15,2026-09-15 08:43:21
 8e9682fc-9d88-4dad-a61e-74d743da57e7,#71 Batman,collectible,22,2026-09-15 09:45:33
 1ec30cf6-aa54-4577-8a1e-aca18b95b40a,Mooka,collectible,9.9,2026-09-15 09:45:33
 6b9b6046-7fbd-43e1-bfe0-54a5f4ddeb0b,Rogue - Southern Powerhouse,collectible,10.5,2026-09-15 09:45:33
@@ -2682,3 +2665,34 @@ f95a7ade-32c1-48e2-bab0-4dd51faf1d04,Bubble Machine - Gold Edition,collectible,7
 a877e714-7bbc-4a8a-95a0-4cd087216f99,Maido & Kanpai,collectible,6,2026-09-22 07:58:54
 855a0885-86cc-4e17-917f-5968793a0d99,Brewsky,collectible,5.99,2026-09-22 07:58:54
 6c08d7b3-d794-4fd2-a9c3-1d73f7c740f1,Snail Car,collectible,2.5,2026-09-22 07:58:54
+7ae4653c-f3d9-44ed-85ee-8dd338ba0e3a,Lamborghini Countach LP 400 - Nero Tenebre,collectible,3999,2026-09-22 09:03:00
+fa0b161c-5a8d-42ed-9baa-1848c7e1a7da,Marvel Logo,collectible,41.58,2026-09-22 09:03:00
+9fc00c0d-146d-4f67-8acc-8a8ad3ea2008,Bill & Ted's Bogus Journey,collectible,33,2026-09-22 09:03:00
+3cbb638b-f450-4bb8-9288-37016cb680d5,Turtle Blimp,collectible,20,2026-09-22 09:03:00
+e6ef0939-167c-4aba-9ca4-c52b373062cd,1861 Benjamin Franklin (originally one cent),collectible,9.94,2026-09-22 09:03:00
+c03eb0c1-33cc-4a24-a104-c1c3633becd1,Invisible Woman – Sue Storm,collectible,3.91,2026-09-22 09:03:00
+a6bf55c3-6c7c-41ef-bf1f-b4a61bccaf65,Rogers: The Musical – Poster,collectible,5.96,2026-09-22 09:03:00
+c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,6.56,2026-09-22 09:03:00
+5da277e1-31b3-4d38-8ae4-6a1edc188a12,Lady Deadpool,collectible,1.49,2026-09-22 09:03:00
+757f2c07-4143-4c27-a43d-0014e054ea22,Exploiter,collectible,6.75,2026-09-22 09:03:00
+505e2fdc-930a-4141-a863-fe9638a47cae,Jean Grey - Uncanny,collectible,39.75,2026-09-22 09:03:00
+e957f893-9b39-4a0f-ade8-168b31f62647,Emma Frost - Phoenix,collectible,8,2026-09-22 09:03:00
+2c70e420-29bd-46bc-ba10-04073967e4d2,Take Me Out to the Ball Game,collectible,2.2,2026-09-22 09:03:00
+ac35ac09-cbf8-48a8-82b5-e0604ffe5021,VeVe VIP Ticket - NYCC 2024,collectible,13.99,2026-09-22 09:03:00
+0eefeae3-c26a-4c95-b1a5-bd6803d4aeee,Lunar New Year: Dragon,collectible,1.99,2026-09-22 09:03:00
+1a0f7160-1dd9-45a3-bcb3-d476b18ef08e,Dory,collectible,9.99,2026-09-22 09:03:00
+545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,7.69,2026-09-22 09:03:00
+49ebb3bc-9ac4-43cd-a734-5aee8c6d67ef,Earth Day - Stamp,collectible,1.49,2026-09-22 09:03:00
+87d9b23d-cb71-468f-a8bf-020b1899321d,WHAM! - Gold,collectible,125,2026-09-22 09:03:00
+df3027cc-2f9f-4cac-a583-d62792578d10,Coral Reef,collectible,3.7,2026-09-22 09:03:00
+a709645b-62df-490d-b74a-16a90c358d50,Master Splinter - Combat Training,collectible,14.5,2026-09-22 09:03:00
+1a293612-dff0-4982-8d88-735375c3cd09,1938 John Adams,collectible,1.69,2026-09-22 09:03:00
+a877e714-7bbc-4a8a-95a0-4cd087216f99,Maido & Kanpai,collectible,10,2026-09-22 09:03:00
+855a0885-86cc-4e17-917f-5968793a0d99,Brewsky,collectible,8,2026-09-22 09:03:00
+3c3a194e-bbeb-431d-9b34-09d2f4ce632c,Cherry Bomb,collectible,7.99,2026-09-22 09:03:00
+1d76ad1d-e54f-41ac-b83b-eebc714493bc,Love: Puppy (1986),collectible,3.19,2026-09-22 09:03:00
+c18cdf3e-ef2e-4806-80e9-a410d8186a22,Diver’s Helmet,collectible,6.3,2026-09-22 09:03:00
+885d2aab-8a0c-4c32-924a-51323518866e,Mai Mai,collectible,6.3,2026-09-22 09:03:00
+438829a3-1ddf-43ef-a849-d05292e7937f,Night Trooper - Marching,collectible,1.5,2026-09-22 09:03:00
+9014cceb-4db2-4a5c-a619-679d4c106a28,Novello,collectible,5.2,2026-09-22 09:03:00
+5efd4b63-dab0-4567-a776-e60b1ea047d1,RUNNING MON ver. VEVE RED,collectible,14.99,2026-09-22 09:03:00
