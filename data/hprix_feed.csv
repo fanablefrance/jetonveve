@@ -1,14 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-39e873a8-37f3-4ef8-9247-b2b257f7dcbf,Team Avatar: SDCC 2026,collectible,222,2026-09-15 04:37:08
-5e793266-6490-4e0f-8178-f9cfd02e3292,Darth Vader’s TIE Fighter,collectible,18,2026-09-15 04:37:08
-2cb3a529-07d0-4a7f-a911-2aa392d652c1,1:1 Ecto-1 Interactive,collectible,27.32,2026-09-15 04:37:08
-757f2c07-4143-4c27-a43d-0014e054ea22,Exploiter,collectible,35.6,2026-09-15 04:37:08
-148b9255-4ea9-4a4e-b3f3-9b8a77f780b3,White Backstab,collectible,40,2026-09-15 04:37:08
-595f497d-4d6f-4f58-a19e-ce5dcb942696,Ironheart - Riri Williams,collectible,10.7,2026-09-15 04:37:08
-7b3e117c-fc0e-459f-9792-b131935e3135,1860 George Washington (originally 24 cents),collectible,4.2,2026-09-15 04:37:08
-4217662c-612d-4081-b088-9384c94f0d2a,Mr. Robot,collectible,11.33,2026-09-15 04:37:08
-f6c0f08f-a0e9-455b-9008-13dc70abcfba,Vana,collectible,22,2026-09-15 04:37:08
-d37184af-298d-4b47-ae13-819fb234b80d,Episode 12 - Arise,collectible,2,2026-09-15 04:37:08
 148b9255-4ea9-4a4e-b3f3-9b8a77f780b3,White Backstab,collectible,750,2026-09-15 06:39:37
 44f34b03-80c8-4962-b24d-caf00dd052d0,PRIDE: Givenchy Beauty,collectible,149,2026-09-15 06:39:37
 2bddd574-39a8-400d-b614-a71ff7734a93,A Jaunty Jig,collectible,10.95,2026-09-15 06:39:37
@@ -2609,3 +2599,32 @@ f1de663b-7b08-41a4-8ff9-6e21de97cd36,Giving and Receiving,collectible,2,2026-09-
 6974b69e-b502-4bd8-820e-9b876cb02c9f,Single 6d 'Kiwi' gummed stamp,collectible,2,2026-09-22 03:51:01
 9d4e2fb1-1088-45dd-95d8-fdbbdd731b92,Ezio Auditore da Firenze Special Edition,collectible,30,2026-09-22 03:51:01
 bc64c1a9-5efe-4b52-824d-27ffed8b13e4,Lightning,collectible,2,2026-09-22 03:51:01
+7ee6eda8-a413-4d1e-8366-831a8b27576e,Death Trooper DLT-19D - Prone,collectible,10000,2026-09-22 04:51:27
+63f89aa6-4989-46b6-8894-c7044a4bc197,The Grand Lad Launch,collectible,2000,2026-09-22 04:51:27
+20552ba5-e0b2-4168-9760-4d00b5866b7c,Little Friends Gold,collectible,635,2026-09-22 04:51:27
+15b01bfd-aed1-41f5-9268-b161c14e56fd,Basim - Nightmares and Truth,collectible,523.56,2026-09-22 04:51:27
+87876723-9df8-4d39-a1fe-fbecf4b4788a,Supergirl,collectible,8,2026-09-22 04:51:27
+3d38c822-050f-42bf-a382-f209819911e4,Deadpool – Deck The Halls,collectible,3.25,2026-09-22 04:51:27
+47dd2556-6be7-4572-a234-453b667cfc8d,Wonder Woman,collectible,5,2026-09-22 04:51:27
+020331ea-b8e1-4552-b804-50eca175b88c,Mogul Grin - Gold Skull,collectible,64.95,2026-09-22 04:51:27
+bba0290e-1506-4702-a8fb-c1892b5bb638,Back to the Future,collectible,20.51,2026-09-22 04:51:27
+3e628ba1-7c41-4d53-8ae7-ecc2aa09512a,Michelangelo - IncogNinja,collectible,79.99,2026-09-22 04:51:27
+262ca5c3-d806-421d-aa0a-05207e5ea59c,Donatello - IncogNinja,collectible,42.95,2026-09-22 04:51:27
+4a1211b1-0144-4827-8014-2120901a5b91,Bigfoot,collectible,2,2026-09-22 04:51:27
+8fc5ef65-80b8-4b61-9cad-3a8de0cc472a,Nessie,collectible,2,2026-09-22 04:51:27
+a0a51210-8795-4a95-835c-585ca9c0f7cb,Mr. Mischief the Monkey Grin - Yellow & Red,collectible,17,2026-09-22 04:51:27
+8e13d360-3a66-4437-96b1-77360d1863c0,Decorative Rock 2,collectible,7.8,2026-09-22 04:51:27
+30341e3d-3fd2-49bc-b52e-cb539458aee5,LUV,collectible,14,2026-09-22 04:51:27
+81cb0032-6589-41e2-ad05-f12815a5fba9,David - Golden Path,collectible,9.95,2026-09-22 04:51:27
+8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,9.9,2026-09-22 04:51:27
+2f8b8f16-4378-4fa3-a5e5-223170716c6c,Ocean Coral #1,collectible,3.99,2026-09-22 04:51:27
+40f03ab2-65d1-445b-a66c-1fb1ec751621,Aquatic Plant - Big Bronze 2,collectible,4,2026-09-22 04:51:27
+7f8db4ca-e2d2-4750-80dc-92f122da0bd0,Birdie,collectible,8.5,2026-09-22 04:51:27
+930556b0-3566-4301-95c3-1f50bbf059a2,Decorative Rock 1,collectible,3.55,2026-09-22 04:51:27
+1870263e-2611-48da-9ebc-aca9bbb85c45,Aquatic Plant - Plush Pink,collectible,3.28,2026-09-22 04:51:27
+121be6df-6a3a-4e64-9978-92fc5acb77ca,Record #7 - Bunnny's Rap - Original,collectible,2.5,2026-09-22 04:51:27
+885d2aab-8a0c-4c32-924a-51323518866e,Mai Mai,collectible,5.2,2026-09-22 04:51:27
+9014cceb-4db2-4a5c-a619-679d4c106a28,Novello,collectible,5.2,2026-09-22 04:51:27
+855a0885-86cc-4e17-917f-5968793a0d99,Brewsky,collectible,5.2,2026-09-22 04:51:27
+375e383d-9421-43dc-a1de-19703274118f,Snow - Dark,collectible,29.99,2026-09-22 04:51:27
+3c3a194e-bbeb-431d-9b34-09d2f4ce632c,Cherry Bomb,collectible,3.99,2026-09-22 04:51:27
