@@ -1,24 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-c7f42bc9-c4d6-4063-9545-b9e2b07d2836,JENNIE Pink Venom Card,collectible,4899,2026-09-16 14:44:11
-d03f035e-fe59-40f6-9977-3cef76ee112b,Spider-Man - Animated,collectible,720,2026-09-16 14:44:11
-28906a0f-8d90-41fb-b193-7e619c906ad0,Harley Quinn (Stanley Lau),collectible,25.5,2026-09-16 14:44:11
-10617c75-f9d0-48cb-b164-fe5b192e8cae,Beta Ray Bill,collectible,78,2026-09-16 14:44:11
-842f5443-b6d0-4fec-a3cb-a17b91d9287b,Dream from Day to Night,collectible,17.99,2026-09-16 14:44:11
-c81ac9ff-1954-4ba5-8194-9b83ecdd3228,Sunflower Grin - Special Mission - Gold,collectible,5.49,2026-09-16 14:44:11
-0bf82173-ee23-4e91-8990-5419bbdf15d7,"""I Love You, Dad""",collectible,6.56,2026-09-16 14:44:11
-cfbc5159-b5ef-4a33-adb6-0e31e2cea1f6,JISOO Pink Venom Card,collectible,17.48,2026-09-16 14:44:11
-dec46e84-89a1-4773-b6fc-e258e868c724,Horus Guards - Anubis,collectible,78,2026-09-16 14:44:11
-fdf192f7-c406-41db-86c4-fcf5c8451b71,Ant-Man,collectible,8,2026-09-16 14:44:11
-94bcc472-9ecb-41f0-b8bf-f5b0b4e85e37,Gambit - Trenchcoat Tactician,collectible,4,2026-09-16 14:44:11
-595f497d-4d6f-4f58-a19e-ce5dcb942696,Ironheart - Riri Williams,collectible,8.99,2026-09-16 14:44:11
-70fa2eb4-2890-4d80-92cf-f94c006583de,Cryo-Can,collectible,17,2026-09-16 14:44:11
-28d775c0-7d11-4dba-ba79-cb8cea2ee31d,Her Majesty,collectible,4.6,2026-09-16 14:44:11
-af36d0b7-21fc-404d-a6ea-6b5676c9ba30,Hoodie,collectible,13.99,2026-09-16 14:44:11
-531922ce-7c82-43dc-8ef2-dce25d31fb43,Arishem the Judge,collectible,3.5,2026-09-16 14:44:11
-3d86e011-1ed9-4ea5-bedd-a6cb1f33cc16,1938 William McKinley,collectible,2.99,2026-09-16 14:44:11
-90dc4c4d-7177-4fde-9bae-a42dc5ff7e5c,Foster,collectible,4.99,2026-09-16 14:44:11
-438829a3-1ddf-43ef-a849-d05292e7937f,Night Trooper - Marching,collectible,1.75,2026-09-16 14:44:11
-7c5e7611-0e0f-4000-b5ed-0134ee7279f5,Coca-Cola – 1899 Empty Bottle,collectible,10,2026-09-16 14:44:11
 5815ba10-688c-446a-9822-91cc3f8aa67a,Ovomorph,collectible,1000000,2026-09-16 15:46:15
 c7f42bc9-c4d6-4063-9545-b9e2b07d2836,JENNIE Pink Venom Card,collectible,999,2026-09-16 15:46:15
 86d59fbf-23ee-491d-bdce-9a8c5de94285,LISA Pink Venom Card,collectible,400,2026-09-16 15:46:15
@@ -2924,3 +2904,33 @@ f55262b2-53a9-4ee9-b55c-c8635a3ae308,Sometimes I Think I Don’t Know You Anymor
 ee2cc7c4-19c2-4b7f-818c-ed5e3c2d8713,Don’t Use Me as a Prop! (6 of 7),collectible,44.44,2026-09-23 14:12:25
 08a2b238-3dca-4780-8f60-6e50289364d4,Rain - Dark,collectible,30,2026-09-23 14:12:25
 2a576f3c-561a-4a5c-89ea-9863944ee329,The Public Image (5 of 7),collectible,34,2026-09-23 14:12:25
+28906a0f-8d90-41fb-b193-7e619c906ad0,Harley Quinn (Stanley Lau),collectible,27.6,2026-09-23 15:14:00
+6a94ae27-164a-49e0-83b0-d18ae7e33e95,Coca-Cola Starlight Can,collectible,3.8,2026-09-23 15:14:00
+49c0b910-3dea-4425-bc85-4b11618fc3f9,AMC Blue and Beta,collectible,11,2026-09-23 15:14:00
+aab442c6-8b61-485f-b06c-49b9772f7c9b,Imperial Royal Guard,collectible,44.99,2026-09-23 15:14:00
+704bdbba-09b9-4c25-9e18-292da2b87c6e,The Crystal Waterfall - Tara McPherson,collectible,70,2026-09-23 15:14:00
+b8a7acdc-bb2e-4f88-9d69-b59d228aa14e,1841 Penny Red NK,collectible,260,2026-09-23 15:14:00
+7aefc64f-2a8f-4412-800d-25f1e3699c90,Aang - Airbender,collectible,13,2026-09-23 15:14:00
+0135a605-9c50-4ad4-bd2e-17a253fb028f,Hawkeye Venomized,collectible,13,2026-09-23 15:14:00
+4a1211b1-0144-4827-8014-2120901a5b91,Bigfoot,collectible,2.45,2026-09-23 15:14:00
+8fc5ef65-80b8-4b61-9cad-3a8de0cc472a,Nessie,collectible,2.45,2026-09-23 15:14:00
+ebb6a9d6-fdce-4bba-bcb2-ba30d20fd890,Alert,collectible,8.88,2026-09-23 15:14:00
+2575f0e5-c769-47f6-9f08-f599aa85f7d9,White L Snake Board,collectible,14,2026-09-23 15:14:00
+1394a278-329b-493f-8921-42e7a47463d3,Dark Robin #1,collectible,14,2026-09-23 15:14:00
+545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,8.21,2026-09-23 15:14:00
+72f7fdac-47e3-474b-bd9e-d737461e884d,Man-Thing,collectible,9.9,2026-09-23 15:14:00
+9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,8.5,2026-09-23 15:14:00
+6ad91db7-f2d6-4381-8072-cc495342cdf1,Fashionista,collectible,2.95,2026-09-23 15:14:00
+a33b2a0b-d11e-402b-ae0d-b4d5603b416a,1938 Grover Cleveland,collectible,3.8,2026-09-23 15:14:00
+9968a51e-c7ba-4b11-ace9-4ab3f1e7410c,1938 Andrew Jackson,collectible,1.45,2026-09-23 15:14:00
+7dba3b40-2198-4e9a-92dc-4f4874c30e39,Night Trooper - Unleashed,collectible,23,2026-09-23 15:14:00
+899aa947-87ce-44ac-93b3-201ee1d977a2,C-25 Fragmentation Grenade,collectible,6,2026-09-23 15:14:00
+856227a4-716c-4b50-893c-d16a4fc93e33,Night Trooper Exposed - Unleashed,collectible,19.5,2026-09-23 15:14:00
+d4788b46-09e9-4528-bfd0-39a1a9ca087e,Cube,collectible,13,2026-09-23 15:14:00
+fccfc777-cc16-4a36-b063-8258d6e69ffe,Boy,collectible,12.95,2026-09-23 15:14:00
+906fe78e-60ab-4d7e-bd1d-70d70fe10ba0,Lucky Peach,collectible,2.99,2026-09-23 15:14:00
+af36d0b7-21fc-404d-a6ea-6b5676c9ba30,Hoodie,collectible,11.89,2026-09-23 15:14:00
+30341e3d-3fd2-49bc-b52e-cb539458aee5,LUV,collectible,9,2026-09-23 15:14:00
+8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,9,2026-09-23 15:14:00
+7f8db4ca-e2d2-4750-80dc-92f122da0bd0,Birdie,collectible,8.23,2026-09-23 15:14:00
+36adfd74-e06b-4b10-a4a3-01fc13113d8d,Foam Machine - Gold Edition,collectible,13.99,2026-09-23 15:14:00
