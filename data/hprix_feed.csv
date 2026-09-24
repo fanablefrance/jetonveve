@@ -1,12 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-39e873a8-37f3-4ef8-9247-b2b257f7dcbf,Team Avatar: SDCC 2026,collectible,175,2026-09-16 23:03:36
-10617c75-f9d0-48cb-b164-fe5b192e8cae,Beta Ray Bill,collectible,40,2026-09-16 23:03:36
-aa36484b-4931-42fa-a3aa-c91d10981542,J. Jonah Jameson,collectible,220,2026-09-16 23:03:36
-f583497a-51d4-4f53-9985-7c3061533280,Military Jake,collectible,7.99,2026-09-16 23:03:36
-bfee101f-2ea1-48b4-a662-c0778f616af7,Hojakdo Island,collectible,16.35,2026-09-16 23:03:36
-dc1a93ca-1bd8-4465-bd88-d14066e78867,Holiday Elves - Elf with Teddy Bear,collectible,1.08,2026-09-16 23:03:36
-7a94e5de-0de3-492f-a00e-af761e3323e3,Mr. Epiko,collectible,3.98,2026-09-16 23:03:36
-0b5e951b-09bd-4b29-9db9-d7ca4814d92c,Janie,collectible,3.98,2026-09-16 23:03:36
 b0ecb0a5-2c77-47fc-b295-2e2a96278781,Iron Man,collectible,76.9,2026-09-17 01:08:33
 04c4bc6c-bbea-4d2e-bb0f-84122e214979,Loki - Action,collectible,499,2026-09-17 01:08:33
 cc920654-08b2-4e7d-a8af-bef9b0fe3775,Dragon Girl - Silver,collectible,41.14,2026-09-17 01:08:33
@@ -2899,16 +2891,31 @@ d422752a-51cf-40da-82a1-257f817eed43,HiKR,collectible,10,2026-09-23 20:29:05
 bfee101f-2ea1-48b4-a662-c0778f616af7,Hojakdo Island,collectible,7.7,2026-09-23 21:32:38
 a05e5e16-5e63-4d0c-a429-d67d5bb05e71,Dharma Tiger,collectible,1.5,2026-09-23 21:32:38
 d6033d14-4af7-4aee-a38f-080e4cd98fd1,Gouged Stormtrooper Helmet,collectible,5,2026-09-23 21:32:38
-237b4deb-ea74-4bcb-950c-6c4a4f2b3325,Star Wars Episode IV: A New Hope - The Star Wars,collectible,169,2026-09-23 22:35:42
-11bc19eb-ef1b-4fa0-8e0d-1a8281197e90,Ghost-Spider,collectible,3,2026-09-23 22:35:42
-be8452a6-baa2-4adf-9049-31887af1fa80,Wolverine - Rage Unleashed,collectible,50,2026-09-23 22:35:42
-aa36484b-4931-42fa-a3aa-c91d10981542,J. Jonah Jameson,collectible,149,2026-09-23 22:35:42
-936ecb56-b61c-40e5-b240-3b2c958a1356,"Mad Tea Party, Dumbo the Flying Elephant, King Arthur Carousel",collectible,27.5,2026-09-23 22:35:42
-56128c3c-1c59-4be5-82f5-380d0712f9cf,Ironheart - Neon,collectible,495,2026-09-23 22:35:42
-595f497d-4d6f-4f58-a19e-ce5dcb942696,Ironheart - Riri Williams,collectible,9,2026-09-23 22:35:42
-da55201f-e728-493b-aaf4-611a18fcfcc5,Vulcan Cruiser,collectible,12,2026-09-23 22:35:42
-e726f943-62a1-4ba7-9d8f-d21684a77c38,Paddle Ball,collectible,19,2026-09-23 22:35:42
-eef9e3ab-a2bd-44ef-b10f-bc58be804cbd,On the Way to Work,collectible,37.49,2026-09-23 22:35:42
-7f8db4ca-e2d2-4750-80dc-92f122da0bd0,Birdie,collectible,7.77,2026-09-23 22:35:42
-ec00071b-05f6-4fbd-9b35-cbcbfb88c996,Mr. V,collectible,4.25,2026-09-23 22:35:42
-31944bea-3443-4497-8387-db84f26750a9,Pyro Machine - Gold Edition,collectible,55,2026-09-23 22:35:42
+2d319882-cb74-4383-8d91-31ff8fca91c4,Avengers Logo,collectible,59.98,2026-09-23 23:39:44
+606b52d3-4562-4e3f-b217-e1b60efd6f7d,Chip n’ Dale,collectible,54.99,2026-09-23 23:39:44
+11f2b172-e206-4644-8256-e51fd7298af2,Winnie the Pooh and Piglet,collectible,23.99,2026-09-23 23:39:44
+6a772acf-4006-4dd2-b325-882f6b2fca2e,WALL•E,collectible,29.99,2026-09-23 23:39:44
+4dc2db11-350d-4c3b-82c9-84fbcaa9d138,Timon and Pumbaa,collectible,14.98,2026-09-23 23:39:44
+af02ad4f-100c-4995-810f-376c6854b00e,Disney D,collectible,19.49,2026-09-23 23:39:44
+219d14ac-23e9-4a1d-a9cb-ec009b31ebb1,A Happy Whistle,collectible,10.45,2026-09-23 23:39:44
+a0c50208-f32c-4e7e-9664-c28555a9f523,Yoda,collectible,59.99,2026-09-23 23:39:44
+05df9412-ca87-4492-8454-81f73a88c171,MOTOMICHI - Eyes,collectible,14,2026-09-23 23:39:44
+440badb6-242f-414a-bc86-db6f15f2cc8b,Jake the Dog,collectible,10,2026-09-23 23:39:44
+1e7014fa-7d7d-4af4-95fb-296d359612f4,Storm – Queen of Wakanda,collectible,7.77,2026-09-23 23:39:44
+b8a474b2-e594-484a-a0f5-59f26ebdab97,Bunny Blossom,collectible,34.89,2026-09-23 23:39:44
+2b6f2e01-7360-44e0-95fa-be03276bb3b8,Mephisto,collectible,229.99,2026-09-23 23:39:44
+c3f086bc-1748-40e4-8ff4-fd8d67e178ca,1851 Benjamin Franklin (originally one cent),collectible,11.11,2026-09-23 23:39:44
+1778f949-7f87-4ef5-91e1-cc1f8bbd5700,OG Devil Bunny - Red,collectible,4.95,2026-09-23 23:39:44
+882b40f4-c586-4c68-af9b-b7bfdaca9f0d,Spider-Man 2099 - Shadow Protocol,collectible,110,2026-09-23 23:39:44
+6a98d6cf-b421-4277-b1a0-6a6ae84ef636,Jafar: Feeling Like Royalty,collectible,3.99,2026-09-23 23:39:44
+b5709a30-1677-410d-ab7e-8b755859a70e,"Q-Boat from The World is Not Enough, 1999",collectible,11.11,2026-09-23 23:39:44
+53472f76-2eda-4c12-8ac1-4706e2297226,Peter Pan's Flight,collectible,19,2026-09-23 23:39:44
+b8335d89-2493-4e7a-9a56-13e979c4063b,Cuddles,collectible,66,2026-09-23 23:39:44
+e45e99df-2a5e-4660-9eaa-47941df45d96,Mysterious Moon,collectible,11.11,2026-09-23 23:39:44
+6c16492e-453a-4b5b-9894-7039a8241351,Howard the Duck - Private Eye,collectible,11.11,2026-09-23 23:39:44
+914191ea-74f7-48cd-ad71-d116392fd65b,"Attaché Case from From Russia With Love, 1963",collectible,11.11,2026-09-23 23:39:44
+19d6c33b-6955-4d6e-abed-902e1ab4a797,Fissure Demon - Allison Bamcat,collectible,15.21,2026-09-23 23:39:44
+9d513380-78fc-4291-9f4b-e7ac0486e746,Snowman,collectible,15,2026-09-23 23:39:44
+30341e3d-3fd2-49bc-b52e-cb539458aee5,LUV,collectible,9,2026-09-23 23:39:44
+94796575-0a21-4273-952d-1cb5964b067a,Death Trooper Utility Belt,collectible,3,2026-09-23 23:39:44
+5e72800a-aaba-4743-a005-18675ee33d9a,Smoke Machine - Gold Edition,collectible,33,2026-09-23 23:39:44
