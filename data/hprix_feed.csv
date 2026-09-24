@@ -1,14 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-2bddd574-39a8-400d-b614-a71ff7734a93,A Jaunty Jig,collectible,11.95,2026-09-17 04:11:12
-8b6f7901-07e9-40a7-ad50-2c95929f134d,#77 Jason Fabok Batman,collectible,15,2026-09-17 04:11:12
-5f63b00e-88e9-4784-8600-856dd951e06d,U.S.S. Enterprise-D (1:1000),collectible,6.7,2026-09-17 04:11:12
-905d1ad2-a6fe-4a98-b199-0d5e6ad9d2dd,The Rise of Ultraman #1 - Ed McGuinness,collectible,6.95,2026-09-17 04:11:12
-84717424-94be-4da6-a2d8-54d291c64e66,Sung Jinwoo - The Awakened,collectible,94,2026-09-17 04:11:12
-ab4c9545-781b-496c-bf57-23a23e5dc432,Flower Bomber (Concrete Edition),collectible,26.65,2026-09-17 04:11:12
-a494f556-ebcd-4252-b4ec-ccd52c331c5c,Mickey,collectible,18,2026-09-17 04:11:12
-6b9b6046-7fbd-43e1-bfe0-54a5f4ddeb0b,Rogue - Southern Powerhouse,collectible,7.5,2026-09-17 04:11:12
-3164f5e3-044d-477d-8022-0a99dead294d,Leonardo - Classic,collectible,10.93,2026-09-17 04:11:12
-351f7ac8-be07-48d5-9a66-4b2d65982430,Mimban Trooper - Crouching,collectible,12.95,2026-09-17 04:11:12
 39e873a8-37f3-4ef8-9247-b2b257f7dcbf,Team Avatar: SDCC 2026,collectible,222,2026-09-17 05:11:33
 b94e5d49-35f0-4bdc-9e41-d5c484df5ae7,Catwoman,collectible,10.85,2026-09-17 05:11:33
 732f997a-5675-4415-a101-6268566a844a,Namor - Avengers 2018,collectible,2999,2026-09-17 05:11:33
@@ -2898,3 +2888,28 @@ be788d66-d29a-4d20-bd8c-65a1cbc7e1e1,Bubbly,collectible,14,2026-09-24 03:47:31
 3c3a194e-bbeb-431d-9b34-09d2f4ce632c,Cherry Bomb,collectible,7,2026-09-24 03:47:31
 5e72800a-aaba-4743-a005-18675ee33d9a,Smoke Machine - Gold Edition,collectible,43,2026-09-24 03:47:31
 9014cceb-4db2-4a5c-a619-679d4c106a28,Novello,collectible,4.25,2026-09-24 03:47:31
+5fd09e1f-58f8-467f-9e78-d64f6e3a69b9,R2-D2,collectible,289,2026-09-24 04:51:11
+3d1cbbec-65a6-4f2b-9a21-74be61438ad7,Violet,collectible,215.99,2026-09-24 04:51:11
+5bba0767-1ed6-4bc9-92dc-651d8b4e66d4,‍‍Joy Memory Orb,collectible,1299.03,2026-09-24 04:51:11
+c6c4987d-df55-48bf-b727-655b73668c06,Red Skull,collectible,28,2026-09-24 04:51:11
+756eaebb-f684-4274-9ab1-63e0844d88eb,Moon Knight 2,collectible,19,2026-09-24 04:51:11
+47dd2556-6be7-4572-a234-453b667cfc8d,Wonder Woman,collectible,7.95,2026-09-24 04:51:11
+de90dd30-bc92-450f-8bdc-050185f6d2da,VeVe Gold and Silver Coin,collectible,220,2026-09-24 04:51:11
+349a1c81-d340-4f3f-a7f3-2890a92ae4bd,Technodrome,collectible,22,2026-09-24 04:51:11
+4804e172-42a2-419f-b1f0-431ece52c00a,Deadpool – Ugly Sweater Party,collectible,4,2026-09-24 04:51:11
+1e7014fa-7d7d-4af4-95fb-296d359612f4,Storm – Queen of Wakanda,collectible,8,2026-09-24 04:51:11
+3510f366-2964-49ae-b856-a29064e9c253,She-Hulk - Prosecutor Punch,collectible,102,2026-09-24 04:51:11
+b39fd90a-c0dc-40ab-83da-7f142cc2b450,The Visible Labbit,collectible,22.22,2026-09-24 04:51:11
+c8ade023-a070-4c91-8eb7-f7eb9c4b5cff,1938 Warren G. Harding,collectible,46.66,2026-09-24 04:51:11
+3f1d93f5-0c2c-4709-a69d-98cc20d77747,Scott Tolleson - 20 Yr. Anniversary Vincent,collectible,13.59,2026-09-24 04:51:11
+658f1d45-3417-40ec-84f7-054cb8f0d494,Symbiote,collectible,4,2026-09-24 04:51:11
+10fdaf2c-4b9b-4a2d-9f83-7cfcb43358d2,Glider Blueprint,collectible,2.99,2026-09-24 04:51:11
+b95a50dc-add6-4b08-bcee-a1a3692c2abd,Edo Imperial Royal Guard,collectible,10.5,2026-09-24 04:51:11
+30341e3d-3fd2-49bc-b52e-cb539458aee5,LUV,collectible,28,2026-09-24 04:51:11
+ad62bc36-b967-40cb-8b10-5dd30054dd4e,Russell,collectible,8.99,2026-09-24 04:51:11
+b72f0788-948e-4e0a-8c22-3e067e35634f,The Rabbbits Jukebox,collectible,2.5,2026-09-24 04:51:11
+d422752a-51cf-40da-82a1-257f817eed43,HiKR,collectible,16,2026-09-24 04:51:11
+38df9c4a-4da8-4271-a861-9f9dcfde2e1a,Single 1d 'Lake Taupo' gummed stamp,collectible,1.81,2026-09-24 04:51:11
+d13ba790-5805-47ea-a351-b96647b21c7a,Potball 8,collectible,2.68,2026-09-24 04:51:11
+7f8db4ca-e2d2-4750-80dc-92f122da0bd0,Birdie,collectible,8.23,2026-09-24 04:51:11
+438829a3-1ddf-43ef-a849-d05292e7937f,Night Trooper - Marching,collectible,1.69,2026-09-24 04:51:11
