@@ -1,72 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-d042924f-2db9-4180-8d16-38bf4c9e5b9d,R2-D2,collectible,135,2026-09-17 16:41:23
-5fd09e1f-58f8-467f-9e78-d64f6e3a69b9,R2-D2,collectible,299,2026-09-17 16:41:23
-ae29242b-05c3-4ddd-a03e-1f8da4f404f3,The Genesis Key,collectible,740,2026-09-17 16:41:23
-75bffbf5-3527-4c34-a73d-06252becd47f,Skateboard,collectible,78,2026-09-17 16:41:23
-9df59b34-4aa2-44c5-9ba8-101f9f31bff8,S3LF MADE - Brett Crawford,collectible,1422,2026-09-17 16:41:23
-a605b45c-c809-40d4-a98b-b5daa200a696,Black Panther – Ultimate Animated,collectible,98,2026-09-17 16:41:23
-146ac2a6-6813-4a88-a03a-4cc2a90b721d,Michelangelo - Classic (Special Edition),collectible,1999,2026-09-17 16:41:23
-def65f71-6b97-4cff-a72d-e346d091c582,Sam Wilson,collectible,5.99,2026-09-17 16:41:23
-3ba00608-759f-4b4f-9984-2c6b3e6da842,No Time To Die — Aston Martin DB5,collectible,65,2026-09-17 16:41:23
-1a3052a5-729e-4d52-865d-8a6adcfe33fa,Aratech 74-Z Speeder Bike – Patrol Division (Snow),collectible,1000,2026-09-17 16:41:23
-9bbf3fa3-9b0c-446d-9b17-f6e452b070c7,Black Panther – Wakanda Forever,collectible,6.9,2026-09-17 16:41:23
-768e3b9d-2b74-420e-be62-2a375fbd911f,Crowd Favorite,collectible,11,2026-09-17 16:41:23
-98370f9b-b3fe-4261-a4c1-4fdfed88e97b,Experiment 626,collectible,11,2026-09-17 16:41:23
-53c4a149-6786-4946-a052-7267e8eb7feb,#06 Mike Mignola Batman - Blue & Yellow Variant,collectible,67.67,2026-09-17 16:41:23
-3b43ff0a-b0ae-4df8-a9d2-f19cada64cd5,Cheshire Cat,collectible,49.9,2026-09-17 16:41:23
-368d273a-dd5f-470b-8574-899a4033ed82,Elsa Poster,collectible,160,2026-09-17 16:41:23
-c0fd5575-0a5f-4625-a271-bf050842057c,Sakura Dragon Girl,collectible,59.99,2026-09-17 16:41:23
-6edf0436-e37c-4e2f-a811-22e5df176765,Edna Mode: Bold! Dramatic! Heroic!,collectible,7.4,2026-09-17 16:41:23
-f9e82d52-57cc-467d-ab0a-00b45ccb6bdb,Tinker Bell Poster,collectible,130,2026-09-17 16:41:23
-859a587a-35e0-4f7e-a306-fb67aa97e47a,Wayob,collectible,71,2026-09-17 16:41:23
-84717424-94be-4da6-a2d8-54d291c64e66,Sung Jinwoo - The Awakened,collectible,89.99,2026-09-17 16:41:23
-d3c57055-e2cd-41df-a10d-c6c980cd3521,Supernova,collectible,35,2026-09-17 16:41:23
-37353ee5-47b8-4498-a220-7851c6dd0923,Michelangelo - Classic,collectible,12.5,2026-09-17 16:41:23
-f968c5ea-9b9f-4fd8-ad1b-db994db7e076,Valfré Zodiac Girls - Fire Signs – Aries,collectible,31,2026-09-17 16:41:23
-ab4c9545-781b-496c-bf57-23a23e5dc432,Flower Bomber (Concrete Edition),collectible,26.66,2026-09-17 16:41:23
-9f3b4e78-a88f-475d-8e7c-0570346bdf93,AT-AT - Frozen March of the Empire,collectible,53,2026-09-17 16:41:23
-667dfe39-caca-4fa3-b427-c5311b15fa43,Seymour Evil Monkey – Yellow & Red,collectible,49,2026-09-17 16:41:23
-c81ac9ff-1954-4ba5-8194-9b83ecdd3228,Sunflower Grin - Special Mission - Gold,collectible,5.45,2026-09-17 16:41:23
-922fc0ba-2b30-4fcf-87e5-82c63f54748d,Deadpool,collectible,2.3,2026-09-17 16:41:23
-4de77349-9d1f-44c8-a0a4-59341e52f52a,America Chavez - Miss America,collectible,58,2026-09-17 16:41:23
-f1735f96-de89-422f-9727-da53ee0bab75,Classic Cartoon Edition,collectible,4.12,2026-09-17 16:41:23
-7a91fb6d-34a5-45e6-9375-9913fae7900f,The Drop Off,collectible,49,2026-09-17 16:41:23
-1e6cc040-882f-4288-8b0d-0ad4226be991,The Pink Panther - Animated,collectible,6.98,2026-09-17 16:41:23
-9e0ec309-fc0b-4286-b116-a607ee2e7cc3,Holiday Elves - Block of Four,collectible,13,2026-09-17 16:41:23
-a6bf55c3-6c7c-41ef-bf1f-b4a61bccaf65,Rogers: The Musical – Poster,collectible,6,2026-09-17 16:41:23
-f660fa4e-fa1a-4f75-bd55-ada594164750,The Stargate,collectible,11.35,2026-09-17 16:41:23
-14cf72b5-65ca-46c5-88a2-6f62e5799cbd,Kahalo ver. DeepSea,collectible,100,2026-09-17 16:41:23
-e4f3eeae-2c16-4aeb-8c80-2f9413f13dfd,Specimen #04,collectible,22,2026-09-17 16:41:23
-0baafb78-053e-43ca-a4b7-1608fa7ef736,Big Bird,collectible,7.4,2026-09-17 16:41:23
-5d80846e-6d59-45d1-8a1d-03492e5134db,Darth Vader Samurai - Shadow of the Shogun,collectible,10.3,2026-09-17 16:41:23
-00b4fa44-9f8e-4e31-b6d9-649b2856c099,Betty Boop - RockNRoll,collectible,18,2026-09-17 16:41:23
-595f497d-4d6f-4f58-a19e-ce5dcb942696,Ironheart - Riri Williams,collectible,9.5,2026-09-17 16:41:23
-58b62a0f-90d5-442c-9114-53aa25fb379e,Anna and Prince Hans,collectible,22,2026-09-17 16:41:23
-d6966b3e-9691-470e-ab59-446dce21f7f8,Cut Stormtrooper Helmet,collectible,35.69,2026-09-17 16:41:23
-2a215129-a315-4d1f-807c-9bdb72548bcb,Charles Muntz,collectible,42,2026-09-17 16:41:23
-00c0c87d-7510-417b-92c3-26c6e86b94ac,JENNIE - Animated,collectible,34,2026-09-17 16:41:23
-582a6663-a706-4bc9-9078-b594acc896a8,Gouki Nostalgic,collectible,51.28,2026-09-17 16:41:23
-ad0dbff5-70b9-4bb5-be40-2bb436f1cef2,Coca-Cola Vending Machine (1950s),collectible,9.23,2026-09-17 16:41:23
-46359177-0a0a-4148-aac9-7875a76aaa91,Toph,collectible,6.99,2026-09-17 16:41:23
-b2c5500c-a2b0-48e6-ab14-65fdc2e76814,Blasted Stormtrooper Helmet,collectible,27.5,2026-09-17 16:41:23
-d4ec084d-812b-4a3c-958f-d691f0060ff9,Master Splinter - Battle Ready,collectible,42,2026-09-17 16:41:23
-66da4c94-b029-4782-88ee-28cc46fa1aa5,Title IX - Runner,collectible,2,2026-09-17 16:41:23
-1e686588-d7fe-40bc-81be-15d2ca5be3fb,Mysterio,collectible,16.39,2026-09-17 16:41:23
-6ad91db7-f2d6-4381-8072-cc495342cdf1,Fashionista,collectible,3.95,2026-09-17 16:41:23
-8f79e4c4-d070-4d54-88f2-64866de63473,Joseph Parker - Framed Photo,collectible,12,2026-09-17 16:41:23
-7f7d3588-103e-414e-a1b1-71b1a1f7a7bd,David’s Doo Gold,collectible,109,2026-09-17 16:41:23
-533c2c8e-1269-45dc-bd48-65a3ad541231,Mogul Grin - Black Tie,collectible,7,2026-09-17 16:41:23
-f6e15150-641b-4d8e-b7cc-19027a019d1f,Chris Robots Will Kill - OG,collectible,23,2026-09-17 16:41:23
-fcaf92c1-1f34-4042-87ee-b5cc02345977,Chris Robots Will Kill - Landscape,collectible,21,2026-09-17 16:41:23
-53181264-e5fc-461f-84b5-935f9403eeef,Kingdos,collectible,4.12,2026-09-17 16:41:23
-37f58ebb-50aa-4ef6-b702-1e1857c33fa6,Record #2 - Fame Finds The Village Idiot - Platinum,collectible,34,2026-09-17 16:41:23
-fa602ce7-8fb5-4907-ae1f-d290e852b5b3,$3.30 Garden of Prosperity Stamp,collectible,3.75,2026-09-17 16:41:23
-46d1d512-9e49-4db2-8f1e-8a2c239ec66d,Snow Globes - Santa Claus,collectible,2.95,2026-09-17 16:41:23
-1bacdd79-a711-4a24-9bfa-c0927e871e9a,Chris Robots Will Kill - SUYE Special Sky Blue,collectible,15,2026-09-17 16:41:23
-3c89b9b1-b836-49c4-99f8-da6b7603e071,Eagle Eyes,collectible,6,2026-09-17 16:41:23
-8f791d43-a31c-406e-90b1-df084c1498ba,Java Joe,collectible,4,2026-09-17 16:41:23
-d37184af-298d-4b47-ae13-819fb234b80d,Episode 12 - Arise,collectible,1.23,2026-09-17 16:41:23
-087f1d36-ca76-4674-88a9-e182acbe0a4a,BLAM! - Gold,collectible,5,2026-09-17 16:41:23
 d042924f-2db9-4180-8d16-38bf4c9e5b9d,R2-D2,collectible,159,2026-09-17 17:43:35
 5fd09e1f-58f8-467f-9e78-d64f6e3a69b9,R2-D2,collectible,285,2026-09-17 17:43:35
 d1950c68-0bd7-47c3-a183-aa950613de36,#81 - Amanda Conner Batman,collectible,120,2026-09-17 17:43:35
@@ -2945,3 +2877,25 @@ d422752a-51cf-40da-82a1-257f817eed43,HiKR,collectible,9,2026-09-24 16:17:17
 30341e3d-3fd2-49bc-b52e-cb539458aee5,LUV,collectible,9,2026-09-24 16:17:17
 e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,3,2026-09-24 16:17:17
 ec460953-de8a-4649-8a68-666bb2f2168b,Weakest Hunter - Frame,collectible,1.59,2026-09-24 16:17:17
+bf42d73e-2563-4cb3-b91f-11863d43d161,Warriors Of Mars,collectible,200000000,2026-09-24 17:19:18
+d03f035e-fe59-40f6-9977-3cef76ee112b,Spider-Man - Animated,collectible,599,2026-09-24 17:19:18
+75f29aa3-0cb9-49a7-822b-c0805d5eb76c,Chucky: Bloody Valentine,collectible,167,2026-09-24 17:19:18
+df101af2-42fe-4af4-bc51-f8826a6022aa,I Have You In My Sights,collectible,31.5,2026-09-24 17:19:18
+1def2f37-8043-4aa8-a490-b4024db216ff,Dragon Girl - Gold / Pink,collectible,15.5,2026-09-24 17:19:18
+e144ca42-a942-4a0c-8c5f-e30a32c037d9,The World Is Not Enough - Chinese One Sheet,collectible,60,2026-09-24 17:19:18
+3164f5e3-044d-477d-8022-0a99dead294d,Leonardo - Classic,collectible,16.95,2026-09-24 17:19:18
+020331ea-b8e1-4552-b804-50eca175b88c,Mogul Grin - Gold Skull,collectible,70,2026-09-24 17:19:18
+37353ee5-47b8-4498-a220-7851c6dd0923,Michelangelo - Classic,collectible,13.85,2026-09-24 17:19:18
+70dca326-5dc9-4e24-8c5c-1200d7409f45,Lumpy Space Princess,collectible,12.49,2026-09-24 17:19:18
+cbc31f4d-20cb-4a04-a1a7-11e6801f7a43,Year of the Dragon Miniature Sheet,collectible,59,2026-09-24 17:19:18
+560171d9-021c-4447-9015-2b32714c74f7,X-Men Logo,collectible,16.75,2026-09-24 17:19:18
+c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,9.9,2026-09-24 17:19:18
+262ca5c3-d806-421d-aa0a-05207e5ea59c,Donatello - IncogNinja,collectible,41.95,2026-09-24 17:19:18
+ab102136-402e-45b2-a480-7d28da1b3525,The Punisher - Dark Justice,collectible,10,2026-09-24 17:19:18
+f6e15150-641b-4d8e-b7cc-19027a019d1f,Chris Robots Will Kill - OG,collectible,40,2026-09-24 17:19:18
+2575f0e5-c769-47f6-9f08-f599aa85f7d9,White L Snake Board,collectible,9,2026-09-24 17:19:18
+f6c0f08f-a0e9-455b-9008-13dc70abcfba,Vana,collectible,15.99,2026-09-24 17:19:18
+8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,13,2026-09-24 17:19:18
+0cc92d82-9a02-4e3d-90b4-bb82965877fa,Night Trooper Helmet,collectible,10,2026-09-24 17:19:18
+855a0885-86cc-4e17-917f-5968793a0d99,Brewsky,collectible,8,2026-09-24 17:19:18
+9ec3912b-737f-4396-b83f-96d488cb2ffb,Darth Vader Samurai - Wrath of the Dragon,collectible,50,2026-09-24 17:19:18
