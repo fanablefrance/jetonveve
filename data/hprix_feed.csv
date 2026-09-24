@@ -1,21 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-732f997a-5675-4415-a101-6268566a844a,Namor - Avengers 2018,collectible,5000,2026-09-17 19:49:00
-aadb24d5-07a5-4630-a937-60af8a8ef08e,Edo,collectible,79,2026-09-17 19:49:00
-def65f71-6b97-4cff-a72d-e346d091c582,Sam Wilson,collectible,4.8,2026-09-17 19:49:00
-cbe550c6-847b-47ea-a5b4-89187cd8ef99,Sam Wilson - Action,collectible,25,2026-09-17 19:49:00
-845cb818-dc62-49b2-ae48-b1f65f63e205,BLACKPINK NEON LIGHT - LISA,collectible,550,2026-09-17 19:49:00
-80f4f105-e741-4e75-82c6-5d7bb395aa71,Doc Ock - Ultimate Animated,collectible,59,2026-09-17 19:49:00
-9ec3912b-737f-4396-b83f-96d488cb2ffb,Darth Vader Samurai - Wrath of the Dragon,collectible,650,2026-09-17 19:49:00
-38eb4855-5bfe-40a3-922d-54dc7fb3520b,Remember Us - Vital Voices II,collectible,12.7,2026-09-17 19:49:00
-98f7d0b0-8373-4037-a49f-2db41b24f168,Sokka,collectible,12.5,2026-09-17 19:49:00
-2c70e420-29bd-46bc-ba10-04073967e4d2,Take Me Out to the Ball Game,collectible,2.8,2026-09-17 19:49:00
-99bf64df-202a-418f-9ad3-82fe2b7637ae,UCI Germany Blue and Beta,collectible,21,2026-09-17 19:49:00
-1493be21-b998-47d5-af3b-9c7508e42379,Bashful Minnie,collectible,13.95,2026-09-17 19:49:00
-7051dd0b-67f0-4ffe-a81b-6a397a7a496c,T-47 Airspeeder - Red,collectible,5.9,2026-09-17 19:49:00
-0c90c49f-d867-47de-991f-d5b5606ffb09,Namor - Phoenix,collectible,6,2026-09-17 19:49:00
-1e686588-d7fe-40bc-81be-15d2ca5be3fb,Mysterio,collectible,15,2026-09-17 19:49:00
-10a300f5-9bd8-4d8f-b1d6-82acc9295399,Magic Mike,collectible,7.37,2026-09-17 19:49:00
-ec460953-de8a-4649-8a68-666bb2f2168b,Weakest Hunter - Frame,collectible,1.8,2026-09-17 19:49:00
 088c23fa-90b0-4bb4-93e2-f053abacf429,Donny,collectible,65000,2026-09-17 20:50:43
 4d4ed906-c93a-41ff-b890-cb202250bc01,Sea Warrior Special Edition,collectible,4000,2026-09-17 20:50:43
 5262e9f2-b83e-4665-a621-b555d4e9e814,Zeux,collectible,423,2026-09-17 20:50:43
@@ -2912,3 +2895,56 @@ a7dacd8a-133e-4a8e-9fc5-0ff0ad51db88,KABOOM - Gold,collectible,169,2026-09-24 18
 30341e3d-3fd2-49bc-b52e-cb539458aee5,LUV,collectible,9.9,2026-09-24 18:21:27
 31944bea-3443-4497-8387-db84f26750a9,Pyro Machine - Gold Edition,collectible,45,2026-09-24 18:21:27
 bc64c1a9-5efe-4b52-824d-27ffed8b13e4,Lightning,collectible,2.49,2026-09-24 18:21:27
+30a9f14d-f5ef-4047-bf97-c2b047190f83,1:6 DeLorean Time Machine - Interactive,collectible,6.25,2026-09-24 20:33:05
+f772a5b4-03af-444d-a608-c2c271def046,Deadpool – Ultimate Animated,collectible,143,2026-09-24 20:33:05
+49c0b910-3dea-4425-bc85-4b11618fc3f9,AMC Blue and Beta,collectible,7,2026-09-24 20:33:05
+9ec3912b-737f-4396-b83f-96d488cb2ffb,Darth Vader Samurai - Wrath of the Dragon,collectible,1977,2026-09-24 20:33:05
+f64f5581-0640-4c33-873d-1d798c086e24,Stormtrooper,collectible,8.8,2026-09-24 20:33:05
+4f992ee1-d183-485d-a9c9-00695bc727de,Jim Lee Batman V3,collectible,6.2,2026-09-24 20:33:05
+254501a1-7fd7-4d57-a4e0-eb3e70b965b5,Thor - Battle for Asgard,collectible,10,2026-09-24 20:33:05
+da7f15db-60fa-48db-ac21-f7be7cf6917f,Batgirl,collectible,6.99,2026-09-24 20:33:05
+e6ef0939-167c-4aba-9ca4-c52b373062cd,1861 Benjamin Franklin (originally one cent),collectible,9.9,2026-09-24 20:33:05
+10617c75-f9d0-48cb-b164-fe5b192e8cae,Beta Ray Bill,collectible,42,2026-09-24 20:33:05
+1049f40a-b3db-42ef-aeec-036b9e4ecd88,Elektra – Lady Daredevil,collectible,8,2026-09-24 20:33:05
+8648d886-ed81-4ea1-bae7-cb1a0bc975bd,MYO - OG Gold,collectible,390,2026-09-24 20:33:05
+6d881588-9efd-47a4-9fda-ef7180ac35a9,Guile White,collectible,164,2026-09-24 20:33:05
+c03eb0c1-33cc-4a24-a104-c1c3633becd1,Invisible Woman – Sue Storm,collectible,3.05,2026-09-24 20:33:05
+91ae052f-7496-48f1-a96d-0ece0dca200d,Safin’s Mask,collectible,5.97,2026-09-24 20:33:05
+cb508977-583e-48b0-9459-019fb07752d6,Mariachi Souvenir Sheet,collectible,45,2026-09-24 20:33:05
+9905fe6b-866f-4d35-96bb-df37ab67d1fd,Frozen II Pencil,collectible,13.98,2026-09-24 20:33:05
+013e6d39-c3e5-4a39-b0bc-28c6ef799694,​​Matt,collectible,4.4,2026-09-24 20:33:05
+1a1387d3-e99f-45bd-8463-58de6f1afb73,The Punisher - Skull Reaper,collectible,27.99,2026-09-24 20:33:05
+7b3e117c-fc0e-459f-9792-b131935e3135,1860 George Washington (originally 24 cents),collectible,4.15,2026-09-24 20:33:05
+c8ade023-a070-4c91-8eb7-f7eb9c4b5cff,1938 Warren G. Harding,collectible,37,2026-09-24 20:33:05
+8923aaae-bae7-4473-8c74-fe5c3b9a5878,Elektra – Weapon of the Hand,collectible,2.08,2026-09-24 20:33:05
+df9084b3-75bd-4d52-87fa-1d2de34f0f19,1938 George Washington,collectible,3.4,2026-09-24 20:33:05
+05bfaa01-9847-43e5-82ee-8c7999c26aa7,IG-11 - Protector,collectible,7.5,2026-09-24 20:33:05
+0608c4c0-27aa-4b04-ab6f-9fa52bcd0a9f,Coca-Cola Neon Sign - Thirst Quenching,collectible,30,2026-09-24 20:33:05
+5763e59f-3bcb-4a5d-b391-afd2476d94ef,Snickering Toby,collectible,3.94,2026-09-24 20:33:05
+ea954588-2e89-4829-9b96-92609acfc4c1,Eson the Searcher,collectible,6.95,2026-09-24 20:33:05
+9dfbafbf-12c2-4e97-88dd-9e058b2555a0,Welcoming Toby,collectible,1.5,2026-09-24 20:33:05
+a5a669d8-75dc-4efd-b313-72d3cfdc0067,Santa on a Snowy Rooftop,collectible,1.09,2026-09-24 20:33:05
+55b3451d-c845-4c98-80b8-28d92c5f8231,1938 Martin Van Buren,collectible,2.44,2026-09-24 20:33:05
+e95c604e-68ca-44e6-887f-397874db0fe7,Views of Our Planets - Earth,collectible,7.44,2026-09-24 20:33:05
+99cd1fc9-d779-4b8b-891e-3bb709c55fbb,SANDy,collectible,12.34,2026-09-24 20:33:05
+6e755ce2-7a00-4477-b04a-9884ec9f3857,Head Over Heels Toby,collectible,1.95,2026-09-24 20:33:05
+99ef7ea3-9f79-45f1-9152-42837ad5282b,MARBLE LORD - Tristan Eaton,collectible,15.49,2026-09-24 20:33:05
+07aa6fbe-d527-4b4d-bb19-cd3eb81ba3e1,Lounging Toby,collectible,1.5,2026-09-24 20:33:05
+803276fd-a2de-4532-8607-ae4a769fa5aa,Views of Our Planets - Pane of 16,collectible,12.6,2026-09-24 20:33:05
+32a83155-0ef9-4262-85c7-874bb4782017,Surfs Up,collectible,4.7,2026-09-24 20:33:05
+a72a940f-3713-4072-8736-415a64444d47,Take That Rabbid,collectible,30,2026-09-24 20:33:05
+5aff9179-4f70-4cf3-8539-c3ba7d31dd02,1938 Martha Washington,collectible,1.96,2026-09-24 20:33:05
+1e033ca4-e213-4960-8862-78fc4ca41aeb,Potball BB,collectible,9,2026-09-24 20:33:05
+2575f0e5-c769-47f6-9f08-f599aa85f7d9,White L Snake Board,collectible,6,2026-09-24 20:33:05
+4a78436c-cada-4d87-b06b-0e46e09013e1,Views of Our Planets - Saturn,collectible,8.35,2026-09-24 20:33:05
+d87175f7-2845-4083-b29d-9f81e726e043,D&D - 5th Birthday Cake,collectible,2.98,2026-09-24 20:33:05
+454bb38e-d34c-461f-9261-599413e64e5c,Views of Our Planets - Jupiter,collectible,7.77,2026-09-24 20:33:05
+03fa2e26-9a2a-4803-9141-428b03c6f1ab,Views of Our Planets - Uranus,collectible,12.2,2026-09-24 20:33:05
+9e79842b-ab20-4f0e-8bca-01b4877aa45f,Views of Our Planets - Mercury,collectible,3.97,2026-09-24 20:33:05
+3deb2406-4e7a-4b6c-9ca9-dfd08814c9e8,Groot Spider-Man,collectible,5.3,2026-09-24 20:33:05
+94eb327e-5053-416d-9b2e-412eb9fa9cf5,Ocean Coral #2,collectible,4.99,2026-09-24 20:33:05
+a709645b-62df-490d-b74a-16a90c358d50,Master Splinter - Combat Training,collectible,10,2026-09-24 20:33:05
+f55262b2-53a9-4ee9-b55c-c8635a3ae308,Sometimes I Think I Don’t Know You Anymore (3 of 7),collectible,88,2026-09-24 20:33:05
+65828683-2a2f-4260-83eb-e86bbfbf11a8,Acrobatic Surfing - Gold,collectible,49,2026-09-24 20:33:05
+73255fe7-c9e7-489a-a3bd-547b9b87a8a5,Ash,collectible,3.46,2026-09-24 20:33:05
+d65a302d-eda5-457f-b6c3-46826dee1941,Sket One - Boo Crew - Glow in the Dark Cyan,collectible,30,2026-09-24 20:33:05
