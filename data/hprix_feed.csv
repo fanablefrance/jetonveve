@@ -1,29 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-d03f035e-fe59-40f6-9977-3cef76ee112b,Spider-Man - Animated,collectible,687,2026-09-19 01:52:31
-75f29aa3-0cb9-49a7-822b-c0805d5eb76c,Chucky: Bloody Valentine,collectible,39,2026-09-19 01:52:31
-6edf0436-e37c-4e2f-a811-22e5df176765,Edna Mode: Bold! Dramatic! Heroic!,collectible,7.19,2026-09-19 01:52:31
-a512f767-6f55-42d5-b489-a5dfaf7b0cc3,"Lights, Camera, Hijinks!",collectible,9.69,2026-09-19 01:52:31
-d75d2725-013c-482a-b742-2466a220b495,Sam Wilson - Wings of Defense,collectible,88,2026-09-19 01:52:31
-84717424-94be-4da6-a2d8-54d291c64e66,Sung Jinwoo - The Awakened,collectible,75,2026-09-19 01:52:31
-a494f556-ebcd-4252-b4ec-ccd52c331c5c,Mickey,collectible,18,2026-09-19 01:52:31
-37353ee5-47b8-4498-a220-7851c6dd0923,Michelangelo - Classic,collectible,11,2026-09-19 01:52:31
-7aefc64f-2a8f-4412-800d-25f1e3699c90,Aang - Airbender,collectible,15,2026-09-19 01:52:31
-77fe6eff-5fb9-40d8-ac9c-42e23eb64863,Jawa 01,collectible,4.39,2026-09-19 01:52:31
-757f2c07-4143-4c27-a43d-0014e054ea22,Exploiter,collectible,7,2026-09-19 01:52:31
-72b78471-72e8-4539-9607-26d016552861,Betty Boop - Classique,collectible,10.98,2026-09-19 01:52:31
-8e9ff45c-7ea8-4aea-8dc5-9259985c4d87,Elmo,collectible,8.49,2026-09-19 01:52:31
-d2166c51-23c5-4c47-8975-0808a09fcbf5,Captain Hook,collectible,6.55,2026-09-19 01:52:31
-f583497a-51d4-4f53-9985-7c3061533280,Military Jake,collectible,7.5,2026-09-19 01:52:31
-92635283-99b4-4597-ba69-01e39ccba334,Master Splinter - Father Figure,collectible,4.4,2026-09-19 01:52:31
-2c70e420-29bd-46bc-ba10-04073967e4d2,Take Me Out to the Ball Game,collectible,1.62,2026-09-19 01:52:31
-545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,9.19,2026-09-19 01:52:31
-f64bf297-8a18-4e49-a539-d99f19fd5350,Mister Sinister,collectible,8,2026-09-19 01:52:31
-533c2c8e-1269-45dc-bd48-65a3ad541231,Mogul Grin - Black Tie,collectible,5,2026-09-19 01:52:31
-e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,5,2026-09-19 01:52:31
-4836f896-a3b1-4539-a79f-1b0a26bd5a25,Rat,collectible,2.99,2026-09-19 01:52:31
-53ff9a39-afb8-4a2e-b9de-516d6ea965d5,Laser Beam Machine,collectible,4,2026-09-19 01:52:31
-f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,3.99,2026-09-19 01:52:31
-36adfd74-e06b-4b10-a4a3-01fc13113d8d,Foam Machine - Gold Edition,collectible,14.14,2026-09-19 01:52:31
 11bc19eb-ef1b-4fa0-8e0d-1a8281197e90,Ghost-Spider,collectible,3,2026-09-19 02:52:57
 98f7d0b0-8373-4037-a49f-2db41b24f168,Sokka,collectible,12.35,2026-09-19 02:52:57
 7c6e0265-6fe1-4d5a-b902-b38b600026ee,She-Hulk,collectible,9.95,2026-09-19 02:52:57
@@ -3076,3 +3051,11 @@ b87927b2-6ad2-43ee-ae88-cfd7a2668e15,Bubble Machine,collectible,2.45,2026-09-26 
 e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,2.33,2026-09-26 01:48:50
 8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,2.33,2026-09-26 01:48:50
 53ff9a39-afb8-4a2e-b9de-516d6ea965d5,Laser Beam Machine,collectible,2.33,2026-09-26 01:48:50
+900388bb-8847-4334-8d1a-508de81c4a4d,Superman,collectible,189,2026-09-26 02:50:53
+9bbf3fa3-9b0c-446d-9b17-f6e452b070c7,Black Panther – Wakanda Forever,collectible,6.44,2026-09-26 02:50:53
+eb8895db-94cd-465a-bc25-05ce6e18e2c2,Melvin,collectible,14.99,2026-09-26 02:50:53
+10617c75-f9d0-48cb-b164-fe5b192e8cae,Beta Ray Bill,collectible,55,2026-09-26 02:50:53
+bbbb36f1-681b-4ea7-80e9-449697bfae68,Jungle Cruise,collectible,29.33,2026-09-26 02:50:53
+aa8ace2b-3356-421c-8bfc-d77fb68b703b,Blue Noggles,collectible,56.79,2026-09-26 02:50:53
+30341e3d-3fd2-49bc-b52e-cb539458aee5,LUV,collectible,19.99,2026-09-26 02:50:53
+d422752a-51cf-40da-82a1-257f817eed43,HiKR,collectible,11.99,2026-09-26 02:50:53
