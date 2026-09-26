@@ -1,25 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-900388bb-8847-4334-8d1a-508de81c4a4d,Superman,collectible,239,2026-09-19 10:13:01
-21853418-d60d-4f5f-b2ab-fbbcab7987ae,Super Grover Special Edition,collectible,30000,2026-09-19 10:13:01
-2e0d960f-ffff-480f-9078-5ab7fd238b6c,Disney D23 Premium Logo,collectible,64,2026-09-19 10:13:01
-1ec30cf6-aa54-4577-8a1e-aca18b95b40a,Mooka,collectible,9,2026-09-19 10:13:01
-48d02f31-a339-4cdf-b28d-b5d94cfac577,Beast,collectible,44,2026-09-19 10:13:01
-38240a36-10d1-4653-ba38-61bd524e3ef3,Jean Grey - Phoenix,collectible,22.9,2026-09-19 10:13:01
-5648ffff-2516-4782-8c06-a702b06d42a2,Fredzilla,collectible,40,2026-09-19 10:13:01
-ad68e422-4e87-41f7-8155-39002803685c,VeVe Flags - UK - 2025,collectible,67,2026-09-19 10:13:01
-bb531903-13ab-4806-98c8-fb2b8847e398,1840 Penny Black QB used,collectible,4.9,2026-09-19 10:13:01
-be594ab2-f648-475c-9334-9a50a71d5982,VeVe Heart Logo - Blue,collectible,38,2026-09-19 10:13:01
-6a9ca7c7-ea86-4a95-b142-0a4b557dd2a3,LA Strong - Red Heart,collectible,40,2026-09-19 10:13:01
-545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,8.5,2026-09-19 10:13:01
-9c59db14-07b4-4fe5-abb8-01470655dbac,LA Strong - Tan Heart,collectible,38,2026-09-19 10:13:01
-90b2abb9-592f-4bbe-9413-7ba139b32fdc,The Leisurely Loop,collectible,15,2026-09-19 10:13:01
-af8ea121-6321-4fbd-9958-d03a49fb604f,LA Strong - Black Heart,collectible,20,2026-09-19 10:13:01
-e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,4.87,2026-09-19 10:13:01
-5e72800a-aaba-4743-a005-18675ee33d9a,Smoke Machine - Gold Edition,collectible,69.69,2026-09-19 10:13:01
-36adfd74-e06b-4b10-a4a3-01fc13113d8d,Foam Machine - Gold Edition,collectible,15.75,2026-09-19 10:13:01
-d773dd14-5717-455c-b3a1-f9ffcacb4a6e,LA Strong - Green Heart,collectible,13,2026-09-19 10:13:01
-b87927b2-6ad2-43ee-ae88-cfd7a2668e15,Bubble Machine,collectible,3,2026-09-19 10:13:01
-aa52510d-86cb-4071-bc49-3418e4bd64b1,En Garde! - Gold,collectible,15,2026-09-19 10:13:01
 2c70e420-29bd-46bc-ba10-04073967e4d2,Take Me Out to the Ball Game,collectible,2.5,2026-09-19 11:14:53
 0c90c49f-d867-47de-991f-d5b5606ffb09,Namor - Phoenix,collectible,8.99,2026-09-19 11:14:53
 8afcff93-6e98-44aa-8b60-e3cc0274d76a,The Diamond of the Mines,collectible,68.5,2026-09-19 11:14:53
@@ -3083,3 +3062,20 @@ bbaa7ca7-7861-4f23-be96-6e771c65e2f9,Metropolis II,collectible,250,2026-09-26 10
 f1bb37cc-7350-403f-9e06-5942bc3765ec,Master Splinter - Weapon Training,collectible,6.8,2026-09-26 10:10:42
 b87927b2-6ad2-43ee-ae88-cfd7a2668e15,Bubble Machine,collectible,2.45,2026-09-26 10:10:42
 8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,2.3,2026-09-26 10:10:42
+95b86201-ed47-471f-ada2-4e053041379b,Partners Statue,collectible,1999,2026-09-26 11:12:51
+900388bb-8847-4334-8d1a-508de81c4a4d,Superman,collectible,187,2026-09-26 11:12:51
+ee27ac13-2e51-4cda-925f-595060735022,ECOMI Logo Red Silver,collectible,1950,2026-09-26 11:12:51
+f64f5581-0640-4c33-873d-1d798c086e24,Stormtrooper,collectible,8,2026-09-26 11:12:51
+11bc19eb-ef1b-4fa0-8e0d-1a8281197e90,Ghost-Spider,collectible,5,2026-09-26 11:12:51
+8a03f0f9-49ef-476f-8597-c76736f7b5e6,Labbicorn,collectible,15.4,2026-09-26 11:12:51
+967e6313-09df-458c-9d97-ef05de184ee8,House of Cards (2019),collectible,120,2026-09-26 11:12:51
+80f4f105-e741-4e75-82c6-5d7bb395aa71,Doc Ock - Ultimate Animated,collectible,45,2026-09-26 11:12:51
+3aef8b4f-fe03-4fc9-aa77-cea709ec5988,All Aboard!,collectible,55,2026-09-26 11:12:51
+88076df3-4a65-4675-836d-19bc361e0ab5,Failure of Control,collectible,10.15,2026-09-26 11:12:51
+c5b4ed7c-6050-4849-9a62-a2a7f28d1f8e,Larry the Lobster,collectible,2.49,2026-09-26 11:12:51
+de8319d8-1023-4e43-abac-e0acec85cca9,1841 Penny Red AA-EF,collectible,6,2026-09-26 11:12:51
+f6c0f08f-a0e9-455b-9008-13dc70abcfba,Vana,collectible,13,2026-09-26 11:12:51
+9d513380-78fc-4291-9f4b-e7ac0486e746,Snowman,collectible,10.5,2026-09-26 11:12:51
+6f5d6b03-da4c-4121-9024-74221436f214,Shadow Trooper - Crouching,collectible,9,2026-09-26 11:12:51
+8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,2.4,2026-09-26 11:12:51
+e40757b8-e94a-4d42-9cea-eac01ad804e8,RUNNING MON ver. BIG HORN,collectible,2.48,2026-09-26 11:12:51
