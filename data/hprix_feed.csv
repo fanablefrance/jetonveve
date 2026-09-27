@@ -1,18 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-d9bdd586-77c4-4cbc-b27c-6567172c7fc3,Night Trooper - Shooting,collectible,180000,2026-09-20 10:08:17
-7c5eb748-9229-452d-9bfd-00c75c029499,Spider-Man – Ultimate Animated,collectible,5200,2026-09-20 10:08:17
-c898af60-be8a-490a-ac2b-537869c1892a,1:1 DeLorean Time Machine - Interactive,collectible,39.95,2026-09-20 10:08:17
-ecd5f579-59bf-4121-8c8b-3b85ac7aed87,The Coming of the Hulk,collectible,38,2026-09-20 10:08:17
-f5c9bb3e-292b-45c6-a809-f9df9e1cf6a8,ROSÉ Pink Venom Card,collectible,77.77,2026-09-20 10:08:17
-bd9f38e8-78b4-4eb1-84ed-a6e3ed560d63,Sam Wilson - Heart of a Hero,collectible,9.88,2026-09-20 10:08:17
-5dbd1ad5-e6a6-48b4-ad2a-f4489968dce0,Buzz Lightyear – Lightyear Blast,collectible,48.99,2026-09-20 10:08:17
-b9e782f0-2edd-425f-853f-087ba24e00bc,Gasgano’s Podracer Base,collectible,88,2026-09-20 10:08:17
-cbe24b8c-1830-473d-b535-06648b654f65,Jason Naylor - OPN Heart BLACKOUT,collectible,29.95,2026-09-20 10:08:17
-a0a51210-8795-4a95-835c-585ca9c0f7cb,Mr. Mischief the Monkey Grin - Yellow & Red,collectible,22,2026-09-20 10:08:17
-0c90c49f-d867-47de-991f-d5b5606ffb09,Namor - Phoenix,collectible,5.99,2026-09-20 10:08:17
-545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,8.2,2026-09-20 10:08:17
-d13ba790-5805-47ea-a351-b96647b21c7a,Potball 8,collectible,2.8,2026-09-20 10:08:17
-f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,2.99,2026-09-20 10:08:17
 842e1d51-02b9-4762-9c4d-12f95f0b12d2,Ken Blue,collectible,270,2026-09-20 11:11:07
 76f8e6d2-7d34-47a9-addf-f2280db37087,Factory of Shadows,collectible,38,2026-09-20 11:11:07
 37f7f7ba-2961-4105-a0dc-87d7365d48af,Destruction of the Cosmos,collectible,38,2026-09-20 11:11:07
@@ -3170,3 +3156,10 @@ b87927b2-6ad2-43ee-ae88-cfd7a2668e15,Bubble Machine,collectible,2.7,2026-09-27 1
 cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,2.7,2026-09-27 10:07:18
 e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,2.56,2026-09-27 10:07:18
 53ff9a39-afb8-4a2e-b9de-516d6ea965d5,Laser Beam Machine,collectible,2.5,2026-09-27 10:07:18
+41505b27-6b61-4951-835f-d8976df8fcbf,Spider-Man 2099,collectible,450,2026-09-27 11:08:26
+e6e5683f-5b64-4842-8f74-912a0fc919ba,Homer & Bart,collectible,61.99,2026-09-27 11:08:26
+bc74cd99-3dd5-440a-8105-a1c9f37596a9,Oscar the Grouch - Gold,collectible,19,2026-09-27 11:08:26
+10fdaf2c-4b9b-4a2d-9f83-7cfcb43358d2,Glider Blueprint,collectible,2.18,2026-09-27 11:08:26
+545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,6.67,2026-09-27 11:08:26
+7dba3b40-2198-4e9a-92dc-4f4874c30e39,Night Trooper - Unleashed,collectible,19.99,2026-09-27 11:08:26
+8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,6.99,2026-09-27 11:08:26
