@@ -1,19 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-c9840620-e6cb-4265-8e45-40b4910c7948,Jersey Devil,collectible,9.75,2026-09-21 08:54:50
-840cd502-351b-4397-b1c0-1cfcb612b799,Grogu,collectible,15,2026-09-21 08:54:50
-5815ba10-688c-446a-9822-91cc3f8aa67a,Ovomorph,collectible,4.95,2026-09-21 08:54:50
-b8e2a2ee-d61b-4500-9700-e29f9bfdee8e,Facehugger,collectible,5,2026-09-21 08:54:50
-e957f893-9b39-4a0f-ade8-168b31f62647,Emma Frost - Phoenix,collectible,7.5,2026-09-21 08:54:50
-92635283-99b4-4597-ba69-01e39ccba334,Master Splinter - Father Figure,collectible,4.3,2026-09-21 08:54:50
-dd16eb91-704b-4fad-9db0-55e55cc433dc,Cyclops - Phoenix,collectible,5,2026-09-21 08:54:50
-a709645b-62df-490d-b74a-16a90c358d50,Master Splinter - Combat Training,collectible,14,2026-09-21 08:54:50
-12d7ac8b-dad2-48a4-930f-5abc5399b121,Boy (Color),collectible,285,2026-09-21 08:54:50
-28e4baa0-86e9-495c-b96e-f794c23781ee,Original Ahwroo,collectible,3.55,2026-09-21 08:54:50
-1915a00c-506e-4cd7-a346-948898bb22c4,Sun,collectible,20,2026-09-21 08:54:50
-ec00071b-05f6-4fbd-9b35-cbcbfb88c996,Mr. V,collectible,4.4,2026-09-21 08:54:50
-855a0885-86cc-4e17-917f-5968793a0d99,Brewsky,collectible,6,2026-09-21 08:54:50
-bc64c1a9-5efe-4b52-824d-27ffed8b13e4,Lightning,collectible,2.7,2026-09-21 08:54:50
-73255fe7-c9e7-489a-a3bd-547b9b87a8a5,Ash,collectible,3.5,2026-09-21 08:54:50
 7c5eb748-9229-452d-9bfd-00c75c029499,Spider-Man – Ultimate Animated,collectible,4900,2026-09-21 10:02:59
 900388bb-8847-4334-8d1a-508de81c4a4d,Superman,collectible,219,2026-09-21 10:02:59
 ce1d4fe9-0b3d-463b-a620-942699a650b5,Franken Fat - Gold/Silver,collectible,1505.89,2026-09-21 10:02:59
@@ -3267,3 +3252,50 @@ d422752a-51cf-40da-82a1-257f817eed43,HiKR,collectible,7.2,2026-09-28 07:47:15
 8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,7.2,2026-09-28 07:47:15
 545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,6.98,2026-09-28 08:47:32
 d8724482-0b99-4818-9a3f-c76bea0e8ee8,Mariachi - Trumpet Player,collectible,1.77,2026-09-28 08:47:32
+7ee6eda8-a413-4d1e-8366-831a8b27576e,Death Trooper DLT-19D - Prone,collectible,10000,2026-09-28 09:49:39
+952c9eee-bddf-4898-ac4c-2602dd80a2ab,The Pink Panther - Gold,collectible,320,2026-09-28 09:49:39
+9bbf3fa3-9b0c-446d-9b17-f6e452b070c7,Black Panther – Wakanda Forever,collectible,7.94,2026-09-28 09:49:39
+d6012097-18c4-488b-8133-44b575447270,Mr. Mischief the Monkey Grin - Gold,collectible,249,2026-09-28 09:49:39
+bc50774d-b923-4a5c-8e5d-f25608e1e80e,Batgirl,collectible,7.59,2026-09-28 09:49:39
+5873d066-24c8-4f96-a9e9-ab1f6935df1b,Silver Surfer,collectible,19.25,2026-09-28 09:49:39
+def65f71-6b97-4cff-a72d-e346d091c582,Sam Wilson,collectible,2.94,2026-09-28 09:49:39
+107f52b8-4494-4251-9193-ae32264f76fc,Ready For Action,collectible,5.88,2026-09-28 09:49:39
+0952a89b-b570-4e2f-acf7-63f6174c6a92,Mandalorian,collectible,69,2026-09-28 09:49:39
+687ad0c0-c8b5-48a7-9ac9-792b8ef95981,Raphael - Classic (Special Edition),collectible,770,2026-09-28 09:49:39
+98370f9b-b3fe-4261-a4c1-4fdfed88e97b,Experiment 626,collectible,9.25,2026-09-28 09:49:39
+0bc0d4a4-2727-4886-bd25-423df94a818a,Su Huan Jen,collectible,4.77,2026-09-28 09:49:39
+8854d1aa-b535-4a8d-9a7f-1392b8581136,John F. Walker,collectible,2.98,2026-09-28 09:49:39
+6423ffc0-d8e3-4f1c-94a1-7299ad991bf9,Cosmo,collectible,53,2026-09-28 09:49:39
+3380b39e-a974-4f27-89c3-12dc6995fbee,Planet Hulk,collectible,23.5,2026-09-28 09:49:39
+e8e8f443-c51f-409c-970b-026a7ec7ce20,Ogopogo,collectible,9.9,2026-09-28 09:49:39
+1194ee6f-a407-47f9-b3de-efbb7aa587ea,Mr. Knight 1,collectible,2.77,2026-09-28 09:49:39
+a494f556-ebcd-4252-b4ec-ccd52c331c5c,Mickey,collectible,19.75,2026-09-28 09:49:39
+616429e9-1288-45a4-b7ac-ea8af9431c19,Beta the New Kid in Town,collectible,5,2026-09-28 09:49:39
+9d25ee7b-bf59-4d56-a391-f7329bfe8973,Rocket,collectible,44,2026-09-28 09:49:39
+88076df3-4a65-4675-836d-19bc361e0ab5,Failure of Control,collectible,7,2026-09-28 09:49:39
+62cf5e24-1fea-432c-aec0-a0c4a71bed9b,Phastos,collectible,1.77,2026-09-28 09:49:39
+29f8d6bd-7a41-461f-b1f7-19a018561cda,Good Guy Doll Box,collectible,4.7,2026-09-28 09:49:39
+aeb72fff-a401-468b-b12d-744199d0de22,Day of the Dead Child with Hair Bow,collectible,4.66,2026-09-28 09:49:39
+2362b172-d532-4d1f-8145-2b27f5207df5,Sabbath,collectible,20,2026-09-28 09:49:39
+b95a50dc-add6-4b08-bcee-a1a3692c2abd,Edo Imperial Royal Guard,collectible,12,2026-09-28 09:49:39
+6bd27e97-4c19-476e-9f48-1778d135e4ab,Camille Rose Garcia - Vultura Macabra (Black Jack),collectible,9.84,2026-09-28 09:49:39
+d96c6595-4e49-4055-af0e-50c21356fc94,Lions United,collectible,2.25,2026-09-28 09:49:39
+10fdaf2c-4b9b-4a2d-9f83-7cfcb43358d2,Glider Blueprint,collectible,2.94,2026-09-28 09:49:39
+57cc6578-d821-4ea1-a709-521905ed5838,Sunflower Grin - Special Mission - Silver,collectible,2.42,2026-09-28 09:49:39
+99e6d495-9b37-462f-a6cb-440a6ce73a47,USS Discovery,collectible,24,2026-09-28 09:49:39
+ddf2c6f3-c931-46b3-88ac-1fad7fc942ef,Provider - Allison Bamcat,collectible,10,2026-09-28 09:49:39
+e4c90141-36fe-4811-bc64-eb8dbcb3048c,M’Baku,collectible,2.88,2026-09-28 09:49:39
+1d71f5c0-ad88-4e70-82b8-cc6be0948f25,VeVe Heart Logo - Black,collectible,2.7,2026-09-28 09:49:39
+4375fc8d-2165-4efa-aedb-4ca5429d3f15,Lunar New Year: Rabbit,collectible,1.07,2026-09-28 09:49:39
+545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,6.99,2026-09-28 09:49:39
+158cf956-dbe3-48f4-9d41-68fa97acf97e,Kaiju Tokimon,collectible,2.79,2026-09-28 09:49:39
+d629f709-d1b4-4e1d-803d-542a6b00ea9a,VeVe Heart Logo - Pink,collectible,2.5,2026-09-28 09:49:39
+d8724482-0b99-4818-9a3f-c76bea0e8ee8,Mariachi - Trumpet Player,collectible,1.8,2026-09-28 09:49:39
+77857a70-edf2-4401-9798-93f63b941d60,Vulture,collectible,5,2026-09-28 09:49:39
+a05e5e16-5e63-4d0c-a429-d67d5bb05e71,Dharma Tiger,collectible,2,2026-09-28 09:49:39
+7f8db4ca-e2d2-4750-80dc-92f122da0bd0,Birdie,collectible,8.3,2026-09-28 09:49:39
+53ff9a39-afb8-4a2e-b9de-516d6ea965d5,Laser Beam Machine,collectible,2.6,2026-09-28 09:49:39
+8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,7,2026-09-28 09:49:39
+d422752a-51cf-40da-82a1-257f817eed43,HiKR,collectible,7,2026-09-28 09:49:39
+cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,2.55,2026-09-28 09:49:39
+12787b3e-79ae-4836-99f7-35986f5dee8b,Dan - Be Like Water,collectible,4.22,2026-09-28 09:49:39
