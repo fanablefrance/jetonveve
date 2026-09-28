@@ -1,15 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-4b3b200b-8469-43a2-aa68-114a4d9e0306,Spider-Man – Jump into Action,collectible,49,2026-09-21 04:45:42
-9200fc5a-9913-45cd-addf-5c17bdd006b3,Starlight Orb,collectible,5.8,2026-09-21 04:45:42
-3164f5e3-044d-477d-8022-0a99dead294d,Leonardo - Classic,collectible,9.89,2026-09-21 04:45:42
-241df5d2-2006-4d51-8e52-0285a9c4ea49,Cat-Trooper (Black/White),collectible,40,2026-09-21 04:45:42
-81cb0032-6589-41e2-ad05-f12815a5fba9,David - Golden Path,collectible,29.95,2026-09-21 04:45:42
-2c70e420-29bd-46bc-ba10-04073967e4d2,Take Me Out to the Ball Game,collectible,2.2,2026-09-21 04:45:42
-1e033ca4-e213-4960-8862-78fc4ca41aeb,Potball BB,collectible,14.99,2026-09-21 04:45:42
-a15d54d8-0fa1-42bf-a69c-315662f4bfdf,Strobe Light Machine - Gold Edition,collectible,135,2026-09-21 04:45:42
-920d56a7-1f6f-44ba-8558-61024a5084e7,Potball HIT,collectible,3.75,2026-09-21 04:45:42
-be788d66-d29a-4d20-bd8c-65a1cbc7e1e1,Bubbly,collectible,6,2026-09-21 04:45:42
-829b3928-472c-40ba-bf53-c35baed4de5a,Sabretooth - Savage Presence Special Edition,collectible,20,2026-09-21 04:45:42
 900388bb-8847-4334-8d1a-508de81c4a4d,Superman,collectible,235,2026-09-21 05:47:27
 c898af60-be8a-490a-ac2b-537869c1892a,1:1 DeLorean Time Machine - Interactive,collectible,39.9,2026-09-21 07:53:14
 1a258258-8835-4cb1-ae1e-1ed782166e33,Galactus - Cosmic Laser Fury,collectible,21,2026-09-21 07:53:14
@@ -3219,3 +3208,36 @@ a877e714-7bbc-4a8a-95a0-4cd087216f99,Maido & Kanpai,collectible,8,2026-09-28 04:
 e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,2.46,2026-09-28 04:41:11
 3c3a194e-bbeb-431d-9b34-09d2f4ce632c,Cherry Bomb,collectible,5.5,2026-09-28 04:41:11
 a6df862b-5cb3-4014-a6c8-0f7352bd5c24,Finn McWiggles,collectible,2.57,2026-09-28 04:41:11
+3a867661-d468-4559-884f-777a86ec8eda,Pluto,collectible,24,2026-09-28 05:43:01
+987e4869-7dd7-47ed-a417-351d20023d78,#100 Todd McFarlane Batman - Blue & Yellow Variant,collectible,55,2026-09-28 05:43:01
+2ece2756-2e75-4d17-847a-45bbd9935e0f,#55 Gary Frank Batman,collectible,24.99,2026-09-28 05:43:01
+f5a393e0-13d2-40a3-8c6f-075709139d24,Daisy Duck,collectible,12,2026-09-28 05:43:01
+4a8e584e-4cd0-47e8-8954-af74c52d90fe,Invisible Woman,collectible,5,2026-09-28 05:43:01
+86d59fbf-23ee-491d-bdce-9a8c5de94285,LISA Pink Venom Card,collectible,110,2026-09-28 05:43:01
+8c57982e-2ce1-43bf-a393-662e06283783,Madame Leota,collectible,25.99,2026-09-28 05:43:01
+c3f8ef28-201b-4e53-a0e8-69dedc782de4,Blue the Leader,collectible,6.99,2026-09-28 05:43:01
+88076df3-4a65-4675-836d-19bc361e0ab5,Failure of Control,collectible,10,2026-09-28 05:43:01
+1e7014fa-7d7d-4af4-95fb-296d359612f4,Storm – Queen of Wakanda,collectible,7.5,2026-09-28 05:43:01
+3164f5e3-044d-477d-8022-0a99dead294d,Leonardo - Classic,collectible,15,2026-09-28 05:43:01
+2851a4fe-65d5-4421-a406-a6dd778c3fa6,Invisible Woman – Animated,collectible,11.99,2026-09-28 05:43:01
+298cf1c3-0321-4a18-9bcc-b32cb0e1b242,Cinderella,collectible,12.99,2026-09-28 05:43:01
+0b298557-dc9b-43f7-84b8-ac20588a5e65,Connor - Protector of Liberty,collectible,14.99,2026-09-28 05:43:01
+e8e8f443-c51f-409c-970b-026a7ec7ce20,Ogopogo,collectible,9.99,2026-09-28 05:43:01
+616429e9-1288-45a4-b7ac-ea8af9431c19,Beta the New Kid in Town,collectible,5.5,2026-09-28 05:43:01
+ef25573e-0032-4a64-91cd-d4c6938f5f10,Cerulean,collectible,3.3,2026-09-28 05:43:01
+ae3b97fa-38a8-413c-b2f0-cd0695450755,VeVe Outdoor Guide - Lincoln Design Co.,collectible,37.99,2026-09-28 05:43:01
+f13e1d28-20e3-473d-af6b-2d6e12ce8bbe,The Inflatable DJ Octo,collectible,28.99,2026-09-28 05:43:01
+6b3d711e-be46-46ff-ae50-5bd6898a39aa,Toadstool Tinker Bell,collectible,5.49,2026-09-28 05:43:01
+a7a14492-4cd9-4c16-af3d-20055db31acc,Valkyrie,collectible,2,2026-09-28 05:43:01
+64cf903a-bdb0-4bcd-8d1d-f18f362afecd,Darth Vader Samurai - Eyes of the Empire,collectible,22.22,2026-09-28 05:43:01
+8214e72e-ef1a-449a-97a9-61abfd39f600,One Small Step - 2025 HK DCon Edition Poster,collectible,99,2026-09-28 05:43:01
+c9cdb666-5e73-48ab-b7d9-83ec6005df9a,Madame Puffersworth,collectible,19.49,2026-09-28 05:43:01
+f87f1feb-a221-4003-b34a-664fd6878396,Mariachi - Guitar Player,collectible,1.6,2026-09-28 05:43:01
+9d513380-78fc-4291-9f4b-e7ac0486e746,Snowman,collectible,10.6,2026-09-28 05:43:01
+52ba30bf-11d9-43b9-85e3-5dc6a7a53e51,Werewolf By Night,collectible,3.99,2026-09-28 05:43:01
+e6df8654-5245-4b6d-83b0-f5f80f1a6f61,ILLAZILLAZ (Earth Element) - TNES,collectible,4.99,2026-09-28 05:43:01
+d422752a-51cf-40da-82a1-257f817eed43,HiKR,collectible,9.9,2026-09-28 05:43:01
+cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,3,2026-09-28 05:43:01
+53ff9a39-afb8-4a2e-b9de-516d6ea965d5,Laser Beam Machine,collectible,2.77,2026-09-28 05:43:01
+e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,2.65,2026-09-28 05:43:01
+8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,6.9,2026-09-28 05:43:01
