@@ -1,39 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-fc943f7c-7e87-4f6e-b38e-8bc02c6cf7a6,Spider-Man – The Amazing Spider-Man,collectible,35,2026-09-22 05:53:06
-c6c4987d-df55-48bf-b727-655b73668c06,Red Skull,collectible,28,2026-09-22 05:53:06
-c3f8ef28-201b-4e53-a0e8-69dedc782de4,Blue the Leader,collectible,7,2026-09-22 05:53:06
-31232a5e-f1b3-43a9-bb8b-94c3c36b406e,Day of the Dead Father,collectible,8.75,2026-09-22 05:53:06
-856e7c22-27a8-4eb7-b6c1-9d827dbf0f26,Cyclops,collectible,22,2026-09-22 05:53:06
-aafd6cbb-b019-4312-9f50-a096b8be9943,AMC Tyrannosaurus rex,collectible,9.95,2026-09-22 05:53:06
-f09d3ca4-d90a-4844-a28b-3207b87161a4,Bat-Signal,collectible,4.8,2026-09-22 05:53:06
-6e450e21-4d52-4533-ba09-08ae348f6de0,Darkseid,collectible,18,2026-09-22 05:53:06
-e94f5013-1df6-462b-a89b-fd810219157e,LISA Pink/Silver,collectible,93.95,2026-09-22 05:53:06
-a494f556-ebcd-4252-b4ec-ccd52c331c5c,Mickey,collectible,15.99,2026-09-22 05:53:06
-e4efce12-66ce-43f3-9507-6bf2545cf0a8,Year of the Rat,collectible,3.99,2026-09-22 05:53:06
-09bfcac2-3930-4191-ae89-8aad25d47f69,Nakia,collectible,6,2026-09-22 05:53:06
-577a23d0-6417-4930-b5ac-092174aee57b,Running Keith (Modern) - XLARGE,collectible,16,2026-09-22 05:53:06
-9a22c13c-a299-4639-b07e-6cf2d133e45f,Mariachi - Vihuela Player,collectible,5.55,2026-09-22 05:53:06
-846ade66-c4af-4b72-b4bf-433e5d18c28a,War Machine,collectible,6.8,2026-09-22 05:53:06
-3f1ea2f1-7e0d-487a-8fe2-b441a7b19431,Black Widow,collectible,6.5,2026-09-22 05:53:06
-57cc6578-d821-4ea1-a709-521905ed5838,Sunflower Grin - Special Mission - Silver,collectible,2.45,2026-09-22 05:53:06
-ca1969b7-2875-4a2b-bdf0-8b624b8c3ccc,Mystique,collectible,10,2026-09-22 05:53:06
-eedb84f2-a80e-4ed2-983b-7f3e8684fd7a,Locked and Loaded,collectible,9.9,2026-09-22 05:53:06
-72f7fdac-47e3-474b-bd9e-d737461e884d,Man-Thing,collectible,11.55,2026-09-22 05:53:06
-ac35ac09-cbf8-48a8-82b5-e0604ffe5021,VeVe VIP Ticket - NYCC 2024,collectible,9.85,2026-09-22 05:53:06
-8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,19,2026-09-22 05:53:06
-b9e782f0-2edd-425f-853f-087ba24e00bc,Gasgano’s Podracer Base,collectible,39,2026-09-22 05:53:06
-55bfb56f-dfd2-4466-94cf-6361738f905c,DJ Big Bot - Silver Rust,collectible,8.99,2026-09-22 05:53:06
-9d513380-78fc-4291-9f4b-e7ac0486e746,Snowman,collectible,17,2026-09-22 05:53:06
-cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,5.13,2026-09-22 05:53:06
-4836f896-a3b1-4539-a79f-1b0a26bd5a25,Rat,collectible,2.98,2026-09-22 05:53:06
-53ff9a39-afb8-4a2e-b9de-516d6ea965d5,Laser Beam Machine,collectible,4.5,2026-09-22 05:53:06
-d422752a-51cf-40da-82a1-257f817eed43,HiKR,collectible,12,2026-09-22 05:53:06
-81cb0032-6589-41e2-ad05-f12815a5fba9,David - Golden Path,collectible,8.2,2026-09-22 05:53:06
-855a0885-86cc-4e17-917f-5968793a0d99,Brewsky,collectible,8,2026-09-22 05:53:06
-65828683-2a2f-4260-83eb-e86bbfbf11a8,Acrobatic Surfing - Gold,collectible,49,2026-09-22 05:53:06
-3c3a194e-bbeb-431d-9b34-09d2f4ce632c,Cherry Bomb,collectible,5,2026-09-22 05:53:06
-7603c0c6-05e4-4a0e-b243-5045ceb07aa0,Nozzle Eye - Pyroscorch,collectible,19.15,2026-09-22 05:53:06
-be788d66-d29a-4d20-bd8c-65a1cbc7e1e1,Bubbly,collectible,4.5,2026-09-22 05:53:06
 108a7d60-fd3b-4478-ba70-0e1b8b792f35,Harley Quinn (Philip Tan),collectible,135,2026-09-22 06:55:01
 bfefe48f-8fd8-4c5d-973c-c9bd5013ae18,Espresso Bobo,collectible,1000,2026-09-22 06:55:01
 527a3b5d-28c0-430c-bd5b-06c0bbbf8a10,Wet Head,collectible,165,2026-09-22 06:55:01
@@ -3289,3 +3254,19 @@ f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,7.5,2026-09-29 05:46:46
 7f8db4ca-e2d2-4750-80dc-92f122da0bd0,Birdie,collectible,9.5,2026-09-29 05:46:46
 8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,8.5,2026-09-29 05:46:46
 aee6fb37-95fe-4573-bc42-3e45d46cb950,Vermillion,collectible,3.1,2026-09-29 05:46:46
+a29c77e8-29c1-4d9c-a07a-cbcaec9eec29,Blue and Beta Animated 2,collectible,630,2026-09-29 06:48:50
+72fb80f0-9a51-422d-97c0-d09d84de0738,Wonder Woman,collectible,19.99,2026-09-29 06:48:50
+15a83e17-250c-4063-ae84-6aeea8660af6,Jackson Storm Base,collectible,290,2026-09-29 06:48:50
+fa0b161c-5a8d-42ed-9baa-1848c7e1a7da,Marvel Logo,collectible,43,2026-09-29 06:48:50
+0952a89b-b570-4e2f-acf7-63f6174c6a92,Mandalorian,collectible,68,2026-09-29 06:48:50
+6edf0436-e37c-4e2f-a811-22e5df176765,Edna Mode: Bold! Dramatic! Heroic!,collectible,6.86,2026-09-29 06:48:50
+020331ea-b8e1-4552-b804-50eca175b88c,Mogul Grin - Gold Skull,collectible,61.95,2026-09-29 06:48:50
+658f1d45-3417-40ec-84f7-054cb8f0d494,Symbiote,collectible,3.21,2026-09-29 06:48:50
+a76c6827-046a-4c95-8823-965c9a5b22d8,Mr. V - Blue Metallic,collectible,350,2026-09-29 06:48:50
+8f796085-6c23-43e4-af28-f0df9cace79f,Sakura,collectible,46,2026-09-29 06:48:50
+3bc23d68-3327-4da2-ac42-142ae8e2fcf0,Scott Tolleson - Vegas Vincent,collectible,20,2026-09-29 06:48:50
+9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,7.5,2026-09-29 06:48:50
+f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,7,2026-09-29 06:48:50
+f6717b76-db8d-48af-bffd-d7016ac4a83d,C-Rank Essence Stone,collectible,2.99,2026-09-29 06:48:50
+20ee46b8-77c6-481b-ab57-ddd590530546,Frankenstein Mon,collectible,4.34,2026-09-29 06:48:50
+c59d0246-84e4-476e-a398-f6f9d24a2f58,OLYMPUS SAGA: MEGALITH #1 Variant Cover Poster,collectible,90,2026-09-29 06:48:50
