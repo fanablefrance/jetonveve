@@ -1,28 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-2e87137d-51b3-41ee-93e1-80e0e799d6ba,Spider-Man – Hangin’ Out,collectible,31.6,2026-09-23 07:05:17
-a71212b1-46e9-4c0e-8953-8d1c7c88616f,#06 Batman,collectible,45,2026-09-23 07:05:17
-1b0b3cc2-226d-416c-ab86-875e8268b370,Gold Dragon,collectible,175,2026-09-23 07:05:17
-8e153737-9c80-4fd6-ad53-ec839a19c564,Winter Soldier,collectible,31,2026-09-23 07:05:17
-f660fa4e-fa1a-4f75-bd55-ada594164750,The Stargate,collectible,11.3,2026-09-23 07:05:17
-d324d199-8532-4449-b67b-fdad373da71a,Stormtrooper - Running,collectible,8.5,2026-09-23 07:05:17
-67b21be9-1853-4c6a-8453-fc208de31b5b,Nick Fury,collectible,9.99,2026-09-23 07:05:17
-349d2928-d6b8-4b90-aa46-c49d76bd4038,Aesthetic (2020),collectible,25,2026-09-23 07:05:17
-916a3f70-ea93-468a-bd64-9c1db9200111,Janet Van Dyne,collectible,4,2026-09-23 07:05:17
-a017670a-cfa3-480d-900a-c8355d4a3a27,RUNNING MON ver. SASQUATCH,collectible,3,2026-09-23 07:05:17
-39e873a8-37f3-4ef8-9247-b2b257f7dcbf,Team Avatar: SDCC 2026,collectible,8990,2026-09-23 08:07:15
-75bffbf5-3527-4c34-a73d-06252becd47f,Skateboard,collectible,89.9,2026-09-23 08:07:15
-66bf871d-a8d4-474e-a0f2-b1ceb28c7b94,Millennium Falcon,collectible,110.99,2026-09-23 08:07:15
-7e595273-5759-492c-b95d-4db62eaaef88,On Guard,collectible,8.6,2026-09-23 08:07:15
-107f52b8-4494-4251-9193-ae32264f76fc,Ready For Action,collectible,5.92,2026-09-23 08:07:15
-12ec6e39-5acf-456c-a4d3-b3cd71e412c4,Pluto,collectible,299,2026-09-23 08:07:15
-e0f54705-754e-4973-92a6-56a6194ef000,With Love and Kisses: Booklet of 20,collectible,100,2026-09-23 08:07:15
-020331ea-b8e1-4552-b804-50eca175b88c,Mogul Grin - Gold Skull,collectible,74.95,2026-09-23 08:07:15
-aafd6cbb-b019-4312-9f50-a096b8be9943,AMC Tyrannosaurus rex,collectible,9.5,2026-09-23 08:07:15
-444f60ea-3bfd-472b-b774-24916aba489f,Lamborghini Countach LP 400 - Bianco  Siderale,collectible,21.26,2026-09-23 08:07:15
-1f7f450e-d3af-451c-978b-158aad824e9d,Storm – Mistress of the Elements,collectible,2.5,2026-09-23 08:07:15
-53902cb1-10c4-43a0-ad24-a0ad1cbd1a02,Mrs. Incredible,collectible,28,2026-09-23 08:07:15
-de3d77d0-c042-4c68-8df1-59c33de8edf6,Mariachi - Violin Player,collectible,7,2026-09-23 08:07:15
-8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,13.7,2026-09-23 08:07:15
 d03f035e-fe59-40f6-9977-3cef76ee112b,Spider-Man - Animated,collectible,655.74,2026-09-23 10:02:56
 39e873a8-37f3-4ef8-9247-b2b257f7dcbf,Team Avatar: SDCC 2026,collectible,500,2026-09-23 10:02:56
 9df59b34-4aa2-44c5-9ba8-101f9f31bff8,S3LF MADE - Brett Crawford,collectible,870,2026-09-23 10:02:56
@@ -3178,3 +3154,14 @@ f1bb37cc-7350-403f-9e06-5942bc3765ec,Master Splinter - Weapon Training,collectib
 d422752a-51cf-40da-82a1-257f817eed43,HiKR,collectible,8,2026-09-30 07:03:24
 8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,7.99,2026-09-30 07:03:24
 08ed38aa-561e-4a86-b64e-434f4fcfe1b2,Guitar Tank,collectible,2.28,2026-09-30 07:03:24
+7475a966-ed09-4fa8-9b3f-ca6833ea98af,Spider-Man: Miles Morales - Animated,collectible,33000,2026-09-30 09:05:42
+1969839e-04bc-4433-801f-3a2007e410f4,You'll find that I’m full of surprises,collectible,19.9,2026-09-30 09:05:42
+4a8e584e-4cd0-47e8-8954-af74c52d90fe,Invisible Woman,collectible,3.98,2026-09-30 09:05:42
+56128c3c-1c59-4be5-82f5-380d0712f9cf,Ironheart - Neon,collectible,549,2026-09-30 09:05:42
+0433455f-ebd3-447d-bb00-347564d5f6a4,Guile Story,collectible,99,2026-09-30 09:05:42
+1bacdd79-a711-4a24-9bfa-c0927e871e9a,Chris Robots Will Kill - SUYE Special Sky Blue,collectible,65,2026-09-30 09:05:42
+658f1d45-3417-40ec-84f7-054cb8f0d494,Symbiote,collectible,3.11,2026-09-30 09:05:42
+4a1211b1-0144-4827-8014-2120901a5b91,Bigfoot,collectible,1.3,2026-09-30 09:05:42
+ee7aea83-c0c1-4346-b4a6-a482d6aca04a,King Triton’s Palace Grounds,collectible,6.5,2026-09-30 09:05:42
+ea954588-2e89-4829-9b96-92609acfc4c1,Eson the Searcher,collectible,4.99,2026-09-30 09:05:42
+8f796085-6c23-43e4-af28-f0df9cace79f,Sakura,collectible,35,2026-09-30 09:05:42
