@@ -1,4 +1,26 @@
 uuid,name,categorie,floor_usd,ts
+c3df7496-e8e7-4507-b80a-5c2b5d996645,#100 Todd McFarlane Batman,collectible,475,2026-09-23 01:45:28
+d03f035e-fe59-40f6-9977-3cef76ee112b,Spider-Man - Animated,collectible,616,2026-09-23 01:45:28
+013e6d39-c3e5-4a39-b0bc-28c6ef799694,​​Matt,collectible,5,2026-09-23 01:45:28
+53902cb1-10c4-43a0-ad24-a0ad1cbd1a02,Mrs. Incredible,collectible,26.01,2026-09-23 01:45:28
+3b60ba90-2786-4fb0-8e59-372423540fe3,Eternal Winter,collectible,25,2026-09-23 01:45:28
+12a68b57-417a-46ba-9683-df8a69eb8ba0,Coraline,collectible,2.5,2026-09-23 01:45:28
+e5481692-b3a2-4bb4-80ca-414235571a48,Hangar Bay 327 - Animated,collectible,25,2026-09-23 01:45:28
+b37f3b91-b0e0-4d8b-8c76-3be08ee852d1,Nothing But Net Rabbid,collectible,45,2026-09-23 01:45:28
+8197f403-df07-45d8-9435-e4b30465250c,Fantasma,collectible,3,2026-09-23 01:45:28
+c26e57d3-9613-470f-a2d8-6f448d76ec57,Crimson Trooper Helmet,collectible,10,2026-09-23 01:45:28
+ca1969b7-2875-4a2b-bdf0-8b624b8c3ccc,Mystique,collectible,10,2026-09-23 01:45:28
+0a50c1f6-4aba-4de7-99bb-9fe80a1aa605,VeVe Logo White Orange,collectible,13,2026-09-23 01:45:28
+a0a51210-8795-4a95-835c-585ca9c0f7cb,Mr. Mischief the Monkey Grin - Yellow & Red,collectible,16,2026-09-23 01:45:28
+98ca2db3-3319-4cd5-b814-b0cdbc070d1f,Coca-Cola – 1900 Bottle,collectible,5,2026-09-23 01:45:28
+9ed0e046-53f4-4c10-80e9-7cac8a0a01c9,Coca-Cola – 1900 Labeled Bottle,collectible,4.5,2026-09-23 01:45:28
+4737dfaf-a202-411c-998c-42f98010247b,Fuel Drum Stack,collectible,10,2026-09-23 01:45:28
+5c090581-7492-47c4-a391-ef1907006ab7,CIARA ver. Rough Sketch,collectible,6.5,2026-09-23 01:45:28
+c1011494-65d4-4563-8640-ed793f32fce8,Scanner Box,collectible,8,2026-09-23 01:45:28
+cb97cff7-1685-4170-981d-a31ceb40defa,Calm Mint,collectible,3,2026-09-23 01:45:28
+30341e3d-3fd2-49bc-b52e-cb539458aee5,LUV,collectible,10,2026-09-23 01:45:28
+0045f367-893e-4828-b52e-0a05427076e1,CIARA ver. Painting Completed,collectible,4.5,2026-09-23 01:45:28
+855a0885-86cc-4e17-917f-5968793a0d99,Brewsky,collectible,4.77,2026-09-23 01:45:28
 c3df7496-e8e7-4507-b80a-5c2b5d996645,#100 Todd McFarlane Batman,collectible,512,2026-09-23 02:49:10
 d2a2df08-a4f3-4092-8533-04170c33ae55,Eye of Agamotto - Animated,collectible,245,2026-09-23 02:49:10
 2bddd574-39a8-400d-b614-a71ff7734a93,A Jaunty Jig,collectible,10.4,2026-09-23 02:49:10
@@ -3166,17 +3188,3 @@ e120c73b-c7bd-4905-a2f7-55f3b0b9ab9a,BB-8,collectible,13.88,2026-09-30 00:42:46
 cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,5.1,2026-09-30 00:42:46
 8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,2,2026-09-30 00:42:46
 53ff9a39-afb8-4a2e-b9de-516d6ea965d5,Laser Beam Machine,collectible,2,2026-09-30 00:42:46
-08e30682-b725-430f-bdfd-36394fb1aa0e,Captain America – Animated,collectible,495,2026-09-30 01:46:17
-df101af2-42fe-4af4-bc51-f8826a6022aa,I Have You In My Sights,collectible,31.5,2026-09-30 01:46:17
-21a011ac-f110-44c6-9465-600be0d281ad,Time to Remember,collectible,60,2026-09-30 01:46:17
-1d606841-f6e5-4d91-89d3-85aa99fad3f3,Wolverine - X-Jacket,collectible,33,2026-09-30 01:46:17
-f50bd55d-fcd4-46b6-9574-78e3ff253c2e,Orbitron®,collectible,14.99,2026-09-30 01:46:17
-6002eebd-fe45-402e-89a9-c3eab1233ae1,Larry the Lobster Box,collectible,2.85,2026-09-30 01:46:17
-d80a3c0c-9bea-494e-8f0f-e1154f78f11a,D&D Big Apple,collectible,43,2026-09-30 01:46:17
-8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,4.5,2026-09-30 01:46:17
-cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,4,2026-09-30 01:46:17
-53ff9a39-afb8-4a2e-b9de-516d6ea965d5,Laser Beam Machine,collectible,3.99,2026-09-30 01:46:17
-81cb0032-6589-41e2-ad05-f12815a5fba9,David - Golden Path,collectible,8.2,2026-09-30 01:46:17
-c87d68f0-dbcd-4fb9-b472-bb7fd8381046,Brown Horse Ver.,collectible,4.25,2026-09-30 01:46:17
-378f29fe-ba48-4e71-98d6-c84ab93ab4c7,Happy Lunar New Year! - Red,collectible,6.5,2026-09-30 01:46:17
-12787b3e-79ae-4836-99f7-35986f5dee8b,Dan - Be Like Water,collectible,3.3,2026-09-30 01:46:17
