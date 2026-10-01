@@ -1,23 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-d9bdd586-77c4-4cbc-b27c-6567172c7fc3,Night Trooper - Shooting,collectible,10000,2026-09-24 12:07:01
-6b5ad16b-3a3f-4b9e-8e28-1c96175e1463,Potball - 2025 HK DCon Edition Poster,collectible,10000,2026-09-24 12:07:01
-bc74cd99-3dd5-440a-8105-a1c9f37596a9,Oscar the Grouch - Gold,collectible,28,2026-09-24 12:07:01
-9e545359-1e52-4b28-99a7-cab799e99eaf,The Secret History Of Delusionville - Platinum,collectible,22.22,2026-09-24 12:07:01
-378bd17b-1af6-4cf2-89c6-06fa644b1e4d,Amarena,collectible,38,2026-09-24 12:07:01
-1ee4fd46-a2ab-4326-ba7b-917dd5985afe,Rewind Collective - Heart,collectible,11.99,2026-09-24 12:07:01
-c8ade023-a070-4c91-8eb7-f7eb9c4b5cff,1938 Warren G. Harding,collectible,39,2026-09-24 12:07:01
-0c90c49f-d867-47de-991f-d5b5606ffb09,Namor - Phoenix,collectible,9.99,2026-09-24 12:07:01
-12786e8c-7cd5-4739-8917-9b93e08842b1,Rewind Collective - Flag,collectible,8.49,2026-09-24 12:07:01
-30341e3d-3fd2-49bc-b52e-cb539458aee5,LUV,collectible,19.99,2026-09-24 12:07:01
-a33b2a0b-d11e-402b-ae0d-b4d5603b416a,1938 Grover Cleveland,collectible,3.75,2026-09-24 12:07:01
-8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,15.99,2026-09-24 12:07:01
-26e88992-ef0f-4669-9dc9-b26cc00f46e1,Creepshow Tombstone - Vol. 2 Issue 3,collectible,13,2026-09-24 12:07:01
-d87175f7-2845-4083-b29d-9f81e726e043,D&D - 5th Birthday Cake,collectible,2.99,2026-09-24 12:07:01
-9d2783d6-13a1-4175-b8ae-a38b23fa3d2b,Heads Up Rabbid,collectible,11,2026-09-24 12:07:01
-9d513380-78fc-4291-9f4b-e7ac0486e746,Snowman,collectible,13.99,2026-09-24 12:07:01
-d422752a-51cf-40da-82a1-257f817eed43,HiKR,collectible,13.99,2026-09-24 12:07:01
-906fe78e-60ab-4d7e-bd1d-70d70fe10ba0,Lucky Peach,collectible,2.8,2026-09-24 12:07:01
-eb2b8652-44a4-4f81-9149-dd50d0796f0d,Laser Beam Machine - Gold Edition,collectible,33,2026-09-24 12:07:01
 92871a71-62d8-4cb7-a6a8-adf184636056,Battle Mode,collectible,29.5,2026-09-24 13:09:12
 5556802d-6958-4d61-847a-9c6af52618c0,Hades: Who Needs Heroes,collectible,33,2026-09-24 13:09:12
 3f4271e1-2487-434b-99f5-a55c73c53ac9,Invisible Woman – Ultimate Animated,collectible,53,2026-09-24 13:09:12
@@ -3308,6 +3289,22 @@ f583497a-51d4-4f53-9985-7c3061533280,Military Jake,collectible,7.49,2026-10-01 1
 47a56835-3d0e-44c8-b636-987bf484f9c2,Romulan - Bird of Prey,collectible,24.8,2026-10-01 10:17:11
 9d513380-78fc-4291-9f4b-e7ac0486e746,Snowman,collectible,8.47,2026-10-01 10:17:11
 43bb7950-19b2-4687-b6da-de526c651fc1,Vincent Mascot,collectible,9.9,2026-10-01 10:17:11
-42ed9c27-7acd-4e87-9305-431016406b79,Record #3 - Ascension - Gold,collectible,25,2026-10-01 11:19:19
-a218120e-106b-4761-9cce-21f4485d53a0,Raphael - IncogNinja,collectible,27.99,2026-10-01 11:19:19
-d87175f7-2845-4083-b29d-9f81e726e043,D&D - 5th Birthday Cake,collectible,1.9,2026-10-01 11:19:19
+a29c77e8-29c1-4d9c-a07a-cbcaec9eec29,Blue and Beta Animated 2,collectible,495,2026-10-01 12:22:14
+d9892b14-8126-4b26-901d-a978d6eb5be8,T. rex Animated 2,collectible,49.95,2026-10-01 12:22:14
+f772a5b4-03af-444d-a608-c2c271def046,Deadpool – Ultimate Animated,collectible,80,2026-10-01 12:22:14
+922a4132-bc2a-4b1d-ad2e-b885056f4bd4,Aventador SVJ Roadster - Rosso Epona,collectible,140,2026-10-01 12:22:14
+05df9412-ca87-4492-8454-81f73a88c171,MOTOMICHI - Eyes,collectible,15.9,2026-10-01 12:22:14
+86d59fbf-23ee-491d-bdce-9a8c5de94285,LISA Pink Venom Card,collectible,78,2026-10-01 12:22:14
+418f4269-ff34-4cff-a679-1781a334ff6b,Elsa,collectible,26.33,2026-10-01 12:22:14
+49c0b910-3dea-4425-bc85-4b11618fc3f9,AMC Blue and Beta,collectible,8.75,2026-10-01 12:22:14
+cce3a323-94cb-44e3-b87b-c37cc9a34429,Beta Ray Bill - Action,collectible,179,2026-10-01 12:22:14
+786a69fd-65d2-4305-b415-43f50e04f861,Ye Xiao Chai,collectible,5,2026-10-01 12:22:14
+cdf8336b-2ee0-4573-a2c0-5e8389bcc541,Vision,collectible,7.99,2026-10-01 12:22:14
+2e75b438-b763-4b0d-9b36-8f3edecb6614,Buzz Lightyear – Mission Ready,collectible,9.9,2026-10-01 12:22:14
+527a3b5d-28c0-430c-bd5b-06c0bbbf8a10,Wet Head,collectible,105,2026-10-01 12:22:14
+3f1ea2f1-7e0d-487a-8fe2-b441a7b19431,Black Widow,collectible,6,2026-10-01 12:22:14
+8d6e31ef-0c5e-401a-a297-9e2db711cabf,VeVe Search Party - Lincoln Design Co.,collectible,13.02,2026-10-01 12:22:14
+f04b6773-5813-4792-b3ae-8b2b33cefc04,VeVe Maintenance,collectible,19.95,2026-10-01 12:22:14
+30341e3d-3fd2-49bc-b52e-cb539458aee5,LUV,collectible,17.5,2026-10-01 12:22:14
+d422752a-51cf-40da-82a1-257f817eed43,HiKR,collectible,8,2026-10-01 12:22:14
+bc64c1a9-5efe-4b52-824d-27ffed8b13e4,Lightning,collectible,2.49,2026-10-01 12:22:14
