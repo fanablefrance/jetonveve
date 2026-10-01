@@ -1,4 +1,18 @@
 uuid,name,categorie,floor_usd,ts
+df101af2-42fe-4af4-bc51-f8826a6022aa,I Have You In My Sights,collectible,31.5,2026-09-24 00:43:07
+ff567837-203b-4507-bbfe-d83ec112be53,Flower Bomber (Street Cleaner Edition),collectible,310,2026-09-24 00:43:07
+2a293f70-73ed-4c93-8095-ae0341f912a4,Goofy,collectible,450,2026-09-24 00:43:07
+47dd2556-6be7-4572-a234-453b667cfc8d,Wonder Woman,collectible,7.95,2026-09-24 00:43:07
+070d3269-79d6-4aaa-8d7d-95cb1218499c,Tamed Rancor,collectible,300,2026-09-24 00:43:07
+a494f556-ebcd-4252-b4ec-ccd52c331c5c,Mickey,collectible,25,2026-09-24 00:43:07
+ad631f86-3ea0-4e6b-8e24-0f96c66a0f85,1938 The White House,collectible,19.82,2026-09-24 00:43:07
+49c0b910-3dea-4425-bc85-4b11618fc3f9,AMC Blue and Beta,collectible,8,2026-09-24 00:43:07
+66da4c94-b029-4782-88ee-28cc46fa1aa5,Title IX - Runner,collectible,2,2026-09-24 00:43:07
+a0a51210-8795-4a95-835c-585ca9c0f7cb,Mr. Mischief the Monkey Grin - Yellow & Red,collectible,14,2026-09-24 00:43:07
+9d513380-78fc-4291-9f4b-e7ac0486e746,Snowman,collectible,14.81,2026-09-24 00:43:07
+94796575-0a21-4273-952d-1cb5964b067a,Death Trooper Utility Belt,collectible,4,2026-09-24 00:43:07
+02ab1567-e3b7-4862-bd09-4115bcfed9fc,Max,collectible,4.8,2026-09-24 00:43:07
+30341e3d-3fd2-49bc-b52e-cb539458aee5,LUV,collectible,8,2026-09-24 00:43:07
 47dd2556-6be7-4572-a234-453b667cfc8d,Wonder Woman,collectible,5,2026-09-24 02:45:16
 1049f40a-b3db-42ef-aeec-036b9e4ecd88,Elektra – Lady Daredevil,collectible,12.99,2026-09-24 02:45:16
 b9a084ef-c5cc-4066-b335-102664bd1b44,Grenade Green,collectible,8,2026-09-24 02:45:16
@@ -3265,20 +3279,16 @@ b028d187-a551-4fca-a606-61b81a39dca8,Specimen #72,collectible,3.95,2026-09-30 22
 d337ae7f-f785-48e3-b2cb-88d13b3e2469,LA Strong - Blue Heart,collectible,16,2026-09-30 22:45:32
 a7dacd8a-133e-4a8e-9fc5-0ff0ad51db88,KABOOM - Gold,collectible,165,2026-09-30 22:45:32
 8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,2.99,2026-09-30 22:45:32
-c3df7496-e8e7-4507-b80a-5c2b5d996645,#100 Todd McFarlane Batman,collectible,525,2026-10-01 00:50:56
-03fe42ae-a098-4215-b3e1-a014aabddadf,Venom,collectible,169,2026-10-01 00:50:56
-8040e86b-0797-463c-a594-8ea58d7ee15e,Donald Duck Poster,collectible,200,2026-10-01 00:50:56
-3f2e5500-cb74-4d1a-970f-a6905b074743,Odin,collectible,28,2026-10-01 00:50:56
-75fd5ad6-8c57-442e-b909-f5cda1ec3917,Winter Soldier – Wakandan Warrior,collectible,199,2026-10-01 00:50:56
-988f4190-a511-487e-b2c4-94f26e80c94d,She-Hulk - Animated,collectible,26.25,2026-10-01 00:50:56
-1778f949-7f87-4ef5-91e1-cc1f8bbd5700,OG Devil Bunny - Red,collectible,4.9,2026-10-01 00:50:56
-e913c1f9-9578-4077-b90b-94b0b0cde315,The Golden Lad,collectible,311.13,2026-10-01 00:50:56
-043ed720-aa2c-49fa-8dd2-9607de31a386,Ken Story,collectible,57.89,2026-10-01 00:50:56
-8fc5ef65-80b8-4b61-9cad-3a8de0cc472a,Nessie,collectible,1.99,2026-10-01 00:50:56
-b126fd79-2271-4e28-a6f8-bb8ad2adbb51,VeVe Flags - New York - 2025,collectible,55,2026-10-01 00:50:56
-9dfbafbf-12c2-4e97-88dd-9e058b2555a0,Welcoming Toby,collectible,1.99,2026-10-01 00:50:56
-f4c0a191-911f-44bb-b52c-a4b805e071cb,Spooky Silhouettes - Bats,collectible,7.9,2026-10-01 00:50:56
-b457e18d-c3f7-4e2a-ab85-590ef6f0e59d,Spooky Silhouettes - Black Cat,collectible,2.15,2026-10-01 00:50:56
-c5ec6386-9376-404d-829e-c316e1b0d6e0,Spooky Silhouettes - Spider,collectible,1.99,2026-10-01 00:50:56
-7f8db4ca-e2d2-4750-80dc-92f122da0bd0,Birdie,collectible,7.98,2026-10-01 00:50:56
-30341e3d-3fd2-49bc-b52e-cb539458aee5,LUV,collectible,7.98,2026-10-01 00:50:56
+9490e0db-885a-4429-8162-a04fe998a995,#13 Harley Quinn,collectible,48,2026-09-30 23:48:26
+3cbb638b-f450-4bb8-9288-37016cb680d5,Turtle Blimp,collectible,17.86,2026-09-30 23:48:26
+e89c9a52-2ea0-4b70-a5da-0781b07776c6,Flounder,collectible,129.99,2026-09-30 23:48:26
+beebd4fa-865f-4397-9034-95548858a0ca,Sakura - Nostalgia,collectible,119.9,2026-09-30 23:48:26
+560171d9-021c-4447-9015-2b32714c74f7,X-Men Logo,collectible,13.5,2026-09-30 23:48:26
+3fb9a95f-7c9f-4f4d-858d-4a87c4813206,Dan - Blue Metallic,collectible,275,2026-09-30 23:48:26
+f1efa276-6ab9-4b33-88b0-a49114e5cd04,M.Bison - SF 30th Anniversary,collectible,82.49,2026-09-30 23:48:26
+3f9c5d51-2619-4add-8f8f-f5520f99754b,MyCollectables - Blue Metallic,collectible,220,2026-09-30 23:48:26
+5763e59f-3bcb-4a5d-b391-afd2476d94ef,Snickering Toby,collectible,4,2026-09-30 23:48:26
+d4ec084d-812b-4a3c-958f-d691f0060ff9,Master Splinter - Battle Ready,collectible,41.5,2026-09-30 23:48:26
+46359177-0a0a-4148-aac9-7875a76aaa91,Toph,collectible,5,2026-09-30 23:48:26
+6f04f0ca-d6fa-4b8c-b5cf-34c96602c7e9,VeveMagic,collectible,6.99,2026-09-30 23:48:26
+c99e3fba-dfdd-4753-82f2-408f461e606c,BAM! - Gold,collectible,32,2026-09-30 23:48:26
