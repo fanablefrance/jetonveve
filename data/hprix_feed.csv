@@ -1,15 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-76880cbf-8e51-4cf7-9941-a5496675198e,ODDY ver. VEVE,collectible,14.99,2026-09-25 13:12:52
-1a408aac-5fa7-4995-8244-c45fc1026f89,Marceline,collectible,60,2026-09-25 13:12:52
-facd0219-4b19-404b-bbce-d69ef1478ce1,Spider-Man 2099 - Action,collectible,400,2026-09-25 13:12:52
-89b6d074-36ca-4b72-af67-3ac2e5648581,Blossom,collectible,15,2026-09-25 13:12:52
-3f2e5500-cb74-4d1a-970f-a6905b074743,Odin,collectible,32,2026-09-25 13:12:52
-22a75249-d8f6-417d-8061-7ea04df54e46,Moon Knight 1,collectible,2.99,2026-09-25 13:12:52
-f64bf297-8a18-4e49-a539-d99f19fd5350,Mister Sinister,collectible,11,2026-09-25 13:12:52
-9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,5.5,2026-09-25 13:12:52
-feb8ca0b-d504-4f46-ad65-3ac393e7f55f,HypeBao (O.G. Edition) - Kai Cao,collectible,8,2026-09-25 13:12:52
-cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,4.62,2026-09-25 13:12:52
-3deb2406-4e7a-4b6c-9ca9-dfd08814c9e8,Groot Spider-Man,collectible,5.3,2026-09-25 13:12:52
 f772a5b4-03af-444d-a608-c2c271def046,Deadpool – Ultimate Animated,collectible,80,2026-09-25 14:15:05
 924d7c50-71d1-4f66-a510-3d037c7d2353,Olaf,collectible,42,2026-09-25 14:15:05
 37353ee5-47b8-4498-a220-7851c6dd0923,Michelangelo - Classic,collectible,18,2026-09-25 14:15:05
@@ -3274,3 +3263,50 @@ df4040f2-18a2-42d7-b67b-ede12c684102,BLAM!,collectible,2,2026-10-02 12:37:31
 12787b3e-79ae-4836-99f7-35986f5dee8b,Dan - Be Like Water,collectible,3.79,2026-10-02 12:37:31
 f108a1b1-62eb-473c-88d0-3d340255f4d7,Beach Prank,collectible,1.8,2026-10-02 12:37:31
 ba2e8d06-c0f8-40dd-ba0d-594001238a1a,Graffi ver. Black,collectible,1.8,2026-10-02 12:37:31
+ee27ac13-2e51-4cda-925f-595060735022,ECOMI Logo Red Silver,collectible,2999,2026-10-02 13:41:14
+5ab59120-1b5b-473c-9c80-3144d9a6e1d5,"All Together, Now!",collectible,220,2026-10-02 13:41:14
+bf242890-3977-47ba-8cc5-d9ac3b2bf7b3,Rogue - Southern Powerhouse Special Edition,collectible,15000,2026-10-02 13:41:14
+a67aa0d3-7e99-4e1d-9fc0-780c2cafe8f9,Diamond Emma Frost - Marauders #21 (2021),collectible,30000,2026-10-02 13:41:14
+b918f882-01dc-420e-8697-01b74924394b,Oscar the Grouch,collectible,32.89,2026-10-02 13:41:14
+8512b4f0-2ef0-451e-a9eb-2b086982496d,Doctor Doom - Action,collectible,250,2026-10-02 13:41:14
+5556802d-6958-4d61-847a-9c6af52618c0,Hades: Who Needs Heroes,collectible,39,2026-10-02 13:41:14
+5547f67d-9450-41c7-b9d2-6c2400f25e50,Jabba the Hutt,collectible,18,2026-10-02 13:41:14
+4134563c-f023-4c74-992c-58d8ca7bcf44,Ecomi Coin,collectible,240,2026-10-02 13:41:14
+bba0290e-1506-4702-a8fb-c1892b5bb638,Back to the Future,collectible,42,2026-10-02 13:41:14
+0f7f4637-f5d1-4fe0-abea-8ac280707995,Black Panther,collectible,79,2026-10-02 13:41:14
+0b56408b-874b-4fbb-a571-0f412cdccca5,Deadpool – Animated,collectible,19.99,2026-10-02 13:41:14
+11bc19eb-ef1b-4fa0-8e0d-1a8281197e90,Ghost-Spider,collectible,5,2026-10-02 13:41:14
+3035942c-117c-404f-9098-5df698f59272,The Lion King Pencil,collectible,16.99,2026-10-02 13:41:14
+52c66175-587f-4df5-92ea-23dd07836d65,Maui,collectible,29.93,2026-10-02 13:41:14
+5c7c7adc-0758-43c8-8da6-c8282704cc2d,T. rex Animated 1,collectible,10.45,2026-10-02 13:41:14
+6a94ae27-164a-49e0-83b0-d18ae7e33e95,Coca-Cola Starlight Can,collectible,3.5,2026-10-02 13:41:14
+c780ae69-e498-4b3b-95fc-be6d8345f881,Throg – The Mighty Frogjolnir,collectible,10,2026-10-02 13:41:14
+6423ffc0-d8e3-4f1c-94a1-7299ad991bf9,Cosmo,collectible,45,2026-10-02 13:41:14
+9d25ee7b-bf59-4d56-a391-f7329bfe8973,Rocket,collectible,43,2026-10-02 13:41:14
+298cf1c3-0321-4a18-9bcc-b32cb0e1b242,Cinderella,collectible,10.46,2026-10-02 13:41:14
+ba623eaa-2499-424b-8a36-3750ae2e509b,Beast,collectible,13,2026-10-02 13:41:14
+5049ea9f-4377-4d68-b1b1-59752a08c6be,Brave the Elements,collectible,59,2026-10-02 13:41:14
+4f866f13-3e6e-435d-ab50-7fb9ee57b734,Hitchin’ A Ride,collectible,10.42,2026-10-02 13:41:14
+025a320d-8bce-4fad-9cb2-4b41d6a2f727,Sung Jinwoo - Weakest Hunter,collectible,14.95,2026-10-02 13:41:14
+8e153737-9c80-4fd6-ad53-ec839a19c564,Winter Soldier,collectible,33,2026-10-02 13:41:14
+3b60ba90-2786-4fb0-8e59-372423540fe3,Eternal Winter,collectible,24.98,2026-10-02 13:41:14
+a87f709c-41e9-4b82-8627-60867a585b2e,Ice Cream Escape,collectible,13,2026-10-02 13:41:14
+434aef90-307d-4045-ac6d-b34a00a4f843,Island Spirit,collectible,9.82,2026-10-02 13:41:14
+10fdaf2c-4b9b-4a2d-9f83-7cfcb43358d2,Glider Blueprint,collectible,2.94,2026-10-02 13:41:14
+0392e20e-a2da-42ce-a153-e04af71225e4,Silk,collectible,69,2026-10-02 13:41:14
+cdf8336b-2ee0-4573-a2c0-5e8389bcc541,Vision,collectible,7.99,2026-10-02 13:41:14
+67b21be9-1853-4c6a-8453-fc208de31b5b,Nick Fury,collectible,9.99,2026-10-02 13:41:14
+0608c4c0-27aa-4b04-ab6f-9fa52bcd0a9f,Coca-Cola Neon Sign - Thirst Quenching,collectible,26,2026-10-02 13:41:14
+a7a14492-4cd9-4c16-af3d-20055db31acc,Valkyrie,collectible,2.2,2026-10-02 13:41:14
+293b3939-c579-4b4c-83fd-1f8ddfa91357,Okoye,collectible,3.95,2026-10-02 13:41:14
+f722b975-b19f-4ec4-bfa8-4752c02fa902,Kraven,collectible,3.75,2026-10-02 13:41:14
+e4c90141-36fe-4811-bc64-eb8dbcb3048c,M’Baku,collectible,2.88,2026-10-02 13:41:14
+f8baec5c-c69f-4a44-9611-f009fa58de06,Coca-Cola Neon Sign - Arrow,collectible,22,2026-10-02 13:41:14
+2862ba93-6f99-4ede-85c4-40a673530753,Holiday Elves - Elf with Model Car,collectible,2.62,2026-10-02 13:41:14
+2ab60547-aaf6-4120-828d-cc6372ac3335,Sewer Manhole - Silver,collectible,3.5,2026-10-02 13:41:14
+d422752a-51cf-40da-82a1-257f817eed43,HiKR,collectible,13,2026-10-02 13:41:14
+2b165606-c201-4f80-b10f-b0d7e7d49908,Crimson Trooper - Running,collectible,2.7,2026-10-02 13:41:14
+cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,4,2026-10-02 13:41:14
+7f8db4ca-e2d2-4750-80dc-92f122da0bd0,Birdie,collectible,9.5,2026-10-02 13:41:14
+02ab1567-e3b7-4862-bd09-4115bcfed9fc,Max,collectible,4.8,2026-10-02 13:41:14
+0b5e951b-09bd-4b29-9db9-d7ca4814d92c,Janie,collectible,3.64,2026-10-02 13:41:14
