@@ -1,23 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-7c5eb748-9229-452d-9bfd-00c75c029499,Spider-Man – Ultimate Animated,collectible,5388,2026-09-25 17:23:01
-2e31455d-8c38-405d-b2f6-50b2e5d27ea0,Iron Man,collectible,44.95,2026-09-25 17:23:01
-1a408aac-5fa7-4995-8244-c45fc1026f89,Marceline,collectible,97,2026-09-25 17:23:01
-4d1972b6-b15f-4c98-ab98-cec603aa58de,Ritmo,collectible,99,2026-09-25 17:23:01
-d066e432-247f-4ca1-8e43-671a67a3bbd9,Ice King,collectible,21,2026-09-25 17:23:01
-020331ea-b8e1-4552-b804-50eca175b88c,Mogul Grin - Gold Skull,collectible,68.95,2026-09-25 17:23:01
-49c0b910-3dea-4425-bc85-4b11618fc3f9,AMC Blue and Beta,collectible,10,2026-09-25 17:23:01
-3380b39e-a974-4f27-89c3-12dc6995fbee,Planet Hulk,collectible,22.5,2026-09-25 17:23:01
-c61291f1-af7e-4016-ba93-708ade3c1eaf,Professor X,collectible,39.95,2026-09-25 17:23:01
-2e71ad76-e3d9-48ea-97f9-35844a65a189,Stormbreaker - Avengers: Infinity War,collectible,49,2026-09-25 17:23:01
-ec1ee9f4-8389-4f8b-9303-cbe02d2ba0c6,Young Warhol,collectible,11,2026-09-25 17:23:01
-c31c9c9c-1fa9-4a93-82a2-10a59ea2a6e8,Nezarr the Calculator,collectible,19,2026-09-25 17:23:01
-a6bf55c3-6c7c-41ef-bf1f-b4a61bccaf65,Rogers: The Musical – Poster,collectible,5,2026-09-25 17:23:01
-3834eaf3-879e-49aa-8102-78f9a7dceeb8,Ben Quadinaros’ Podracer Base,collectible,29,2026-09-25 17:23:01
-d4788b46-09e9-4528-bfd0-39a1a9ca087e,Cube,collectible,10.4,2026-09-25 17:23:01
-cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,3.8,2026-09-25 17:23:01
-f95a7ade-32c1-48e2-bab0-4dd51faf1d04,Bubble Machine - Gold Edition,collectible,69,2026-09-25 17:23:01
-e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,3.4,2026-09-25 17:23:01
-8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,3.22,2026-09-25 17:23:01
 39e873a8-37f3-4ef8-9247-b2b257f7dcbf,Team Avatar: SDCC 2026,collectible,8990,2026-09-25 18:25:02
 2b33f887-18e5-484a-a725-2d6a0cb41201,Capt. Stormy,collectible,1250,2026-09-25 18:25:02
 ce1d4fe9-0b3d-463b-a620-942699a650b5,Franken Fat - Gold/Silver,collectible,999,2026-09-25 18:25:02
@@ -3235,3 +3216,47 @@ cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,3.11,2026-10-02 1
 8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,3,2026-10-02 16:51:16
 438829a3-1ddf-43ef-a849-d05292e7937f,Night Trooper - Marching,collectible,1.3,2026-10-02 16:51:16
 e12e243b-e88f-4622-b0da-599c54385255,ZAP! - Gold,collectible,49,2026-10-02 16:51:16
+75bffbf5-3527-4c34-a73d-06252becd47f,Skateboard,collectible,49,2026-10-02 17:53:27
+30a9f14d-f5ef-4047-bf97-c2b047190f83,1:6 DeLorean Time Machine - Interactive,collectible,5,2026-10-02 17:53:27
+be044aa7-1495-4b34-a3a6-b7303affcdae,Thor - Animated,collectible,55.55,2026-10-02 17:53:27
+3a24545f-3e4d-45d7-916f-817a50c7f1b2,No Time To Die  - Triumph Motorcycle,collectible,27,2026-10-02 17:53:27
+08a9b0b6-bae9-4f45-94ed-e36308b26ae1,Bruno Madrigal,collectible,100,2026-10-02 17:53:27
+68bd7e8d-5981-4222-b524-593023e05659,L0-LA59,collectible,229.99,2026-10-02 17:53:27
+0f7f4637-f5d1-4fe0-abea-8ac280707995,Black Panther,collectible,100,2026-10-02 17:53:27
+beeb8c8f-662e-4cf4-878f-9276d60b8c08,Let’s Begin!,collectible,4.99,2026-10-02 17:53:27
+83e94f86-f495-4002-a3b1-1123fda8864e,Sleeping Beauty Castle,collectible,52,2026-10-02 17:53:27
+8c2a6f95-80eb-47db-9e64-ccebb639d0d7,VeVe Logo White Green,collectible,69,2026-10-02 17:53:27
+6b480765-2dde-44e1-b6e6-d5dd4fef0c0e,A Close Call,collectible,49,2026-10-02 17:53:27
+f35e3e0b-dc86-462d-b06b-9c0abe74b924,ECOMI Logo Red Circle,collectible,4.22,2026-10-02 17:53:27
+4339063a-38a7-41ee-895f-21fb3abb0c89,Perlina,collectible,7.33,2026-10-02 17:53:27
+0c733e42-6f3a-4411-a1df-e6795a3ae291,Ursula: I Get What I Want,collectible,3.79,2026-10-02 17:53:27
+8854d1aa-b535-4a8d-9a7f-1392b8581136,John F. Walker,collectible,2.88,2026-10-02 17:53:27
+6edf0436-e37c-4e2f-a811-22e5df176765,Edna Mode: Bold! Dramatic! Heroic!,collectible,7.19,2026-10-02 17:53:27
+3e628ba1-7c41-4d53-8ae7-ecc2aa09512a,Michelangelo - IncogNinja,collectible,100,2026-10-02 17:53:27
+9490e0db-885a-4429-8162-a04fe998a995,#13 Harley Quinn,collectible,26,2026-10-02 17:53:27
+930d65c5-68db-4833-b585-ea9d47b26521,Fat Tony,collectible,9.98,2026-10-02 17:53:27
+358985ca-0e52-4a1b-aeb7-c4e678e65b0d,Matt Murdock - The Vigilant Defender,collectible,9.68,2026-10-02 17:53:27
+3b2abe1a-4389-4ba7-809c-565d1ae25fa8,"""Vader's Little Princess""",collectible,13,2026-10-02 17:53:27
+a9a3706c-32e5-414f-b6f9-3510caa9d855,Weapon Racks – Silver Black,collectible,5.95,2026-10-02 17:53:27
+41ec1282-c9b9-45c5-a3db-125f04c79b4c,Young Carl’s leather flying hat with goggles,collectible,69,2026-10-02 17:53:27
+9623151f-4113-453c-8b71-b88cc1760565,Michelangelo - Skate Jam Base,collectible,5.48,2026-10-02 17:53:27
+2c70e420-29bd-46bc-ba10-04073967e4d2,Take Me Out to the Ball Game,collectible,2.9,2026-10-02 17:53:27
+6db92658-cab4-4bcf-a57b-0e0f9f6750fb,‍‍Mimban Trooper,collectible,3.19,2026-10-02 17:53:27
+a00ad2e9-37fe-4ca2-b2df-5fea2e0131d0,"""Read Me A Story!""",collectible,3.5,2026-10-02 17:53:27
+3ecd1c9c-dd05-4e9e-80b9-7b8574a095bb,Mickey & Friends Logo,collectible,6,2026-10-02 17:53:27
+fcaf92c1-1f34-4042-87ee-b5cc02345977,Chris Robots Will Kill - Landscape,collectible,40,2026-10-02 17:53:27
+c3c9cf87-6d65-4ad6-8e95-0a32b7bcd9e9,Thanos Copter,collectible,6.6,2026-10-02 17:53:27
+59b92dd6-4633-4da0-9d28-fa5349107513,Hank Pym,collectible,3.1,2026-10-02 17:53:27
+5a629d81-f499-4da6-bff6-419f1c27e921,Karina,collectible,2,2026-10-02 17:53:27
+5c4c9abf-3fd5-4ddd-85fa-2b02fbe8dfdb,Spider-Mobile,collectible,7,2026-10-02 17:53:27
+9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,6.5,2026-10-02 17:53:27
+6911b24f-2fd5-4d43-8ae9-8f7d978b6285,Felix  - Golden Light,collectible,14,2026-10-02 17:53:27
+f1bb37cc-7350-403f-9e06-5942bc3765ec,Master Splinter - Weapon Training,collectible,5.99,2026-10-02 17:53:27
+4836f896-a3b1-4539-a79f-1b0a26bd5a25,Rat,collectible,2.29,2026-10-02 17:53:27
+fe25e470-e059-45a4-863d-d25a085b0dfe,MyCollectables,collectible,4.96,2026-10-02 17:53:27
+e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,3.66,2026-10-02 17:53:27
+74ffff21-4447-4ce3-a62f-610747e8afdf,Snow Globes - Snowman,collectible,2.25,2026-10-02 17:53:27
+f95a7ade-32c1-48e2-bab0-4dd51faf1d04,Bubble Machine - Gold Edition,collectible,54,2026-10-02 17:53:27
+438829a3-1ddf-43ef-a849-d05292e7937f,Night Trooper - Marching,collectible,1.6,2026-10-02 17:53:27
+cb514393-4ab4-4042-afcf-33e6083341ed,Collectors at Heart - Vinyl Pressing,collectible,1.06,2026-10-02 17:53:27
+73255fe7-c9e7-489a-a3bd-547b9b87a8a5,Ash,collectible,2.79,2026-10-02 17:53:27
