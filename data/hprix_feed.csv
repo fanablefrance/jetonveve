@@ -1,4 +1,25 @@
 uuid,name,categorie,floor_usd,ts
+2486b5b9-9d27-4d2d-9977-45678ea9405a,1938 Calvin Coolidge,collectible,690,2026-09-25 08:03:00
+c3dcbc25-9eca-430d-81c8-27df7885e061,Contemplating Venice (2021),collectible,99,2026-09-25 08:03:00
+10617c75-f9d0-48cb-b164-fe5b192e8cae,Beta Ray Bill,collectible,55,2026-09-25 08:03:00
+11bc19eb-ef1b-4fa0-8e0d-1a8281197e90,Ghost-Spider,collectible,4,2026-09-25 08:03:00
+83049796-892b-4044-9bbd-667124d07f37,Joy,collectible,20,2026-09-25 08:03:00
+98522b53-091c-40a4-9340-6ba27bb61913,Rising Through the Cracks,collectible,1399,2026-09-25 08:03:00
+2387c605-0f0b-4415-ad9d-0901814ee103,Murciélago LP670-4 SV Blu Nova,collectible,25,2026-09-25 08:03:00
+ad11c67d-5365-48b9-80e9-00c4a0e67f91,"""It Wasn't Me!""",collectible,11,2026-09-25 08:03:00
+3025635d-ac71-4d8f-876c-bc5b3a6662a7,When Inspiration Strikes,collectible,25,2026-09-25 08:03:00
+2c70e420-29bd-46bc-ba10-04073967e4d2,Take Me Out to the Ball Game,collectible,2.93,2026-09-25 08:03:00
+fe0f996e-9621-4a5d-939e-e79032a631db,Maestro,collectible,7.5,2026-09-25 08:03:00
+aed2b798-00f4-46ec-a8c3-9141aad256db,Aurora and Maleficent,collectible,45,2026-09-25 08:03:00
+0e9168df-d75e-49ae-a658-eae7d4d9804c,Cinderella and Lady Tremaine,collectible,15,2026-09-25 08:03:00
+9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,6,2026-09-25 08:03:00
+f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,6,2026-09-25 08:03:00
+1e686588-d7fe-40bc-81be-15d2ca5be3fb,Mysterio,collectible,8,2026-09-25 08:03:00
+c18cdf3e-ef2e-4806-80e9-a410d8186a22,Diver’s Helmet,collectible,10,2026-09-25 08:03:00
+77857a70-edf2-4401-9798-93f63b941d60,Vulture,collectible,4.5,2026-09-25 08:03:00
+13021c9b-384c-48eb-b53f-c02cfae553f0,Ikabriolet,collectible,7,2026-09-25 08:03:00
+5e4f8a69-f7c3-4060-8eb8-7b34540a36ce,Wendy’s Gift Box,collectible,7.65,2026-09-25 08:03:00
+30341e3d-3fd2-49bc-b52e-cb539458aee5,LUV,collectible,9.9,2026-09-25 08:03:00
 5fd09e1f-58f8-467f-9e78-d64f6e3a69b9,R2-D2,collectible,289,2026-09-25 09:04:55
 0bfb1239-b03a-4084-bafe-770796eece82,Wolverine - Blue and Yellow suit,collectible,73.99,2026-09-25 09:04:55
 258379d9-b2e1-48c4-8641-6c98771a6ebe,Master Splinter - Zen Pose,collectible,3900,2026-09-25 09:04:55
@@ -3288,22 +3309,3 @@ d629f709-d1b4-4e1d-803d-542a6b00ea9a,VeVe Heart Logo - Pink,collectible,7.95,202
 f6717b76-db8d-48af-bffd-d7016ac4a83d,C-Rank Essence Stone,collectible,2.9,2026-10-02 07:19:00
 cac60134-17f8-40d5-988f-f911652e1a12,VeVe Common General Admission Ticket - NYCC 2024,collectible,2.5,2026-10-02 07:19:00
 dc0e0865-ed0d-4421-8bcd-2d9007d9c73a,VeVe Uncommon General Admission Ticket - NYCC 2024,collectible,3.5,2026-10-02 07:19:00
-58106902-69a5-488d-8dbb-b6120b73fcc0,Aether,collectible,335.22,2026-10-02 08:21:17
-3c94d7bf-2a58-4e7b-901d-2d177a642da3,Felix – Dual Realms,collectible,180,2026-10-02 08:21:17
-03ac1002-6575-4474-bf58-6175aee35f97,Gelatina,collectible,4.5,2026-10-02 08:21:17
-4ba5e77c-a4f6-44c8-a709-6b2e63c38fd3,Miguel,collectible,16.44,2026-10-02 08:21:17
-39ceaffc-298a-481a-ac53-074fe1843ddd,Hapjeong Station,collectible,29.88,2026-10-02 08:21:17
-a0a401e5-86ce-4522-80f5-f342bb554582,Peter Quill,collectible,5.99,2026-10-02 08:21:17
-f5d9089b-cfa3-47b4-8408-35289430f64d,A-Rank Essence Stone,collectible,49.99,2026-10-02 08:21:17
-e2782558-fce9-438b-be3c-84e1539af4c4,Stormtrooper Helmet - Cross Section,collectible,4.5,2026-10-02 08:21:17
-72b60c77-038d-4ced-bbad-e8c73d13cff1,Scott Lang/Ant-Man,collectible,3.6,2026-10-02 08:21:17
-392c6df5-78ae-4b4a-b015-867fc56f68c8,Hope Van Dyne/Wasp,collectible,2.7,2026-10-02 08:21:17
-e4c90141-36fe-4811-bc64-eb8dbcb3048c,M’Baku,collectible,2.5,2026-10-02 08:21:17
-59b92dd6-4633-4da0-9d28-fa5349107513,Hank Pym,collectible,3,2026-10-02 08:21:17
-c8a76df1-5979-4917-8189-5ecb4a2e4225,KABOOM,collectible,27,2026-10-02 08:21:17
-92635283-99b4-4597-ba69-01e39ccba334,Master Splinter - Father Figure,collectible,3,2026-10-02 08:21:17
-b08d08d6-7b80-4d13-acc4-816a97474a5c,Cassie,collectible,2.8,2026-10-02 08:21:17
-975dad48-3fe0-476b-b518-78706b1073ab,1840 Penny Black Ol mint,collectible,3,2026-10-02 08:21:17
-7b15830f-cafc-4945-a78b-bae80162d788,Groot,collectible,2.5,2026-10-02 08:21:17
-8564d30f-2411-4d71-8f53-330747e9326d,Night Trooper Exposed - Marching,collectible,1.6,2026-10-02 08:21:17
-6034d020-5c76-46b5-aa1e-56011181936e,Graffi ver. Red,collectible,1.37,2026-10-02 08:21:17
