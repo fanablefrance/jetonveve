@@ -1,4 +1,23 @@
 uuid,name,categorie,floor_usd,ts
+60010290-0007-481a-b42e-7840ff74b3f6,Altaïr - Gazebo,collectible,888.88,2026-09-26 19:39:03
+5ab59120-1b5b-473c-9c80-3144d9a6e1d5,"All Together, Now!",collectible,120,2026-09-26 19:39:03
+9bbf3fa3-9b0c-446d-9b17-f6e452b070c7,Black Panther – Wakanda Forever,collectible,6.25,2026-09-26 19:39:03
+c6c4987d-df55-48bf-b727-655b73668c06,Red Skull,collectible,26,2026-09-26 19:39:03
+3f2e5500-cb74-4d1a-970f-a6905b074743,Odin,collectible,28,2026-09-26 19:39:03
+3cbb638b-f450-4bb8-9288-37016cb680d5,Turtle Blimp,collectible,15.95,2026-09-26 19:39:03
+0988f04a-e678-4797-9652-0142e3a37f8b,Just-Us (color),collectible,59,2026-09-26 19:39:03
+1194ee6f-a407-47f9-b3de-efbb7aa587ea,Mr. Knight 1,collectible,2.46,2026-09-26 19:39:03
+eaa4170a-284c-40b5-9add-db1034f91d4a,Bayek,collectible,16.7,2026-09-26 19:39:03
+ef25573e-0032-4a64-91cd-d4c6938f5f10,Cerulean,collectible,3.66,2026-09-26 19:39:03
+684d93e2-0ecf-47a5-a2c5-1c7dd0b8d4dd,Spider-Man 2099 - Beyond Destiny,collectible,10.5,2026-09-26 19:39:03
+545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,8.21,2026-09-26 19:39:03
+da55201f-e728-493b-aaf4-611a18fcfcc5,Vulcan Cruiser,collectible,16.49,2026-09-26 19:39:03
+096dbfc9-0f7c-4d2a-b7da-f0336b2085d9,Love: Multicolored Hearts (1984),collectible,5.59,2026-09-26 19:39:03
+d4788b46-09e9-4528-bfd0-39a1a9ca087e,Cube,collectible,11.99,2026-09-26 19:39:03
+9d513380-78fc-4291-9f4b-e7ac0486e746,Snowman,collectible,10.99,2026-09-26 19:39:03
+36adfd74-e06b-4b10-a4a3-01fc13113d8d,Foam Machine - Gold Edition,collectible,14.99,2026-09-26 19:39:03
+8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,2.69,2026-09-26 19:39:03
+30700600-f3ad-4f78-a775-c84e7b056abe,Graffi ver. Green,collectible,6.99,2026-09-26 19:39:03
 5695db59-33ae-4ce5-a751-0f17d26265e4,Dante,collectible,787,2026-09-26 20:41:06
 e6e5683f-5b64-4842-8f74-912a0fc919ba,Homer & Bart,collectible,48,2026-09-26 20:41:06
 75f29aa3-0cb9-49a7-822b-c0805d5eb76c,Chucky: Bloody Valentine,collectible,70,2026-09-26 20:41:06
@@ -3217,67 +3236,3 @@ daf4feec-b2f7-4489-84a3-8bf4de83d9d2,Nose Goblins,collectible,4,2026-10-03 18:03
 8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,8.5,2026-10-03 18:03:12
 d37184af-298d-4b47-ae13-819fb234b80d,Episode 12 - Arise,collectible,1.66,2026-10-03 18:03:12
 22434091-c9c0-4ed8-b2f5-d9b591efb60e,Foster - Blue Metallic,collectible,20,2026-10-03 18:03:12
-2574a367-7ea1-4f57-be52-f226c2ed6e70,#89 Batman,collectible,9.75,2026-10-03 19:04:22
-dfce2c78-6a36-42d6-9dab-53ae88a852e6,Ultraman Seven,collectible,20,2026-10-03 19:04:22
-b633e43b-a4ce-458a-9fba-ae023f2f2bfd,Mickey Mouse,collectible,8,2026-10-03 19:04:22
-8512b4f0-2ef0-451e-a9eb-2b086982496d,Doctor Doom - Action,collectible,169,2026-10-03 19:04:22
-58b28cd3-fe7e-42d4-99c7-92dbb28cbd87,ULTRAMAN ACE,collectible,50,2026-10-03 19:04:22
-bc138a78-4dc1-44c2-a284-ddf4901dc58c,ULTRASEVEN,collectible,22,2026-10-03 19:04:22
-37353ee5-47b8-4498-a220-7851c6dd0923,Michelangelo - Classic,collectible,18,2026-10-03 19:04:22
-ee46c303-5b18-4836-b6d8-9865afb2e133,Huracán STO - Bianco Asopo/Blu Le Mans,collectible,17,2026-10-03 19:04:22
-8c2a6f95-80eb-47db-9e64-ccebb639d0d7,VeVe Logo White Green,collectible,45,2026-10-03 19:04:22
-3164f5e3-044d-477d-8022-0a99dead294d,Leonardo - Classic,collectible,13,2026-10-03 19:04:22
-eb33b179-0e11-4802-ac98-26d8fdc54b58,Book of Adventure,collectible,48,2026-10-03 19:04:22
-3a104aa7-b5ba-4bd1-8197-dd402dbd46bf,Night Trooper,collectible,6,2026-10-03 19:04:22
-c54fecb0-6f9b-4a17-acf5-57bbf654ecc8,Giggling,collectible,34.44,2026-10-03 19:04:22
-2c70e420-29bd-46bc-ba10-04073967e4d2,Take Me Out to the Ball Game,collectible,2.5,2026-10-03 19:04:22
-ac7aac0b-877e-47de-9b01-06b58030f8a0,The Classic,collectible,99,2026-10-03 19:04:22
-d0d24b34-c4bc-41bc-af6c-23dc874bc60a,The Volcanic Haunt,collectible,69,2026-10-03 19:04:22
-f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,7.3,2026-10-03 19:04:22
-77857a70-edf2-4401-9798-93f63b941d60,Vulture,collectible,6.4,2026-10-03 19:04:22
-9c93d4b4-2dab-4c9d-b5e2-0f29e791bd39,Electro,collectible,6.3,2026-10-03 19:04:22
-d37184af-298d-4b47-ae13-819fb234b80d,Episode 12 - Arise,collectible,2.9,2026-10-03 19:04:22
-1e686588-d7fe-40bc-81be-15d2ca5be3fb,Mysterio,collectible,8,2026-10-03 19:04:22
-cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,3,2026-10-03 19:04:22
-99452901-7fa3-48fd-a56f-d352a65505d7,Whoops Rabbid,collectible,20,2026-10-03 19:04:22
-ebf0810d-353d-49d2-9fd8-032aaae61f6a,Magic Lamp from Aladdin,collectible,21,2026-10-03 20:06:30
-c92f6020-8436-4c32-9b90-e2db0d73bca2,Andy,collectible,100,2026-10-03 20:06:30
-cf266769-b956-47bb-868c-076bd13d62c3,Ryu Blue,collectible,480,2026-10-03 20:06:30
-8e9682fc-9d88-4dad-a61e-74d743da57e7,#71 Batman,collectible,19.5,2026-10-03 20:06:30
-d6230826-c411-4add-9709-44a3a92d5034,Frank Miller Batman,collectible,34,2026-10-03 20:06:30
-fc78ca94-4db6-40bb-841c-92f516444be6,Aang - Spirit World,collectible,555,2026-10-03 20:06:30
-52c36b99-b76b-4073-bfb7-49628c0ada34,Star Wars Episode IV: A New Hope,collectible,13,2026-10-03 20:06:30
-58b28cd3-fe7e-42d4-99c7-92dbb28cbd87,ULTRAMAN ACE,collectible,49.95,2026-10-03 20:06:30
-47dd2556-6be7-4572-a234-453b667cfc8d,Wonder Woman,collectible,7.95,2026-10-03 20:06:30
-ff13b7ac-7bfe-4bfb-9efa-1902fdc9a4ba,Kenneth Rocafort Batman,collectible,12.5,2026-10-03 20:06:30
-687ad0c0-c8b5-48a7-9ac9-792b8ef95981,Raphael - Classic (Special Edition),collectible,850,2026-10-03 20:06:30
-12ec6e39-5acf-456c-a4d3-b3cd71e412c4,Pluto,collectible,320,2026-10-03 20:06:30
-eb8895db-94cd-465a-bc25-05ce6e18e2c2,Melvin,collectible,13.99,2026-10-03 20:06:30
-bc138a78-4dc1-44c2-a284-ddf4901dc58c,ULTRASEVEN,collectible,24.95,2026-10-03 20:06:30
-3380b39e-a974-4f27-89c3-12dc6995fbee,Planet Hulk,collectible,31,2026-10-03 20:06:30
-5af1a0a3-e761-408a-b9cf-3a66f63540bd,H.E.R.B.I.E.,collectible,199,2026-10-03 20:06:30
-722b09ee-0fc7-4ee4-99ca-08cc05eb0852,Party Wagon,collectible,14.99,2026-10-03 20:06:30
-d9142a24-fb93-439c-9c06-e09b52172052,Going to War,collectible,193,2026-10-03 20:06:30
-0433455f-ebd3-447d-bb00-347564d5f6a4,Guile Story,collectible,139,2026-10-03 20:06:30
-842f5443-b6d0-4fec-a3cb-a17b91d9287b,Dream from Day to Night,collectible,16.75,2026-10-03 20:06:30
-c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,9.99,2026-10-03 20:06:30
-c81ac9ff-1954-4ba5-8194-9b83ecdd3228,Sunflower Grin - Special Mission - Gold,collectible,4.99,2026-10-03 20:06:30
-7b01a6a0-fae5-4700-8632-8131c7b2c839,Donald,collectible,39,2026-10-03 20:06:30
-ba556949-a241-4a1f-b340-882319aa5b10,Gambit,collectible,10.99,2026-10-03 20:06:30
-590afe3a-120d-4ff3-a983-0213765d6e45,GNK Power Droid,collectible,29,2026-10-03 20:06:30
-9e399a2c-e51f-49ed-a1d3-16569550c967,Ultraman - Silent Guardian,collectible,10.5,2026-10-03 20:06:30
-2749b5d7-4000-49d4-b488-30987ae0bd22,Maido & Kanpai - Special Edition,collectible,399,2026-10-03 20:06:30
-0c90c49f-d867-47de-991f-d5b5606ffb09,Namor - Phoenix,collectible,8,2026-10-03 20:06:30
-da55201f-e728-493b-aaf4-611a18fcfcc5,Vulcan Cruiser,collectible,14,2026-10-03 20:06:30
-65907fba-1f10-463d-8c9f-c37a8d33a50c,Headspace Monkey - Luke Chueh x Munkyking,collectible,8.49,2026-10-03 20:06:30
-305c5cde-ab8e-4d48-9d20-151a84e48725,Sagunja - The Four Gracious Plants,collectible,8,2026-10-03 20:06:30
-4737dfaf-a202-411c-998c-42f98010247b,Fuel Drum Stack,collectible,8,2026-10-03 20:06:30
-8fdca362-e999-414e-af25-bbcadf58cc40,Agave,collectible,47,2026-10-03 20:06:30
-e726f943-62a1-4ba7-9d8f-d21684a77c38,Paddle Ball,collectible,21.99,2026-10-03 20:06:30
-73cda966-4e10-4243-ab3b-d7d7a35f932e,Hangar Walkway,collectible,6,2026-10-03 20:06:30
-8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,3,2026-10-03 20:06:30
-8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,8,2026-10-03 20:06:30
-cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,2.8,2026-10-03 20:06:30
-53ff9a39-afb8-4a2e-b9de-516d6ea965d5,Laser Beam Machine,collectible,2.5,2026-10-03 20:06:30
-71e624e1-3660-49d6-a6a8-707dd61803da,POW! - Gold,collectible,39.9,2026-10-03 20:06:30
-732f997a-5675-4415-a101-6268566a844a,Namor - Avengers 2018,collectible,30,2026-10-03 20:06:30
