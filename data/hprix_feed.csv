@@ -1,31 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-30a9f14d-f5ef-4047-bf97-c2b047190f83,1:6 DeLorean Time Machine - Interactive,collectible,6,2026-09-27 10:07:18
-86a1c74b-4fff-4729-9cf9-57d92f29e053,Steve Rogers,collectible,7,2026-09-27 10:07:18
-85505d96-5efd-4f02-892f-2d8591712f9d,JENNIE – Stylish Affection,collectible,788,2026-09-27 10:07:18
-3380b39e-a974-4f27-89c3-12dc6995fbee,Planet Hulk,collectible,32,2026-09-27 10:07:18
-1e7014fa-7d7d-4af4-95fb-296d359612f4,Storm – Queen of Wakanda,collectible,7.77,2026-09-27 10:07:18
-fc394894-444f-43ad-927b-19390c5eef03,Harley Quinn Deluxe 2,collectible,6.99,2026-09-27 10:07:18
-4a8e584e-4cd0-47e8-8954-af74c52d90fe,Invisible Woman,collectible,1.89,2026-09-27 10:07:18
-cce3a323-94cb-44e3-b87b-c37cc9a34429,Beta Ray Bill - Action,collectible,179,2026-09-27 10:07:18
-560171d9-021c-4447-9015-2b32714c74f7,X-Men Logo,collectible,14.9,2026-09-27 10:07:18
-ef25573e-0032-4a64-91cd-d4c6938f5f10,Cerulean,collectible,3.1,2026-09-27 10:07:18
-0c733e42-6f3a-4411-a1df-e6795a3ae291,Ursula: I Get What I Want,collectible,1.69,2026-09-27 10:07:18
-53472f76-2eda-4c12-8ac1-4706e2297226,Peter Pan's Flight,collectible,19.99,2026-09-27 10:07:18
-e8064631-1c9d-408a-ada4-7534693c8c12,Sentinel,collectible,5,2026-09-27 10:07:18
-10fdaf2c-4b9b-4a2d-9f83-7cfcb43358d2,Glider Blueprint,collectible,2.99,2026-09-27 10:07:18
-2c70e420-29bd-46bc-ba10-04073967e4d2,Take Me Out to the Ball Game,collectible,2.09,2026-09-27 10:07:18
-4a1211b1-0144-4827-8014-2120901a5b91,Bigfoot,collectible,1.54,2026-09-27 10:07:18
-d035bdd7-124c-4555-8f45-75dbe8fef0a8,Heroes Edition,collectible,19.99,2026-09-27 10:07:18
-349d2928-d6b8-4b90-aa46-c49d76bd4038,Aesthetic (2020),collectible,25,2026-09-27 10:07:18
-04c4bc6c-bbea-4d2e-bb0f-84122e214979,Loki - Action,collectible,29.99,2026-09-27 10:07:18
-545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,6.6,2026-09-27 10:07:18
-a877e714-7bbc-4a8a-95a0-4cd087216f99,Maido & Kanpai,collectible,9,2026-09-27 10:07:18
-8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,7.77,2026-09-27 10:07:18
-8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,2.71,2026-09-27 10:07:18
-b87927b2-6ad2-43ee-ae88-cfd7a2668e15,Bubble Machine,collectible,2.7,2026-09-27 10:07:18
-cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,2.7,2026-09-27 10:07:18
-e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,2.56,2026-09-27 10:07:18
-53ff9a39-afb8-4a2e-b9de-516d6ea965d5,Laser Beam Machine,collectible,2.5,2026-09-27 10:07:18
 41505b27-6b61-4951-835f-d8976df8fcbf,Spider-Man 2099,collectible,450,2026-09-27 11:08:26
 e6e5683f-5b64-4842-8f74-912a0fc919ba,Homer & Bart,collectible,61.99,2026-09-27 11:08:26
 bc74cd99-3dd5-440a-8105-a1c9f37596a9,Oscar the Grouch - Gold,collectible,19,2026-09-27 11:08:26
@@ -5832,3 +5805,48 @@ f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,2.9,2026-10-04 09:
 53ff9a39-afb8-4a2e-b9de-516d6ea965d5,Laser Beam Machine,collectible,2.8,2026-10-04 09:35:07
 e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,2.8,2026-10-04 09:35:07
 8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,2.8,2026-10-04 09:35:07
+2e31455d-8c38-405d-b2f6-50b2e5d27ea0,Iron Man,collectible,69.95,2026-10-04 10:37:22
+557544aa-8c6f-4b1c-855f-150b0adf7e63,The Last Supper Diorama,collectible,125,2026-10-04 10:37:22
+1b0b3cc2-226d-416c-ab86-875e8268b370,Gold Dragon,collectible,169,2026-10-04 10:37:22
+687ad0c0-c8b5-48a7-9ac9-792b8ef95981,Raphael - Classic (Special Edition),collectible,1480,2026-10-04 10:37:22
+2dc769f6-356f-4001-b568-8e7dcdbf624b,Mister Fantastic,collectible,2.9,2026-10-04 10:37:22
+6b9a6e4d-3267-461c-bc0b-101eb140a4dd,Fat Tony - Gold,collectible,160,2026-10-04 10:37:22
+3facefe2-427f-48ec-a954-e5892b8c3b20,Yoda - Focus,collectible,79,2026-10-04 10:37:22
+38106832-449a-4c05-9ad6-4cae7177a9c9,VeVe Logo White Blue,collectible,55,2026-10-04 10:37:22
+15a83e17-250c-4063-ae84-6aeea8660af6,Jackson Storm Base,collectible,150,2026-10-04 10:37:22
+ed756ab9-b7ed-4a1c-a35f-ff171d050cf1,A View To A Kill - US insert,collectible,46,2026-10-04 10:37:22
+83049796-892b-4044-9bbd-667124d07f37,Joy,collectible,15.5,2026-10-04 10:37:22
+a494f556-ebcd-4252-b4ec-ccd52c331c5c,Mickey,collectible,19.3,2026-10-04 10:37:22
+9d25ee7b-bf59-4d56-a391-f7329bfe8973,Rocket,collectible,42,2026-10-04 10:37:22
+39ceaffc-298a-481a-ac53-074fe1843ddd,Hapjeong Station,collectible,29,2026-10-04 10:37:22
+2da43376-465d-4b88-868d-ce8701f497e1,Human Torch - Fully Ignited,collectible,29,2026-10-04 10:37:22
+2e03595b-e2ef-42bb-b38b-5602c691ec05,VeVe Heart Logo - Orange,collectible,48,2026-10-04 10:37:22
+efce0615-f0e6-43ba-8e30-e3eb8f56d37f,Sam Wilson - Marvel Metallic Red,collectible,43,2026-10-04 10:37:22
+7b01a6a0-fae5-4700-8632-8131c7b2c839,Donald,collectible,38,2026-10-04 10:37:22
+f68a5fd3-4208-4384-8683-095a8fe10fb3,Mulan,collectible,19,2026-10-04 10:37:22
+336b962c-792c-487d-bf8b-f8868302f8d6,MYO - Blue,collectible,44,2026-10-04 10:37:22
+e9aa517c-43e1-48d8-ab94-8551e4610629,Daisy,collectible,21,2026-10-04 10:37:22
+3ecd1c9c-dd05-4e9e-80b9-7b8574a095bb,Mickey & Friends Logo,collectible,6.4,2026-10-04 10:37:22
+aa9f9161-b0f9-4203-8694-023ac4feef54,The Sealed Thought of Greed,collectible,15,2026-10-04 10:37:22
+79131a1d-4a6a-4206-907a-118991261ae3,Coca-Cola – 1900 Empty Bottle,collectible,115,2026-10-04 10:37:22
+94bcc472-9ecb-41f0-b8bf-f5b0b4e85e37,Gambit - Trenchcoat Tactician,collectible,2.5,2026-10-04 10:37:22
+766bbdc6-106f-4398-8e0a-f4b87f4ce9f5,The Shattered Shovel of Swinging,collectible,12.5,2026-10-04 10:37:22
+2ce987c8-0ec3-4773-b6d6-d3c5516fba89,The Coal Mining Miner,collectible,16,2026-10-04 10:37:22
+7c5e7611-0e0f-4000-b5ed-0134ee7279f5,Coca-Cola – 1899 Empty Bottle,collectible,99.99,2026-10-04 10:37:22
+fbc51b96-8996-4dad-bd2e-0e24d9dc68ea,Monovader - Full Resin Mode,collectible,49.99,2026-10-04 10:37:22
+969d91bf-5ffe-4c53-9249-20d4659d5fcc,Speedy The Racing Snail Box,collectible,18,2026-10-04 10:37:22
+545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,7.18,2026-10-04 10:37:22
+158cf956-dbe3-48f4-9d41-68fa97acf97e,Kaiju Tokimon,collectible,2.8,2026-10-04 10:37:22
+b07a5ea1-421a-44ea-b0cf-1236e057a0d3,The Jellyfish Jaunte,collectible,17,2026-10-04 10:37:22
+90b2abb9-592f-4bbe-9413-7ba139b32fdc,The Leisurely Loop,collectible,10.9,2026-10-04 10:37:22
+d23fe8eb-7882-40fc-8e4d-16a0f81e1847,B-Rank Essence Stone,collectible,3.9,2026-10-04 10:37:22
+42883b04-d4ae-43da-81ea-b80fc7075234,Drop Incoming!,collectible,1.9,2026-10-04 10:37:22
+a42350c5-a1a7-4593-af66-ef91cfeb37a1,Ollie Goodtimes,collectible,6.5,2026-10-04 10:37:22
+98bbca6f-42b0-4694-a886-12589444fc5d,Graffi ver. Navy,collectible,7.97,2026-10-04 10:37:22
+10a300f5-9bd8-4d8f-b1d6-82acc9295399,Magic Mike,collectible,5.9,2026-10-04 10:37:22
+30700600-f3ad-4f78-a775-c84e7b056abe,Graffi ver. Green,collectible,7.99,2026-10-04 10:37:22
+ff142570-e43a-4f7e-8a15-4668b0e4d332,ZAP!,collectible,4.9,2026-10-04 10:37:22
+c574d86b-b2cd-4f50-9a83-880d74348d52,Yolanda Styles,collectible,2.9,2026-10-04 10:37:22
+f9b0cd1a-7796-43c4-afcf-ac938ba83f71,Jolene McBean,collectible,2.8,2026-10-04 10:37:22
+18813fff-2a95-427a-9705-e9c07435ac3b,Coca-Cola – Aluminum Bottle,collectible,10,2026-10-04 10:37:22
+cb514393-4ab4-4042-afcf-33e6083341ed,Collectors at Heart - Vinyl Pressing,collectible,1.2,2026-10-04 10:37:22
