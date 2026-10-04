@@ -1,23 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-21ba4b0f-1935-4de1-b6ea-879854f09482,LISA - Salute,collectible,50000,2026-09-27 05:54:59
-ab4c9545-781b-496c-bf57-23a23e5dc432,Flower Bomber (Concrete Edition),collectible,75,2026-09-27 05:54:59
-83049796-892b-4044-9bbd-667124d07f37,Joy,collectible,15.99,2026-09-27 05:54:59
-4217662c-612d-4081-b088-9384c94f0d2a,Mr. Robot,collectible,25,2026-09-27 05:54:59
-31572cb5-b90f-47cc-82e9-c8751ccf0a70,Buzz Lightyear – Galactic Guardian,collectible,14.95,2026-09-27 05:54:59
-ef25573e-0032-4a64-91cd-d4c6938f5f10,Cerulean,collectible,3.1,2026-09-27 05:54:59
-199db622-37b9-4823-b733-aca9ad34d91a,Sports Rabbid,collectible,60,2026-09-27 05:54:59
-d53f3d33-19f8-4ba7-86c2-1309a7470af9,Episode 11 - A Knight Who Defends an Empty Throne,collectible,9.99,2026-09-27 05:54:59
-2e1dc20a-de45-4824-a3f2-e7a0874ee701,Johnny Storm - Classic Blue,collectible,10,2026-09-27 05:54:59
-abfe3678-583d-4bc4-920c-a14f59e3ba02,Nightshade Cheshire,collectible,25,2026-09-27 05:54:59
-4ca4eb09-9fe7-458f-b935-669d4652aab2,Lincoln Logo Mayhem Board,collectible,7.5,2026-09-27 05:54:59
-98ca2db3-3319-4cd5-b814-b0cdbc070d1f,Coca-Cola – 1900 Bottle,collectible,7.5,2026-09-27 05:54:59
-545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,6.81,2026-09-27 05:54:59
-53ff9a39-afb8-4a2e-b9de-516d6ea965d5,Laser Beam Machine,collectible,4.99,2026-09-27 05:54:59
-885d2aab-8a0c-4c32-924a-51323518866e,Mai Mai,collectible,7.99,2026-09-27 05:54:59
-9d513380-78fc-4291-9f4b-e7ac0486e746,Snowman,collectible,8.99,2026-09-27 05:54:59
-8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,7.8,2026-09-27 05:54:59
-cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,2.71,2026-09-27 05:54:59
-8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,2.51,2026-09-27 05:54:59
 370fff46-9ed2-402c-a981-955b3b0202e1,Donald Duck and Daisy Duck,collectible,34,2026-09-27 06:56:01
 d53f3d33-19f8-4ba7-86c2-1309a7470af9,Episode 11 - A Knight Who Defends an Empty Throne,collectible,44.2,2026-09-27 06:56:01
 83049796-892b-4044-9bbd-667124d07f37,Joy,collectible,20,2026-09-27 06:56:01
@@ -5797,3 +5778,28 @@ a877e714-7bbc-4a8a-95a0-4cd087216f99,Maido & Kanpai,collectible,9,2026-10-04 05:
 7f342f16-83c7-4fa7-93d0-7218c6429617,Collectors at Heart - Gold Pressing,collectible,3.44,2026-10-04 05:21:39
 4ed555bb-e861-4923-b047-95006e7526e5,Views of Our Planets - Mars,collectible,3.38,2026-10-04 05:21:39
 438829a3-1ddf-43ef-a849-d05292e7937f,Night Trooper - Marching,collectible,1.6,2026-10-04 05:21:39
+a659bbc2-45cd-4f72-9ca2-7e92a245d05f,#97 Joe Madureira Batman,collectible,62,2026-10-04 06:23:50
+ebf0810d-353d-49d2-9fd8-032aaae61f6a,Magic Lamp from Aladdin,collectible,18.99,2026-10-04 06:23:50
+eeb7939b-babf-4b2d-a078-36a40321043a,Ultraman Ace,collectible,49.99,2026-10-04 06:23:50
+75677539-6781-4d04-9361-54a43fd8ad17,The Skywalker Lightsaber,collectible,9,2026-10-04 06:23:50
+d9892b14-8126-4b26-901d-a978d6eb5be8,T. rex Animated 2,collectible,45.99,2026-10-04 06:23:50
+c6c4987d-df55-48bf-b727-655b73668c06,Red Skull,collectible,25.5,2026-10-04 06:23:50
+68bd7e8d-5981-4222-b524-593023e05659,L0-LA59,collectible,230,2026-10-04 06:23:50
+20ccbff8-c2b0-4298-a254-ef9ae0f1de2b,Thor - The Worthy,collectible,8.99,2026-10-04 06:23:50
+aedde9a9-f444-40f5-b1db-0199f84e5c3f,Minnie Mouse,collectible,6,2026-10-04 06:23:50
+7e595273-5759-492c-b95d-4db62eaaef88,On Guard,collectible,7.99,2026-10-04 06:23:50
+462c5fbb-fc0d-4aec-b7e8-856dea8b4963,Kylo Ren,collectible,5.5,2026-10-04 06:23:50
+1d9b6785-9c6a-482b-9720-7bb9ba57acac,Princess Bubblegum,collectible,10.9,2026-10-04 06:23:50
+9200fc5a-9913-45cd-addf-5c17bdd006b3,Starlight Orb,collectible,5,2026-10-04 06:23:50
+1e30f14b-8d53-451c-a1e4-24ffdc99f44c,Necronomicon (Book of the Dead),collectible,29,2026-10-04 06:23:50
+e144ca42-a942-4a0c-8c5f-e30a32c037d9,The World Is Not Enough - Chinese One Sheet,collectible,55,2026-10-04 06:23:50
+043ed720-aa2c-49fa-8dd2-9607de31a386,Ken Story,collectible,120,2026-10-04 06:23:50
+aab442c6-8b61-485f-b06c-49b9772f7c9b,Imperial Royal Guard,collectible,48,2026-10-04 06:23:50
+f5e0f729-c64c-4d77-bdf6-831cc180a9fa,Ikaris,collectible,2.4,2026-10-04 06:23:50
+125b902c-7c6e-4262-a58f-4f3e4ee8d195,The Rise of Ultraman #1 - Alex Ross,collectible,5.5,2026-10-04 06:23:50
+ba623eaa-2499-424b-8a36-3750ae2e509b,Beast,collectible,11.99,2026-10-04 06:23:50
+056eec82-cd43-44a2-90ea-22bc734606da,Bucky Barnes - Action,collectible,21,2026-10-04 06:23:50
+6c589db7-e673-4a1a-b87a-af1d0e7da650,Haunted Mansion Poster,collectible,22.22,2026-10-04 06:23:50
+1d499ece-1016-4f5a-9140-d029d840146f,Mantis,collectible,3.8,2026-10-04 06:23:50
+235b8120-4c54-4b9c-afa5-414af205002a,Happy New Year! 2026 - Tier 5,collectible,1.03,2026-10-04 06:23:50
+1a3052a5-729e-4d52-865d-8a6adcfe33fa,Aratech 74-Z Speeder Bike – Patrol Division (Snow),collectible,5,2026-10-04 06:23:50
