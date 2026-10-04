@@ -1,13 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-2e87137d-51b3-41ee-93e1-80e0e799d6ba,Spider-Man – Hangin’ Out,collectible,30.75,2026-09-27 09:03:34
-c420311a-2c0c-434c-9c76-9d294e6cc304,Spider-Man 2099 - Temporal Vanguard,collectible,189,2026-09-27 09:03:34
-dbed7372-f79d-4638-a180-1da2e36195f4,Alice,collectible,21.75,2026-09-27 09:03:34
-3a78b26c-78b0-4aef-aab8-db75173e5e52,Huracán STO - Grigio Titans/Giallo Belenus,collectible,25,2026-09-27 09:03:34
-3cbb638b-f450-4bb8-9288-37016cb680d5,Turtle Blimp,collectible,16.5,2026-09-27 09:03:34
-668bbcec-c6ea-4b6f-8706-e4adfacd2826,Emma Frost,collectible,93,2026-09-27 09:03:34
-e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,2.6,2026-09-27 09:03:34
-f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,2.6,2026-09-27 09:03:34
-30700600-f3ad-4f78-a775-c84e7b056abe,Graffi ver. Green,collectible,6.5,2026-09-27 09:03:34
 30a9f14d-f5ef-4047-bf97-c2b047190f83,1:6 DeLorean Time Machine - Interactive,collectible,6,2026-09-27 10:07:18
 86a1c74b-4fff-4729-9cf9-57d92f29e053,Steve Rogers,collectible,7,2026-09-27 10:07:18
 85505d96-5efd-4f02-892f-2d8591712f9d,JENNIE – Stylish Affection,collectible,788,2026-09-27 10:07:18
@@ -5789,3 +5780,55 @@ f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,2.99,2026-10-04 08
 30341e3d-3fd2-49bc-b52e-cb539458aee5,LUV,collectible,8,2026-10-04 08:31:21
 ec460953-de8a-4649-8a68-666bb2f2168b,Weakest Hunter - Frame,collectible,1.55,2026-10-04 08:31:21
 1f0a1a89-e8d4-4d4c-a841-3ffa19df4d01,David’s Doo Black,collectible,2.12,2026-10-04 08:31:21
+11f2b172-e206-4644-8256-e51fd7298af2,Winnie the Pooh and Piglet,collectible,24,2026-10-04 09:35:07
+acf1aae9-f70c-4782-830d-71cb124fb808,Batman vs. Killer Croc,collectible,22,2026-10-04 09:35:07
+95ea8d6d-886d-4c3c-b171-82d23310d2bf,Woody: Hey Howdy Hey!,collectible,9.99,2026-10-04 09:35:07
+3f046859-154b-4a76-818f-f94ef4c0d928,Mike Wazowski: I’ve Been Waiting for This My Whole Life!,collectible,8.19,2026-10-04 09:35:07
+b633e43b-a4ce-458a-9fba-ae023f2f2bfd,Mickey Mouse,collectible,7.99,2026-10-04 09:35:07
+8d14679c-ef72-4a0d-ab39-617170e2e2e5,Quaritch's Banshee,collectible,150,2026-10-04 09:35:07
+3f233a1f-fe67-4d15-b796-f60845ee3d35,Lightning McQueen: Ka-chow!,collectible,8.89,2026-10-04 09:35:07
+ff3c835b-61d3-44f1-b9d9-1645336bfc25,Black Panther – Panther Pounce,collectible,4.45,2026-10-04 09:35:07
+f24a2d80-0214-46ab-9662-0c6e7b69521d,The House from Up: Adventure Is Out There!,collectible,7.68,2026-10-04 09:35:07
+87876723-9df8-4d39-a1fe-fbecf4b4788a,Supergirl,collectible,8,2026-10-04 09:35:07
+4ba2733e-9df3-4ae7-9392-7f8fbe46bcea,Storm – Windrider,collectible,4.45,2026-10-04 09:35:07
+d34e9c60-06e9-456d-9d60-e9f2bd92b7d2,"I’m Buzz Lightyear, I’m always sure",collectible,9.99,2026-10-04 09:35:07
+6edf0436-e37c-4e2f-a811-22e5df176765,Edna Mode: Bold! Dramatic! Heroic!,collectible,7.18,2026-10-04 09:35:07
+ad1dc02e-0225-47e8-8cbc-93b5b4a7646e,Iron Man,collectible,19,2026-10-04 09:35:07
+2af5a235-d387-495e-b01c-b90ca6f71e48,Simba,collectible,19.45,2026-10-04 09:35:07
+1a7a521f-21a0-4468-b6ce-be8e55823815,Thanos - Philosopher,collectible,14.89,2026-10-04 09:35:07
+4b5d4e5a-8af6-462b-8305-426d62f1aef8,Aratech 74-Z Speeder Bike,collectible,20,2026-10-04 09:35:07
+0183c5a4-0480-4d6b-a9db-7e1228124f50,Po,collectible,11.99,2026-10-04 09:35:07
+bc961870-a3c9-40bc-a35d-46e4a5353c2c,Pirates of the Caribbean,collectible,19,2026-10-04 09:35:07
+be8452a6-baa2-4adf-9049-31887af1fa80,Wolverine - Rage Unleashed,collectible,64,2026-10-04 09:35:07
+d0122a89-aac8-4527-a413-7267041c59be,VeVe Reveal,collectible,59,2026-10-04 09:35:07
+469768a2-f73d-48d4-aff7-4cc137fd8fb0,Mr. Incredible,collectible,12.7,2026-10-04 09:35:07
+9e0ec309-fc0b-4286-b116-a607ee2e7cc3,Holiday Elves - Block of Four,collectible,13,2026-10-04 09:35:07
+ae7c2332-5623-4e84-a8c8-cf14b37bedcc,Ghost-Spider,collectible,10.98,2026-10-04 09:35:07
+21431496-7022-4b15-bac6-8a6754ad818c,America Chavez - Animated,collectible,14.95,2026-10-04 09:35:07
+ae3b97fa-38a8-413c-b2f0-cd0695450755,VeVe Outdoor Guide - Lincoln Design Co.,collectible,33,2026-10-04 09:35:07
+967c8539-9bcc-4390-a094-a1d4d1006fa0,Welcome to Element City,collectible,11.99,2026-10-04 09:35:07
+9a22c13c-a299-4639-b07e-6cf2d133e45f,Mariachi - Vihuela Player,collectible,5.99,2026-10-04 09:35:07
+1394a278-329b-493f-8921-42e7a47463d3,Dark Robin #1,collectible,14,2026-10-04 09:35:07
+c453fdaf-e57f-4a45-88a6-487d999916b9,Fall,collectible,34,2026-10-04 09:35:07
+0c6af189-3d90-4fdd-b28b-a60c8d42ec7b,Rushing Toby,collectible,1.99,2026-10-04 09:35:07
+6a7fc668-20de-4ab6-a9f0-d275cd1c246a,Jolly Roger Deck,collectible,14,2026-10-04 09:35:07
+6ab25021-a22f-4819-bd98-34e03f94dedd,Fired Up,collectible,12.99,2026-10-04 09:35:07
+d96aceeb-b519-44a1-86d4-af0735a092bf,The Endoplasmic ButterflyFeesh,collectible,47.5,2026-10-04 09:35:07
+61b7a964-9a72-45b8-b43d-0b60ed1717ba,Water You Wading For Mural,collectible,15.99,2026-10-04 09:35:07
+942aaaed-0e54-4874-a7b9-d928adc6ea26,Lumpy,collectible,7.99,2026-10-04 09:35:07
+545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,6.98,2026-10-04 09:35:07
+8a50b96b-5408-4e5e-bb40-23961d9ed8d8,Magik - Hellfire Gala #1 (2022),collectible,7,2026-10-04 09:35:07
+90b2abb9-592f-4bbe-9413-7ba139b32fdc,The Leisurely Loop,collectible,10.99,2026-10-04 09:35:07
+30341e3d-3fd2-49bc-b52e-cb539458aee5,LUV,collectible,13,2026-10-04 09:35:07
+9d513380-78fc-4291-9f4b-e7ac0486e746,Snowman,collectible,11.99,2026-10-04 09:35:07
+c646e937-7af9-4243-9e49-ee5e8452e3c5,Snow Globes - Reindeer,collectible,3.85,2026-10-04 09:35:07
+fccfc777-cc16-4a36-b063-8258d6e69ffe,Boy,collectible,11.47,2026-10-04 09:35:07
+a05e5e16-5e63-4d0c-a429-d67d5bb05e71,Dharma Tiger,collectible,2.4,2026-10-04 09:35:07
+f11b5077-e080-49c9-937d-68208f0ba66f,The Tiniest Bit of Greed,collectible,44,2026-10-04 09:35:07
+31944bea-3443-4497-8387-db84f26750a9,Pyro Machine - Gold Edition,collectible,65,2026-10-04 09:35:07
+cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,3,2026-10-04 09:35:07
+b87927b2-6ad2-43ee-ae88-cfd7a2668e15,Bubble Machine,collectible,3,2026-10-04 09:35:07
+f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,2.9,2026-10-04 09:35:07
+53ff9a39-afb8-4a2e-b9de-516d6ea965d5,Laser Beam Machine,collectible,2.8,2026-10-04 09:35:07
+e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,2.8,2026-10-04 09:35:07
+8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,2.8,2026-10-04 09:35:07
