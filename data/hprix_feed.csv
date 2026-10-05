@@ -1,26 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-c3df7496-e8e7-4507-b80a-5c2b5d996645,#100 Todd McFarlane Batman,collectible,499,2026-09-28 13:04:18
-a64c22fa-268e-4153-b31f-2b93d8c877eb,1:1 DeLorean Time Machine - Static,collectible,7,2026-09-28 13:04:18
-0e86bd26-039e-43b2-b7e8-3c6bd635e073,Blaster Ready,collectible,154,2026-09-28 13:04:18
-d2f007b7-bbd9-45a8-a085-7cb1e5edef9a,Cogsworth,collectible,97,2026-09-28 13:04:18
-882b40f4-c586-4c68-af9b-b7bfdaca9f0d,Spider-Man 2099 - Shadow Protocol,collectible,145,2026-09-28 13:04:18
-0f59caec-a042-484c-a314-e2185ae2bc77,DEADBEATS - Dysfunctional Family StreetPrint,collectible,29,2026-09-28 13:04:18
-6f5c2461-9501-45fe-8077-70169d70efd5,Black Death Greaper - Sket One,collectible,94,2026-09-28 13:04:18
-df13076e-f778-46eb-9946-4e91a69c0eba,Rambo III - Original US Theatrical Poster (1988),collectible,185,2026-09-28 13:04:18
-fcaf92c1-1f34-4042-87ee-b5cc02345977,Chris Robots Will Kill - Landscape,collectible,40,2026-09-28 13:04:18
-275c860b-24ce-44da-a389-f6761b9c298d,Thought Factory,collectible,22,2026-09-28 13:04:18
-545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,7.5,2026-09-28 13:04:18
-181d0479-4f2f-4587-b949-23ecd30cda7a,‍Rabbid Redzone,collectible,15,2026-09-28 13:04:18
-383b2411-0ef9-4ec9-8b7a-2825ebeab4c6,Year of the Horse Medallion,collectible,2.22,2026-09-28 13:04:18
-b87927b2-6ad2-43ee-ae88-cfd7a2668e15,Bubble Machine,collectible,3.2,2026-09-28 13:04:18
-8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,8.5,2026-09-28 13:04:18
-d422752a-51cf-40da-82a1-257f817eed43,HiKR,collectible,8,2026-09-28 13:04:18
-53ff9a39-afb8-4a2e-b9de-516d6ea965d5,Laser Beam Machine,collectible,2.9,2026-09-28 13:04:18
-8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,2.9,2026-09-28 13:04:18
-f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,2.75,2026-09-28 13:04:18
-e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,2.5,2026-09-28 13:04:18
-e4be1d9c-8e01-482e-a344-abd21adf9e98,RUNNING MON ver. YETTI,collectible,2,2026-09-28 13:04:18
-a9bd25e9-7deb-403f-9710-15314e0bc689,Acrobatic Surfing,collectible,1.5,2026-09-28 13:04:18
 fc943f7c-7e87-4f6e-b38e-8bc02c6cf7a6,Spider-Man – The Amazing Spider-Man,collectible,35,2026-09-28 14:08:03
 5fd09e1f-58f8-467f-9e78-d64f6e3a69b9,R2-D2,collectible,280,2026-09-28 14:08:03
 75bffbf5-3527-4c34-a73d-06252becd47f,Skateboard,collectible,69,2026-09-28 14:08:03
@@ -5834,17 +5812,23 @@ faa1cb7e-9274-4b21-a48f-26b137903729,The Feesh Force 5 Box Robot,collectible,130
 57da1dfd-058b-48db-ab9a-f4fa82eb4db6,Death Trooper Helmet,collectible,3.99,2026-10-05 11:44:06
 545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,7.94,2026-10-05 11:44:06
 7f342f16-83c7-4fa7-93d0-7218c6429617,Collectors at Heart - Gold Pressing,collectible,3.48,2026-10-05 11:44:06
-ee27ac13-2e51-4cda-925f-595060735022,ECOMI Logo Red Silver,collectible,2999.99,2026-10-05 12:46:40
-5fd09e1f-58f8-467f-9e78-d64f6e3a69b9,R2-D2,collectible,200,2026-10-05 12:46:40
-368d273a-dd5f-470b-8574-899a4033ed82,Elsa Poster,collectible,1000,2026-10-05 12:46:40
-d29aedf0-6420-4549-b702-27b7d49a8d20,"I am a Jedi, like my father before me",collectible,666,2026-10-05 12:46:40
-da4f0ab8-00be-498e-8784-bde7d0d105e2,#56 Bruce Timm Harley Quinn,collectible,44,2026-10-05 12:46:40
-96c9e719-1bc1-4976-9061-c7025ed37049,MYO - OG Gold/Silver,collectible,366,2026-10-05 12:46:40
-05df9412-ca87-4492-8454-81f73a88c171,MOTOMICHI - Eyes,collectible,13,2026-10-05 12:46:40
-bb8e1812-e8d4-4107-8e29-cb2dcad0348c,The Punisher - Fists of Vengeance Special Edition,collectible,499,2026-10-05 12:46:40
-6eff407c-b40c-4a35-944d-f4bf410001ec,Rocket to the Moon,collectible,22,2026-10-05 12:46:40
-a35a6323-40ba-4c70-b65c-99c166f6c507,Dog,collectible,36,2026-10-05 12:46:40
-c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,12,2026-10-05 12:46:40
-a5a669d8-75dc-4efd-b313-72d3cfdc0067,Santa on a Snowy Rooftop,collectible,1.1,2026-10-05 12:46:40
-6f5d6b03-da4c-4121-9024-74221436f214,Shadow Trooper - Crouching,collectible,8,2026-10-05 12:46:40
-2be9cf5d-8152-425d-9f5a-ac77f7f39792,Shadow Trooper - Shooting,collectible,10,2026-10-05 12:46:40
+5ab59120-1b5b-473c-9c80-3144d9a6e1d5,"All Together, Now!",collectible,210,2026-10-05 13:49:00
+368d273a-dd5f-470b-8574-899a4033ed82,Elsa Poster,collectible,777,2026-10-05 13:49:00
+2975026b-9d14-475b-a356-d35855637309,Hulk - Animated,collectible,38.79,2026-10-05 13:49:00
+f79a401a-0f4b-4379-a5bf-3132c5750539,ECOMI Logo Red White,collectible,31,2026-10-05 13:49:00
+86e4bade-2c04-426d-af8a-656d258936b0,Single 8d 'War Canoe and Crown' gummed stamp,collectible,77,2026-10-05 13:49:00
+150e871e-0f23-4ed9-a0a9-509d0d6c857d,A Time Of Togetherness,collectible,41.5,2026-10-05 13:49:00
+560171d9-021c-4447-9015-2b32714c74f7,X-Men Logo,collectible,13.5,2026-10-05 13:49:00
+4e7c7df3-9969-4574-b859-528c6c8e013c,Don’t Mess with Minnie,collectible,32,2026-10-05 13:49:00
+b5a03a4b-d3ea-4d95-a923-89eb499baa88,Just-Us (Black/White),collectible,17.99,2026-10-05 13:49:00
+15a83e17-250c-4063-ae84-6aeea8660af6,Jackson Storm Base,collectible,55,2026-10-05 13:49:00
+0c20eae8-dd0c-4786-ae2b-a4c9445783c0,Arendelle in Spring,collectible,25,2026-10-05 13:49:00
+04d8f4a0-3ade-4646-9b7e-3470c934e5f2,Peeking Through the Coral,collectible,6.73,2026-10-05 13:49:00
+8f79e4c4-d070-4d54-88f2-64866de63473,Joseph Parker - Framed Photo,collectible,11.27,2026-10-05 13:49:00
+f38d52f8-51fc-4853-88ac-04ddd0b82cc3,E-11D Blaster Carbine,collectible,29.99,2026-10-05 13:49:00
+545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,6.99,2026-10-05 13:49:00
+30341e3d-3fd2-49bc-b52e-cb539458aee5,LUV,collectible,13,2026-10-05 13:49:00
+7f8db4ca-e2d2-4750-80dc-92f122da0bd0,Birdie,collectible,9.5,2026-10-05 13:49:00
+8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,7.75,2026-10-05 13:49:00
+f11b5077-e080-49c9-937d-68208f0ba66f,The Tiniest Bit of Greed,collectible,32,2026-10-05 13:49:00
+a877e714-7bbc-4a8a-95a0-4cd087216f99,Maido & Kanpai,collectible,6,2026-10-05 13:49:00
