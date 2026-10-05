@@ -1,23 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-5595c5a8-ccfd-416d-8808-8788d69a40f9,Maserati MC12 - Nero Daytona,collectible,12750,2026-09-28 10:52:08
-b33424b2-ea2b-45c0-9f5b-05748c064554,Spider-Man: Miles Morales - Hoodie Season,collectible,298,2026-09-28 10:52:08
-a64c22fa-268e-4153-b31f-2b93d8c877eb,1:1 DeLorean Time Machine - Static,collectible,7.95,2026-09-28 10:52:08
-3facefe2-427f-48ec-a954-e5892b8c3b20,Yoda - Focus,collectible,81.95,2026-09-28 10:52:08
-1f7f450e-d3af-451c-978b-158aad824e9d,Storm – Mistress of the Elements,collectible,3.94,2026-09-28 10:52:08
-3cbb638b-f450-4bb8-9288-37016cb680d5,Turtle Blimp,collectible,19.98,2026-09-28 10:52:08
-3d38c822-050f-42bf-a382-f209819911e4,Deadpool – Deck The Halls,collectible,3.2,2026-09-28 10:52:08
-a494f556-ebcd-4252-b4ec-ccd52c331c5c,Mickey,collectible,19,2026-09-28 10:52:08
-1d71f5c0-ad88-4e70-82b8-cc6be0948f25,VeVe Heart Logo - Black,collectible,2.89,2026-09-28 10:52:08
-545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,7.5,2026-09-28 10:52:08
-77857a70-edf2-4401-9798-93f63b941d60,Vulture,collectible,6.39,2026-09-28 10:52:08
-55fe6613-37c2-4c19-b5f9-38095a508e51,Cosmo,collectible,59.95,2026-09-28 10:52:08
-983c4be0-5acb-468d-b834-3e2869618011,Super,collectible,11.98,2026-09-28 10:52:08
-7f8db4ca-e2d2-4750-80dc-92f122da0bd0,Birdie,collectible,7.95,2026-09-28 10:52:08
-438829a3-1ddf-43ef-a849-d05292e7937f,Night Trooper - Marching,collectible,1.6,2026-09-28 10:52:08
-e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,2.6,2026-09-28 10:52:08
-8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,6.9,2026-09-28 10:52:08
-d422752a-51cf-40da-82a1-257f817eed43,HiKR,collectible,6.9,2026-09-28 10:52:08
-8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,2.5,2026-09-28 10:52:08
 918a85ae-0c95-4769-9f0a-935330b7cc3b,Boba Fett’s Gauntlets,collectible,1000000,2026-09-28 11:55:07
 5fd09e1f-58f8-467f-9e78-d64f6e3a69b9,R2-D2,collectible,279.95,2026-09-28 11:55:07
 defd02df-deff-4c84-8cdd-8541f3b46fb0,Dumbo Poster,collectible,888,2026-09-28 11:55:07
@@ -5865,3 +5846,19 @@ ced96cf7-496b-49f5-8ad7-d4963127a980,Keith - Red Lion,collectible,27,2026-10-05 
 faa51bbb-63ce-4280-91bd-b3573e1293a2,Jackson Storm,collectible,20,2026-10-05 10:43:13
 ae519c95-a295-4b00-944b-0151dc5de62b,Team Parker - Black Gloves,collectible,9.67,2026-10-05 10:43:13
 1870263e-2611-48da-9ebc-aca9bbb85c45,Aquatic Plant - Plush Pink,collectible,6.99,2026-10-05 10:43:13
+77e624d4-68c7-418b-962c-603b4f7797e6,Edo Imperial Royal Guard - Lunging Press,collectible,41000,2026-10-05 11:44:06
+da4f0ab8-00be-498e-8784-bde7d0d105e2,#56 Bruce Timm Harley Quinn,collectible,99,2026-10-05 11:44:06
+11bc19eb-ef1b-4fa0-8e0d-1a8281197e90,Ghost-Spider,collectible,10.5,2026-10-05 11:44:06
+99cf71f8-8c8b-4782-8b32-b5c55919a939,Classics Forever Souvenir Sheet,collectible,66,2026-10-05 11:44:06
+91628d4f-bf1a-454d-a213-424f34877bd2,No Tech Hoverboard,collectible,7,2026-10-05 11:44:06
+d00aade8-f49b-4f5b-9ce4-514e3551b4b5,Transformative Potion 2,collectible,48,2026-10-05 11:44:06
+f768b31c-dcef-4122-ad4e-ca3837071108,The Golden MYO,collectible,499,2026-10-05 11:44:06
+722b09ee-0fc7-4ee4-99ca-08cc05eb0852,Party Wagon,collectible,15.9,2026-10-05 11:44:06
+3d38c822-050f-42bf-a382-f209819911e4,Deadpool – Deck The Halls,collectible,2.3,2026-10-05 11:44:06
+3164f5e3-044d-477d-8022-0a99dead294d,Leonardo - Classic,collectible,13,2026-10-05 11:44:06
+faa1cb7e-9274-4b21-a48f-26b137903729,The Feesh Force 5 Box Robot,collectible,130,2026-10-05 11:44:06
+0433455f-ebd3-447d-bb00-347564d5f6a4,Guile Story,collectible,111,2026-10-05 11:44:06
+8826bec7-dd6c-4abd-8f45-20b6dad90ef3,Samurai Rabbid,collectible,14,2026-10-05 11:44:06
+57da1dfd-058b-48db-ab9a-f4fa82eb4db6,Death Trooper Helmet,collectible,3.99,2026-10-05 11:44:06
+545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,7.94,2026-10-05 11:44:06
+7f342f16-83c7-4fa7-93d0-7218c6429617,Collectors at Heart - Gold Pressing,collectible,3.48,2026-10-05 11:44:06
