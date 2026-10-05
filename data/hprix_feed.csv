@@ -1,4 +1,32 @@
 uuid,name,categorie,floor_usd,ts
+918a85ae-0c95-4769-9f0a-935330b7cc3b,Boba Fett’s Gauntlets,collectible,1000000,2026-09-28 11:55:07
+5fd09e1f-58f8-467f-9e78-d64f6e3a69b9,R2-D2,collectible,279.95,2026-09-28 11:55:07
+defd02df-deff-4c84-8cdd-8541f3b46fb0,Dumbo Poster,collectible,888,2026-09-28 11:55:07
+a0c50208-f32c-4e7e-9664-c28555a9f523,Yoda,collectible,60,2026-09-28 11:55:07
+a37f8b05-5548-4961-9e7c-1c4d9586985c,Sabretooth - Primal Instinct,collectible,22,2026-09-28 11:55:07
+d2f007b7-bbd9-45a8-a085-7cb1e5edef9a,Cogsworth,collectible,129,2026-09-28 11:55:07
+704bdbba-09b9-4c25-9e18-292da2b87c6e,The Crystal Waterfall - Tara McPherson,collectible,69.99,2026-09-28 11:55:07
+0f658da6-d65d-49c3-b144-9f5e354a863d,Bert & Ernie - Gold,collectible,159,2026-09-28 11:55:07
+a6e8bbec-d028-4a64-9592-f90474bde29c,Sabretooth’s Cave,collectible,35,2026-09-28 11:55:07
+04b39949-c8f8-4033-9408-0c6e83db4440,Corey - Blue Metallic,collectible,350,2026-09-28 11:55:07
+0c733e42-6f3a-4411-a1df-e6795a3ae291,Ursula: I Get What I Want,collectible,2.2,2026-09-28 11:55:07
+0a126e9f-b830-4a77-8733-09a15ef897df,Sabretooth - Imprisoned Predator,collectible,40,2026-09-28 11:55:07
+0c7b5608-1fb4-4ec4-a55d-f1199de26a2c,Homestead,collectible,15,2026-09-28 11:55:07
+349d2928-d6b8-4b90-aa46-c49d76bd4038,Aesthetic (2020),collectible,33,2026-09-28 11:55:07
+bae065cc-84f3-43a8-b9b3-27e6776b9274,Death Trooper - DLT-19D Heavy Blaster Rifle,collectible,2.5,2026-09-28 11:55:07
+47803fa0-69bb-4934-9a09-7370a0faa981,Graffi ver. Night,collectible,49.99,2026-09-28 11:55:07
+545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,6.99,2026-09-28 11:55:07
+3eaf1638-5c0c-487e-9ceb-ec8e9871e817,The Proof of Greed,collectible,23.99,2026-09-28 11:55:07
+bc8771ab-0a33-42be-8f44-e1ed6d424274,The Winged Rock,collectible,23.49,2026-09-28 11:55:07
+7f8db4ca-e2d2-4750-80dc-92f122da0bd0,Birdie,collectible,9.9,2026-09-28 11:55:07
+abd3b4bf-1f93-4fe8-a3f5-721d47dbc331,Biz Wiz,collectible,4.4,2026-09-28 11:55:07
+cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,3,2026-09-28 11:55:07
+8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,7.5,2026-09-28 11:55:07
+d422752a-51cf-40da-82a1-257f817eed43,HiKR,collectible,7.3,2026-09-28 11:55:07
+0352cd90-432a-49f9-bc46-a3f12f8e8d8f,Monovader - Heart of Play,collectible,5.5,2026-09-28 11:55:07
+e40757b8-e94a-4d42-9cea-eac01ad804e8,RUNNING MON ver. BIG HORN,collectible,2,2026-09-28 11:55:07
+08a2b238-3dca-4780-8f60-6e50289364d4,Rain - Dark,collectible,29,2026-09-28 11:55:07
+e4be1d9c-8e01-482e-a344-abd21adf9e98,RUNNING MON ver. YETTI,collectible,1.5,2026-09-28 11:55:07
 c3df7496-e8e7-4507-b80a-5c2b5d996645,#100 Todd McFarlane Batman,collectible,499,2026-09-28 13:04:18
 a64c22fa-268e-4153-b31f-2b93d8c877eb,1:1 DeLorean Time Machine - Static,collectible,7,2026-09-28 13:04:18
 0e86bd26-039e-43b2-b7e8-3c6bd635e073,Blaster Ready,collectible,154,2026-09-28 13:04:18
@@ -5834,17 +5862,3 @@ faa1cb7e-9274-4b21-a48f-26b137903729,The Feesh Force 5 Box Robot,collectible,130
 57da1dfd-058b-48db-ab9a-f4fa82eb4db6,Death Trooper Helmet,collectible,3.99,2026-10-05 11:44:06
 545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,7.94,2026-10-05 11:44:06
 7f342f16-83c7-4fa7-93d0-7218c6429617,Collectors at Heart - Gold Pressing,collectible,3.48,2026-10-05 11:44:06
-ee27ac13-2e51-4cda-925f-595060735022,ECOMI Logo Red Silver,collectible,2999.99,2026-10-05 12:46:40
-5fd09e1f-58f8-467f-9e78-d64f6e3a69b9,R2-D2,collectible,200,2026-10-05 12:46:40
-368d273a-dd5f-470b-8574-899a4033ed82,Elsa Poster,collectible,1000,2026-10-05 12:46:40
-d29aedf0-6420-4549-b702-27b7d49a8d20,"I am a Jedi, like my father before me",collectible,666,2026-10-05 12:46:40
-da4f0ab8-00be-498e-8784-bde7d0d105e2,#56 Bruce Timm Harley Quinn,collectible,44,2026-10-05 12:46:40
-96c9e719-1bc1-4976-9061-c7025ed37049,MYO - OG Gold/Silver,collectible,366,2026-10-05 12:46:40
-05df9412-ca87-4492-8454-81f73a88c171,MOTOMICHI - Eyes,collectible,13,2026-10-05 12:46:40
-bb8e1812-e8d4-4107-8e29-cb2dcad0348c,The Punisher - Fists of Vengeance Special Edition,collectible,499,2026-10-05 12:46:40
-6eff407c-b40c-4a35-944d-f4bf410001ec,Rocket to the Moon,collectible,22,2026-10-05 12:46:40
-a35a6323-40ba-4c70-b65c-99c166f6c507,Dog,collectible,36,2026-10-05 12:46:40
-c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,12,2026-10-05 12:46:40
-a5a669d8-75dc-4efd-b313-72d3cfdc0067,Santa on a Snowy Rooftop,collectible,1.1,2026-10-05 12:46:40
-6f5d6b03-da4c-4121-9024-74221436f214,Shadow Trooper - Crouching,collectible,8,2026-10-05 12:46:40
-2be9cf5d-8152-425d-9f5a-ac77f7f39792,Shadow Trooper - Shooting,collectible,10,2026-10-05 12:46:40
