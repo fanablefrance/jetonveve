@@ -1,23 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-fc943f7c-7e87-4f6e-b38e-8bc02c6cf7a6,Spider-Man – The Amazing Spider-Man,collectible,38.49,2026-09-29 19:24:48
-3a867661-d468-4559-884f-777a86ec8eda,Pluto,collectible,50,2026-09-29 19:24:48
-39e873a8-37f3-4ef8-9247-b2b257f7dcbf,Team Avatar: SDCC 2026,collectible,295,2026-09-29 19:24:48
-e2950e9a-9322-43ba-baba-a447d1861c8e,#42 Darwyn Cooke Batman,collectible,13,2026-09-29 19:24:48
-92871a71-62d8-4cb7-a6a8-adf184636056,Battle Mode,collectible,29.95,2026-09-29 19:24:48
-17577ff6-659a-48d4-a500-938c653f444e,Murciélago LP670-4 SV Oro Adonis,collectible,29.99,2026-09-29 19:24:48
-22a75249-d8f6-417d-8061-7ea04df54e46,Moon Knight 1,collectible,4.2,2026-09-29 19:24:48
-90c5b82b-983f-4417-be09-2c6edd456898,Dark Robin #3,collectible,22,2026-09-29 19:24:48
-dbed7372-f79d-4638-a180-1da2e36195f4,Alice,collectible,16.99,2026-09-29 19:24:48
-45b19b53-65fd-45a3-aca6-dadae852983f,Shadow Trooper Helmet,collectible,15,2026-09-29 19:24:48
-5c6a7271-9748-42a7-a5ba-77b1d21945bf,Mad Hatter,collectible,18.99,2026-09-29 19:24:48
-d0a26d72-a119-430d-aa7a-8b3af766cb76,Rafiki,collectible,17.5,2026-09-29 19:24:48
-a832db2f-413b-4337-9538-8d7ccc590779,Neytiri's Banshee,collectible,20.95,2026-09-29 19:24:48
-b572868f-a3e4-41b6-806f-cb0ddbbfcda9,Johnny Storm - Red Suit Era,collectible,50,2026-09-29 19:24:48
-d3165771-9cad-4a28-b22a-0b2b4208036d,AT-AT - HOTH Deployment,collectible,50,2026-09-29 19:24:48
-7a94e5de-0de3-492f-a00e-af761e3323e3,Mr. Epiko,collectible,4.6,2026-09-29 19:24:48
-30341e3d-3fd2-49bc-b52e-cb539458aee5,LUV,collectible,7.5,2026-09-29 19:24:48
-8efa1a33-7ae2-4629-b862-f6cd9d246196,Sokka - Boomerang Ready,collectible,40,2026-09-29 19:24:48
-a76c6827-046a-4c95-8823-965c9a5b22d8,Mr. V - Blue Metallic,collectible,20,2026-09-29 19:24:48
 fc943f7c-7e87-4f6e-b38e-8bc02c6cf7a6,Spider-Man – The Amazing Spider-Man,collectible,32.99,2026-09-29 20:32:59
 07c1d5c1-e0c4-4e6a-9ad7-553e9a854f5f,Flounder and Sebastian,collectible,24.99,2026-09-29 20:32:59
 c01b071c-962a-48d4-9a6a-9a5e73d40abd,Obi-Wan Kenobi,collectible,31,2026-09-29 20:32:59
@@ -5700,3 +5681,26 @@ c5ec6386-9376-404d-829e-c316e1b0d6e0,Spooky Silhouettes - Spider,collectible,4.4
 f4ba3117-9a23-4ab7-b489-2908ccb176c6,Sandman,collectible,7.3,2026-10-06 18:49:09
 5cd66930-0cc0-4ab5-ad77-9ff7f1e56bf2,Anthony,collectible,40,2026-10-06 18:49:09
 7dba3b40-2198-4e9a-92dc-4f4874c30e39,Night Trooper - Unleashed,collectible,19,2026-10-06 18:49:09
+b776491b-5416-4d8e-9e82-794e83704b7a,Potball X-1,collectible,10000000,2026-10-06 19:49:39
+6b20478c-310f-4e68-85ef-80b6748cbace,KFC Colonel Sanders - NYCC 24 Special Edition,collectible,2500,2026-10-06 19:49:39
+2574a367-7ea1-4f57-be52-f226c2ed6e70,#89 Batman,collectible,9,2026-10-06 19:49:39
+fc394894-444f-43ad-927b-19390c5eef03,Harley Quinn Deluxe 2,collectible,13,2026-10-06 19:49:39
+dd94e937-9be1-4fcb-b2ed-e90951df2213,1985 Coca-Cola Space Can,collectible,26.9,2026-10-06 19:49:39
+49bb3164-c4b0-4970-b6b2-740d7829e185,Avengers Tower,collectible,29.9,2026-10-06 19:49:39
+37353ee5-47b8-4498-a220-7851c6dd0923,Michelangelo - Classic,collectible,22,2026-10-06 19:49:39
+7b39db08-adcb-4dc8-bfc2-4511197c5625,Eye of Agamotto - Open,collectible,9.2,2026-10-06 19:49:39
+ad1dc02e-0225-47e8-8cbc-93b5b4a7646e,Iron Man,collectible,16.1,2026-10-06 19:49:39
+8fb5ccce-9c4a-49ab-b206-440767b49495,Loki,collectible,4.99,2026-10-06 19:49:39
+c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,11.95,2026-10-06 19:49:39
+97434abe-b70a-4b53-b748-c727b01bfc60,The Punisher - Armed and Relentless,collectible,21.5,2026-10-06 19:49:39
+7b3e117c-fc0e-459f-9792-b131935e3135,1860 George Washington (originally 24 cents),collectible,3.95,2026-10-06 19:49:39
+2a1c126f-df51-4957-8f5c-db0b9375ecf8,Shadow Trooper - Squad Leader,collectible,2.5,2026-10-06 19:49:39
+de1e9deb-5145-4ca8-8348-43dcd61b8ddf,Green Truck,collectible,6,2026-10-06 19:49:39
+158cf956-dbe3-48f4-9d41-68fa97acf97e,Kaiju Tokimon,collectible,2,2026-10-06 19:49:39
+39c4b021-c6e7-479d-ab1d-8de90749d729,DJ Big Bot - Rust,collectible,2.89,2026-10-06 19:49:39
+36adfd74-e06b-4b10-a4a3-01fc13113d8d,Foam Machine - Gold Edition,collectible,16.5,2026-10-06 19:49:39
+8f791d43-a31c-406e-90b1-df084c1498ba,Java Joe,collectible,4,2026-10-06 19:49:39
+e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,2.9,2026-10-06 19:49:39
+0aed9e36-107d-45dc-b81c-21dc739f946f,Shark Car,collectible,3.77,2026-10-06 19:49:39
+6c08d7b3-d794-4fd2-a9c3-1d73f7c740f1,Snail Car,collectible,3.33,2026-10-06 19:49:39
+f9b0cd1a-7796-43c4-afcf-ac938ba83f71,Jolene McBean,collectible,2.9,2026-10-06 19:49:39
