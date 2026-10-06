@@ -1,97 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-dfce2c78-6a36-42d6-9dab-53ae88a852e6,Ultraman Seven,collectible,23.49,2026-09-28 19:20:38
-0952a89b-b570-4e2f-acf7-63f6174c6a92,Mandalorian,collectible,77,2026-09-28 19:20:38
-fc78ca94-4db6-40bb-841c-92f516444be6,Aang - Spirit World,collectible,279,2026-09-28 19:20:38
-88076df3-4a65-4675-836d-19bc361e0ab5,Failure of Control,collectible,10,2026-09-28 19:20:38
-3d5f7124-907e-4d9b-8957-5c5d8a4c14b6,Ahoy,collectible,29.9,2026-09-28 19:20:38
-91ae052f-7496-48f1-a96d-0ece0dca200d,Safin’s Mask,collectible,5.97,2026-09-28 19:20:38
-278fb92e-bb02-495f-8fa3-d894f175eefb,Invisible Woman – Fantastic Heroine,collectible,3,2026-09-28 19:20:38
-013e6d39-c3e5-4a39-b0bc-28c6ef799694,​​Matt,collectible,4,2026-09-28 19:20:38
-05bfaa01-9847-43e5-82ee-8c7999c26aa7,IG-11 - Protector,collectible,7.5,2026-09-28 19:20:38
-545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,7.99,2026-09-28 19:20:38
-cac60134-17f8-40d5-988f-f911652e1a12,VeVe Common General Admission Ticket - NYCC 2024,collectible,3,2026-09-28 19:20:38
-b87927b2-6ad2-43ee-ae88-cfd7a2668e15,Bubble Machine,collectible,3.5,2026-09-28 19:20:38
-f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,2.77,2026-09-28 19:20:38
-e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,2.7,2026-09-28 19:20:38
-3a867661-d468-4559-884f-777a86ec8eda,Pluto,collectible,21.86,2026-09-28 20:22:27
-9490e0db-885a-4429-8162-a04fe998a995,#13 Harley Quinn,collectible,49,2026-09-28 20:22:27
-768d33a2-7e9a-4fea-bb2c-696f5ab94579,Baymax 2.0,collectible,30,2026-09-28 20:22:27
-85505d96-5efd-4f02-892f-2d8591712f9d,JENNIE – Stylish Affection,collectible,650,2026-09-28 20:22:27
-0952a89b-b570-4e2f-acf7-63f6174c6a92,Mandalorian,collectible,65,2026-09-28 20:22:27
-3b91288b-a6ef-475d-8196-e206395749c6,Neapolitan Ting,collectible,28.88,2026-09-28 20:22:27
-545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,8.25,2026-09-28 20:22:27
-f38d52f8-51fc-4853-88ac-04ddd0b82cc3,E-11D Blaster Carbine,collectible,25,2026-09-28 20:22:27
-7dba3b40-2198-4e9a-92dc-4f4874c30e39,Night Trooper - Unleashed,collectible,24,2026-09-28 20:22:27
-46359177-0a0a-4148-aac9-7875a76aaa91,Toph,collectible,3.33,2026-09-28 20:22:27
-57da1dfd-058b-48db-ab9a-f4fa82eb4db6,Death Trooper Helmet,collectible,2.5,2026-09-28 20:22:27
-419fec31-c22c-4860-a896-6342e69f5c2e,Death Trooper Shoulder Pad,collectible,2,2026-09-28 20:22:27
-e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,4,2026-09-28 20:22:27
-8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,3.2,2026-09-28 20:22:27
-f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,3.2,2026-09-28 20:22:27
-7a94e5de-0de3-492f-a00e-af761e3323e3,Mr. Epiko,collectible,4.85,2026-09-28 20:22:27
-8f791d43-a31c-406e-90b1-df084c1498ba,Java Joe,collectible,4,2026-09-28 20:22:27
-53ff9a39-afb8-4a2e-b9de-516d6ea965d5,Laser Beam Machine,collectible,2.9,2026-09-28 20:22:27
-c3df7496-e8e7-4507-b80a-5c2b5d996645,#100 Todd McFarlane Batman,collectible,525,2026-09-28 21:25:00
-2574a367-7ea1-4f57-be52-f226c2ed6e70,#89 Batman,collectible,9.75,2026-09-28 21:25:00
-a0c50208-f32c-4e7e-9664-c28555a9f523,Yoda,collectible,63,2026-09-28 21:25:00
-4e358881-d6e6-41a0-ad3c-8b3021128af0,Luke Skywalker: Jedi,collectible,95,2026-09-28 21:25:00
-768d33a2-7e9a-4fea-bb2c-696f5ab94579,Baymax 2.0,collectible,12,2026-09-28 21:25:00
-11bc19eb-ef1b-4fa0-8e0d-1a8281197e90,Ghost-Spider,collectible,5,2026-09-28 21:25:00
-91628d4f-bf1a-454d-a213-424f34877bd2,No Tech Hoverboard,collectible,6,2026-09-28 21:25:00
-52632c0d-18f3-4a8e-9b89-71ae12d3eb8d,Betty Boop - Country,collectible,80,2026-09-28 21:25:00
-882b40f4-c586-4c68-af9b-b7bfdaca9f0d,Spider-Man 2099 - Shadow Protocol,collectible,139,2026-09-28 21:25:00
-5c6a7271-9748-42a7-a5ba-77b1d21945bf,Mad Hatter,collectible,19.99,2026-09-28 21:25:00
-9905fe6b-866f-4d35-96bb-df37ab67d1fd,Frozen II Pencil,collectible,13.98,2026-09-28 21:25:00
-eda67c9c-4bb1-4b8d-9d6c-d2ce337cf711,Epiko Logo - Blue Metallic,collectible,769,2026-09-28 21:25:00
-f13e1d28-20e3-473d-af6b-2d6e12ce8bbe,The Inflatable DJ Octo,collectible,28.66,2026-09-28 21:25:00
-545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,7.18,2026-09-28 21:25:00
-46359177-0a0a-4148-aac9-7875a76aaa91,Toph,collectible,4,2026-09-28 21:25:00
-5505c6c1-df66-4335-abc7-cb4c40c2b10e,Potball WILSON,collectible,14.99,2026-09-28 21:25:00
-d87175f7-2845-4083-b29d-9f81e726e043,D&D - 5th Birthday Cake,collectible,2.25,2026-09-28 21:25:00
-7603c0c6-05e4-4a0e-b243-5045ceb07aa0,Nozzle Eye - Pyroscorch,collectible,19.2,2026-09-28 21:25:00
-768d33a2-7e9a-4fea-bb2c-696f5ab94579,Baymax 2.0,collectible,30,2026-09-28 22:31:21
-cff35b1c-56ae-4a5a-884d-ab06503836bd,Potball MOUSE,collectible,149,2026-09-28 22:31:21
-41505b27-6b61-4951-835f-d8976df8fcbf,Spider-Man 2099,collectible,450,2026-09-28 23:34:46
-9954145f-e85c-462e-b84b-2b50a3e3fbe9,Elsa,collectible,68,2026-09-28 23:34:46
-30a9f14d-f5ef-4047-bf97-c2b047190f83,1:6 DeLorean Time Machine - Interactive,collectible,6.25,2026-09-28 23:34:46
-1a408aac-5fa7-4995-8244-c45fc1026f89,Marceline,collectible,95,2026-09-28 23:34:46
-107572e7-d947-4cc0-b8dc-af5e16233566,Bucky Barnes - On Guard,collectible,22,2026-09-28 23:34:46
-e9bdf1b9-7b80-4683-a94f-32db83f3bd39,Yoda,collectible,7.4,2026-09-28 23:34:46
-ebf0810d-353d-49d2-9fd8-032aaae61f6a,Magic Lamp from Aladdin,collectible,11.5,2026-09-28 23:34:46
-3f233a1f-fe67-4d15-b796-f60845ee3d35,Lightning McQueen: Ka-chow!,collectible,9.5,2026-09-28 23:34:46
-5695db59-33ae-4ce5-a751-0f17d26265e4,Dante,collectible,89.99,2026-09-28 23:34:46
-0952a89b-b570-4e2f-acf7-63f6174c6a92,Mandalorian,collectible,59,2026-09-28 23:34:46
-f35e3e0b-dc86-462d-b06b-9c0abe74b924,ECOMI Logo Red Circle,collectible,4.24,2026-09-28 23:34:46
-5049ea9f-4377-4d68-b1b1-59752a08c6be,Brave the Elements,collectible,98,2026-09-28 23:34:46
-744b99e7-9eea-4c7e-b6dc-27f9f695c3ba,True Blue Ahwroo,collectible,611,2026-09-28 23:34:46
-55f33fdf-64f0-4b85-9aba-93cbcee1c912,Space Station X-1,collectible,45.9,2026-09-28 23:34:46
-dd94e937-9be1-4fcb-b2ed-e90951df2213,1985 Coca-Cola Space Can,collectible,13.78,2026-09-28 23:34:46
-62cf09ca-e5f2-4695-8394-c0209bf56422,Raphael - Dojo Discipline,collectible,44,2026-09-28 23:34:46
-1d606841-f6e5-4d91-89d3-85aa99fad3f3,Wolverine - X-Jacket,collectible,35,2026-09-28 23:34:46
-7cbd0451-4cbb-48b3-9745-2912daa54432,Bluegrass - Pane of 20,collectible,48,2026-09-28 23:34:46
-c9d59609-5b77-4acc-a73d-8a78141e7089,Cap'n Cornstarch,collectible,9,2026-09-28 23:34:46
-2749b5d7-4000-49d4-b488-30987ae0bd22,Maido & Kanpai - Special Edition,collectible,599,2026-09-28 23:34:46
-025a320d-8bce-4fad-9cb2-4b41d6a2f727,Sung Jinwoo - Weakest Hunter,collectible,14,2026-09-28 23:34:46
-be0c63aa-8fc1-4037-99cb-862713e65001,Avengers Tower - Marvel Metallic Red,collectible,69.99,2026-09-28 23:34:46
-c68e2b7a-e05c-477a-a6c6-14634812a7e3,Little Friends Silver,collectible,25.99,2026-09-28 23:34:46
-f5c9bb3e-292b-45c6-a809-f9df9e1cf6a8,ROSÉ Pink Venom Card,collectible,43,2026-09-28 23:34:46
-c81ac9ff-1954-4ba5-8194-9b83ecdd3228,Sunflower Grin - Special Mission - Gold,collectible,4,2026-09-28 23:34:46
-15a83e17-250c-4063-ae84-6aeea8660af6,Jackson Storm Base,collectible,37.5,2026-09-28 23:34:46
-ab102136-402e-45b2-a480-7d28da1b3525,The Punisher - Dark Justice,collectible,8.74,2026-09-28 23:34:46
-d4ec084d-812b-4a3c-958f-d691f0060ff9,Master Splinter - Battle Ready,collectible,42.99,2026-09-28 23:34:46
-98ca2db3-3319-4cd5-b814-b0cdbc070d1f,Coca-Cola – 1900 Bottle,collectible,6.34,2026-09-28 23:34:46
-577a23d0-6417-4930-b5ac-092174aee57b,Running Keith (Modern) - XLARGE,collectible,9,2026-09-28 23:34:46
-545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,7.95,2026-09-28 23:34:46
-f9455407-de42-4628-b073-a3e4eb887b4a,Falcon,collectible,3,2026-09-28 23:34:46
-cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,5.13,2026-09-28 23:34:46
-53ff9a39-afb8-4a2e-b9de-516d6ea965d5,Laser Beam Machine,collectible,4,2026-09-28 23:34:46
-29e16f1c-8bc5-47cb-8b2e-ab133d6dace0,Cereal Chiller,collectible,2.2,2026-09-28 23:34:46
-d422752a-51cf-40da-82a1-257f817eed43,HiKR,collectible,9.9,2026-09-28 23:34:46
-8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,8,2026-09-28 23:34:46
-d031f29a-3b9f-4316-b78f-36ba56192bc3,Happy Lunar New Year! - White,collectible,1.6,2026-09-28 23:34:46
-855a0885-86cc-4e17-917f-5968793a0d99,Brewsky,collectible,6,2026-09-28 23:34:46
-9014cceb-4db2-4a5c-a619-679d4c106a28,Novello,collectible,6,2026-09-28 23:34:46
-df4040f2-18a2-42d7-b67b-ede12c684102,BLAM!,collectible,1.6,2026-09-28 23:34:46
 5556802d-6958-4d61-847a-9c6af52618c0,Hades: Who Needs Heroes,collectible,34.99,2026-09-29 00:36:49
 f5c9bb3e-292b-45c6-a809-f9df9e1cf6a8,ROSÉ Pink Venom Card,collectible,68,2026-09-29 00:36:49
 0392e20e-a2da-42ce-a153-e04af71225e4,Silk,collectible,85,2026-09-29 00:36:49
@@ -5708,3 +5615,15 @@ e0f54705-754e-4973-92a6-56a6194ef000,With Love and Kisses: Booklet of 20,collect
 94bcc472-9ecb-41f0-b8bf-f5b0b4e85e37,Gambit - Trenchcoat Tactician,collectible,2.34,2026-10-05 19:06:13
 88254714-b869-4f2e-9799-a62e284fcaf6,Record #1 - Frankenstein - Gold,collectible,9.9,2026-10-05 19:06:13
 49308035-554f-46ff-9ed5-21436bfae647,Ms. Lion,collectible,79,2026-10-05 19:06:13
+462c5fbb-fc0d-4aec-b7e8-856dea8b4963,Kylo Ren,collectible,5.5,2026-10-06 00:03:32
+1f6d6568-7395-4c63-ac87-0d61cb8b556d,Caiman,collectible,50.54,2026-10-06 00:03:32
+f51dfb26-a50e-43bf-b713-9813470c5fbd,The Count,collectible,33,2026-10-06 00:03:32
+87876723-9df8-4d39-a1fe-fbecf4b4788a,Supergirl,collectible,5,2026-10-06 00:03:32
+0baafb78-053e-43ca-a4b7-1608fa7ef736,Big Bird,collectible,9.99,2026-10-06 00:03:32
+f2466d62-13ed-471f-877f-f4cbadd07e37,Darth Vader Bust - Carbonite,collectible,57,2026-10-06 00:03:32
+7edfc2ea-2d52-4eb1-a2ce-a025cbbc712d,Treasure These Idol Moments Mural,collectible,25,2026-10-06 00:03:32
+5815ba10-688c-446a-9822-91cc3f8aa67a,Ovomorph,collectible,2.99,2026-10-06 00:03:32
+845f23d3-b1ff-4eef-b732-69f09db16030,Chip Off the 'Ol Block Mural,collectible,18.5,2026-10-06 00:03:32
+d084bb59-86fd-4d73-a680-af5502f9fef2,Year of the Snake Miniature sheet,collectible,6,2026-10-06 00:03:32
+cb514393-4ab4-4042-afcf-33e6083341ed,Collectors at Heart - Vinyl Pressing,collectible,1.09,2026-10-06 00:03:32
+cf8b4ef8-6faf-4e6d-b962-557e0a8872ae,Jeoseung Saja Mon,collectible,14.99,2026-10-06 00:03:32
