@@ -1,15 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-7475a966-ed09-4fa8-9b3f-ca6833ea98af,Spider-Man: Miles Morales - Animated,collectible,33000,2026-09-30 09:05:42
-1969839e-04bc-4433-801f-3a2007e410f4,You'll find that I’m full of surprises,collectible,19.9,2026-09-30 09:05:42
-4a8e584e-4cd0-47e8-8954-af74c52d90fe,Invisible Woman,collectible,3.98,2026-09-30 09:05:42
-56128c3c-1c59-4be5-82f5-380d0712f9cf,Ironheart - Neon,collectible,549,2026-09-30 09:05:42
-0433455f-ebd3-447d-bb00-347564d5f6a4,Guile Story,collectible,99,2026-09-30 09:05:42
-1bacdd79-a711-4a24-9bfa-c0927e871e9a,Chris Robots Will Kill - SUYE Special Sky Blue,collectible,65,2026-09-30 09:05:42
-658f1d45-3417-40ec-84f7-054cb8f0d494,Symbiote,collectible,3.11,2026-09-30 09:05:42
-4a1211b1-0144-4827-8014-2120901a5b91,Bigfoot,collectible,1.3,2026-09-30 09:05:42
-ee7aea83-c0c1-4346-b4a6-a482d6aca04a,King Triton’s Palace Grounds,collectible,6.5,2026-09-30 09:05:42
-ea954588-2e89-4829-9b96-92609acfc4c1,Eson the Searcher,collectible,4.99,2026-09-30 09:05:42
-8f796085-6c23-43e4-af28-f0df9cace79f,Sakura,collectible,35,2026-09-30 09:05:42
 95b86201-ed47-471f-ada2-4e053041379b,Partners Statue,collectible,1980,2026-09-30 10:07:48
 e120c73b-c7bd-4905-a2f7-55f3b0b9ab9a,BB-8,collectible,12.8,2026-09-30 10:07:48
 a67aa0d3-7e99-4e1d-9fc0-780c2cafe8f9,Diamond Emma Frost - Marauders #21 (2021),collectible,30000,2026-09-30 11:11:14
@@ -5701,3 +5690,36 @@ e89c9a52-2ea0-4b70-a5da-0781b07776c6,Flounder,collectible,92,2026-10-07 08:18:23
 6a9ca7c7-ea86-4a95-b142-0a4b557dd2a3,LA Strong - Red Heart,collectible,20,2026-10-07 08:18:23
 2a26bd99-0946-4388-bc53-3e596c3d6d34,JISOO,collectible,13,2026-10-07 08:18:23
 78b6265b-3432-46d9-bf8d-8915492b40fe,Amarena,collectible,1.5,2026-10-07 08:18:23
+d63e9844-2204-4dde-82e0-3d5c467ed225,Goofy,collectible,53,2026-10-07 09:20:56
+1c3d0b87-102e-4fc2-88b2-cfb6fbbf5baa,Casting The First Spell,collectible,95.01,2026-10-07 09:20:56
+9d3783e8-05f7-4e20-b1f7-2c3b520ab3ee,Mr. Toad's Wild Ride,collectible,162,2026-10-07 09:20:56
+63664689-b387-43f7-aad4-0c847658cd37,Tricky the Obese Bunny - Gold,collectible,248,2026-10-07 09:20:56
+d9892b14-8126-4b26-901d-a978d6eb5be8,T. rex Animated 2,collectible,41.97,2026-10-07 09:20:56
+6d8bbca8-ebc9-4c7b-a668-9f0393e48f5e,Rooftop Watch – Skyline Base,collectible,120,2026-10-07 09:20:56
+664706f5-0d2b-456f-94e7-e32b97a4f2dd,The Finale,collectible,14.75,2026-10-07 09:20:56
+7e595273-5759-492c-b95d-4db62eaaef88,On Guard,collectible,6.95,2026-10-07 09:20:56
+dd3e9080-b28f-4d8f-bf87-cf2d9731ba8b,Beta Animated 2,collectible,27,2026-10-07 09:20:56
+05df9412-ca87-4492-8454-81f73a88c171,MOTOMICHI - Eyes,collectible,11.78,2026-10-07 09:20:56
+6b480765-2dde-44e1-b6e6-d5dd4fef0c0e,A Close Call,collectible,39.18,2026-10-07 09:20:56
+fba213fa-736f-473b-b62e-433f8248b8ad,Mech Bobo - Gold,collectible,89,2026-10-07 09:20:56
+069acda0-d0af-47fe-b9b8-258498de1e95,Star Wars: Episode V The Empire Strikes Back - Master Yoda,collectible,23.23,2026-10-07 09:20:56
+fde25c18-f029-423b-a295-07de8a210cf9,1:1 Ecto-1 Static,collectible,5.98,2026-10-07 09:20:56
+46fa7ca5-848f-497b-8991-56e547e1acb8,Licence To Kill - UK quad,collectible,40,2026-10-07 09:20:56
+145280a1-9f79-4b7c-a87f-b786b552eb30,Olaf's Summer,collectible,42,2026-10-07 09:20:56
+a8f8d463-7081-4fdf-b411-1a3182200f8b,Big Thunder Mountain,collectible,14.9,2026-10-07 09:20:56
+576ad8fb-45f2-47aa-9b94-54fd80871aa0,Thanos - Marvel Metallic Red,collectible,50,2026-10-07 09:20:56
+5891c391-9cf7-4498-a4cf-a98efc65b784,Jasmine,collectible,12.38,2026-10-07 09:20:56
+c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,9,2026-10-07 09:20:56
+68649d9c-b610-4ac0-a07a-f14a1fca6585,Raphael - Classic,collectible,8.88,2026-10-07 09:20:56
+4e7c7df3-9969-4574-b859-528c6c8e013c,Don’t Mess with Minnie,collectible,28,2026-10-07 09:20:56
+39745827-e17a-4d92-94c3-08461dfd0f2b,Goldfinger - Danish One Sheet Poster,collectible,10.59,2026-10-07 09:20:56
+c7789211-3299-47cf-8cfc-02aebf30703b,Smee,collectible,30,2026-10-07 09:20:56
+de494d7c-4df4-4695-a189-a28f88a80550,M.Bison - Battle,collectible,75,2026-10-07 09:20:56
+803276fd-a2de-4532-8607-ae4a769fa5aa,Views of Our Planets - Pane of 16,collectible,18.24,2026-10-07 09:20:56
+45b33990-73b4-40d2-9d92-18dc4bbc8846,ORDAINED #1 Metal Variant Cover Poster,collectible,148,2026-10-07 09:20:56
+6a9ca7c7-ea86-4a95-b142-0a4b557dd2a3,LA Strong - Red Heart,collectible,33.33,2026-10-07 09:20:56
+3f2cb0a3-413c-4a99-ad70-e91572df010f,Kaiju Chameleon,collectible,9.41,2026-10-07 09:20:56
+545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,7.98,2026-10-07 09:20:56
+458db9c4-0370-4f18-83ef-fd58467692a9,Creepshow Coffin - Vol. 3 Issue 4,collectible,9.89,2026-10-07 09:20:56
+383b2411-0ef9-4ec9-8b7a-2825ebeab4c6,Year of the Horse Medallion,collectible,1.99,2026-10-07 09:20:56
+f6717b76-db8d-48af-bffd-d7016ac4a83d,C-Rank Essence Stone,collectible,1.35,2026-10-07 09:20:56
