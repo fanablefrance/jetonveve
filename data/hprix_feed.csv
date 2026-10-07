@@ -1,16 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-ab6bd913-cd52-44ec-ac88-94225f960723,Stitch,collectible,199,2026-09-30 14:17:18
-def65f71-6b97-4cff-a72d-e346d091c582,Sam Wilson,collectible,1.99,2026-09-30 14:17:18
-a74f1cdf-2a37-41a5-adeb-ac975ac647b1,Soul Stone,collectible,1.99,2026-09-30 14:17:18
-3380b39e-a974-4f27-89c3-12dc6995fbee,Planet Hulk,collectible,17.3,2026-09-30 14:17:18
-ad5b7ae1-ad36-44e6-9dbd-a57e8b1a94bc,Tesseract,collectible,5,2026-09-30 14:17:18
-3f12e502-76f5-44bc-abe8-8aa06da72152,Scarlet Witch,collectible,4.9,2026-09-30 14:17:18
-f7391c05-2eec-4ea7-bdee-584885596a8b,Coca-Cola Neon Sign,collectible,15,2026-09-30 14:17:18
-d629f709-d1b4-4e1d-803d-542a6b00ea9a,VeVe Heart Logo - Pink,collectible,1.99,2026-09-30 14:17:18
-29e16f1c-8bc5-47cb-8b2e-ab133d6dace0,Cereal Chiller,collectible,1.99,2026-09-30 14:17:18
-bfee101f-2ea1-48b4-a662-c0778f616af7,Hojakdo Island,collectible,6.99,2026-09-30 14:17:18
-b9a084ef-c5cc-4066-b335-102664bd1b44,Grenade Green,collectible,7.7,2026-09-30 14:17:18
-df4040f2-18a2-42d7-b67b-ede12c684102,BLAM!,collectible,1.8,2026-09-30 14:17:18
 9cccbffd-e907-44b4-9e2e-b285f090292d,Zombie Hunter Spider-Man #1,collectible,9.74,2026-09-30 15:20:53
 219d14ac-23e9-4a1d-a9cb-ec009b31ebb1,A Happy Whistle,collectible,9.95,2026-09-30 15:20:53
 22d47b6e-710f-477c-83d6-53e89528e190,Aratech 74-Z Speeder Bike (Snow),collectible,44,2026-09-30 15:20:53
@@ -5688,3 +5676,12 @@ a8f8d463-7081-4fdf-b411-1a3182200f8b,Big Thunder Mountain,collectible,15.5,2026-
 d97c812f-9410-4adf-8afc-0100a42cd7bc,Ralph,collectible,12.46,2026-10-07 13:35:17
 56ca58fb-bcb4-45d7-8fe4-272312cd30ce,Crushin’ It - Lincoln Design Co,collectible,24.45,2026-10-07 13:35:17
 b8e9332e-cd45-45a2-9638-7fb3783b835e,Butterfly - Gray,collectible,87,2026-10-07 13:35:17
+5cd5b20e-02da-4be2-8060-b7d03b2383d5,#01 Eduardo Risso Batman,collectible,1400,2026-10-07 14:39:35
+1df92282-2a7c-4f15-bc75-2e44de9f0f48,Degen Dungeon,collectible,3000,2026-10-07 14:39:35
+c43e163e-cd49-4da9-b4aa-9aa2049cc2f5,Miguel,collectible,39,2026-10-07 14:39:35
+6d8bbca8-ebc9-4c7b-a668-9f0393e48f5e,Rooftop Watch – Skyline Base,collectible,89,2026-10-07 14:39:35
+ee46c303-5b18-4836-b6d8-9865afb2e133,Huracán STO - Bianco Asopo/Blu Le Mans,collectible,17,2026-10-07 14:39:35
+89f1561b-78b1-4a9f-9aaf-09543d007bd0,Maserati MC12 - Stradale,collectible,21.7,2026-10-07 14:39:35
+eb1495b4-bcd9-4676-857f-b8ced78ee31d,Boba Fett’s Blaster Pistol,collectible,27.99,2026-10-07 14:39:35
+6b3d711e-be46-46ff-ae50-5bd6898a39aa,Toadstool Tinker Bell,collectible,5.5,2026-10-07 14:39:35
+eb2b8652-44a4-4f81-9149-dd50d0796f0d,Laser Beam Machine - Gold Edition,collectible,25,2026-10-07 14:39:35
