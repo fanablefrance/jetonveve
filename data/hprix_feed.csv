@@ -1,27 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-bc637552-5c39-4cf4-a5ae-164043df435b,Ride the Lightning Board,collectible,5100,2026-09-30 02:49:09
-41505b27-6b61-4951-835f-d8976df8fcbf,Spider-Man 2099,collectible,340,2026-09-30 02:49:09
-877dfb81-f781-44c8-a1ce-8d585164cd26,Yoda - One With The Force,collectible,1399,2026-09-30 02:49:09
-42727e5d-945e-419f-800d-381d6046c087,Ariel,collectible,120,2026-09-30 02:49:09
-349a1c81-d340-4f3f-a7f3-2890a92ae4bd,Technodrome,collectible,25,2026-09-30 02:49:09
-fc78ca94-4db6-40bb-841c-92f516444be6,Aang - Spirit World,collectible,299.99,2026-09-30 02:49:09
-cc9e5fc8-50b8-4d65-86d7-3eff279f65cf,Green Goblin - Action,collectible,186,2026-09-30 02:49:09
-e913c1f9-9578-4077-b90b-94b0b0cde315,The Golden Lad,collectible,339,2026-09-30 02:49:09
-c97d900d-5334-45b3-ab56-bafc78e56912,Aang - Earthbender,collectible,25,2026-09-30 02:49:09
-2e03595b-e2ef-42bb-b38b-5602c691ec05,VeVe Heart Logo - Orange,collectible,49.99,2026-09-30 02:49:09
-595f497d-4d6f-4f58-a19e-ce5dcb942696,Ironheart - Riri Williams,collectible,10,2026-09-30 02:49:09
-5af9aa16-1052-4a45-8794-0b4f25bd81aa,Lucky,collectible,111,2026-09-30 02:49:09
-b8b09644-72ef-454d-ae2c-861e9662d6bc,Happy New Year! 2026 - Tier 6,collectible,17.99,2026-09-30 02:49:09
-378f29fe-ba48-4e71-98d6-c84ab93ab4c7,Happy Lunar New Year! - Red,collectible,12.92,2026-09-30 02:49:09
-30341e3d-3fd2-49bc-b52e-cb539458aee5,LUV,collectible,14.99,2026-09-30 02:49:09
-47a56835-3d0e-44c8-b636-987bf484f9c2,Romulan - Bird of Prey,collectible,21,2026-09-30 02:49:09
-af36d0b7-21fc-404d-a6ea-6b5676c9ba30,Hoodie,collectible,13,2026-09-30 02:49:09
-9d513380-78fc-4291-9f4b-e7ac0486e746,Snowman,collectible,10.5,2026-09-30 02:49:09
-90dc4c4d-7177-4fde-9bae-a42dc5ff7e5c,Foster,collectible,4.2,2026-09-30 02:49:09
-7a94e5de-0de3-492f-a00e-af761e3323e3,Mr. Epiko,collectible,4.2,2026-09-30 02:49:09
-438829a3-1ddf-43ef-a849-d05292e7937f,Night Trooper - Marching,collectible,1.6,2026-09-30 02:49:09
-81cb0032-6589-41e2-ad05-f12815a5fba9,David - Golden Path,collectible,5,2026-09-30 02:49:09
-12787b3e-79ae-4836-99f7-35986f5dee8b,Dan - Be Like Water,collectible,3,2026-09-30 02:49:09
 75fd5ad6-8c57-442e-b909-f5cda1ec3917,Winter Soldier – Wakandan Warrior,collectible,70000,2026-09-30 03:51:01
 08b0c045-9e8d-46f9-8f7f-aad995b0c56a,Grogu in Pram,collectible,252,2026-09-30 03:51:01
 1d55c901-4e62-472f-95ae-50b248a2d1e7,Harley Quinn (J. Scott Campbell),collectible,29.49,2026-09-30 03:51:01
@@ -5714,3 +5691,19 @@ d1bed232-54cd-4cd7-a75c-feaaca1cbd80,The Air Dancing Tentacle,collectible,8,2026
 02ab1567-e3b7-4862-bd09-4115bcfed9fc,Max,collectible,4.7,2026-10-07 02:07:14
 e075643b-0f54-43dc-b020-755db00e1b3f,Strobe Light Machine,collectible,2.75,2026-10-07 02:07:14
 53ff9a39-afb8-4a2e-b9de-516d6ea965d5,Laser Beam Machine,collectible,2.75,2026-10-07 02:07:14
+9f428e38-ab8d-446b-8037-f58c1a4af078,The London Police x SUYE Utility Coin,collectible,24,2026-10-07 03:09:28
+c01b071c-962a-48d4-9a6a-9a5e73d40abd,Obi-Wan Kenobi,collectible,29,2026-10-07 03:09:28
+27227527-80c8-4345-849e-cb9b72893c82,A Darling Little Block,collectible,77.67,2026-10-07 03:09:28
+499c8aca-e5c2-45f8-a330-2f773ce0d67e,BLACKPINK NEON LIGHT - ROSÉ,collectible,500,2026-10-07 03:09:28
+a512f767-6f55-42d5-b489-a5dfaf7b0cc3,"Lights, Camera, Hijinks!",collectible,7.39,2026-10-07 03:09:28
+d98cd2ce-46f0-46bc-b5ca-72e9737c8a44,E-Rank Hunter - Frame,collectible,575,2026-10-07 03:09:28
+8a23cfee-33f5-4a13-8cff-504d63681262,Trilad,collectible,40,2026-10-07 03:09:28
+f6894d7e-b148-4f5a-a848-b366a5edaa29,Edward - Pirate’s Rest,collectible,21.11,2026-10-07 03:09:28
+a9a3706c-32e5-414f-b6f9-3510caa9d855,Weapon Racks – Silver Black,collectible,5,2026-10-07 03:09:28
+04b39949-c8f8-4033-9408-0c6e83db4440,Corey - Blue Metallic,collectible,200,2026-10-07 03:09:28
+262ca5c3-d806-421d-aa0a-05207e5ea59c,Donatello - IncogNinja,collectible,31.56,2026-10-07 03:09:28
+64cf903a-bdb0-4bcd-8d1d-f18f362afecd,Darth Vader Samurai - Eyes of the Empire,collectible,25.25,2026-10-07 03:09:28
+60decdb0-2864-4979-85ef-714261cbdb2d,Edo Scout Trooper,collectible,8,2026-10-07 03:09:28
+9e399a2c-e51f-49ed-a1d3-16569550c967,Ultraman - Silent Guardian,collectible,6.16,2026-10-07 03:09:28
+867dc17b-9dbd-4fe5-818d-d7b02c34f79f,The ADDICTION Silver Logo,collectible,29.29,2026-10-07 03:09:28
+97eaad27-9a3e-4b8a-a7ff-96a2789ce00b,The Awakened - Frame,collectible,14.5,2026-10-07 03:09:28
