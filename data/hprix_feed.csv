@@ -1,19 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-d03f035e-fe59-40f6-9977-3cef76ee112b,Spider-Man - Animated,collectible,655.74,2026-10-01 14:33:37
-3a00cc91-e39f-4040-9a06-17dc99b376b3,Single 2 1/2d 'Lake Wakitipu' gummed stamp,collectible,2120,2026-10-01 14:33:37
-a659bbc2-45cd-4f72-9ca2-7e92a245d05f,#97 Joe Madureira Batman,collectible,67.95,2026-10-01 14:33:37
-e9bdf1b9-7b80-4683-a94f-32db83f3bd39,Yoda,collectible,7.5,2026-10-01 14:33:37
-1e55bed1-1517-48e9-89d7-4cefd3ded15b,A Powerful Dream,collectible,14,2026-10-01 14:33:37
-21a011ac-f110-44c6-9465-600be0d281ad,Time to Remember,collectible,31,2026-10-01 14:33:37
-a59d9661-2544-46d1-841c-b773f0330c94,Sarah Sanderson,collectible,45,2026-10-01 14:33:37
-a494f556-ebcd-4252-b4ec-ccd52c331c5c,Mickey,collectible,19,2026-10-01 14:33:37
-aeefbf50-3d0b-47cb-accb-86128d4398ed,DLT-19D Heavy Blaster,collectible,79.99,2026-10-01 14:33:37
-0911a467-0a70-4399-b99e-fa447496024c,X-Men: 60 Uncanny Years Poster,collectible,36.6,2026-10-01 14:33:37
-e5998489-e9c7-4862-9c52-12e1a1acf5a3,Nee Chee,collectible,27.5,2026-10-01 14:33:37
-ea954588-2e89-4829-9b96-92609acfc4c1,Eson the Searcher,collectible,5.99,2026-10-01 14:33:37
-545f8c91-7a0e-4bd4-83d5-c806fe2d832b,Foam Machine,collectible,7.99,2026-10-01 14:33:37
-1e76b273-c5f3-4321-8920-ca9f2155af04,Original,collectible,8,2026-10-01 14:33:37
-9d513380-78fc-4291-9f4b-e7ac0486e746,Snowman,collectible,11,2026-10-01 14:33:37
 95b86201-ed47-471f-ada2-4e053041379b,Partners Statue,collectible,1999,2026-10-01 15:37:06
 7c5eb748-9229-452d-9bfd-00c75c029499,Spider-Man – Ultimate Animated,collectible,5500,2026-10-01 15:37:06
 6211625a-9004-4b34-9a45-fbdb0eaa8cbb,#72 Carmine Infantino Robin,collectible,289,2026-10-01 15:37:06
@@ -5899,37 +5884,61 @@ b87927b2-6ad2-43ee-ae88-cfd7a2668e15,Bubble Machine,collectible,3.25,2026-10-08 
 ec00071b-05f6-4fbd-9b35-cbcbfb88c996,Mr. V,collectible,4.05,2026-10-08 13:11:14
 2c3b5185-c87d-440e-a040-902aacc1d57d,Monovader - Blue Mic Theory,collectible,3.5,2026-10-08 13:11:14
 7a94e5de-0de3-492f-a00e-af761e3323e3,Mr. Epiko,collectible,3.5,2026-10-08 13:11:14
-44c0d38c-1ac5-4468-bfa0-6744af28819c,Ant-Man - Quantum Realm,collectible,30350,2026-10-08 14:13:26
-a605b45c-c809-40d4-a98b-b5daa200a696,Black Panther – Ultimate Animated,collectible,218.58,2026-10-08 14:13:26
-a64c22fa-268e-4153-b31f-2b93d8c877eb,1:1 DeLorean Time Machine - Static,collectible,7.9,2026-10-08 14:13:26
-882fd08e-05c8-44c4-97d1-98f907cd40b7,Buttercup,collectible,29.99,2026-10-08 14:13:26
-219d14ac-23e9-4a1d-a9cb-ec009b31ebb1,A Happy Whistle,collectible,8.5,2026-10-08 14:13:26
-8910315f-3cc5-4acb-8fc3-c919dd4edb1c,K.I.T.T.,collectible,8.7,2026-10-08 14:13:26
-def65f71-6b97-4cff-a72d-e346d091c582,Sam Wilson,collectible,2.73,2026-10-08 14:13:26
-d97c812f-9410-4adf-8afc-0100a42cd7bc,Ralph,collectible,50,2026-10-08 14:13:26
-0f7f4637-f5d1-4fe0-abea-8ac280707995,Black Panther,collectible,74.99,2026-10-08 14:13:26
-ac501a79-5852-499a-9a0d-ec318ae7f249,Snow Globe - Neon Sign,collectible,6.97,2026-10-08 14:13:26
-dafd1777-5245-4a69-9b99-c31926c307dd,Red Hulk,collectible,22.89,2026-10-08 14:13:26
-8854d1aa-b535-4a8d-9a7f-1392b8581136,John F. Walker,collectible,2.73,2026-10-08 14:13:26
-1c16c026-5fee-490f-96e5-919636558b8f,Admiral Ackbar,collectible,25,2026-10-08 14:13:26
-1a7a521f-21a0-4468-b6ce-be8e55823815,Thanos - Philosopher,collectible,14.5,2026-10-08 14:13:26
-6ce1c832-7253-4dd3-b0e9-d8292fcb4462,Always Somewhere Else - Roji,collectible,50,2026-10-08 14:13:26
-ab837c48-11e4-4fe9-b99a-0fd17f62e599,Death Trooper - SE-14r Blaster,collectible,6.99,2026-10-08 14:13:26
-c00630d3-6aaa-412a-a9d3-ffe68fceba5a,Donatello - Classic,collectible,8,2026-10-08 14:13:26
-68649d9c-b610-4ac0-a07a-f14a1fca6585,Raphael - Classic,collectible,7,2026-10-08 14:13:26
-cbe61eb0-01cd-4e7b-a23d-4950bd6e1855,Riri Williams,collectible,7.99,2026-10-08 14:13:26
-33f16c99-a5e4-4268-98e1-ce6e3ea05dad,Elf Labbit,collectible,4.88,2026-10-08 14:13:26
-2c70e420-29bd-46bc-ba10-04073967e4d2,Take Me Out to the Ball Game,collectible,2.5,2026-10-08 14:13:26
-0c6af189-3d90-4fdd-b28b-a60c8d42ec7b,Rushing Toby,collectible,1.9,2026-10-08 14:13:26
-72b60c77-038d-4ced-bbad-e8c73d13cff1,Scott Lang/Ant-Man,collectible,3.5,2026-10-08 14:13:26
-f87f1feb-a221-4003-b34a-664fd6878396,Mariachi - Guitar Player,collectible,1.57,2026-10-08 14:13:26
-2b165606-c201-4f80-b10f-b0d7e7d49908,Crimson Trooper - Running,collectible,2.68,2026-10-08 14:13:26
-7f37eb78-0787-446f-a757-b48e4b97dc40,Retro Bobo,collectible,5,2026-10-08 14:13:26
-bc8771ab-0a33-42be-8f44-e1ed6d424274,The Winged Rock,collectible,19,2026-10-08 14:13:26
-f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,3.2,2026-10-08 14:13:26
-cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,3,2026-10-08 14:13:26
-5a83120d-b4c0-4982-85d7-3046dd7d5f4f,Rain,collectible,1.88,2026-10-08 14:13:26
-383b2411-0ef9-4ec9-8b7a-2825ebeab4c6,Year of the Horse Medallion,collectible,1.5,2026-10-08 14:13:26
-73255fe7-c9e7-489a-a3bd-547b9b87a8a5,Ash,collectible,3.49,2026-10-08 14:13:26
-f1de663b-7b08-41a4-8ff9-6e21de97cd36,Giving and Receiving,collectible,1.3,2026-10-08 14:13:26
-ed14d888-8124-41c3-9200-f66b92c4a42a,Service is Success,collectible,2,2026-10-08 14:13:26
+41505b27-6b61-4951-835f-d8976df8fcbf,Spider-Man 2099,collectible,299.99,2026-10-08 15:15:41
+08e30682-b725-430f-bdfd-36394fb1aa0e,Captain America – Animated,collectible,199,2026-10-08 15:15:41
+da4f0ab8-00be-498e-8784-bde7d0d105e2,#56 Bruce Timm Harley Quinn,collectible,39.9,2026-10-08 15:15:41
+eb8895db-94cd-465a-bc25-05ce6e18e2c2,Melvin,collectible,35,2026-10-08 15:15:41
+219d14ac-23e9-4a1d-a9cb-ec009b31ebb1,A Happy Whistle,collectible,8.9,2026-10-08 15:15:41
+89b6d074-36ca-4b72-af67-3ac2e5648581,Blossom,collectible,19.95,2026-10-08 15:15:41
+94d57d40-8f63-4ac0-9dd8-86b82da93d79,Title IX - Block of 4,collectible,40,2026-10-08 15:15:41
+37353ee5-47b8-4498-a220-7851c6dd0923,Michelangelo - Classic,collectible,22,2026-10-08 15:15:41
+3facefe2-427f-48ec-a954-e5892b8c3b20,Yoda - Focus,collectible,69,2026-10-08 15:15:41
+f50bd55d-fcd4-46b6-9574-78e3ff253c2e,Orbitron®,collectible,28.99,2026-10-08 15:15:41
+1b57b5d3-b008-431e-884d-4b647ad7a840,Backstab Smorkin’ Labbit,collectible,59,2026-10-08 15:15:41
+70dca326-5dc9-4e24-8c5c-1200d7409f45,Lumpy Space Princess,collectible,15.99,2026-10-08 15:15:41
+28ed3953-b326-4d02-aa27-d472e939f213,One Above All,collectible,145,2026-10-08 15:15:41
+a74f1cdf-2a37-41a5-adeb-ac975ac647b1,Soul Stone,collectible,2.95,2026-10-08 15:15:41
+d97c812f-9410-4adf-8afc-0100a42cd7bc,Ralph,collectible,25.79,2026-10-08 15:15:41
+99c8e9ab-7ea7-4ef8-aa34-f5df2891d65b,Sabretooth - Vengeful Escape,collectible,120,2026-10-08 15:15:41
+3164f5e3-044d-477d-8022-0a99dead294d,Leonardo - Classic,collectible,11.95,2026-10-08 15:15:41
+922fc0ba-2b30-4fcf-87e5-82c63f54748d,Deadpool,collectible,2.64,2026-10-08 15:15:41
+49462c33-5e64-40bb-a952-f3e660e47baa,UYU & DONKOCAT - Soey Milk,collectible,27.89,2026-10-08 15:15:41
+bfbb5341-6a35-4ecb-b3a7-896bf6eb870c,Year of the Horse - Pane of 20,collectible,37,2026-10-08 15:15:41
+6c2e0c21-ecec-421d-a15c-6e1e18923f67,M.O.D.O.K.,collectible,13.5,2026-10-08 15:15:41
+68649d9c-b610-4ac0-a07a-f14a1fca6585,Raphael - Classic,collectible,10.35,2026-10-08 15:15:41
+cc9e5fc8-50b8-4d65-86d7-3eff279f65cf,Green Goblin - Action,collectible,115,2026-10-08 15:15:41
+39ceaffc-298a-481a-ac53-074fe1843ddd,Hapjeong Station,collectible,19,2026-10-08 15:15:41
+4804e172-42a2-419f-b1f0-431ece52c00a,Deadpool – Ugly Sweater Party,collectible,1.99,2026-10-08 15:15:41
+05f5219f-ed27-4be7-adf2-1c3c82132486,Rhino,collectible,6.9,2026-10-08 15:15:41
+34be3430-9c6d-4d66-bd10-4fdde8d16392,Twilight Mothman,collectible,4,2026-10-08 15:15:41
+c9622670-7b4c-4caa-a31c-f0b3ba45086a,Beskar Ingots,collectible,65,2026-10-08 15:15:41
+3c488c86-71a3-4b3f-8986-84c8061f3029,Coca-Cola Vending Machine (1960s),collectible,19,2026-10-08 15:15:41
+0911a467-0a70-4399-b99e-fa447496024c,X-Men: 60 Uncanny Years Poster,collectible,29.99,2026-10-08 15:15:41
+ae3b97fa-38a8-413c-b2f0-cd0695450755,VeVe Outdoor Guide - Lincoln Design Co.,collectible,29.99,2026-10-08 15:15:41
+326ec7f4-6466-4680-b4c6-6be1e70c8f32,Handy,collectible,29,2026-10-08 15:15:41
+967c8539-9bcc-4390-a094-a1d4d1006fa0,Welcome to Element City,collectible,11,2026-10-08 15:15:41
+39abf2f6-566b-4f0f-bc6c-e81204c1016c,Magneto,collectible,9.9,2026-10-08 15:15:41
+0c90c49f-d867-47de-991f-d5b5606ffb09,Namor - Phoenix,collectible,7,2026-10-08 15:15:41
+1e03369f-9703-4790-a441-23c894baf56d,1938 James K. Polk,collectible,4.5,2026-10-08 15:15:41
+92b14dcc-2e83-4d5e-8cfa-ac7fb5b73f96,Year of the Horse,collectible,3.9,2026-10-08 15:15:41
+8a50b96b-5408-4e5e-bb40-23961d9ed8d8,Magik - Hellfire Gala #1 (2022),collectible,9.99,2026-10-08 15:15:41
+559e5a55-e433-4f27-a5d6-2645a696ba1e,$2.00 Longevity Noodles Stamp,collectible,5.75,2026-10-08 15:15:41
+46359177-0a0a-4148-aac9-7875a76aaa91,Toph,collectible,5,2026-10-08 15:15:41
+cbb80771-516a-4f21-a3b4-a108a9b400d1,Record #7 - Bunnny's Rap - Platinum,collectible,50,2026-10-08 15:15:41
+7ed317cf-5b82-47fa-94ca-69d85591d1e8,Hapjeong Dungeon Key,collectible,9,2026-10-08 15:15:41
+f87f1feb-a221-4003-b34a-664fd6878396,Mariachi - Guitar Player,collectible,1.6,2026-10-08 15:15:41
+b5ee952e-4674-41a1-a985-17664336e905,"Good Food, Good Fortune",collectible,5,2026-10-08 15:15:41
+24624bd2-2ea0-4754-9b6e-1497803316ad,Ron English Collectors Reward,collectible,24,2026-10-08 15:15:41
+daf4feec-b2f7-4489-84a3-8bf4de83d9d2,Nose Goblins,collectible,3,2026-10-08 15:15:41
+d422752a-51cf-40da-82a1-257f817eed43,HiKR,collectible,11.95,2026-10-08 15:15:41
+958d85ba-bdfb-4013-89b4-5bd4a7a87daf,Guma - Nine Horse,collectible,15,2026-10-08 15:15:41
+9014cceb-4db2-4a5c-a619-679d4c106a28,Novello,collectible,7.5,2026-10-08 15:15:41
+81a71914-a1f3-4138-bfb5-bc41c020475f,Shield Generator,collectible,2.39,2026-10-08 15:15:41
+1e033ca4-e213-4960-8862-78fc4ca41aeb,Potball BB,collectible,4,2026-10-08 15:15:41
+d913a319-3a18-4250-a949-07f42a19424f,Record #8 - Duck Luck - Original,collectible,2.49,2026-10-08 15:15:41
+f55262b2-53a9-4ee9-b55c-c8635a3ae308,Sometimes I Think I Don’t Know You Anymore (3 of 7),collectible,58,2026-10-08 15:15:41
+0b5e951b-09bd-4b29-9db9-d7ca4814d92c,Janie,collectible,3.5,2026-10-08 15:15:41
+ec460953-de8a-4649-8a68-666bb2f2168b,Weakest Hunter - Frame,collectible,1.25,2026-10-08 15:15:41
+08ed38aa-561e-4a86-b64e-434f4fcfe1b2,Guitar Tank,collectible,2.8,2026-10-08 15:15:41
+8684b674-49b4-4ece-aa1e-510ed9e5ebaf,Ash - Dark,collectible,45,2026-10-08 15:15:41
+4073a4ba-eef4-49e3-a5f9-a099dd09dc4a,Year of the Horse Miniature Sheet,collectible,6,2026-10-08 15:15:41
