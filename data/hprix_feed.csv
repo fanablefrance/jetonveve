@@ -1,29 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-2b33f887-18e5-484a-a725-2d6a0cb41201,Capt. Stormy,collectible,999,2026-10-01 02:55:25
-b33424b2-ea2b-45c0-9f5b-05748c064554,Spider-Man: Miles Morales - Hoodie Season,collectible,280,2026-10-01 02:55:25
-eeb7939b-babf-4b2d-a078-36a40321043a,Ultraman Ace,collectible,54.99,2026-10-01 02:55:25
-410fd575-30a3-45ab-a87a-7a928971d321,Leonardo - Classic (Special Edition),collectible,2200,2026-10-01 02:55:25
-55876156-f6d4-4ca8-bb50-fd6c1f5f0fb8,U.S.S. Enterprise-D (1:1),collectible,32,2026-10-01 02:55:25
-10617c75-f9d0-48cb-b164-fe5b192e8cae,Beta Ray Bill,collectible,93,2026-10-01 02:55:25
-0606f20c-c5c0-45af-a49a-6d25e3d5ee96,Gambit - Kinetic Assault,collectible,200,2026-10-01 02:55:25
-5f63b00e-88e9-4784-8600-856dd951e06d,U.S.S. Enterprise-D (1:1000),collectible,6.75,2026-10-01 02:55:25
-12f57d47-86bc-440e-a88a-2b44337ac54b,The Punisher - Armored Vigilante,collectible,143,2026-10-01 02:55:25
-87876723-9df8-4d39-a1fe-fbecf4b4788a,Supergirl,collectible,5,2026-10-01 02:55:25
-19016c85-350f-4b18-8a93-45a58961a6e9,Battlestar Galactica Logo,collectible,51,2026-10-01 02:55:25
-4804e172-42a2-419f-b1f0-431ece52c00a,Deadpool – Ugly Sweater Party,collectible,2,2026-10-01 02:55:25
-23855e1f-f678-4831-8e58-ecfd53c4fb53,Cruz,collectible,12.18,2026-10-01 02:55:25
-dcae65b7-bd26-41d5-8509-8212bf2f3241,Rooftop Watch – Brickline Rise,collectible,20,2026-10-01 02:55:25
-4a1211b1-0144-4827-8014-2120901a5b91,Bigfoot,collectible,1,2026-10-01 02:55:25
-484dde9a-1cf6-441d-afd8-896155686657,AT-AT,collectible,12.85,2026-10-01 02:55:25
-c4690eb6-59d8-4369-acab-978ced87e9e3,Male Eivor - Howl of the Hunt,collectible,30,2026-10-01 02:55:25
-cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,3.99,2026-10-01 02:55:25
-b87927b2-6ad2-43ee-ae88-cfd7a2668e15,Bubble Machine,collectible,3.88,2026-10-01 02:55:25
-8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,3.75,2026-10-01 02:55:25
-f57e1a2b-be41-4007-8d67-7fac23b39b70,Pyro Machine,collectible,3.57,2026-10-01 02:55:25
-9d513380-78fc-4291-9f4b-e7ac0486e746,Snowman,collectible,9,2026-10-01 02:55:25
-7603c0c6-05e4-4a0e-b243-5045ceb07aa0,Nozzle Eye - Pyroscorch,collectible,15,2026-10-01 02:55:25
-69ac3f5c-a2a4-4e20-82cb-412608386e48,Winter Soldier – Vigilant Guard Special Edition,collectible,25,2026-10-01 02:55:25
-b5f16b83-1627-4520-ba7d-375a6311f089,Female Eivor - Skyforged Vow,collectible,30,2026-10-01 02:55:25
 a605b45c-c809-40d4-a98b-b5daa200a696,Black Panther – Ultimate Animated,collectible,180.33,2026-10-01 04:02:56
 349a1c81-d340-4f3f-a7f3-2890a92ae4bd,Technodrome,collectible,28.5,2026-10-01 04:02:56
 87876723-9df8-4d39-a1fe-fbecf4b4788a,Supergirl,collectible,8,2026-10-01 04:02:56
@@ -5754,3 +5729,38 @@ f09d3ca4-d90a-4844-a28b-3207b87161a4,Bat-Signal,collectible,3.8,2026-10-08 02:31
 f3d92fbc-8d5f-431a-a042-3e8bc1effc0a,Year of the Ox,collectible,11,2026-10-08 02:31:31
 d37184af-298d-4b47-ae13-819fb234b80d,Episode 12 - Arise,collectible,2.4,2026-10-08 02:31:31
 30341e3d-3fd2-49bc-b52e-cb539458aee5,LUV,collectible,9.99,2026-10-08 02:31:31
+4ed97266-f181-4637-949c-6ea763f2dfe6,Record #4 - I Am Nothing - Platinum,collectible,999,2026-10-08 03:35:21
+55876156-f6d4-4ca8-bb50-fd6c1f5f0fb8,U.S.S. Enterprise-D (1:1),collectible,31.95,2026-10-08 03:35:21
+cc920654-08b2-4e7d-a8af-bef9b0fe3775,Dragon Girl - Silver,collectible,89,2026-10-08 03:35:21
+64a291c7-ac25-484b-a84a-45ec6e5c7a5d,Mickey Mouse Poster,collectible,400,2026-10-08 03:35:21
+d9892b14-8126-4b26-901d-a978d6eb5be8,T. rex Animated 2,collectible,39,2026-10-08 03:35:21
+7195fe38-4967-47ff-bb52-0700dd6925e4,Pride II - Givenchy Beauty,collectible,48,2026-10-08 03:35:21
+bda26743-80dc-44b1-8174-1846ca71015f,JISOO - Heartfelt Connection,collectible,500,2026-10-08 03:35:21
+882b40f4-c586-4c68-af9b-b7bfdaca9f0d,Spider-Man 2099 - Shadow Protocol,collectible,184,2026-10-08 03:35:21
+64e007ea-99fe-4a29-a561-22d0343f4beb,Donutella,collectible,49,2026-10-08 03:35:21
+270dc2b6-b609-42e9-b074-7a3afc4c821a,Cthulhu Idol - Gold,collectible,24,2026-10-08 03:35:21
+eb1a9ec3-d193-4956-bcb8-d16d5a4a68a7,Captain Carter,collectible,7.7,2026-10-08 03:35:21
+3ab09024-348e-4e98-9f7d-cbe428fe0d19,Uprising,collectible,11,2026-10-08 03:35:21
+eb8fd10b-7584-4d27-a8b7-90508a2ff7c1,Lincoln Ripper Board,collectible,23,2026-10-08 03:35:21
+c59d0246-84e4-476e-a398-f6f9d24a2f58,OLYMPUS SAGA: MEGALITH #1 Variant Cover Poster,collectible,1000,2026-10-08 03:35:21
+ad631f86-3ea0-4e6b-8e24-0f96c66a0f85,1938 The White House,collectible,22,2026-10-08 03:35:21
+a226b4ca-a314-4665-8021-953622add643,Dave Pressler - Shut Up And Paint!,collectible,40.5,2026-10-08 03:35:21
+498009da-d0bd-48a5-824d-cd038af77cff,Remember Us - Vital Voices I,collectible,17,2026-10-08 03:35:21
+9cfdb320-2b4e-40b3-8552-f94e98fc2350,kozyndan - The Bunnies Fall,collectible,17.5,2026-10-08 03:35:21
+29f8d6bd-7a41-461f-b1f7-19a018561cda,Good Guy Doll Box,collectible,4.7,2026-10-08 03:35:21
+5cef19be-1121-4eea-9b2b-4349f2cfaf18,JISOO Silver/Pink,collectible,37.95,2026-10-08 03:35:21
+7a50712b-8a87-4d4c-9e0b-90e23cfd7441,Night Trooper Exposed,collectible,5.45,2026-10-08 03:35:21
+3a104aa7-b5ba-4bd1-8197-dd402dbd46bf,Night Trooper,collectible,4.99,2026-10-08 03:35:21
+98f7d0b0-8373-4037-a49f-2db41b24f168,Sokka,collectible,9.5,2026-10-08 03:35:21
+7da40095-ded9-4125-8d9e-c0cbd1836d23,Light This Candle,collectible,14,2026-10-08 03:35:21
+58ce00bf-e599-453d-ab67-146d84e4803c,Colossus - Secret Wars 1985,collectible,38.5,2026-10-08 03:35:21
+4ca4eb09-9fe7-458f-b935-669d4652aab2,Lincoln Logo Mayhem Board,collectible,7.5,2026-10-08 03:35:21
+d773dd14-5717-455c-b3a1-f9ffcacb4a6e,LA Strong - Green Heart,collectible,34.99,2026-10-08 03:35:21
+23fcbfb3-2f02-49bb-abd5-4825e7f26e80,Groot Black Panther,collectible,15.95,2026-10-08 03:35:21
+1f9f29e0-c0fb-44c7-abc6-22ad30d106f3,VeVe Grind - Lincoln Design Co.,collectible,17.5,2026-10-08 03:35:21
+97eaad27-9a3e-4b8a-a7ff-96a2789ce00b,The Awakened - Frame,collectible,12.85,2026-10-08 03:35:21
+6f04f0ca-d6fa-4b8c-b5cf-34c96602c7e9,VeveMagic,collectible,7,2026-10-08 03:35:21
+b5ee952e-4674-41a1-a985-17664336e905,"Good Food, Good Fortune",collectible,3.99,2026-10-08 03:35:21
+0aed9e36-107d-45dc-b81c-21dc739f946f,Shark Car,collectible,4.99,2026-10-08 03:35:21
+a15d54d8-0fa1-42bf-a69c-315662f4bfdf,Strobe Light Machine - Gold Edition,collectible,61.6,2026-10-08 03:35:21
+f11b5077-e080-49c9-937d-68208f0ba66f,The Tiniest Bit of Greed,collectible,32,2026-10-08 03:35:21
