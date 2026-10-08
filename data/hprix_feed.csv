@@ -1,18 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-d9892b14-8126-4b26-901d-a978d6eb5be8,T. rex Animated 2,collectible,50,2026-10-01 10:17:11
-cf266769-b956-47bb-868c-076bd13d62c3,Ryu Blue,collectible,419,2026-10-01 10:17:11
-00f74840-9bf1-4881-b138-15ca772c1985,ED-209 - Animated,collectible,25,2026-10-01 10:17:11
-f35e3e0b-dc86-462d-b06b-9c0abe74b924,ECOMI Logo Red Circle,collectible,3.99,2026-10-01 10:17:11
-8854d1aa-b535-4a8d-9a7f-1392b8581136,John F. Walker,collectible,2.9,2026-10-01 10:17:11
-15f0b30e-8770-4102-8226-7fd6f22cf8df,To Infinity and Beyond,collectible,5.9,2026-10-01 10:17:11
-5cd65143-b35b-4757-bb7a-275775e39eb0,Nostromo Corridor,collectible,145,2026-10-01 10:17:11
-3164f5e3-044d-477d-8022-0a99dead294d,Leonardo - Classic,collectible,13.5,2026-10-01 10:17:11
-f583497a-51d4-4f53-9985-7c3061533280,Military Jake,collectible,7.49,2026-10-01 10:17:11
-18ffd467-efd3-4686-924d-6e70e4ebbc87,"Krasue, the Floating Head",collectible,1.99,2026-10-01 10:17:11
-7051dd0b-67f0-4ffe-a81b-6a397a7a496c,T-47 Airspeeder - Red,collectible,6.5,2026-10-01 10:17:11
-47a56835-3d0e-44c8-b636-987bf484f9c2,Romulan - Bird of Prey,collectible,24.8,2026-10-01 10:17:11
-9d513380-78fc-4291-9f4b-e7ac0486e746,Snowman,collectible,8.47,2026-10-01 10:17:11
-43bb7950-19b2-4687-b6da-de526c651fc1,Vincent Mascot,collectible,9.9,2026-10-01 10:17:11
 42ed9c27-7acd-4e87-9305-431016406b79,Record #3 - Ascension - Gold,collectible,25,2026-10-01 11:19:19
 a218120e-106b-4761-9cce-21f4485d53a0,Raphael - IncogNinja,collectible,27.99,2026-10-01 11:19:19
 d87175f7-2845-4083-b29d-9f81e726e043,D&D - 5th Birthday Cake,collectible,1.9,2026-10-01 11:19:19
@@ -5766,3 +5752,43 @@ dafd1777-5245-4a69-9b99-c31926c307dd,Red Hulk,collectible,26.45,2026-10-08 09:54
 31232a5e-f1b3-43a9-bb8b-94c3c36b406e,Day of the Dead Father,collectible,8.45,2026-10-08 09:54:55
 905d1ad2-a6fe-4a98-b199-0d5e6ad9d2dd,The Rise of Ultraman #1 - Ed McGuinness,collectible,5.9,2026-10-08 09:54:55
 99c8e9ab-7ea7-4ef8-aa34-f5df2891d65b,Sabretooth - Vengeful Escape,collectible,125,2026-10-08 09:54:55
+ffabb2e2-810d-4f83-91e7-3d6b80c0f194,Thor - Ultimate Animated,collectible,666,2026-10-08 11:03:20
+107572e7-d947-4cc0-b8dc-af5e16233566,Bucky Barnes - On Guard,collectible,46,2026-10-08 11:03:20
+a642596a-72cb-4e46-97ce-2f2798a3412a,Cogsworth and Lumiere,collectible,19.95,2026-10-08 11:03:20
+aeebac53-63e3-461e-8158-59726476d16e,David Yu - Blue Metallic,collectible,1375,2026-10-08 11:03:20
+aedde9a9-f444-40f5-b1db-0199f84e5c3f,Minnie Mouse,collectible,8,2026-10-08 11:03:20
+f35e3e0b-dc86-462d-b06b-9c0abe74b924,ECOMI Logo Red Circle,collectible,6.86,2026-10-08 11:03:20
+f79a401a-0f4b-4379-a5bf-3132c5750539,ECOMI Logo Red White,collectible,26.5,2026-10-08 11:03:20
+beeb8c8f-662e-4cf4-878f-9276d60b8c08,Let’s Begin!,collectible,3.95,2026-10-08 11:03:20
+3097f216-96b5-4a4b-b63d-76a75f101f71,Mickey Mouse,collectible,17.95,2026-10-08 11:03:20
+12ec6e39-5acf-456c-a4d3-b3cd71e412c4,Pluto,collectible,320,2026-10-08 11:03:20
+056eec82-cd43-44a2-90ea-22bc734606da,Bucky Barnes - Action,collectible,45,2026-10-08 11:03:20
+ed1bdbf0-17f4-470e-b85a-494194f71b94,Master Splinter - Black & White Variant,collectible,662,2026-10-08 11:03:20
+4ceba0e1-b6d4-48a0-a9ad-da51cb24f16c,"Focus, Please!",collectible,3.95,2026-10-08 11:03:20
+2a9d29f2-d827-4c1d-aee7-22f7ab4f0a7d,ULTRAMAN JACK,collectible,17.45,2026-10-08 11:03:20
+a2d990aa-9d9f-4eb3-89b9-398dabe7fa7c,Tinker Bell Pencil,collectible,14.9,2026-10-08 11:03:20
+d0a26d72-a119-430d-aa7a-8b3af766cb76,Rafiki,collectible,24.99,2026-10-08 11:03:20
+6a94ae27-164a-49e0-83b0-d18ae7e33e95,Coca-Cola Starlight Can,collectible,3.19,2026-10-08 11:03:20
+c62142c0-cf6b-4d96-92dd-ad0140ab0a41,Miles Morales,collectible,12.5,2026-10-08 11:03:20
+c453fdaf-e57f-4a45-88a6-487d999916b9,Fall,collectible,71,2026-10-08 11:03:20
+043ed720-aa2c-49fa-8dd2-9607de31a386,Ken Story,collectible,59.99,2026-10-08 11:03:20
+f210cd03-99a2-4a22-af3b-dc544ac84b4d,Rogue - 90’s X-Men,collectible,29.95,2026-10-08 11:03:20
+0c6af189-3d90-4fdd-b28b-a60c8d42ec7b,Rushing Toby,collectible,1.95,2026-10-08 11:03:20
+ed34711b-b3e5-4685-a005-b88260d4a989,Royal Bee,collectible,4.95,2026-10-08 11:03:20
+9eeae60c-df75-4305-a5fd-241d356c4f7a,Mister Fantastic - Action,collectible,23,2026-10-08 11:03:20
+57da1dfd-058b-48db-ab9a-f4fa82eb4db6,Death Trooper Helmet,collectible,4.9,2026-10-08 11:03:20
+392c6df5-78ae-4b4a-b015-867fc56f68c8,Hope Van Dyne/Wasp,collectible,2.9,2026-10-08 11:03:20
+92b14dcc-2e83-4d5e-8cfa-ac7fb5b73f96,Year of the Horse,collectible,3.98,2026-10-08 11:03:20
+532afaf1-185a-4b85-bb4e-8df290a889d4,Daxx,collectible,15,2026-10-08 11:03:20
+481ae8fb-9032-420c-b3a9-5399d887e086,LIN Droid,collectible,8.99,2026-10-08 11:03:20
+523793ef-58f0-42d6-9b9d-c094d71ad20f,Bular,collectible,6.45,2026-10-08 11:03:20
+3a3f2167-ba4a-4b93-a98b-c45613c3ace4,Draal,collectible,6.95,2026-10-08 11:03:20
+6ea861be-16f5-4832-a6ec-da215c4fe3b6,Mutagen,collectible,3.8,2026-10-08 11:03:20
+ca3678e8-3ed8-4db0-ac03-da39f94d2c99,Turtle,collectible,3.8,2026-10-08 11:03:20
+b9e782f0-2edd-425f-853f-087ba24e00bc,Gasgano’s Podracer Base,collectible,32,2026-10-08 11:03:20
+90dc4c4d-7177-4fde-9bae-a42dc5ff7e5c,Foster,collectible,5.95,2026-10-08 11:03:20
+0b5e951b-09bd-4b29-9db9-d7ca4814d92c,Janie,collectible,5.95,2026-10-08 11:03:20
+2ab60547-aaf6-4120-828d-cc6372ac3335,Sewer Manhole - Silver,collectible,1.9,2026-10-08 11:03:20
+438829a3-1ddf-43ef-a849-d05292e7937f,Night Trooper - Marching,collectible,1.8,2026-10-08 11:03:20
+5a83120d-b4c0-4982-85d7-3046dd7d5f4f,Rain,collectible,1.9,2026-10-08 11:03:20
+f95a7ade-32c1-48e2-bab0-4dd51faf1d04,Bubble Machine - Gold Edition,collectible,39,2026-10-08 11:03:20
