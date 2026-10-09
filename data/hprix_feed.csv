@@ -1,19 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-5fd09e1f-58f8-467f-9e78-d64f6e3a69b9,R2-D2,collectible,212,2026-10-02 04:11:30
-be044aa7-1495-4b34-a3a6-b7303affcdae,Thor - Animated,collectible,69,2026-10-02 04:11:30
-4134563c-f023-4c74-992c-58d8ca7bcf44,Ecomi Coin,collectible,299.99,2026-10-02 04:11:30
-ca048ce7-e56d-48ba-b1ed-fe3aba790176,ZOFFY,collectible,19.85,2026-10-02 04:11:30
-8a23cfee-33f5-4a13-8cff-504d63681262,Trilad,collectible,29.99,2026-10-02 04:11:30
-05f5219f-ed27-4be7-adf2-1c3c82132486,Rhino,collectible,5,2026-10-02 04:11:30
-1e03369f-9703-4790-a441-23c894baf56d,1938 James K. Polk,collectible,6,2026-10-02 04:11:30
-cdf8336b-2ee0-4573-a2c0-5e8389bcc541,Vision,collectible,7,2026-10-02 04:11:30
-67b21be9-1853-4c6a-8453-fc208de31b5b,Nick Fury,collectible,8,2026-10-02 04:11:30
-f722b975-b19f-4ec4-bfa8-4752c02fa902,Kraven,collectible,3,2026-10-02 04:11:30
-293b3939-c579-4b4c-83fd-1f8ddfa91357,Okoye,collectible,3,2026-10-02 04:11:30
-ca1969b7-2875-4a2b-bdf0-8b624b8c3ccc,Mystique,collectible,7,2026-10-02 04:11:30
-158cf956-dbe3-48f4-9d41-68fa97acf97e,Kaiju Tokimon,collectible,2.79,2026-10-02 04:11:30
-c889a878-bc2b-4afe-a9c1-a02ffbe80231,Single 4d 'White Terraces' gummed stamp,collectible,2.99,2026-10-02 04:11:30
-f216c114-f12c-4c32-a2af-0c8632206274,Single 2s 'Milford Sound' gummed stamp,collectible,2.33,2026-10-02 04:11:30
 4e358881-d6e6-41a0-ad3c-8b3021128af0,Luke Skywalker: Jedi,collectible,150,2026-10-02 05:13:26
 987e4869-7dd7-47ed-a417-351d20023d78,#100 Todd McFarlane Batman - Blue & Yellow Variant,collectible,55,2026-10-02 05:13:26
 4134563c-f023-4c74-992c-58d8ca7bcf44,Ecomi Coin,collectible,244.44,2026-10-02 05:13:26
@@ -6099,3 +6084,74 @@ e5e0de12-2189-4143-a87d-162190fbf553,Max - Blue Metallic,collectible,20,2026-10-
 a605b45c-c809-40d4-a98b-b5daa200a696,Black Panther – Ultimate Animated,collectible,209.99,2026-10-09 03:53:16
 767ec424-2432-4620-b25f-d300fa401004,John Hammond’s Cane,collectible,560,2026-10-09 03:53:16
 2f4db61b-330b-4322-9a93-ed01a38bb3eb,Savor the Moment,collectible,8.3,2026-10-09 03:53:16
+e7735bff-6de9-45b5-8b33-98a2816ccaf3,CHOICES (Ultraviolet),collectible,23000,2026-10-09 05:01:25
+2975026b-9d14-475b-a356-d35855637309,Hulk - Animated,collectible,47.98,2026-10-09 05:01:25
+aedde9a9-f444-40f5-b1db-0199f84e5c3f,Minnie Mouse,collectible,15,2026-10-09 05:01:25
+e3c58965-57b1-40a7-b091-2ba227c4c284,ROSÉ - Animated,collectible,460,2026-10-09 05:01:25
+66bf871d-a8d4-474e-a0f2-b1ceb28c7b94,Millennium Falcon,collectible,92,2026-10-09 05:01:25
+9948817c-98d0-4272-98e7-5b769b40cb4d,Robocop - Animated,collectible,49.99,2026-10-09 05:01:25
+d1a65019-8f2e-471e-94d0-c3de74c3b851,Weapon Racks – Gold Black,collectible,49.99,2026-10-09 05:01:25
+47dd2556-6be7-4572-a234-453b667cfc8d,Wonder Woman,collectible,7.9,2026-10-09 05:01:25
+18fc8809-db68-48a1-b5df-da1318d6c6e0,Chun-Li Battle,collectible,295,2026-10-09 05:01:25
+a9ae0af3-8c76-45eb-9ef0-cd314ebc4e20,Carnage,collectible,69,2026-10-09 05:01:25
+6b921b0c-6764-4e2f-afd8-75deb784e77e,AT-AT - March of the Empire,collectible,22.9,2026-10-09 05:01:25
+aa427c53-ab3f-48f7-ace3-519c7f210141,Predator - Unguided Wrath,collectible,415,2026-10-09 05:01:25
+cb2ff32d-8327-46db-a8cb-9fe976a23c96,Frank Miller The Joker,collectible,39,2026-10-09 05:01:25
+c97d900d-5334-45b3-ab56-bafc78e56912,Aang - Earthbender,collectible,59,2026-10-09 05:01:25
+6535d69a-ac95-4da3-bd1a-4245808e4b21,Fantastic Four Holiday Card,collectible,95,2026-10-09 05:01:25
+c61291f1-af7e-4016-ba93-708ade3c1eaf,Professor X,collectible,55.95,2026-10-09 05:01:25
+101b30a5-9ace-4261-b419-fc3e0518e384,Human Torch - Flame On,collectible,215,2026-10-09 05:01:25
+8e561f57-6f16-49d2-b6f1-06fa9576feec,Gaze,collectible,450,2026-10-09 05:01:25
+8fb5ccce-9c4a-49ab-b206-440767b49495,Loki,collectible,5.99,2026-10-09 05:01:25
+307d71a8-fe8b-41a4-ba69-798ddba7ff76,Juggernaut,collectible,57.89,2026-10-09 05:01:25
+d00aade8-f49b-4f5b-9ce4-514e3551b4b5,Transformative Potion 2,collectible,40,2026-10-09 05:01:25
+1cdb7278-0d85-493d-90ab-85bd3faac35f,BB-8 - Thumbs Up,collectible,198,2026-10-09 05:01:25
+f6449165-c84d-4d58-8931-05f103b80d91,Sakura - Battle,collectible,229,2026-10-09 05:01:25
+4568ad61-9fce-404f-b8ee-d9b5c4667532,"Jet Pack from Thunderball, 1965",collectible,19.77,2026-10-09 05:01:25
+ad631f86-3ea0-4e6b-8e24-0f96c66a0f85,1938 The White House,collectible,21.9,2026-10-09 05:01:25
+3b17751e-0e79-4a5e-b155-7896078cd1f8,Bob Gnarly,collectible,99.99,2026-10-09 05:01:25
+9dd117df-348a-4ade-8f7e-19e3f7963f35,Aang - Waterbender,collectible,34.49,2026-10-09 05:01:25
+3cb65b13-935b-465c-b293-828d73cfae4d,“It’s Time To Play” Poster,collectible,16,2026-10-09 05:01:25
+eaa4170a-284c-40b5-9add-db1034f91d4a,Bayek,collectible,16.9,2026-10-09 05:01:25
+9fc00c0d-146d-4f67-8acc-8a8ad3ea2008,Bill & Ted's Bogus Journey,collectible,17,2026-10-09 05:01:25
+62fc1db4-c7bc-491f-b158-a5258448b10a,Doodle Pencil,collectible,55,2026-10-09 05:01:25
+0117f97c-9fe1-4735-b850-47dcb0b44d44,Rogue - Legacy Heroine,collectible,64.95,2026-10-09 05:01:25
+9c5831e3-9544-4af2-a3d3-cf0d8a8910f9,Jubilee - Full Spectrum,collectible,49.99,2026-10-09 05:01:25
+199db622-37b9-4823-b733-aca9ad34d91a,Sports Rabbid,collectible,59,2026-10-09 05:01:25
+069acda0-d0af-47fe-b9b8-258498de1e95,Star Wars: Episode V The Empire Strikes Back - Master Yoda,collectible,15.83,2026-10-09 05:01:25
+7a50712b-8a87-4d4c-9e0b-90e23cfd7441,Night Trooper Exposed,collectible,4.45,2026-10-09 05:01:25
+c59d0246-84e4-476e-a398-f6f9d24a2f58,OLYMPUS SAGA: MEGALITH #1 Variant Cover Poster,collectible,449,2026-10-09 05:01:25
+3a104aa7-b5ba-4bd1-8197-dd402dbd46bf,Night Trooper,collectible,3.99,2026-10-09 05:01:25
+e8ac58ab-783e-4b9d-9845-054a86e41b69,Gouki Default,collectible,88,2026-10-09 05:01:25
+eda50111-815e-42c0-8748-1f34b35c5c36,Emma Frost - Hellfire Gala #1 (2022),collectible,9.8,2026-10-09 05:01:25
+3ecf56b1-5b35-4713-8032-37a3e789ef65,Coca-Cola – 1899 Bottle,collectible,8.23,2026-10-09 05:01:25
+868fe1f8-cc4a-421a-877c-198bd0262274,Darth Vader Samurai - Crimson Descent,collectible,19.99,2026-10-09 05:01:25
+f210cd03-99a2-4a22-af3b-dc544ac84b4d,Rogue - 90’s X-Men,collectible,29.99,2026-10-09 05:01:25
+50aea82f-3a88-413c-89d8-4d9927672d42,Green Torso,collectible,21.5,2026-10-09 05:01:25
+d324d199-8532-4449-b67b-fdad373da71a,Stormtrooper - Running,collectible,6,2026-10-09 05:01:25
+bf4fd211-0493-4533-9184-4a1465948a8d,Player 2 Rabbids,collectible,8.37,2026-10-09 05:01:25
+b8e9332e-cd45-45a2-9638-7fb3783b835e,Butterfly - Gray,collectible,130,2026-10-09 05:01:25
+ba7151f1-eba5-487d-87c9-3159fbc70bf8,Red Noggles,collectible,33,2026-10-09 05:01:25
+b6f29798-c0ff-4bd8-96fc-a5f8b9b621ae,Flerkitten 3,collectible,18,2026-10-09 05:01:25
+5cd66930-0cc0-4ab5-ad77-9ff7f1e56bf2,Anthony,collectible,50,2026-10-09 05:01:25
+3d890e1f-f5d6-4797-bde9-4eb455a31928,Flerkitten 4,collectible,12,2026-10-09 05:01:25
+b5ee952e-4674-41a1-a985-17664336e905,"Good Food, Good Fortune",collectible,6,2026-10-09 05:01:25
+32a83155-0ef9-4262-85c7-874bb4782017,Surfs Up,collectible,4.7,2026-10-09 05:01:25
+158cf956-dbe3-48f4-9d41-68fa97acf97e,Kaiju Tokimon,collectible,2.8,2026-10-09 05:01:25
+e74fc433-8f2a-4893-897f-4f72dd41c35a,Thumper,collectible,20,2026-10-09 05:01:25
+295ead7b-e20b-45e6-88e1-f280e55faf07,FDP Tower,collectible,22,2026-10-09 05:01:25
+c9cdb666-5e73-48ab-b7d9-83ec6005df9a,Madame Puffersworth,collectible,16,2026-10-09 05:01:25
+2f4db61b-330b-4322-9a93-ed01a38bb3eb,Savor the Moment,collectible,3,2026-10-09 05:01:25
+fc039424-1fd9-4fe1-aeef-c015a7d284a0,Gamer Rabbid,collectible,5.55,2026-10-09 05:01:25
+ed8ba50a-5cdd-4844-aff9-fdd5c741d9bf,Flerkitten 1,collectible,9.9,2026-10-09 05:01:25
+351f7ac8-be07-48d5-9a66-4b2d65982430,Mimban Trooper - Crouching,collectible,11,2026-10-09 05:01:25
+eedca775-7427-43ed-8911-df08ae0a3cd9,DF9 Turret,collectible,8.99,2026-10-09 05:01:25
+ed14d888-8124-41c3-9200-f66b92c4a42a,Service is Success,collectible,8.38,2026-10-09 05:01:25
+f6c0f08f-a0e9-455b-9008-13dc70abcfba,Vana,collectible,10.99,2026-10-09 05:01:25
+7f8db4ca-e2d2-4750-80dc-92f122da0bd0,Birdie,collectible,10.6,2026-10-09 05:01:25
+af36d0b7-21fc-404d-a6ea-6b5676c9ba30,Hoodie,collectible,9.75,2026-10-09 05:01:25
+6f5d6b03-da4c-4121-9024-74221436f214,Shadow Trooper - Crouching,collectible,8,2026-10-09 05:01:25
+8c448663-6552-41cf-8490-1a8c073c38bb,Confetti Machine,collectible,3.25,2026-10-09 05:01:25
+d422752a-51cf-40da-82a1-257f817eed43,HiKR,collectible,8.5,2026-10-09 05:01:25
+8424b8e4-01ad-4c77-b816-d728bc74b647,Bowling,collectible,8.5,2026-10-09 05:01:25
+cf3f2223-ece8-4b79-8970-8fca656ea481,Smoke Machine,collectible,3.11,2026-10-09 05:01:25
