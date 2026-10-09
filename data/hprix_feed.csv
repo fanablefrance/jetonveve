@@ -1,23 +1,4 @@
 uuid,name,categorie,floor_usd,ts
-58106902-69a5-488d-8dbb-b6120b73fcc0,Aether,collectible,335.22,2026-10-02 08:21:17
-3c94d7bf-2a58-4e7b-901d-2d177a642da3,Felix – Dual Realms,collectible,180,2026-10-02 08:21:17
-03ac1002-6575-4474-bf58-6175aee35f97,Gelatina,collectible,4.5,2026-10-02 08:21:17
-4ba5e77c-a4f6-44c8-a709-6b2e63c38fd3,Miguel,collectible,16.44,2026-10-02 08:21:17
-39ceaffc-298a-481a-ac53-074fe1843ddd,Hapjeong Station,collectible,29.88,2026-10-02 08:21:17
-a0a401e5-86ce-4522-80f5-f342bb554582,Peter Quill,collectible,5.99,2026-10-02 08:21:17
-f5d9089b-cfa3-47b4-8408-35289430f64d,A-Rank Essence Stone,collectible,49.99,2026-10-02 08:21:17
-e2782558-fce9-438b-be3c-84e1539af4c4,Stormtrooper Helmet - Cross Section,collectible,4.5,2026-10-02 08:21:17
-72b60c77-038d-4ced-bbad-e8c73d13cff1,Scott Lang/Ant-Man,collectible,3.6,2026-10-02 08:21:17
-392c6df5-78ae-4b4a-b015-867fc56f68c8,Hope Van Dyne/Wasp,collectible,2.7,2026-10-02 08:21:17
-e4c90141-36fe-4811-bc64-eb8dbcb3048c,M’Baku,collectible,2.5,2026-10-02 08:21:17
-59b92dd6-4633-4da0-9d28-fa5349107513,Hank Pym,collectible,3,2026-10-02 08:21:17
-c8a76df1-5979-4917-8189-5ecb4a2e4225,KABOOM,collectible,27,2026-10-02 08:21:17
-92635283-99b4-4597-ba69-01e39ccba334,Master Splinter - Father Figure,collectible,3,2026-10-02 08:21:17
-b08d08d6-7b80-4d13-acc4-816a97474a5c,Cassie,collectible,2.8,2026-10-02 08:21:17
-975dad48-3fe0-476b-b518-78706b1073ab,1840 Penny Black Ol mint,collectible,3,2026-10-02 08:21:17
-7b15830f-cafc-4945-a78b-bae80162d788,Groot,collectible,2.5,2026-10-02 08:21:17
-8564d30f-2411-4d71-8f53-330747e9326d,Night Trooper Exposed - Marching,collectible,1.6,2026-10-02 08:21:17
-6034d020-5c76-46b5-aa1e-56011181936e,Graffi ver. Red,collectible,1.37,2026-10-02 08:21:17
 41505b27-6b61-4951-835f-d8976df8fcbf,Spider-Man 2099,collectible,250,2026-10-02 10:32:58
 2d319882-cb74-4383-8d91-31ff8fca91c4,Avengers Logo,collectible,55,2026-10-02 10:32:58
 56128c3c-1c59-4be5-82f5-380d0712f9cf,Ironheart - Neon,collectible,745,2026-10-02 10:32:58
@@ -6156,3 +6137,20 @@ e8ac58ab-783e-4b9d-9845-054a86e41b69,Gouki Default,collectible,69.96,2026-10-09 
 8826bec7-dd6c-4abd-8f45-20b6dad90ef3,Samurai Rabbid,collectible,12.5,2026-10-09 08:07:09
 15a83e17-250c-4063-ae84-6aeea8660af6,Jackson Storm Base,collectible,29.95,2026-10-09 08:07:09
 484dde9a-1cf6-441d-afd8-896155686657,AT-AT,collectible,16.95,2026-10-09 08:07:09
+e7735bff-6de9-45b5-8b33-98a2816ccaf3,CHOICES (Ultraviolet),collectible,22000,2026-10-09 09:08:06
+3e628ba1-7c41-4d53-8ae7-ecc2aa09512a,Michelangelo - IncogNinja,collectible,180,2026-10-09 09:08:06
+a39be8a4-d03d-4de5-b85d-4e8da1a4ef02,Professor X,collectible,94,2026-10-09 09:08:06
+274f616c-a057-4680-9e73-ceee27e35c58,Ryu Battle,collectible,180,2026-10-09 09:08:06
+aa07ce2d-aeff-4234-9eeb-78d70f92c429,Chun-Li Red,collectible,199,2026-10-09 09:08:06
+842e1d51-02b9-4762-9c4d-12f95f0b12d2,Ken Blue,collectible,158,2026-10-09 09:08:06
+7aefc64f-2a8f-4412-800d-25f1e3699c90,Aang - Airbender,collectible,16,2026-10-09 09:08:06
+beebd4fa-865f-4397-9034-95548858a0ca,Sakura - Nostalgia,collectible,125,2026-10-09 09:08:06
+dd16eb91-704b-4fad-9db0-55e55cc433dc,Cyclops - Phoenix,collectible,9,2026-10-09 09:08:06
+c453fdaf-e57f-4a45-88a6-487d999916b9,Fall,collectible,37,2026-10-09 09:08:06
+de494d7c-4df4-4695-a189-a28f88a80550,M.Bison - Battle,collectible,50,2026-10-09 09:08:06
+ed1533cd-1a17-4968-b8d6-9a8f57e052ee,Boba Fett’s Chest Plate,collectible,4.4,2026-10-09 09:08:06
+4836f896-a3b1-4539-a79f-1b0a26bd5a25,Rat,collectible,1.8,2026-10-09 09:08:06
+bd273292-2dd8-49f1-9199-f8dbfe7cd62d,Small Generator,collectible,2.2,2026-10-09 09:08:06
+383b2411-0ef9-4ec9-8b7a-2825ebeab4c6,Year of the Horse Medallion,collectible,1.5,2026-10-09 09:08:06
+9d9643bc-a33f-4a4b-a397-7162e4cff142,Nijiko,collectible,3,2026-10-09 09:08:06
+78d3b074-5389-4de9-a6ae-146f67bafbae,Coca-Cola Vending Machine (1980s),collectible,5,2026-10-09 09:08:06
